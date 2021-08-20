@@ -3,7 +3,7 @@
   "author": "Eric J Hedman",
   "description": "Fant X server core",
   "license": "private",
-  "version": "0.1.312",
+  "version": "0.1.1",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
@@ -31,11 +31,11 @@
     "base64-js": "^1.5.1",
     "crypto-js": "^4.0.0",
     "firebase-admin": "^8.10.0",
-    "hal-serializer": "git+https://bitbucket.org/rktlabs/hal-serializer.git",
+    "hal-serializer": "git+https://github.com/rktlabs/hal-serializer.git",
     "jsonschema": "^1.2.10",
     "log4js": "^6.3.0",
     "luxon": "^1.25.0",
-    "makers": "git+https://bitbucket.org/rktlabs/makers.git",
+    "makers": "git+https://github.com/rktlabs/makers.git",
     "nanoid": "^3.1.12"
   },
   "devDependencies": {
