@@ -14,7 +14,7 @@
     "pull": "npm update makers",
     "prebuild": "npm run pull && npm run lint",
     "build": "rm -rf ./lib && tsc",
-    "test": "mocha  -r tests/bootstrap.js -r ts-node/register 'tests/**/*.spec.ts'",
+    "xxxtest": "mocha  -r tests/bootstrap.js -r ts-node/register 'tests/**/*.spec.ts'",
     "pregitpush": "npm run build",
     "gitpush": "git add . && git commit -m 'deploy for push' && git push origin master & exit 0",
     "version": "",
@@ -31,11 +31,11 @@
     "base64-js": "^1.5.1",
     "crypto-js": "^4.0.0",
     "firebase-admin": "^8.10.0",
-    "hal-serializer": "git+https://github.com/rktlabs/hal-serializer.git",
+    "hal-serializer": "git+ssh://github.com/rktlabs/hal-serializer.git",
     "jsonschema": "^1.2.10",
     "log4js": "^6.3.0",
     "luxon": "^1.25.0",
-    "makers": "git+https://github.com/rktlabs/makers.git",
+    "makers": "git+ssh://github.com/rktlabs/makers.git",
     "nanoid": "^3.1.12"
   },
   "devDependencies": {
