@@ -7,35 +7,36 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "clean": "rm -rf ./lib && rm -rf node_modules && rm -rf package-lock.json && npm install",
+    "clean": "rm -rf ./lib && rm -rf node_modules && rm -rf yarn.lock && yarn install",
     "format": "prettier --write \"src/**/*.ts\"  \"tests/**/*.ts\" ",
-    "prelint": "npm run format",
+    "prelint": "yarn run format",
     "lint": "eslint  ./src/**/*/*.ts",
-    "pull": "npm update makers",
-    "prebuild": "npm run pull && npm run lint",
+    "pull": "yarn upgrade makers",
+    "prebuild": "yarn run pull && yarn run lint",
     "build": "rm -rf ./lib && tsc",
     "xxxtest": "mocha  -r tests/bootstrap.js -r ts-node/register 'tests/**/*.spec.ts'",
-    "pregitpush": "npm run build",
+    "pregitpush": "yarn run build",
     "gitpush": "git add . && git commit -m 'deploy for push' && git push origin master & exit 0",
     "version": "",
     "postversion": "git push --tags",
-    "prepush": "npm run gitpush",
-    "push": "npm version patch"
+    "prepush": "yarn run gitpush",
+    "push": "yarn version patch"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/rktlabs/rkt-core"
   },
   "dependencies": {
+    "@firebase/app-types": "^0.6.3",
     "@google-cloud/pubsub": "^2.5.0",
     "base64-js": "^1.5.1",
     "crypto-js": "^4.0.0",
     "firebase-admin": "^8.10.0",
-    "hal-serializer": "git+ssh://git@github.com/rktlabs/hal-serializer.git",
+    "hal-serializer": "git+https://git@github.com/rktlabs/hal-serializer.git",
     "jsonschema": "^1.2.10",
     "log4js": "^6.3.0",
     "luxon": "^1.25.0",
-    "makers": "git+ssh://git@github.com/rktlabs/makers.git",
+    "makers": "git+https://git@github.com/rktlabs/makers.git",
     "nanoid": "^3.1.12"
   },
   "devDependencies": {
