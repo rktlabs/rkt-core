@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "fantx-test",
+  "private_key_id": "234869d075132371e51cca3370df1b8af118d60e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDjNISbdW6pZw2b\nToG3XlKO4BXSq5oRtdxfOxwHx5zVomgaEJKQvD59Jliw3MBN0LQ2JIahUPA3Zof+\n9Y/GzK1Yn9xI0pzlXBl4arLy0PpN/3gDBHg4qtkxIvQ9wcA6qXnNTtGB0fpxmkAV\nYegN/ACYoLPb3+/hiZCzUL/R4j5+H/1QUbBg0EfDwThVppEzHAfNTbOwkdKMfh0F\nMzA9ELaDRToNaXbYesVeJ6Jium3OOS4QR+S18nedMsuhEhCXcSOG6MKMmyHLNhsy\ncGSd71AAhXUvEmfDdCZ217aUbdul439sIz+elUPkGOfqLJeCuVb8q7ty2lByIrgD\nxMhMS8gnAgMBAAECggEAacx7UX7B/J1Rvzez/KSt8f0T/GlPEZ8rUqcOOusvM2Xw\nbu63qTEXMiTImPb6j2G3gRzKGlU7vrh+bHGBtXN65vFt3PVB/SXBcIrS8HHylJ55\nDoKmztBz2ccqj5Vow4hGgR2KPpb+Nac73xkbu2NVDb2Lc0AYjmAGIxHfeMcPDaBM\nMonE/TtbI70hSrTL4TuVmzZx7Jx711ImnutQm5W6gcnmDj4drWDyz3H4Q+Yz3adL\nlyeXXI2R8s99fdyWgbV7JJiA12FPFizOeInmlNGjR81zgj9ggzkopeqIcLXIVD0a\nDk5LwP72oiQWESg7v2fMUnEul6004fiPNdE7mBVf5QKBgQDyiPGUkigST04VtCwb\n33CiNEoHNUzzcKy1sVLHHr8HBxsTdQC55/TXsArWl72f4BkNp5h+51KaN+oqJ5ug\nVqJQSCpeCFHm6wqN7nTeD6YQkn9YxDeJPeZMiqex8MFqGON/23ZLCKA+q4rnvPj8\nL0vQEN6B9r2GExeDCDHaP6DobQKBgQDv0bKqQ1CZWrHDuBBiJEyaPgSsz/lXN/yw\nfzNBqdG1MX56kHjYSmxMseBqybROwn/DaKd9w4stryigJ40cIBNZVAuglaHqM80s\noCqPRQ5FSz8yfHjXeoWI9pvib9ahMIuYX4lIQojZEhhdfVkli07td0RL8fdMCoy/\nMd6s/jW+YwKBgQDE0d06dGGQeksj0dL5y5ncCBMLRnXsGMQPrpc+f/UF/v46C/lK\n5LINVw90li+MTpAGRLu8QH0IKdgd3Yat16BhBi9bn+TXQGaQR7MPgiOBz2EI6DMp\nbNI3y03LWVWchBYa7D5TJezk7tEKvpBQFxGvCAGJ9nJXG6c47q2GL5ylAQKBgQDZ\nQnRF423lQFDDKsFM5+2t3nmFxXPyG/qEOvhIiHw/VnNqve98ow+x+4N/uvPqVjJA\n6VKzkK9J1+FKFgq0bCqbRpSyCl0BO6SoxQFJghoHlL/QEQu4ynqnNiLK5N7gcIZG\nqGZKXFx1qvr/10snxCjg4Key1aZf8T7JB3jf5/zwWQKBgHym6oNWpsJruFoWSAMh\ndIri81ueZkQIc6Gju/I9gbmYCUaQiKpXDd8qgAyXvXf+1kq6sIBWlpXleWOx1uQG\nUOU9/gQ5f4dbmnsgot1ATlVC1Zj0vytd8lxJeu/z/Ro6gimxqZ4FFihxau2Vqdjc\nAB2eaXZ8pXsT1x4yPf+Raetw\n-----END PRIVATE KEY-----\n",
+  "client_email": "fantx-db-test@fantx-test.iam.gserviceaccount.com",
+  "client_id": "114901915894318231833",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fantx-db-test%40fantx-test.iam.gserviceaccount.com"
+}
