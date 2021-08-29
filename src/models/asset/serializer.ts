@@ -1,7 +1,7 @@
 import { HALSerializer } from 'hal-serializer'
 
-export const serialize = (req: any, data: any) => {
-    const baseUrl = req.fantUrls.baseUrl
+export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
+    //const baseUrl = req.fantUrls.baseUrl
 
     const serializer = new HALSerializer()
 
@@ -21,31 +21,31 @@ export const serialize = (req: any, data: any) => {
         ],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/${record.assetId}`, rel: 'asset' },
-                earnings: { href: `${baseUrl}/${record.assetId}/earnings`, rel: 'collection:earning' },
+                self: { href: `${selfUrl}`, rel: 'asset' },
+                earnings: { href: `${baseUrl}/assets/${record.assetId}/earnings`, rel: 'collection:earning' },
             }
         },
         associations: function (data: any) {
             return {
                 earner: {
-                    href: `${req.fantUrls.proto}//${req.fantUrls.host}/earners/${data.earnerId}`,
+                    href: `${baseUrl}/earners/${data.earnerId}`,
                     rel: 'earner',
                     id: data.earnerId,
                     title: data.earnerDisplayName,
                 },
                 contract: {
-                    href: `${req.fantUrls.proto}//${req.fantUrls.host}/contracts/${data.contractId}`,
+                    href: `${baseUrl}/contracts/${data.contractId}`,
                     rel: 'contract',
                     id: data.contractId,
                     title: data.contractDisplayName,
                 },
                 maker: {
-                    href: `${req.fantUrls.proto}//${req.fantUrls.host}/makers/${data.assetId}`,
+                    href: `${baseUrl}/makers/${data.assetId}`,
                     rel: 'maker',
                     id: data.assetId,
                 },
                 portfolio: {
-                    href: `${req.fantUrls.proto}//${req.fantUrls.host}/portfolios/${data.portfolioId}`,
+                    href: `${baseUrl}/portfolios/${data.portfolioId}`,
                     rel: 'portfolio',
                     id: data.portfolioId,
                 },
@@ -57,18 +57,34 @@ export const serialize = (req: any, data: any) => {
     return serialized
 }
 
-export const serializeCollection = (req: any, data: any) => {
-    const baseUrl = req.fantUrls.baseUrl
-    const selfUrl = req.fantUrls.selfUrl
+//export const serializeCollection = (req: any, data: any) => {
+export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, data: any, rowcount: number) => {
+    // const baseUrl = req.fantUrls.baseUrl
+    // const selfUrl = req.fantUrls.selfUrl
+
+    // const rowcount = data.length
+    // let page = parseInt(req.query.page || '1', 10)
+    // if (page <= 1) {
+    //     page = 1
+    // }
+    // const pageSize = Math.min(parseInt(req.query.pageSize || '25', 10), 1000)
+
+    const filter = Object.assign({}, qs)
+    const page = filter.page ? parseInt(filter.page, 10) : 1
+    const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
+    delete filter.page // ignore "page" querystring parm
+    delete filter.pageSize // ignore "page" querystring parm
+    const pages = Math.floor((rowcount - 1) / pageSize) + 1
+
+    const newFilter = []
+    for (const v in filter) {
+        if (filter.hasOwnProperty(v)) {
+            newFilter.push(encodeURIComponent(v) + '=' + encodeURIComponent(filter[v]))
+        }
+    }
+    const linkQS = newFilter && newFilter.length > 0 ? newFilter.join('&') + '&' : ''
 
     const recordCount = data.length
-
-    let page = parseInt(req.query.page || '1', 10)
-    if (page <= 1) {
-        page = 1
-    }
-
-    const pageSize = Math.min(parseInt(req.query.pageSize || '25', 10), 1000)
     const hasMore = recordCount === pageSize
     const displayCount = data.length
 
@@ -78,16 +94,21 @@ export const serializeCollection = (req: any, data: any) => {
 
     if (page > 1 || hasMore) {
         collectionLinks.first = {
-            href: `${baseUrl}?page=1&pageSize=${pageSize}`,
+            href: `${baseUrl}/assets?${linkQS}page=1&pageSize=${pageSize}`,
         }
         if (page > 1) {
             collectionLinks.prev = {
-                href: `${baseUrl}?page=${page - 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/assets?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
             }
         }
         if (hasMore) {
             collectionLinks.next = {
-                href: `${baseUrl}?page=${page + 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/assets?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
+            }
+        }
+        if (page <= pages) {
+            collectionLinks.last = {
+                href: `${baseUrl}/assets?${linkQS}page=${pages}`,
             }
         }
     }
@@ -98,7 +119,7 @@ export const serializeCollection = (req: any, data: any) => {
         whitelist: ['type', 'assetId', 'symbol', 'displayName', 'bid', 'ask', 'last', 'cumulativeEarnings'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/${record.assetId}`, rel: 'asset' },
+                self: { href: `${baseUrl}/assets/${record.assetId}`, rel: 'asset' },
             }
         },
         topLevelLinks: collectionLinks,
@@ -107,6 +128,8 @@ export const serializeCollection = (req: any, data: any) => {
                 page: extraOptions.page,
                 pageSize: extraOptions.pageSize,
                 count: extraOptions.count,
+                pages: extraOptions.pages,
+                total: extraOptions.total,
             }
         },
     })
@@ -115,6 +138,8 @@ export const serializeCollection = (req: any, data: any) => {
         page,
         pageSize,
         count: displayCount,
+        pages: pages,
+        total: rowcount,
     })
     return serialized
 }

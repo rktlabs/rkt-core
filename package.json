@@ -14,7 +14,7 @@
     "pull": "yarn upgrade makers",
     "prebuild": "yarn run pull && yarn run lint",
     "build": "rm -rf ./lib && tsc",
-    "xxxtest": "mocha  -r tests/bootstrap.js -r ts-node/register 'tests/**/*.spec.ts'",
+    "test": "mocha  -r tests/bootstrap.js -r ts-node/register 'tests/**/*.spec.ts'",
     "pregitpush": "yarn run build",
     "gitpush": "git add . && git commit -m 'deploy for push' && git push origin master & exit 0",
     "version": "",

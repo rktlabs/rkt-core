@@ -1,76 +1,8 @@
 import { DateTime } from 'luxon'
+import { TAsset, TNewAsset } from '.'
 import { ValidationError, TypeError, NameError } from '../../errors'
-import { serialize, serializeCollection } from './assetSerializer'
-import { validate } from './assetValidator'
-
-export type TNewAsset = {
-    ownerId: string
-    symbol: string
-    displayName?: string
-
-    contractId: string
-    contractDisplayName?: string
-
-    earnerId?: string
-    earnerDisplayName?: string
-
-    tags?: any
-    xids?: any
-
-    initialPrice?: number
-}
-
-export type TAssetCache = {
-    assetId: string
-    symbol: string
-    type: string
-    portfolioId?: string
-    contractId: string
-    cumulativeEarnings: number
-}
-
-export type TAsset = {
-    createdAt: string
-    type: string
-    symbol: string
-    assetId: string
-    ownerId: string
-    portfolioId?: string
-    displayName: string
-
-    contractId: string
-    contractDisplayName: string
-
-    earnerId?: string
-    earnerDisplayName?: string
-
-    tags?: any
-    xids?: any
-
-    cumulativeEarnings: number
-
-    initialPrice?: number
-    bid?: number
-    ask?: number
-    last?: number
-}
-
-export type TAssetUpdate = {
-    bid?: number
-    ask?: number
-    last?: number
-    cumulativeEarnings?: number
-}
-
-export type TAssetHolder = {
-    assetId: string
-    portfolioId: string
-    units: number
-}
-
-export type TAssetHolderPatch = {
-    units?: number
-}
+import { serialize, serializeCollection } from './serializer'
+import { validate } from './validator'
 
 // Asset holds value (coin) and shares to be sold.
 export class Asset {
@@ -190,11 +122,19 @@ export class Asset {
         }
     }
 
-    static serialize(req: any, data: any) {
-        return serialize(req, data)
+    // static serialize(req: any, data: any) {
+    //     return serialize(req, data)
+    // }
+
+    // static serializeCollection(req: any, data: any) {
+    //     return serializeCollection(req, data)
+    // }
+
+    static serialize(selfUrl: string, baseUrl: string, data: any) {
+        return serialize(selfUrl, baseUrl, data)
     }
 
-    static serializeCollection(req: any, data: any) {
-        return serializeCollection(req, data)
+    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any, rowcount: number) {
+        return serializeCollection(selfUrl, baseUrl, qs, data, rowcount)
     }
 }
