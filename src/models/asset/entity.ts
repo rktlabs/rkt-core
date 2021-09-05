@@ -13,16 +13,16 @@ export class Asset {
     ownerId: string
     portfolioId?: string
     displayName: string
-    contractId: string
-    contractDisplayName: string
+    leagueId: string
+    leagueDisplayName: string
 
-    earnerId?: string
-    earnerDisplayName?: string
+    // earnerId?: string
+    // earnerDisplayName?: string
 
     tags?: any
-    xids?: any
+    // xids?: any
 
-    cumulativeEarnings: number
+    // cumulativeEarnings: number
 
     initialPrice?: number
     bid?: number
@@ -38,16 +38,16 @@ export class Asset {
         this.portfolioId = props.portfolioId
         this.displayName = props.displayName
 
-        this.contractId = props.contractId
-        this.contractDisplayName = props.contractDisplayName
+        this.leagueId = props.leagueId
+        this.leagueDisplayName = props.leagueDisplayName
 
-        this.earnerId = props.earnerId
-        this.earnerDisplayName = props.earnerDisplayName
+        // this.earnerId = props.earnerId
+        // this.earnerDisplayName = props.earnerDisplayName
 
-        this.xids = props.xids
+        // this.xids = props.xids
         this.tags = props.tags
 
-        this.cumulativeEarnings = props.cumulativeEarnings
+        // this.cumulativeEarnings = props.cumulativeEarnings
 
         this.initialPrice = props.initialPrice
         this.bid = props.bid
@@ -78,20 +78,20 @@ export class Asset {
             ownerId: props.ownerId,
             type: type,
             symbol: props.symbol,
-            contractId: props.contractId,
-            contractDisplayName: props.contractDisplayName || props.contractId,
-            earnerId: props.earnerId,
-            earnerDisplayName: props.earnerDisplayName || props.earnerId,
-            cumulativeEarnings: 0,
+            leagueId: props.leagueId,
+            leagueDisplayName: props.leagueDisplayName || props.leagueId,
+            // earnerId: props.earnerId,
+            // earnerDisplayName: props.earnerDisplayName || props.earnerId,
+            // cumulativeEarnings: 0,
         }
 
         if (props.tags) {
             assetProps.tags = Object.assign({}, props.tags)
         }
 
-        if (props.xids) {
-            assetProps.xids = Object.assign({}, props.xids)
-        }
+        // if (props.xids) {
+        //     assetProps.xids = Object.assign({}, props.xids)
+        // }
 
         if (props.initialPrice) {
             assetProps.initialPrice = props.initialPrice
@@ -134,7 +134,7 @@ export class Asset {
         return serialize(selfUrl, baseUrl, data)
     }
 
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any, rowcount: number) {
-        return serializeCollection(selfUrl, baseUrl, qs, data, rowcount)
+    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
+        return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 }

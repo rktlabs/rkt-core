@@ -2,11 +2,11 @@
 const log4js = require( 'log4js' )
 
 const firebase = require( 'firebase-admin')
+
 if (firebase.apps.length === 0) {
-  const serviceAccount = require('./permissions.json');
   firebase.initializeApp({
-    credential: firebase.credential.cert(serviceAccount),
-    databaseURL: "https://fantx-test.firebaseio.com"
+      credential: firebase.credential.applicationDefault(),
+      databaseURL: 'https://rkt-sandbox-314020.firebaseio.com',
   });
 }
 

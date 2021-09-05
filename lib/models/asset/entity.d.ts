@@ -7,13 +7,9 @@ export declare class Asset {
     ownerId: string;
     portfolioId?: string;
     displayName: string;
-    contractId: string;
-    contractDisplayName: string;
-    earnerId?: string;
-    earnerDisplayName?: string;
+    leagueId: string;
+    leagueDisplayName: string;
     tags?: any;
-    xids?: any;
-    cumulativeEarnings: number;
     initialPrice?: number;
     bid?: number;
     ask?: number;
@@ -23,5 +19,5 @@ export declare class Asset {
     static newAsset(props: TNewAsset): Asset;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any, rowcount: number): any;
+    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
 }

@@ -12,8 +12,7 @@ describe('Asset', () => {
             const data: TNewAsset = {
                 symbol: assetId,
                 ownerId: 'tester',
-                contractId: 'theContractId',
-                earnerId: 'theEarnerId',
+                leagueId: 'theLeagueId',
             }
 
             const asset = Asset.newAsset(data)
@@ -24,8 +23,7 @@ describe('Asset', () => {
             const data: TNewAsset = {
                 symbol: assetId,
                 ownerId: 'tester',
-                contractId: 'theContractId',
-                earnerId: 'theEarnerId',
+                leagueId: 'theLeagueId',
             }
 
             const asset = Asset.newAsset(data)
@@ -33,16 +31,15 @@ describe('Asset', () => {
             expect(asset.portfolioId).to.not.exist
         })
 
-        it('no contractDisplayName should default to contrctId', async () => {
+        it('no leagueDisplayName should default to contrctId', async () => {
             const data: TNewAsset = {
                 symbol: assetId,
                 ownerId: 'tester',
-                contractId: 'theContractId',
-                earnerId: 'theEarnerId',
+                leagueId: 'theLeagueId',
             }
 
             const asset = Asset.newAsset(data)
-            expect(asset.contractDisplayName).to.eq('theContractId')
+            expect(asset.leagueDisplayName).to.eq('theLeagueId')
         })
 
         it('use displayName if supplied', async () => {
@@ -52,27 +49,25 @@ describe('Asset', () => {
                 symbol: assetId,
                 ownerId: 'tester',
                 displayName: 'thisisme',
-                contractId: 'theContractId',
-                earnerId: 'theEarnerId',
+                leagueId: 'theLeagueId',
             }
 
             const asset = Asset.newAsset(data)
             expect(asset.displayName).to.eq(displayName)
         })
 
-        it('use contractDisplayName if supplied', async () => {
+        it('use leagueDisplayName if supplied', async () => {
             const displayName = 'thisisme'
 
             const data: TNewAsset = {
                 symbol: assetId,
                 ownerId: 'tester',
-                contractId: 'theContractId',
-                contractDisplayName: 'theContractDisplayName',
-                earnerId: 'theEarnerId',
+                leagueId: 'theLeagueId',
+                leagueDisplayName: 'theLeagueDisplayName',
             }
 
             const asset = Asset.newAsset(data)
-            expect(asset.contractDisplayName).to.eq('theContractDisplayName')
+            expect(asset.leagueDisplayName).to.eq('theLeagueDisplayName')
         })
     })
 })

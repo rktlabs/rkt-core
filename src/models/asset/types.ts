@@ -3,26 +3,26 @@ export type TNewAsset = {
     symbol: string
     displayName?: string
 
-    contractId: string
-    contractDisplayName?: string
+    leagueId: string
+    leagueDisplayName?: string
 
-    earnerId?: string
-    earnerDisplayName?: string
+    // earnerId?: string
+    // earnerDisplayName?: string
 
     tags?: any
-    xids?: any
+    // xids?: any
 
     initialPrice?: number
 }
 
-export type TAssetCache = {
-    assetId: string
-    symbol: string
-    type: string
-    portfolioId?: string
-    contractId: string
-    cumulativeEarnings: number
-}
+// export type TAssetCache = {
+//     assetId: string
+//     symbol: string
+//     type: string
+//     portfolioId?: string
+//     leagueId: string
+//     // cumulativeEarnings: number
+// }
 
 export type TAsset = {
     createdAt: string
@@ -33,16 +33,16 @@ export type TAsset = {
     portfolioId?: string
     displayName: string
 
-    contractId: string
-    contractDisplayName: string
+    leagueId: string
+    leagueDisplayName: string
 
-    earnerId?: string
-    earnerDisplayName?: string
+    // earnerId?: string
+    // earnerDisplayName?: string
 
     tags?: any
-    xids?: any
+    // xids?: any
 
-    cumulativeEarnings: number
+    // cumulativeEarnings: number
 
     initialPrice?: number
     bid?: number
@@ -54,15 +54,5 @@ export type TAssetUpdate = {
     bid?: number
     ask?: number
     last?: number
-    cumulativeEarnings?: number
-}
-
-export type TAssetHolder = {
-    assetId: string
-    portfolioId: string
-    units: number
-}
-
-export type TAssetHolderPatch = {
-    units?: number
+    // cumulativeEarnings?: number
 }

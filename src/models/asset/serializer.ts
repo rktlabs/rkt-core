@@ -13,31 +13,31 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
             'symbol',
             'ownerId',
             'displayName',
-            'initialPrice',
+            // 'initialPrice',
             'bid',
             'ask',
             'last',
-            'cumulativeEarnings',
+            // 'cumulativeEarnings',
         ],
         links: (record: any) => {
             return {
                 self: { href: `${selfUrl}`, rel: 'asset' },
                 earnings: { href: `${baseUrl}/assets/${record.assetId}/earnings`, rel: 'collection:earning' },
-            }
-        },
-        associations: function (data: any) {
-            return {
-                earner: {
-                    href: `${baseUrl}/earners/${data.earnerId}`,
-                    rel: 'earner',
-                    id: data.earnerId,
-                    title: data.earnerDisplayName,
-                },
-                contract: {
-                    href: `${baseUrl}/contracts/${data.contractId}`,
-                    rel: 'contract',
-                    id: data.contractId,
-                    title: data.contractDisplayName,
+                //     }
+                // },
+                // associations: function (data: any) {
+                //     return {
+                // earner: {
+                //     href: `${baseUrl}/earners/${data.earnerId}`,
+                //     rel: 'earner',
+                //     id: data.earnerId,
+                //     title: data.earnerDisplayName,
+                // },
+                league: {
+                    href: `${baseUrl}/leagues/${data.leagueId}`,
+                    rel: 'league',
+                    id: data.leagueId,
+                    title: data.leagueDisplayName,
                 },
                 maker: {
                     href: `${baseUrl}/makers/${data.assetId}`,
@@ -58,7 +58,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
 }
 
 //export const serializeCollection = (req: any, data: any) => {
-export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, data: any, rowcount: number) => {
+export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, data: any /* , rowcount: number */) => {
     // const baseUrl = req.fantUrls.baseUrl
     // const selfUrl = req.fantUrls.selfUrl
 
@@ -74,7 +74,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
     delete filter.page // ignore "page" querystring parm
     delete filter.pageSize // ignore "page" querystring parm
-    const pages = Math.floor((rowcount - 1) / pageSize) + 1
+    //const pages = Math.floor((rowcount - 1) / pageSize) + 1
 
     const newFilter = []
     for (const v in filter) {
@@ -106,17 +106,17 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
                 href: `${baseUrl}/assets?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
-        if (page <= pages) {
-            collectionLinks.last = {
-                href: `${baseUrl}/assets?${linkQS}page=${pages}`,
-            }
-        }
+        // if (page <= pages) {
+        //     collectionLinks.last = {
+        //         href: `${baseUrl}/assets?${linkQS}page=${pages}`,
+        //     }
+        // }
     }
 
     const serializer = new HALSerializer()
 
     serializer.register('assets', {
-        whitelist: ['type', 'assetId', 'symbol', 'displayName', 'bid', 'ask', 'last', 'cumulativeEarnings'],
+        whitelist: ['type', 'assetId', 'symbol', 'displayName', 'bid', 'ask', 'last'],
         links: (record: any) => {
             return {
                 self: { href: `${baseUrl}/assets/${record.assetId}`, rel: 'asset' },
@@ -128,8 +128,8 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
                 page: extraOptions.page,
                 pageSize: extraOptions.pageSize,
                 count: extraOptions.count,
-                pages: extraOptions.pages,
-                total: extraOptions.total,
+                // pages: extraOptions.pages,
+                // total: extraOptions.total,
             }
         },
     })
@@ -138,8 +138,8 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         page,
         pageSize,
         count: displayCount,
-        pages: pages,
-        total: rowcount,
+        // pages: pages,
+        // total: rowcount,
     })
     return serialized
 }

@@ -1,15 +1,20 @@
 'use strict'
-import { TPortfolio, TPortfolioCache, TPortfolioPatch } from '..'
+import { TPortfolio, TPortfolioPatch as TPortfolioUpdate } from '..'
 import { deleteDocument } from '../util/deleters'
-import { IRepository } from './IRepository'
+import { getConnectionProps } from './getConnectionProps'
+import { RepositoryBase } from './repositoryBase'
 
 const COLLECTION_NAME = 'portfolios'
-const CACHE_NAME = 'portfolioCache'
 
-export class PortfolioRepository implements IRepository {
+export class PortfolioRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore
-    constructor(db: FirebaseFirestore.Firestore) {
-        this.db = db
+    constructor() {
+        super()
+        this.db = getConnectionProps()
+    }
+
+    filterMap: any = {
+        type: 'type',
     }
 
     async listPortfolios(qs?: any) {
@@ -17,25 +22,17 @@ export class PortfolioRepository implements IRepository {
         const page = filter.page ? parseInt(filter.page, 10) : 1
         const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
         const start = (page - 1) * pageSize
-        delete filter.page // ignore "page" querystring parm
-        delete filter.pageSize // ignore "page" querystring parm
 
-        let entityCollectionRef: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
+        let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
-        if (filter) {
-            for (const filterParm in filter) {
-                if (Array.isArray(filter[filterParm])) {
-                    const filterValues = filter[filterParm]
-                    entityCollectionRef = entityCollectionRef.where(filterParm, 'in', filterValues)
-                } else {
-                    const filterValue = filter[filterParm]
-                    entityCollectionRef = entityCollectionRef.where(filterParm, '==', filterValue)
-                }
-            }
-        }
 
-        const entityRefCollection = await entityCollectionRef.orderBy('portfolioId').offset(start).limit(pageSize).get()
-        const entityList = entityRefCollection.docs.map((entityDoc) => {
+        entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
+        const entityCollectionRefs = await entityRefCollection
+            .orderBy('portfolioId')
+            .offset(start)
+            .limit(pageSize)
+            .get()
+        const entityList = entityCollectionRefs.docs.map((entityDoc) => {
             const entity = entityDoc.data() as TPortfolio
             return entity
         })
@@ -58,16 +55,9 @@ export class PortfolioRepository implements IRepository {
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.set(entityData)
-
-        // cache portfolio
-        const cacheRecord: TPortfolioCache = {
-            portfolioId: entity.portfolioId,
-        }
-        const cacheRef = this.db.collection(CACHE_NAME).doc(entityId)
-        await cacheRef.set(cacheRecord)
     }
 
-    async updatePortfolio(entityId: string, entityData: TPortfolioPatch) {
+    async updatePortfolio(entityId: string, entityData: TPortfolioUpdate) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.update(entityData)
     }
@@ -75,9 +65,5 @@ export class PortfolioRepository implements IRepository {
     async deletePortfolio(entityId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await deleteDocument(entityRef)
-
-        // delete cache
-        const cacheRef = this.db.collection(CACHE_NAME).doc(entityId)
-        await deleteDocument(cacheRef)
     }
 }

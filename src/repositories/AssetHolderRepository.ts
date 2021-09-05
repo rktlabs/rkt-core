@@ -1,16 +1,18 @@
 'use strict'
-import { IRepository } from './IRepository'
 
 import { deleteDocument } from '../util/deleters'
-import { TAssetHolder } from '..'
+import { TAssetHolder } from '../models/assetHolder'
+import { getConnectionProps } from './getConnectionProps'
+import { RepositoryBase } from './repositoryBase'
 
 const COLLECTION_NAME = 'assets'
 const SUB_COLLECTION_NAME = 'holders'
 
-export class AssetHolderRepository implements IRepository {
+export class AssetHolderRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore
-    constructor(db: FirebaseFirestore.Firestore) {
-        this.db = db
+    constructor() {
+        super()
+        this.db = getConnectionProps()
     }
 
     async storeAssetHolder(assetId: string, portfolioId: string, entity: TAssetHolder) {
@@ -22,6 +24,8 @@ export class AssetHolderRepository implements IRepository {
             .doc(portfolioId)
         await entityRef.set(entityData)
     }
+
+    // TODO: updateAssetHolder??? - need to update units for asset holder quantity
 
     async listAssetHolders(assetId: string) {
         let entityRefCollection = this.db.collection(COLLECTION_NAME).doc(assetId).collection(SUB_COLLECTION_NAME)
