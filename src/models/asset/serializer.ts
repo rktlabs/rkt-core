@@ -1,48 +1,46 @@
 import { HALSerializer } from 'hal-serializer'
 
 export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
-    //const baseUrl = req.fantUrls.baseUrl
-
     const serializer = new HALSerializer()
 
     serializer.register('asset', {
         whitelist: [
+            'contractId',
+
             'createdAt',
             'type',
             'assetId',
             'symbol',
             'ownerId',
             'displayName',
-            // 'initialPrice',
+
             'bid',
             'ask',
             'last',
-            // 'cumulativeEarnings',
         ],
-        links: (record: any) => {
+        links: () => {
             return {
                 self: { href: `${selfUrl}`, rel: 'asset' },
-                earnings: { href: `${baseUrl}/assets/${record.assetId}/earnings`, rel: 'collection:earning' },
-                //     }
+                // earnings: {
+                //     href: `${baseUrl}/assets/${record.assetId}/earnings`,
+                //     rel: 'collection:earning'
                 // },
-                // associations: function (data: any) {
-                //     return {
                 // earner: {
                 //     href: `${baseUrl}/earners/${data.earnerId}`,
                 //     rel: 'earner',
                 //     id: data.earnerId,
                 //     title: data.earnerDisplayName,
                 // },
+                // maker: {
+                //     href: `${baseUrl}/makers/${data.assetId}`,
+                //     rel: 'maker',
+                //     id: data.assetId,
+                // },
                 league: {
                     href: `${baseUrl}/leagues/${data.leagueId}`,
                     rel: 'league',
                     id: data.leagueId,
                     title: data.leagueDisplayName,
-                },
-                maker: {
-                    href: `${baseUrl}/makers/${data.assetId}`,
-                    rel: 'maker',
-                    id: data.assetId,
                 },
                 portfolio: {
                     href: `${baseUrl}/portfolios/${data.portfolioId}`,
@@ -57,18 +55,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     return serialized
 }
 
-//export const serializeCollection = (req: any, data: any) => {
 export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, data: any /* , rowcount: number */) => {
-    // const baseUrl = req.fantUrls.baseUrl
-    // const selfUrl = req.fantUrls.selfUrl
-
-    // const rowcount = data.length
-    // let page = parseInt(req.query.page || '1', 10)
-    // if (page <= 1) {
-    //     page = 1
-    // }
-    // const pageSize = Math.min(parseInt(req.query.pageSize || '25', 10), 1000)
-
     const filter = Object.assign({}, qs)
     const page = filter.page ? parseInt(filter.page, 10) : 1
     const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
