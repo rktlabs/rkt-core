@@ -3,7 +3,7 @@ import { deleteDocument } from '../util/deleters'
 
 import { getConnectionProps } from './getConnectionProps'
 import { RepositoryBase } from './repositoryBase'
-import { TAsset, TAssetUpdate } from '..'
+import { TAsset, TAssetUpdate } from '../models/asset'
 
 const COLLECTION_NAME = 'assets'
 
@@ -20,7 +20,7 @@ export class AssetRepository extends RepositoryBase {
         type: 'type',
     }
 
-    async listAssets(qs?: any) {
+    async getListAsync(qs?: any) {
         const filter = Object.assign({}, qs)
         const page = filter.page ? parseInt(filter.page, 10) : 1
         const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
@@ -43,7 +43,7 @@ export class AssetRepository extends RepositoryBase {
         }
     }
 
-    async getAsset(assetId: string) {
+    async getDetailAsync(assetId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         const entityDoc = await entityRef.get()
 
@@ -55,33 +55,36 @@ export class AssetRepository extends RepositoryBase {
         }
     }
 
-    async storeAsset(entity: TAsset) {
+    async storeAssetAsync(entity: TAsset) {
         const entityId = entity.assetId
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.set(entityData)
     }
 
-    async updateAsset(assetId: string, entityData: TAssetUpdate) {
+    async updateAssetAsync(assetId: string, entityData: TAssetUpdate) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await entityRef.update(entityData)
     }
 
-    async deleteAsset(assetId: string) {
+    async deleteAssetAsync(assetId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await deleteDocument(entityRef)
     }
 
-    // async listLeagueAssets(leagueId: string) {
-    //     let entityRefCollection = this.db.collection(COLLECTION_NAME).where('leagueId', '==', leagueId)
-    //     const entityCollectionRefs = await entityRefCollection.get()
-    //     if (!entityCollectionRefs.empty) {
-    //         const assetIdList = entityCollectionRefs.docs.map((entityDoc) => {
-    //             return entityDoc.id
-    //         })
-    //         return assetIdList
-    //     } else {
-    //         return []
-    //     }
-    // }
+    async getLeagueAssetsAsync(leagueId: string) {
+        // TODO: renaem contractId to leagueId
+        //let entityRefCollection = this.db.collection(COLLECTION_NAME).where('leagueId', '==', leagueId)
+        let entityRefCollection = this.db.collection(COLLECTION_NAME).where('contractId', '==', leagueId)
+        const entityCollectionRefs = await entityRefCollection.get()
+        if (!entityCollectionRefs.empty) {
+            const assetList = entityCollectionRefs.docs.map((entityDoc) => {
+                const entity = entityDoc.data() as TAsset
+                return { id: entity.assetId, displayName: entity.displayName }
+            })
+            return assetList
+        } else {
+            return []
+        }
+    }
 }

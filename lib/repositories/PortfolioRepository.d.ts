@@ -4,9 +4,9 @@ export declare class PortfolioRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;
     constructor();
     filterMap: any;
-    listPortfolios(qs?: any): Promise<TPortfolio[]>;
-    getPortfolio(entityId: string): Promise<TPortfolio | null>;
-    storePortfolio(entity: TPortfolio): Promise<void>;
-    updatePortfolio(entityId: string, entityData: TPortfolioUpdate): Promise<void>;
-    deletePortfolio(entityId: string): Promise<void>;
+    getListAsync(qs?: any): Promise<TPortfolio[]>;
+    getDetailAsync(entityId: string): Promise<TPortfolio | null>;
+    storePortfolioAsync(entity: TPortfolio): Promise<void>;
+    updatePortfolioAsync(entityId: string, entityData: TPortfolioUpdate): Promise<void>;
+    deletePortfolioAsync(entityId: string): Promise<void>;
 }

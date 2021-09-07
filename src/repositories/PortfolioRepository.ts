@@ -17,7 +17,7 @@ export class PortfolioRepository extends RepositoryBase {
         type: 'type',
     }
 
-    async listPortfolios(qs?: any) {
+    async getListAsync(qs?: any) {
         const filter = Object.assign({}, qs)
         const page = filter.page ? parseInt(filter.page, 10) : 1
         const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
@@ -39,7 +39,7 @@ export class PortfolioRepository extends RepositoryBase {
         return entityList
     }
 
-    async getPortfolio(entityId: string) {
+    async getDetailAsync(entityId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         const entityDoc = await entityRef.get()
         if (!entityDoc.exists) {
@@ -50,19 +50,19 @@ export class PortfolioRepository extends RepositoryBase {
         return entity
     }
 
-    async storePortfolio(entity: TPortfolio) {
+    async storePortfolioAsync(entity: TPortfolio) {
         const entityId = entity.portfolioId
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.set(entityData)
     }
 
-    async updatePortfolio(entityId: string, entityData: TPortfolioUpdate) {
+    async updatePortfolioAsync(entityId: string, entityData: TPortfolioUpdate) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.update(entityData)
     }
 
-    async deletePortfolio(entityId: string) {
+    async deletePortfolioAsync(entityId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await deleteDocument(entityRef)
     }

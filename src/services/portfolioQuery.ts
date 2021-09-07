@@ -9,12 +9,12 @@ export class PortfolioQuery {
 
     async getListAsync(qs?: any) {
         return {
-            data: await this.portfolioRepository.listPortfolios(qs),
+            data: await this.portfolioRepository.getListAsync(qs),
         }
     }
 
     async getDetailAsync(id: string) {
-        const portfolioDetail = await this.portfolioRepository.getPortfolio(id)
+        const portfolioDetail = await this.portfolioRepository.getDetailAsync(id)
         return portfolioDetail
     }
 }

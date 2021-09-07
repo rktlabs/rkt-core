@@ -9,12 +9,12 @@ export class AssetQuery {
 
     async getListAsync(qs?: any) {
         return {
-            data: await this.assetRepository.listAssets(qs),
+            data: await this.assetRepository.getListAsync(qs),
         }
     }
 
     async getDetailAsync(id: string) {
-        const assetDetail = await this.assetRepository.getAsset(id)
+        const assetDetail = await this.assetRepository.getDetailAsync(id)
         return assetDetail
     }
 }
