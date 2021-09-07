@@ -4,7 +4,6 @@ export declare class AssetQuery {
     constructor();
     getListAsync(qs?: any): Promise<{
         data: import("..").TAsset[];
-        rowcount: number;
     }>;
     getDetailAsync(id: string): Promise<import("..").TAsset | null>;
 }

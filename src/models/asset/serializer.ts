@@ -4,20 +4,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('asset', {
-        whitelist: [
-            'contractId',
-
-            'createdAt',
-            'type',
-            'assetId',
-            'symbol',
-            'ownerId',
-            'displayName',
-
-            'bid',
-            'ask',
-            'last',
-        ],
+        whitelist: ['createdAt', 'type', 'assetId', 'symbol', 'ownerId', 'displayName', 'bid', 'ask', 'last'],
         links: () => {
             return {
                 self: { href: `${selfUrl}`, rel: 'asset' },
@@ -37,7 +24,8 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                 //     id: data.assetId,
                 // },
                 league: {
-                    href: `${baseUrl}/leagues/${data.leagueId}`,
+                    //href: `${baseUrl}/leagues/${data.leagueId}`, // TODO: change to leagueId
+                    href: `${baseUrl}/leagues/${data.contractId}`,
                     rel: 'league',
                     id: data.leagueId,
                     title: data.leagueDisplayName,
