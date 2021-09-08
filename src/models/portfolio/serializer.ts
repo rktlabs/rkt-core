@@ -1,8 +1,6 @@
 import { HALSerializer } from 'hal-serializer'
 
 export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
-    // const baseUrl = req.fantUrls.baseUrl
-
     const serializer = new HALSerializer()
 
     serializer.register('portfolio', {
@@ -10,20 +8,11 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         links: (record: any) => {
             return {
                 self: { href: `${selfUrl}`, rel: 'portfolio' },
-                holdings: { href: `${baseUrl}/${record.portfolioId}/holdings`, rel: 'holdings' },
-                activity: { href: `${baseUrl}/${record.portfolioId}/activity`, rel: 'activity' },
+                holdings: { href: `${baseUrl}/portfolios/${record.portfolioId}/holdings`, rel: 'holdings' },
+                activity: { href: `${baseUrl}/portfolios/${record.portfolioId}/activity`, rel: 'activity' },
                 // orders: { href: `${baseUrl}/${record.portfolioId}/orders`, rel: 'orders' },
             }
         },
-        // associations: function (data: any) {
-        //     return {
-        //         portfolio: {  // TODO: What is this?????
-        //             href: `${baseUrl}/portfolios/${data.portfolioId}`,
-        //             rel: 'portfolio',
-        //             id: data.portfolioId,
-        //         },
-        //     }
-        // },
     })
 
     const serialized = serializer.serialize('portfolio', data)

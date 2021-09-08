@@ -1,9 +1,6 @@
 import { HALSerializer } from 'hal-serializer'
 
 export const serialize = (selfUrl: string, portfolioId: string, baseUrl: string, data: any) => {
-    // const proto = req.fantUrls.proto
-    // const host = req.fantUrls.host
-
     const serializer = new HALSerializer()
 
     serializer.register('portfolioAsset', {
@@ -48,7 +45,7 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
 
     if (page > 1 || hasMore) {
         collectionLinks.first = {
-            href: `${baseUrl}/portfolios/${portfolioId}/holdings?${linkQS}page=1&pageSize=${pageSize}`, // TODO: Fix - not rigtht link - need portfolio
+            href: `${baseUrl}/portfolios/${portfolioId}/holdings?${linkQS}page=1&pageSize=${pageSize}`,
         }
         if (page > 1) {
             collectionLinks.prev = {
@@ -69,7 +66,7 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/portfolios/${portfolioId}/holdings/${record.assetId}`,
+                    href: `${baseUrl}/holdings/${record.assetId}`,
                     rel: 'asset',
                 },
             }

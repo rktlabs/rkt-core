@@ -55,7 +55,7 @@ export class AssetRepository extends RepositoryBase {
         }
     }
 
-    async storeAssetAsync(entity: TAsset) {
+    async storeAsync(entity: TAsset) {
         const entityId = entity.assetId
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)

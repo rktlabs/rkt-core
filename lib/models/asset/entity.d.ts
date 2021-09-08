@@ -10,6 +10,7 @@ export declare class Asset {
     leagueId: string;
     leagueDisplayName: string;
     tags?: any;
+    xids?: any;
     initialPrice?: number;
     bid?: number;
     ask?: number;

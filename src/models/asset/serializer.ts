@@ -7,17 +7,6 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         whitelist: ['createdAt', 'type', 'assetId', 'symbol', 'ownerId', 'displayName', 'bid', 'ask', 'last'],
         links: () => {
             return {
-                self: { href: `${selfUrl}`, rel: 'asset' },
-                // earnings: {
-                //     href: `${baseUrl}/assets/${record.assetId}/earnings`,
-                //     rel: 'collection:earning'
-                // },
-                // earner: {
-                //     href: `${baseUrl}/earners/${data.earnerId}`,
-                //     rel: 'earner',
-                //     id: data.earnerId,
-                //     title: data.earnerDisplayName,
-                // },
                 // maker: {
                 //     href: `${baseUrl}/makers/${data.assetId}`,
                 //     rel: 'maker',

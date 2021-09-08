@@ -68,7 +68,6 @@ export class Transaction {
         try {
             return validate(jsonPayload)
         } catch (error) {
-            // ValdationError
             throw new ValidationError(error)
         }
     }
@@ -77,7 +76,6 @@ export class Transaction {
         try {
             return validateTransfer(jsonPayload)
         } catch (error) {
-            // ValdationError
             throw new ValidationError(error)
         }
     }

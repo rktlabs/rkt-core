@@ -93,7 +93,6 @@ export class League {
         try {
             return validate(jsonPayload)
         } catch (error) {
-            // ValdationError
             throw new ValidationError(error)
         }
     }

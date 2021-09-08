@@ -16,7 +16,7 @@ describe('Asset Repository', () => {
 
     afterEach(async () => {
         // clean out records.
-        await assetRepository.deleteAsset(testAssetId)
+        await assetRepository.deleteAsync(testAssetId)
     })
 
     describe('Create Basic Asset', () => {
@@ -30,9 +30,9 @@ describe('Asset Repository', () => {
             }
 
             const asset = Asset.newAsset(data)
-            await assetRepository.storeAsset(asset)
+            await assetRepository.storeAsync(asset)
 
-            const readBack = await assetRepository.getAsset(testAssetId)
+            const readBack = await assetRepository.getDetailAsync(testAssetId)
             expect(readBack).to.exist
 
             if (readBack) {

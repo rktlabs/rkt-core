@@ -1,9 +1,6 @@
 import { serializeCollection } from './serialize'
 
 export class PortfolioActivity {
-    // TODO: This is actually a stored object with several properties
-    // so expand it here for completeness
-
     // static serialize(req: any, data: any) {
     //     return serialize(req, data)
     // }

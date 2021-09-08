@@ -16,13 +16,8 @@ export class Asset {
     leagueId: string
     leagueDisplayName: string
 
-    // earnerId?: string
-    // earnerDisplayName?: string
-
     tags?: any
-    // xids?: any
-
-    // cumulativeEarnings: number
+    xids?: any
 
     initialPrice?: number
     bid?: number
@@ -41,13 +36,8 @@ export class Asset {
         this.leagueId = props.leagueId
         this.leagueDisplayName = props.leagueDisplayName
 
-        // this.earnerId = props.earnerId
-        // this.earnerDisplayName = props.earnerDisplayName
-
-        // this.xids = props.xids
+        this.xids = props.xids
         this.tags = props.tags
-
-        // this.cumulativeEarnings = props.cumulativeEarnings
 
         this.initialPrice = props.initialPrice
         this.bid = props.bid
@@ -59,7 +49,6 @@ export class Asset {
         return `[asset: ${this.assetId}]`
     }
 
-    // Member Properties for new model
     static newAsset(props: TNewAsset) {
         const symbolParts = props.symbol.split(':')
         if (symbolParts.length < 2 || symbolParts[1] !== '') {
@@ -80,18 +69,15 @@ export class Asset {
             symbol: props.symbol,
             leagueId: props.leagueId,
             leagueDisplayName: props.leagueDisplayName || props.leagueId,
-            // earnerId: props.earnerId,
-            // earnerDisplayName: props.earnerDisplayName || props.earnerId,
-            // cumulativeEarnings: 0,
         }
 
         if (props.tags) {
             assetProps.tags = Object.assign({}, props.tags)
         }
 
-        // if (props.xids) {
-        //     assetProps.xids = Object.assign({}, props.xids)
-        // }
+        if (props.xids) {
+            assetProps.xids = Object.assign({}, props.xids)
+        }
 
         if (props.initialPrice) {
             assetProps.initialPrice = props.initialPrice
@@ -117,7 +103,6 @@ export class Asset {
         try {
             return validate(jsonPayload)
         } catch (error) {
-            // ValdationError
             throw new ValidationError(error)
         }
     }

@@ -46,7 +46,7 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/portfolios/${portfolioId}/transactions/${record.transactionId}`,
+                    href: `${baseUrl}/transactions/${record.transactionId}`,
                     rel: 'transaction',
                 },
             }

@@ -28,7 +28,6 @@ export class Portfolio {
         this.deposits = props.deposits
     }
 
-    // Member Properties for new model
     static newPortfolio(props: TNewPortfolio) {
         // can supply portfolioId or type. If supply portfolioId, it must embed type
         let type: string
@@ -78,7 +77,6 @@ export class Portfolio {
         try {
             return validate(jsonPayload)
         } catch (error) {
-            // ValdationError
             throw new ValidationError(error)
         }
     }
