@@ -1,28 +1,5 @@
 import { HALSerializer } from 'hal-serializer'
 
-export const serialize = (selfUrl: string, portfolioId: string, baseUrl: string, data: any) => {
-    // const proto = req.fantUrls.proto
-    // const host = req.fantUrls.host
-
-    const serializer = new HALSerializer()
-
-    serializer.register('portfolioAsset', {
-        whitelist: ['assetId', 'displayName', 'units', 'cost', 'net'],
-        links: (record: any) => {
-            return {
-                self: {
-                    href: `${baseUrl}/portfolios/${portfolioId}/assets/${record.assetId}`,
-                    rel: 'portfolioAsset',
-                },
-                asset: { href: `${baseUrl}/assets/${record.assetId}`, rel: 'asset' },
-            }
-        },
-    })
-
-    const serialized = serializer.serialize('portfolioAsset', data)
-    return serialized
-}
-
 export const serializeCollection = (selfUrl: string, portfolioId: string, baseUrl: string, qs: any, data: any) => {
     const filter = Object.assign({}, qs)
     const page = filter.page ? parseInt(filter.page, 10) : 1
@@ -48,29 +25,29 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
 
     if (page > 1 || hasMore) {
         collectionLinks.first = {
-            href: `${baseUrl}/portfolios/${portfolioId}/holdings?${linkQS}page=1&pageSize=${pageSize}`, // TODO: Fix - not rigtht link - need portfolio
+            href: `${baseUrl}/portfolios/${portfolioId}/activity?${linkQS}page=1&pageSize=${pageSize}`,
         }
         if (page > 1) {
             collectionLinks.prev = {
-                href: `${baseUrl}/portfolios/${portfolioId}/holdings?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/portfolios/${portfolioId}/activity?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
             }
         }
         if (hasMore) {
             collectionLinks.next = {
-                href: `${baseUrl}/portfolios/${portfolioId}/holdings?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/portfolios/${portfolioId}/activity?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
     }
 
     const serializer = new HALSerializer()
 
-    serializer.register('holdings', {
-        whitelist: ['assetId', 'displayName', 'units'],
+    serializer.register('activity', {
+        whitelist: ['transactionId', 'inputs', 'outputs'],
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/portfolios/${portfolioId}/holdings/${record.assetId}`,
-                    rel: 'asset',
+                    href: `${baseUrl}/portfolios/${portfolioId}/transactions/${record.transactionId}`,
+                    rel: 'transaction',
                 },
             }
         },
@@ -84,7 +61,7 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
         },
     })
 
-    const serialized = serializer.serialize('holdings', data, {
+    const serialized = serializer.serialize('activity', data, {
         page,
         pageSize,
         count: displayCount,

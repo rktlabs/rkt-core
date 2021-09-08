@@ -10,7 +10,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         links: (record: any) => {
             return {
                 self: { href: `${selfUrl}`, rel: 'portfolio' },
-                assets: { href: `${baseUrl}/portfolios/${record.portfolioId}/assets`, rel: 'assets' },
+                holdings: { href: `${baseUrl}/portfolios/${record.portfolioId}/holdings`, rel: 'holdings' },
                 activity: { href: `${baseUrl}/portfolios/${record.portfolioId}/activity`, rel: 'activity' },
                 orders: { href: `${baseUrl}/portfolios/${record.portfolioId}/orders`, rel: 'orders' },
             }

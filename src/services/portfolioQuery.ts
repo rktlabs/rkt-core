@@ -17,4 +17,16 @@ export class PortfolioQuery {
         const portfolioDetail = await this.portfolioRepository.getDetailAsync(id)
         return portfolioDetail
     }
+
+    async getPortfolioHoldingsAsync(qs?: any) {
+        return {
+            data: await this.portfolioRepository.getListAsync(qs),
+        }
+    }
+
+    async getPortfolioActivityAsync(qs?: any) {
+        return {
+            data: await this.portfolioRepository.getListAsync(qs),
+        }
+    }
 }

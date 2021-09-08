@@ -1,4 +1,4 @@
-import { TPortfolio, TPortfolioPatch as TPortfolioUpdate } from '..';
+import { TPortfolio, TPortfolioUpdate as TPortfolioUpdate } from '..';
 import { RepositoryBase } from './repositoryBase';
 export declare class PortfolioRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;

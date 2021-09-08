@@ -1,5 +1,5 @@
 'use strict'
-import { TPortfolioAsset } from '..'
+import { TPortfolioHolding } from '..'
 import { deleteDocument } from '../util/deleters'
 import { getConnectionProps } from './getConnectionProps'
 import { RepositoryBase } from './repositoryBase'
@@ -7,25 +7,25 @@ import { RepositoryBase } from './repositoryBase'
 const COLLECTION_NAME = 'portfolios'
 const SUB_COLLECTION_NAME = 'holdings'
 
-export class PortfolioHoldingRepository extends RepositoryBase {
+export class PortfolioHoldingsRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore
     constructor() {
         super()
         this.db = getConnectionProps()
     }
 
-    async listPortfolioAssets(portfolioId: string) {
+    async listPortfolioHoldings(portfolioId: string) {
         const entityCollectionRef = this.db.collection(COLLECTION_NAME).doc(portfolioId).collection(SUB_COLLECTION_NAME)
         const entityRefCollection = await entityCollectionRef.limit(1000).get()
         const entityList = entityRefCollection.docs.map((entityDoc) => {
-            const entity = entityDoc.data() as TPortfolioAsset
+            const entity = entityDoc.data() as TPortfolioHolding
             return entity
         })
 
         return entityList
     }
 
-    async getPortfolioAsset(portfolioId: string, assetId: string) {
+    async getPortfolioHolding(portfolioId: string, assetId: string) {
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)
@@ -36,11 +36,11 @@ export class PortfolioHoldingRepository extends RepositoryBase {
             return null
         }
 
-        const entity = entityDoc.data() as TPortfolioAsset
+        const entity = entityDoc.data() as TPortfolioHolding
         return entity
     }
 
-    async storePortfolioAsset(portfolioId: string, assetId: string, entity: TPortfolioAsset) {
+    async storePortfolioHolding(portfolioId: string, assetId: string, entity: TPortfolioHolding) {
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db
             .collection(COLLECTION_NAME)
@@ -50,7 +50,7 @@ export class PortfolioHoldingRepository extends RepositoryBase {
         await entityRef.set(entityData)
     }
 
-    async deletePortfolioAsset(portfolioId: string, assetId: string) {
+    async deletePortfolioHolding(portfolioId: string, assetId: string) {
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)

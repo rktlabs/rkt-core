@@ -83,14 +83,6 @@ export class Portfolio {
         }
     }
 
-    // static serialize(req: any, data: any) {
-    //     return serialize(req, data)
-    // }
-
-    // static serializeCollection(req: any, data: any) {
-    //     return serializeCollection(req, data)
-    // }
-
     static serialize(selfUrl: string, baseUrl: string, data: any) {
         return serialize(selfUrl, baseUrl, data)
     }

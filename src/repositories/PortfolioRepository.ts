@@ -1,5 +1,5 @@
 'use strict'
-import { TPortfolio, TPortfolioPatch as TPortfolioUpdate } from '..'
+import { TPortfolio, TPortfolioUpdate as TPortfolioUpdate } from '..'
 import { deleteDocument } from '../util/deleters'
 import { getConnectionProps } from './getConnectionProps'
 import { RepositoryBase } from './repositoryBase'
