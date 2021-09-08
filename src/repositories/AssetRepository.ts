@@ -62,12 +62,12 @@ export class AssetRepository extends RepositoryBase {
         await entityRef.set(entityData)
     }
 
-    async updateAssetAsync(assetId: string, entityData: TAssetUpdate) {
+    async updateAsync(assetId: string, entityData: TAssetUpdate) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await entityRef.update(entityData)
     }
 
-    async deleteAssetAsync(assetId: string) {
+    async deleteAsync(assetId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await deleteDocument(entityRef)
     }

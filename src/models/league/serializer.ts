@@ -1,36 +1,39 @@
 import { HALSerializer } from 'hal-serializer'
 
 export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
-    // const baseUrl = req.fantUrls.baseUrl
-
     const serializer = new HALSerializer()
 
-    serializer.register('portfolio', {
-        whitelist: ['type', 'name', 'displayName', 'ownerId', 'createdAt'],
+    serializer.register('league', {
+        whitelist: [
+            'createdAt',
+            'ownerId',
+            'displayName',
+            'description',
+            'currencySource',
+            'pt',
+            'key',
+            'startAt',
+            'endAt',
+            'acceptEarningsAfter',
+            'ignoreEarningsAfter',
+            'tags',
+            'managedAssets',
+            'currencyId',
+            'currencySource',
+        ],
         links: (record: any) => {
             return {
-                self: { href: `${selfUrl}`, rel: 'portfolio' },
-                holdings: { href: `${baseUrl}/${record.portfolioId}/holdings`, rel: 'holdings' },
-                activity: { href: `${baseUrl}/${record.portfolioId}/activity`, rel: 'activity' },
-                // orders: { href: `${baseUrl}/${record.portfolioId}/orders`, rel: 'orders' },
+                self: { href: `${selfUrl}`, rel: 'league' },
+                portfolio: { href: `${baseUrl}/portfolios/${record.portfolioId}`, rel: 'portfolio' },
             }
         },
-        // associations: function (data: any) {
-        //     return {
-        //         portfolio: {  // TODO: What is this?????
-        //             href: `${baseUrl}/portfolios/${data.portfolioId}`,
-        //             rel: 'portfolio',
-        //             id: data.portfolioId,
-        //         },
-        //     }
-        // },
     })
 
-    const serialized = serializer.serialize('portfolio', data)
+    const serialized = serializer.serialize('league', data)
     return serialized
 }
 
-export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, data: any) => {
+export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, data: any /* , rowcount: number */) => {
     const filter = Object.assign({}, qs)
     const page = filter.page ? parseInt(filter.page, 10) : 1
     const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
@@ -51,32 +54,42 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const displayCount = data.length
 
     const collectionLinks: any = {
-        self: { href: `${selfUrl}`, rel: 'collection:portfolios' },
+        self: { href: `${selfUrl}`, rel: 'collection:assets' },
     }
 
     if (page > 1 || hasMore) {
         collectionLinks.first = {
-            href: `${baseUrl}/portfolios?${linkQS}page=1&pageSize=${pageSize}`,
+            href: `${baseUrl}?${linkQS}page=1&pageSize=${pageSize}`,
         }
         if (page > 1) {
             collectionLinks.prev = {
-                href: `${baseUrl}/portfolios?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
             }
         }
         if (hasMore) {
             collectionLinks.next = {
-                href: `${baseUrl}/portfolios?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
     }
 
     const serializer = new HALSerializer()
 
-    serializer.register('portfolios', {
-        whitelist: ['type', 'portfolioId', 'displayName'],
+    serializer.register('leagues', {
+        whitelist: [
+            //'createdAt',
+            //'ownerId',
+            'displayName',
+            'description',
+            //'currencySource',
+            //'pt',
+            //'key',
+            'startAt',
+            'endAt',
+        ],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/portfolios/${record.portfolioId}`, rel: 'portfolio' },
+                self: { href: `${baseUrl}/${record.leagueId}`, rel: 'league' },
             }
         },
         topLevelLinks: collectionLinks,
@@ -89,7 +102,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         },
     })
 
-    const serialized = serializer.serialize('portfolios', data, {
+    const serialized = serializer.serialize('leagues', data, {
         page,
         pageSize,
         count: displayCount,

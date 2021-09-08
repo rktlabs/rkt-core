@@ -8,21 +8,11 @@ import { RepositoryBase } from './repositoryBase'
 const COLLECTION_NAME = 'assets'
 const SUB_COLLECTION_NAME = 'holders'
 
-export class AssetHolderRepository extends RepositoryBase {
+export class AssetHoldersRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore
     constructor() {
         super()
         this.db = getConnectionProps()
-    }
-
-    async storeAssetHolder(assetId: string, portfolioId: string, entity: TAssetHolder) {
-        const entityData = JSON.parse(JSON.stringify(entity))
-        const entityRef = this.db
-            .collection(COLLECTION_NAME)
-            .doc(assetId)
-            .collection(SUB_COLLECTION_NAME)
-            .doc(portfolioId)
-        await entityRef.set(entityData)
     }
 
     // TODO: updateAssetHolder??? - need to update units for asset holder quantity
@@ -53,6 +43,16 @@ export class AssetHolderRepository extends RepositoryBase {
         }
         const entity = entityDoc.data() as TAssetHolder
         return entity
+    }
+
+    async storeAssetHolder(assetId: string, portfolioId: string, entity: TAssetHolder) {
+        const entityData = JSON.parse(JSON.stringify(entity))
+        const entityRef = this.db
+            .collection(COLLECTION_NAME)
+            .doc(assetId)
+            .collection(SUB_COLLECTION_NAME)
+            .doc(portfolioId)
+        await entityRef.set(entityData)
     }
 
     async deleteAssetHolder(assetId: string, portfolioId: string) {
