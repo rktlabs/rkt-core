@@ -10,9 +10,9 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         links: (record: any) => {
             return {
                 self: { href: `${selfUrl}`, rel: 'portfolio' },
-                holdings: { href: `${baseUrl}/portfolios/${record.portfolioId}/holdings`, rel: 'holdings' },
-                activity: { href: `${baseUrl}/portfolios/${record.portfolioId}/activity`, rel: 'activity' },
-                orders: { href: `${baseUrl}/portfolios/${record.portfolioId}/orders`, rel: 'orders' },
+                holdings: { href: `${baseUrl}/${record.portfolioId}/holdings`, rel: 'holdings' },
+                activity: { href: `${baseUrl}/${record.portfolioId}/activity`, rel: 'activity' },
+                // orders: { href: `${baseUrl}/${record.portfolioId}/orders`, rel: 'orders' },
             }
         },
         // associations: function (data: any) {
@@ -90,7 +90,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         whitelist: ['type', 'portfolioId', 'displayName'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/portolios/${record.portfolioId}`, rel: 'portfolio' },
+                self: { href: `${baseUrl}/portfolios/${record.portfolioId}`, rel: 'portfolio' },
             }
         },
         topLevelLinks: collectionLinks,
