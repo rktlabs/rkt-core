@@ -22,14 +22,28 @@ export class PortfolioActivityRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    async listPortfolioActivity(portfolioId: string) {
-        const entityCollectionRef = this.db
+    filterMap: any = {
+        leagueId: 'leagueId',
+        contractId: 'contractId',
+        type: 'type',
+    }
+
+    async getListAsync(portfolioId: string, qs?: any) {
+        const filter = Object.assign({}, qs)
+        const page = filter.page ? parseInt(filter.page, 10) : 1
+        const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
+        const start = (page - 1) * pageSize
+
+        let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)
             .collection(ACTIVITY_COLLECTION_NAME)
-        const entityRefCollection = await entityCollectionRef.limit(1000).get()
 
-        const entityList = entityRefCollection.docs.map((entityDoc) => {
+        entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
+
+        const entityCollectionRefs = await entityRefCollection.offset(start).limit(pageSize).get()
+
+        const entityList = entityCollectionRefs.docs.map((entityDoc) => {
             const entity = entityDoc.data() as TTransaction
             return entity
         })

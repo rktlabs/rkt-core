@@ -14,10 +14,28 @@ export class PortfolioHoldingsRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    async listPortfolioHoldings(portfolioId: string) {
-        const entityCollectionRef = this.db.collection(COLLECTION_NAME).doc(portfolioId).collection(SUB_COLLECTION_NAME)
-        const entityRefCollection = await entityCollectionRef.limit(1000).get()
-        const entityList = entityRefCollection.docs.map((entityDoc) => {
+    filterMap: any = {
+        leagueId: 'leagueId',
+        contractId: 'contractId',
+        type: 'type',
+    }
+
+    async getListAsync(portfolioId: string, qs?: any) {
+        const filter = Object.assign({}, qs)
+        const page = filter.page ? parseInt(filter.page, 10) : 1
+        const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
+        const start = (page - 1) * pageSize
+
+        let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
+            .collection(COLLECTION_NAME)
+            .doc(portfolioId)
+            .collection(SUB_COLLECTION_NAME)
+
+        entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
+
+        const entityCollectionRefs = await entityRefCollection.offset(start).limit(pageSize).get()
+
+        const entityList = entityCollectionRefs.docs.map((entityDoc) => {
             const entity = entityDoc.data() as TPortfolioHolding
             return entity
         })
@@ -25,7 +43,7 @@ export class PortfolioHoldingsRepository extends RepositoryBase {
         return entityList
     }
 
-    async getPortfolioHolding(portfolioId: string, assetId: string) {
+    async getDetailAsync(portfolioId: string, assetId: string) {
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)
@@ -40,7 +58,7 @@ export class PortfolioHoldingsRepository extends RepositoryBase {
         return entity
     }
 
-    async storePortfolioHolding(portfolioId: string, assetId: string, entity: TPortfolioHolding) {
+    async storeAsync(portfolioId: string, assetId: string, entity: TPortfolioHolding) {
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db
             .collection(COLLECTION_NAME)
@@ -50,7 +68,7 @@ export class PortfolioHoldingsRepository extends RepositoryBase {
         await entityRef.set(entityData)
     }
 
-    async deletePortfolioHolding(portfolioId: string, assetId: string) {
+    async deletePAsync(portfolioId: string, assetId: string) {
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)

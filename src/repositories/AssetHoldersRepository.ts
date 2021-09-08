@@ -17,7 +17,7 @@ export class AssetHoldersRepository extends RepositoryBase {
 
     // TODO: updateAssetHolder??? - need to update units for asset holder quantity
 
-    async listAssetHolders(assetId: string) {
+    async getListAsync(assetId: string) {
         let entityRefCollection = this.db.collection(COLLECTION_NAME).doc(assetId).collection(SUB_COLLECTION_NAME)
         const entityCollectionRefs = await entityRefCollection.get()
         if (!entityCollectionRefs.empty) {
@@ -31,7 +31,7 @@ export class AssetHoldersRepository extends RepositoryBase {
         }
     }
 
-    async getAssetHolder(assetId: string, portfolioId: string) {
+    async getDetailAsync(assetId: string, portfolioId: string) {
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(assetId)
@@ -45,7 +45,7 @@ export class AssetHoldersRepository extends RepositoryBase {
         return entity
     }
 
-    async storeAssetHolder(assetId: string, portfolioId: string, entity: TAssetHolder) {
+    async storeAsync(assetId: string, portfolioId: string, entity: TAssetHolder) {
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db
             .collection(COLLECTION_NAME)
@@ -55,7 +55,7 @@ export class AssetHoldersRepository extends RepositoryBase {
         await entityRef.set(entityData)
     }
 
-    async deleteAssetHolder(assetId: string, portfolioId: string) {
+    async deleteAsync(assetId: string, portfolioId: string) {
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(assetId)

@@ -23,7 +23,7 @@ export class AssetQuery {
 
     async getAssetHoldersAsync(qs?: any) {
         return {
-            data: await this.assetHoldersRepository.listAssetHolders(qs),
+            data: await this.assetHoldersRepository.getListAsync(qs),
         }
     }
 }

@@ -9,10 +9,10 @@ export declare class PortfolioQuery {
         data: import("..").TPortfolio[];
     }>;
     getDetailAsync(id: string): Promise<import("..").TPortfolio | null>;
-    getPortfolioHoldingsAsync(qs?: any): Promise<{
+    getPortfolioHoldingsAsync(portfolioId: string, qs?: any): Promise<{
         data: import("..").TPortfolioHolding[];
     }>;
-    getPortfolioActivityAsync(qs?: any): Promise<{
+    getPortfolioActivityAsync(portfolioId: string, qs?: any): Promise<{
         data: import("..").TTransaction[];
     }>;
 }

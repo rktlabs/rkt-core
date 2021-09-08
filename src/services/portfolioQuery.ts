@@ -23,15 +23,15 @@ export class PortfolioQuery {
         return portfolioDetail
     }
 
-    async getPortfolioHoldingsAsync(qs?: any) {
+    async getPortfolioHoldingsAsync(portfolioId: string, qs?: any) {
         return {
-            data: await this.portfolioHoldingsRepository.listPortfolioHoldings(qs),
+            data: await this.portfolioHoldingsRepository.getListAsync(portfolioId, qs),
         }
     }
 
-    async getPortfolioActivityAsync(qs?: any) {
+    async getPortfolioActivityAsync(portfolioId: string, qs?: any) {
         return {
-            data: await this.portfolioActivityRepository.listPortfolioActivity(qs),
+            data: await this.portfolioActivityRepository.getListAsync(portfolioId, qs),
         }
     }
 }
