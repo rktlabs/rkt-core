@@ -7,9 +7,18 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         whitelist: ['type', 'name', 'displayName', 'ownerId', 'createdAt'],
         links: (record: any) => {
             return {
-                self: { href: `${selfUrl}`, rel: 'portfolio' },
-                holdings: { href: `${baseUrl}/portfolios/${record.portfolioId}/holdings`, rel: 'holdings' },
-                activity: { href: `${baseUrl}/portfolios/${record.portfolioId}/activity`, rel: 'activity' },
+                self: {
+                    href: `${selfUrl}`,
+                    rel: 'portfolio',
+                },
+                holdings: {
+                    href: `${baseUrl}/portfolios/${record.portfolioId}/holdings`,
+                    rel: 'holdings',
+                },
+                activity: {
+                    href: `${baseUrl}/portfolios/${record.portfolioId}/activity`,
+                    rel: 'activity',
+                },
                 // orders: { href: `${baseUrl}/${record.portfolioId}/orders`, rel: 'orders' },
             }
         },
@@ -65,7 +74,10 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         whitelist: ['type', 'portfolioId', 'displayName'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/portfolios/${record.portfolioId}`, rel: 'portfolio' },
+                self: {
+                    href: `${baseUrl}/portfolios/${record.portfolioId}`,
+                    rel: 'portfolio',
+                },
             }
         },
         topLevelLinks: collectionLinks,

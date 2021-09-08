@@ -7,7 +7,10 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         whitelist: ['createdAt', 'userId', 'id', 'username', 'email', 'name', 'displayName', 'referrerId', 'isNew'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/${record.userId}`, rel: 'user' },
+                self: {
+                    href: `${baseUrl}/${record.userId}`,
+                    rel: 'user',
+                },
                 portfolio: {
                     href: `${baseUrl}/portfolios/${data.portfolioId}`,
                     rel: 'portfolio',
@@ -67,7 +70,10 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         whitelist: ['createdAt', 'userId', 'id', 'username', 'email', 'name', 'displayName', 'referrerId', 'isNew'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/users/${record.userId}`, rel: 'user' },
+                self: {
+                    href: `${baseUrl}/users/${record.userId}`,
+                    rel: 'user',
+                },
             }
         },
         topLevelLinks: collectionLinks,

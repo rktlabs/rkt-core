@@ -6,16 +6,8 @@ export declare class League {
     portfolioId: string;
     displayName: string;
     description: string;
-    startAt?: string;
-    endAt?: string;
-    acceptEarningsAfter?: string;
-    ignoreEarningsAfter?: string;
-    key?: string;
-    pt?: number;
     tags?: any;
     managedAssets: string[];
-    currencyId: string;
-    currencySource: string;
     constructor(props: TLeague);
     static newLeague(props: TNewLeague): League;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;

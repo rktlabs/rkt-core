@@ -13,17 +13,17 @@ export class League {
     portfolioId: string
     displayName: string
     description: string
-    startAt?: string
-    endAt?: string
-    acceptEarningsAfter?: string
-    ignoreEarningsAfter?: string
-    key?: string
-    pt?: number
+    // startAt?: string
+    // endAt?: string
+    // acceptEarningsAfter?: string
+    // ignoreEarningsAfter?: string
+    // key?: string
+    // pt?: number
     tags?: any
     // playerList?: TLeagueAssetDef[]
     managedAssets: string[]
-    currencyId: string
-    currencySource: string
+    // currencyId: string
+    // currencySource: string
 
     constructor(props: TLeague) {
         this.createdAt = props.createdAt
@@ -32,17 +32,17 @@ export class League {
         this.portfolioId = props.portfolioId
         this.displayName = props.displayName || props.leagueId
         this.description = props.description || this.displayName
-        this.startAt = props.startAt
-        this.endAt = props.endAt
-        this.acceptEarningsAfter = props.acceptEarningsAfter
-        this.ignoreEarningsAfter = props.ignoreEarningsAfter
-        this.key = props.key
-        this.pt = props.pt
+        // this.startAt = props.startAt
+        // this.endAt = props.endAt
+        // this.acceptEarningsAfter = props.acceptEarningsAfter
+        // this.ignoreEarningsAfter = props.ignoreEarningsAfter
+        // this.key = props.key
+        // this.pt = props.pt
         this.tags = props.tags
         // this.playerList = props.playerList
         this.managedAssets = props.managedAssets
-        this.currencyId = props.currencyId
-        this.currencySource = props.currencySource
+        // this.currencyId = props.currencyId
+        // this.currencySource = props.currencySource
     }
 
     // Member Properties for new model
@@ -60,16 +60,16 @@ export class League {
             description,
             ownerId: props.ownerId,
             portfolioId: portfolioId,
-            startAt: props.startAt || createdAt,
-            endAt: props.endAt,
-            acceptEarningsAfter: props.acceptEarningsAfter || props.startAt || createdAt,
-            ignoreEarningsAfter: props.ignoreEarningsAfter || props.endAt,
-            key: props.key,
-            pt: props.pt,
+            // startAt: props.startAt || createdAt,
+            // endAt: props.endAt,
+            // acceptEarningsAfter: props.acceptEarningsAfter || props.startAt || createdAt,
+            // ignoreEarningsAfter: props.ignoreEarningsAfter || props.endAt,
+            // key: props.key,
+            // pt: props.pt,
             //playerList: props.earnerList,
             managedAssets: [],
-            currencyId: 'coin::fantx',
-            currencySource: 'league::mint',
+            // currencyId: 'coin::fantx',
+            // currencySource: 'league::mint',
         }
 
         if (props.tags) {

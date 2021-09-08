@@ -6,7 +6,6 @@ export declare type TNewAsset = {
     leagueDisplayName?: string;
     tags?: any;
     xids?: any;
-    initialPrice?: number;
 };
 export declare type TAsset = {
     createdAt: string;
@@ -14,13 +13,11 @@ export declare type TAsset = {
     symbol: string;
     assetId: string;
     ownerId: string;
-    portfolioId?: string;
     displayName: string;
     leagueId: string;
     leagueDisplayName: string;
     tags?: any;
     xids?: any;
-    initialPrice?: number;
     bid?: number;
     ask?: number;
     last?: number;

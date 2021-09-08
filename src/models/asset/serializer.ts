@@ -7,22 +7,24 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         whitelist: ['createdAt', 'type', 'assetId', 'symbol', 'ownerId', 'displayName', 'bid', 'ask', 'last'],
         links: () => {
             return {
-                // maker: {
-                //     href: `${baseUrl}/makers/${data.assetId}`,
-                //     rel: 'maker',
-                //     id: data.assetId,
-                // },
                 league: {
                     //href: `${baseUrl}/leagues/${data.leagueId}`, // TODO: change to leagueId
+                    //id: data.leagueId,
+                    // title: data.leagueDisplayName,
                     href: `${baseUrl}/leagues/${data.contractId}`,
                     rel: 'league',
-                    id: data.leagueId,
-                    title: data.leagueDisplayName,
+                    id: data.contractId,
+                    title: data.contractDisplayName,
                 },
                 portfolio: {
                     href: `${baseUrl}/portfolios/${data.portfolioId}`,
                     rel: 'portfolio',
                     id: data.portfolioId,
+                },
+                maker: {
+                    href: `${baseUrl}/makers/${data.assetId}`,
+                    rel: 'maker',
+                    id: data.assetId,
                 },
             }
         },
@@ -83,7 +85,10 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         whitelist: ['type', 'assetId', 'symbol', 'displayName', 'bid', 'ask', 'last'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/assets/${record.assetId}`, rel: 'asset' },
+                self: {
+                    href: `${baseUrl}/assets/${record.assetId}`,
+                    rel: 'asset',
+                },
             }
         },
         topLevelLinks: collectionLinks,

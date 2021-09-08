@@ -5,17 +5,17 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
 
     serializer.register('transactionLeg', {
         whitelist: ['cost', 'units'],
-        links: function (data: any) {
+        links: (record: any) => {
             return {
                 asset: {
-                    href: `${baseUrl}/assets/${data.assetId}`,
+                    href: `${baseUrl}/assets/${record.assetId}`,
                     rel: 'asset',
-                    id: data.assetId,
+                    id: record.assetId,
                 },
                 portfolio: {
-                    href: `${baseUrl}/portfolios/${data.portfolioId}`,
+                    href: `${baseUrl}/portfolios/${record.portfolioId}`,
                     rel: 'portfolio',
-                    id: data.portfolioId,
+                    id: record.portfolioId,
                 },
             }
         },
@@ -25,7 +25,10 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         whitelist: ['createdAt', 'transactionId', 'status', 'inputs', 'outputs', 'xids', 'tags'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/${record.transactionId}`, rel: 'transaction' },
+                self: {
+                    href: `${baseUrl}/${record.transactionId}`,
+                    rel: 'transaction',
+                },
             }
         },
         embedded: {
@@ -88,7 +91,10 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         whitelist: ['transactionId', 'inputs', 'outputs'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/transactions/${record.transactionId}`, rel: 'transaction' },
+                self: {
+                    href: `${baseUrl}/transactions/${record.transactionId}`,
+                    rel: 'transaction',
+                },
             }
         },
         topLevelLinks: collectionLinks,

@@ -10,16 +10,17 @@ export class Asset {
     type: string
     symbol: string
     assetId: string
-    ownerId: string
-    portfolioId?: string
     displayName: string
+    ownerId: string
+    // portfolioId?: string
+
     leagueId: string
     leagueDisplayName: string
 
     tags?: any
     xids?: any
 
-    initialPrice?: number
+    // initialPrice?: number
     bid?: number
     ask?: number
     last?: number
@@ -29,9 +30,9 @@ export class Asset {
         this.type = props.type
         this.symbol = props.symbol
         this.assetId = props.assetId
-        this.ownerId = props.ownerId
-        this.portfolioId = props.portfolioId
         this.displayName = props.displayName
+        this.ownerId = props.ownerId
+        // this.portfolioId = props.portfolioId
 
         this.leagueId = props.leagueId
         this.leagueDisplayName = props.leagueDisplayName
@@ -39,7 +40,7 @@ export class Asset {
         this.xids = props.xids
         this.tags = props.tags
 
-        this.initialPrice = props.initialPrice
+        // this.initialPrice = props.initialPrice
         this.bid = props.bid
         this.ask = props.ask
         this.last = props.last
@@ -79,12 +80,12 @@ export class Asset {
             assetProps.xids = Object.assign({}, props.xids)
         }
 
-        if (props.initialPrice) {
-            assetProps.initialPrice = props.initialPrice
-            assetProps.bid = props.initialPrice
-            assetProps.ask = props.initialPrice
-            assetProps.last = props.initialPrice
-        }
+        // if (props.initialPrice) {
+        //     assetProps.initialPrice = props.initialPrice
+        //     assetProps.bid = props.initialPrice
+        //     assetProps.ask = props.initialPrice
+        //     assetProps.last = props.initialPrice
+        // }
 
         const newEntity = new Asset(assetProps)
         return newEntity

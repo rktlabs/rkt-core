@@ -4,14 +4,12 @@ export declare class Asset {
     type: string;
     symbol: string;
     assetId: string;
-    ownerId: string;
-    portfolioId?: string;
     displayName: string;
+    ownerId: string;
     leagueId: string;
     leagueDisplayName: string;
     tags?: any;
     xids?: any;
-    initialPrice?: number;
     bid?: number;
     ask?: number;
     last?: number;

@@ -9,22 +9,29 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
             'ownerId',
             'displayName',
             'description',
-            'currencySource',
-            'pt',
-            'key',
-            'startAt',
-            'endAt',
-            'acceptEarningsAfter',
-            'ignoreEarningsAfter',
+            // 'currencySource',
+            // 'pt',
+            // 'key',
+            // 'startAt',
+            // 'endAt',
+            // 'acceptEarningsAfter',
+            // 'ignoreEarningsAfter',
             'tags',
             'managedAssets',
-            'currencyId',
-            'currencySource',
+            // 'currencyId',
+            // 'currencySource',
         ],
         links: (record: any) => {
             return {
-                self: { href: `${selfUrl}`, rel: 'league' },
-                portfolio: { href: `${baseUrl}/portfolios/${record.portfolioId}`, rel: 'portfolio' },
+                self: {
+                    href: `${selfUrl}`,
+                    rel: 'league',
+                },
+                portfolio: {
+                    href: `${baseUrl}/portfolios/${record.portfolioId}`,
+                    rel: 'portfolio',
+                    id: record.portfolioId,
+                },
             }
         },
     })
@@ -84,12 +91,15 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
             //'currencySource',
             //'pt',
             //'key',
-            'startAt',
-            'endAt',
+            // 'startAt',
+            // 'endAt',
         ],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/${record.leagueId}`, rel: 'league' },
+                self: {
+                    href: `${baseUrl}/${record.leagueId}`,
+                    rel: 'league',
+                },
             }
         },
         topLevelLinks: collectionLinks,
