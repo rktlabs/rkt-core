@@ -1,4 +1,4 @@
-import { MakerRepository } from '../repositories/makerRepository';
+import { MakerRepository } from '../repositories/maker/makerRepository';
 export declare class MakerQuery {
     makerRepository: MakerRepository;
     constructor();

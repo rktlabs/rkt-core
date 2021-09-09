@@ -1,4 +1,4 @@
-import { LeagueRepository } from '../repositories/leagueRepository';
+import { LeagueRepository } from '../repositories/league/leagueRepository';
 export declare class LeagueQuery {
     leagueRepository: LeagueRepository;
     constructor();

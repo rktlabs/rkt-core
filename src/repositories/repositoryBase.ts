@@ -1,12 +1,22 @@
 export class RepositoryBase {
-    // generatePagingProperties(qs: any) {
-    //     const filter = Object.assign({}, qs)
-    //     const page = filter.page ? parseInt(filter.page, 10) : 1
-    //     const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
-    //     const start = (page - 1) * pageSize
-    //     const pagingProperties = ` order by id offset ${start} limit ${pageSize} `
-    //     return pagingProperties
-    // }
+    generatePagingProperties(
+        qs: any,
+        entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>,
+        orderBy: string | null = null,
+    ) {
+        const filter = Object.assign({}, qs)
+        const page = filter.page ? parseInt(filter.page, 10) : 1
+        const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
+        const start = (page - 1) * pageSize
+
+        if (orderBy) {
+            entityRefCollection = entityRefCollection.orderBy('orderId')
+        }
+
+        entityRefCollection = entityRefCollection.offset(start).limit(pageSize)
+
+        return entityRefCollection
+    }
 
     generateFilterPredicate(
         qs: any,

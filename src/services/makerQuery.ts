@@ -1,4 +1,4 @@
-import { MakerRepository } from '../repositories/makerRepository'
+import { MakerRepository } from '../repositories/maker/makerRepository'
 
 export class MakerQuery {
     makerRepository: MakerRepository

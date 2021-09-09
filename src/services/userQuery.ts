@@ -1,4 +1,4 @@
-import { UserRepository } from '../repositories/userRepository'
+import { UserRepository } from '../repositories/user/userRepository'
 
 export class UserQuery {
     userRepository: UserRepository

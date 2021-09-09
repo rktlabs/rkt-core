@@ -1,5 +1,5 @@
-import { AssetHoldersRepository } from '../repositories/AssetHoldersRepository';
-import { AssetRepository } from '../repositories/assetRepository';
+import { AssetHoldersRepository } from '../repositories/asset/assetHoldersRepository';
+import { AssetRepository } from '../repositories/asset/assetRepository';
 export declare class AssetQuery {
     assetRepository: AssetRepository;
     assetHoldersRepository: AssetHoldersRepository;
