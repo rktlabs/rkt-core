@@ -45,7 +45,10 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const displayCount = data.length
 
     const collectionLinks: any = {
-        self: { href: `${selfUrl}`, rel: 'collection:makers' },
+        self: {
+            href: `${selfUrl}`,
+            rel: 'collection:makers',
+        },
     }
 
     if (page > 1 || hasMore) {

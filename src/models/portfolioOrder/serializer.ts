@@ -69,7 +69,10 @@ export const serializeCollection = (
     const displayCount = data.length
 
     const collectionLinks: any = {
-        self: { href: `${selfUrl}`, rel: 'collection:assets' },
+        self: {
+            href: `${selfUrl}`,
+            rel: 'collection:assets',
+        },
     }
 
     if (page > 1 || hasMore) {
@@ -94,7 +97,10 @@ export const serializeCollection = (
         whitelist: ['orderId', 'createdAt', 'assetId', 'orderType', 'orderSide', 'orderSize', 'state', 'status'],
         links: (record: any) => {
             return {
-                self: { href: `${baseUrl}/portfolios/${portfolioId}/orders/${record.orderId}`, rel: 'order' },
+                self: {
+                    href: `${baseUrl}/portfolios/${portfolioId}/orders/${record.orderId}`,
+                    rel: 'order',
+                },
             }
         },
         topLevelLinks: collectionLinks,

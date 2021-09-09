@@ -52,7 +52,10 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const displayCount = data.length
 
     const collectionLinks: any = {
-        self: { href: `${selfUrl}`, rel: 'collection:portfolios' },
+        self: {
+            href: `${selfUrl}`,
+            rel: 'collection:portfolios',
+        },
     }
 
     if (page > 1 || hasMore) {

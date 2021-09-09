@@ -20,7 +20,10 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
     const displayCount = data.length
 
     const collectionLinks: any = {
-        self: { href: `${selfUrl}`, rel: 'collection:assets' },
+        self: {
+            href: `${selfUrl}`,
+            rel: 'collection:assets',
+        },
     }
 
     if (page > 1 || hasMore) {

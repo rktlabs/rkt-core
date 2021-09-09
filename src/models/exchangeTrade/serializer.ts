@@ -7,9 +7,12 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         whitelist: ['tradeAt', 'lastPrice', 'lastTrade'],
         links: (record: any) => {
             return {
-                self: { href: `${selfUrl}`, rel: 'exchangeTrade' },
+                self: {
+                    href: `${selfUrl}`,
+                    rel: 'exchangeTrade',
+                },
                 asset: {
-                    href: `${baseUrl}/assets/${record.assetId}`,
+                    href: `${baseUrl}/exchange/trades/${record.tradeId}`,
                     rel: 'asset',
                     id: record.assetId,
                 },
@@ -42,21 +45,24 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const displayCount = data.length
 
     const collectionLinks: any = {
-        self: { href: `${selfUrl}`, rel: 'collection:exchangeTrades' },
+        self: {
+            href: `${selfUrl}`,
+            rel: 'collection:exchangeTrades',
+        },
     }
 
     if (page > 1 || hasMore) {
         collectionLinks.first = {
-            href: `${baseUrl}?${linkQS}page=1&pageSize=${pageSize}`,
+            href: `${baseUrl}/exchange/trades?${linkQS}page=1&pageSize=${pageSize}`,
         }
         if (page > 1) {
             collectionLinks.prev = {
-                href: `${baseUrl}?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/exchange/trades?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
             }
         }
         if (hasMore) {
             collectionLinks.next = {
-                href: `${baseUrl}?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/exchange/trades?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
     }
@@ -67,7 +73,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         // whitelist: ['type', 'exchangeTradeId', 'portfolioId', 'displayName'],
         links: (record: any) => {
             return {
-                self: `${baseUrl}/assets/${record.assetId}`,
+                self: `${baseUrl}/exchange/trades/${record.tradeId}`,
             }
         },
         topLevelLinks: collectionLinks,
