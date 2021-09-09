@@ -1,5 +1,6 @@
 export { AssetRepository } from './AssetRepository'
 export { AssetHoldersRepository } from './AssetHoldersRepository'
+export { MakerRepository } from './MakerRepository'
 
 export { PortfolioRepository } from './PortfolioRepository'
 export { PortfolioHoldingsRepository } from './PortfolioHoldingsRepository'
@@ -14,7 +15,6 @@ export { TransactionRepository } from './TransactionRepository'
 
 export { LeagueRepository } from './LeagueRepository'
 
-// export { OrderRepository } from './OrderRepository'
 // export { ExchangeQuoteRepository } from './ExchangeQuoteRepository'
 // export { ExchangeTradeRepository } from './ExchangeTradeRepository'
 // export { ExchangeOrderRepository } from './ExchangeOrderRepository'
