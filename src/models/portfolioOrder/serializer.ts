@@ -14,17 +14,26 @@ export const serialize = (selfUrl: string, portfolioId: string, baseUrl: string,
             'orderSize',
             'state',
             'status',
-            'filledValue',
-            'filledPrice',
-            'filledSize',
-            'orderSizeRemaining',
+            // 'filledValue',
+            // 'filledPrice',
+            // 'filledSize',
+            // 'orderSizeRemaining',
             'events',
         ],
         links: (record: any) => {
             return {
-                self: { href: `${selfUrl}`, rel: 'order' },
-                portfolio: { href: `${baseUrl}/portfolios/${portfolioId}`, rel: 'portfolio' },
-                asset: { href: `${baseUrl}/assets/${record.assetId}`, rel: 'asset' },
+                self: {
+                    href: `${selfUrl}`,
+                    rel: 'order',
+                },
+                portfolio: {
+                    href: `${baseUrl}/portfolios/${portfolioId}`,
+                    rel: 'portfolio',
+                },
+                asset: {
+                    href: `${baseUrl}/assets/${record.assetId}`,
+                    rel: 'asset',
+                },
             }
         },
     })
