@@ -102,7 +102,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/exchange/orders/${record.orderId}#${record.orderId}`,
+                    href: `${baseUrl}/exchange/orders/${record.portfolioId}#${record.orderId}`,
                     rel: 'collection:exchangeOrders',
                 },
             }
