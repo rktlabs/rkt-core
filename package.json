@@ -20,7 +20,7 @@
     "version": "",
     "postversion": "git push --tags",
     "prepush": "yarn run gitpush",
-    "push": "yarn version patch"
+    "push": "yarn version --patch"
   },
   "repository": {
     "type": "git",
