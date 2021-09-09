@@ -4,7 +4,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('exchangeTrade', {
-        whitelist: ['tradeAt', 'lastPrice', 'lastTrade'],
+        whitelist: ['makers', 'taker'],
         links: (record: any) => {
             return {
                 self: {
@@ -12,7 +12,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                     rel: 'exchangeTrade',
                 },
                 asset: {
-                    href: `${baseUrl}/exchange/trades/${record.tradeId}`,
+                    href: `${baseUrl}/assets/${record.assetId}`,
                     rel: 'asset',
                     id: record.assetId,
                 },
