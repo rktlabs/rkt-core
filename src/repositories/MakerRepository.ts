@@ -14,11 +14,7 @@ export class MakerRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    filterMap: any = {
-        leagueId: 'leagueId',
-        contractId: 'contractId',
-        type: 'type',
-    }
+    filterMap: any = {}
 
     async getListAsync(qs?: any) {
         const filter = Object.assign({}, qs)

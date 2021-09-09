@@ -4,25 +4,15 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('maker', {
-        whitelist: ['createdAt', 'type', 'makerId', 'symbol', 'ownerId', 'displayName', 'bid', 'ask', 'last'],
+        whitelist: ['createdAt', 'type', 'makerId', 'currentPrice', 'madeUnits', 'params'],
         links: () => {
             return {
-                league: {
-                    //href: `${baseUrl}/leagues/${data.leagueId}`, // TODO: change to leagueId
-                    //id: data.leagueId,
-                    // title: data.leagueDisplayName,
-                    href: `${baseUrl}/leagues/${data.contractId}`,
-                    rel: 'league',
-                    id: data.contractId,
-                    title: data.contractDisplayName,
-                },
-                portfolio: {
-                    href: `${baseUrl}/portfolios/${data.portfolioId}`,
+                self: {
+                    href: `${selfUrl}`,
                     rel: 'portfolio',
-                    id: data.portfolioId,
                 },
-                maker: {
-                    href: `${baseUrl}/makers/${data.makerId}`,
+                asset: {
+                    href: `${baseUrl}/assets/${data.makerId}`,
                     rel: 'maker',
                     id: data.makerId,
                 },
