@@ -9,7 +9,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
             return {
                 self: {
                     href: `${selfUrl}`,
-                    rel: 'portfolio',
+                    rel: 'asset',
                 },
                 league: {
                     //href: `${baseUrl}/leagues/${data.leagueId}`, // TODO: change to leagueId

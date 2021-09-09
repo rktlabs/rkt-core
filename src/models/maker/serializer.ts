@@ -9,11 +9,11 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
             return {
                 self: {
                     href: `${selfUrl}`,
-                    rel: 'portfolio',
+                    rel: 'maker',
                 },
                 asset: {
                     href: `${baseUrl}/assets/${data.assetId}`,
-                    rel: 'maker',
+                    rel: 'asset',
                     id: data.assetId,
                 },
             }
