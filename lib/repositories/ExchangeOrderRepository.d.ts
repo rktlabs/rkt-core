@@ -4,7 +4,7 @@ export declare class ExchangeOrderRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;
     constructor();
     getListAsync(qs?: any): Promise<TExchangeOrder[]>;
-    getDetailAsync(portfolioId: string, orderId: string): Promise<TExchangeOrder | null>;
+    getDetailAsync(orderId: string): Promise<TExchangeOrder | null>;
     storeExchangeOrder(entity: TExchangeOrder): Promise<void>;
     updateExchangeOrder(portfolioId: string, orderId: string, entity: TExchangeOrderPatch): Promise<void>;
     scrubExecutionOrderCollection(): Promise<void>;

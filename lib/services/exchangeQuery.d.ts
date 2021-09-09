@@ -16,7 +16,7 @@ export declare class ExchangeQuery {
     getExchangeOrdersAsync(qs?: any): Promise<{
         data: import("..").TExchangeOrder[];
     }>;
-    getExchangeOrderDetailAsync(portfolioId: string, orderId: string): Promise<{
+    getExchangeOrderDetailAsync(orderId: string): Promise<{
         data: import("..").TExchangeOrder | null;
     }>;
 }

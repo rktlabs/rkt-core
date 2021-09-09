@@ -47,8 +47,8 @@ export class ExchangeOrderRepository extends RepositoryBase {
         return orderList
     }
 
-    async getDetailAsync(portfolioId: string, orderId: string) {
-        const entityId = `${portfolioId}#${orderId}`
+    async getDetailAsync(orderId: string) {
+        const entityId = `${orderId}`
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         const entityDoc = await entityRef.get()
         if (!entityDoc.exists) {
