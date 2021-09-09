@@ -46,4 +46,10 @@ export class PortfolioQuery {
             data: await this.portfolioOrdersRepository.getListAsync(portfolioId, qs),
         }
     }
+
+    async getPortfolioOrderDetailAsync(portfolioId: string, orderId: string) {
+        return {
+            data: await this.portfolioOrdersRepository.getDetailAsync(portfolioId, orderId),
+        }
+    }
 }

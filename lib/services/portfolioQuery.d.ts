@@ -18,4 +18,7 @@ export declare class PortfolioQuery {
     getPortfolioOrdersAsync(portfolioId: string, qs?: any): Promise<{
         data: import("../models/portfolioOrder").TOrder[];
     }>;
+    getPortfolioOrderDetailAsync(portfolioId: string, orderId: string): Promise<{
+        data: import("../models/portfolioOrder").TOrder | null;
+    }>;
 }
