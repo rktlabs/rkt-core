@@ -35,9 +35,9 @@ export class ExchangeQuery {
         }
     }
 
-    async getExchangeOrderDetailAsync(exchangeId: string, orderId: string) {
+    async getExchangeOrderDetailAsync(portfolioId: string, orderId: string) {
         return {
-            data: await this.exchangeOrderRepository.getDetailAsync(exchangeId, orderId),
+            data: await this.exchangeOrderRepository.getDetailAsync(portfolioId, orderId),
         }
     }
 }
