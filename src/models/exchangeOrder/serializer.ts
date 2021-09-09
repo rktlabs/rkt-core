@@ -70,16 +70,16 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
 
     if (page > 1 || hasMore) {
         collectionLinks.first = {
-            href: `${baseUrl}?${linkQS}page=1&pageSize=${pageSize}`,
+            href: `${baseUrl}/exchange/orders?${linkQS}page=1&pageSize=${pageSize}`,
         }
         if (page > 1) {
             collectionLinks.prev = {
-                href: `${baseUrl}?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/exchange/orders?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
             }
         }
         if (hasMore) {
             collectionLinks.next = {
-                href: `${baseUrl}?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/exchange/orders?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
     }
@@ -102,7 +102,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/assets/${record.assetId}`,
+                    href: `${baseUrl}/exchange/orders${record.orderId}`,
                     rel: 'collection:exchangeOrders',
                 },
             }

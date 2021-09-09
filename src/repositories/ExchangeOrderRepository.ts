@@ -37,11 +37,7 @@ export class ExchangeOrderRepository extends RepositoryBase {
             }
         }
 
-        const entityRefCollection = await entityCollectionRef
-            .orderBy('exchangeOrderId')
-            .offset(start)
-            .limit(pageSize)
-            .get()
+        const entityRefCollection = await entityCollectionRef.orderBy('orderId').offset(start).limit(pageSize).get()
         const orderList = entityRefCollection.docs
             .map((entityDoc) => {
                 const entity = entityDoc.data() as TExchangeOrder
