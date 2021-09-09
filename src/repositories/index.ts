@@ -4,13 +4,14 @@ export { AssetHoldersRepository } from './AssetHoldersRepository'
 export { PortfolioRepository } from './PortfolioRepository'
 export { PortfolioHoldingsRepository } from './PortfolioHoldingsRepository'
 export { PortfolioActivityRepository } from './PortfolioActivityRepository'
+
 // export { PortfolioDepositRepository } from './PortfolioDepositRepository'
 
-// export { UserRepository } from './UserRepository'
+export { UserRepository } from './UserRepository'
 
-// export { TransactionRepository } from './TransactionRepository'
+export { TransactionRepository } from './TransactionRepository'
 
-// export { LeagueRepository } from './LeagueRepository'
+export { LeagueRepository } from './LeagueRepository'
 
 // export { OrderRepository } from './OrderRepository'
 // export { ExchangeQuoteRepository } from './ExchangeQuoteRepository'

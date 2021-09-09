@@ -9,7 +9,7 @@ export * from './user'
 
 export * from './transaction'
 
-// export * from './league'
+export * from './league'
 
 // export * from './exchangeOrder'
 // export * from './exchangeQuote'

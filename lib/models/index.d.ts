@@ -5,3 +5,4 @@ export * from './portfolioHolding';
 export * from './portfolioActivity';
 export * from './user';
 export * from './transaction';
+export * from './league';
