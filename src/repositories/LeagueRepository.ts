@@ -34,7 +34,7 @@ export class LeagueRepository extends RepositoryBase {
                 }
             }
         }
-        const entityCollectionRefs = await entityRefCollection.orderBy('leagueId').offset(start).limit(pageSize).get()
+        const entityCollectionRefs = await entityRefCollection.orderBy('contractId').offset(start).limit(pageSize).get()
         if (!entityCollectionRefs.empty) {
             const leagueList = entityCollectionRefs.docs.map((entityDoc) => {
                 const entity = entityDoc.data() as TLeague
