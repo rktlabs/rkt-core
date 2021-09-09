@@ -4,7 +4,7 @@ import { deleteDocument } from '../util/deleters'
 import { getConnectionProps } from './getConnectionProps'
 import { RepositoryBase } from './repositoryBase'
 
-const COLLECTION_NAME = 'leagues'
+const COLLECTION_NAME = 'contracts'
 
 export class LeagueRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore
