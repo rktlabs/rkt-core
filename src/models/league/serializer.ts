@@ -71,7 +71,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/leagues/${record.contactId}`,
+                    href: `${baseUrl}/leagues/${record.contractId}`,
                     rel: 'league',
                 },
             }
