@@ -12,9 +12,9 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                     rel: 'portfolio',
                 },
                 asset: {
-                    href: `${baseUrl}/assets/${data.makerId}`,
+                    href: `${baseUrl}/assets/${data.assetId}`,
                     rel: 'maker',
-                    id: data.makerId,
+                    id: data.assetId,
                 },
             }
         },
