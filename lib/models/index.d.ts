@@ -7,3 +7,6 @@ export * from './portfolioActivity';
 export * from './user';
 export * from './transaction';
 export * from './league';
+export * from './exchangeOrder';
+export * from './exchangeQuote';
+export * from './exchangeTrade';

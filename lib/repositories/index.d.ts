@@ -8,3 +8,6 @@ export { PortfolioOrdersRepository } from './PortfolioOrdersRepository';
 export { UserRepository } from './UserRepository';
 export { TransactionRepository } from './TransactionRepository';
 export { LeagueRepository } from './LeagueRepository';
+export { ExchangeQuoteRepository } from './ExchangeQuoteRepository';
+export { ExchangeTradeRepository } from './ExchangeTradeRepository';
+export { ExchangeOrderRepository } from './ExchangeOrderRepository';

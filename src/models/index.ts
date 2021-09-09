@@ -13,7 +13,7 @@ export * from './transaction'
 
 export * from './league'
 
-// export * from './exchangeOrder'
-// export * from './exchangeQuote'
-// export * from './order'
+export * from './exchangeOrder'
+export * from './exchangeQuote'
+export * from './exchangeTrade'
 // export * from './trade'
