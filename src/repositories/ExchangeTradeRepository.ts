@@ -37,11 +37,7 @@ export class ExchangeTradeRepository extends RepositoryBase {
         }
 
         // const entityRefCollection = await entityCollectionRef.orderBy('createdAt', 'desc').get();
-        const entityRefCollection = await entityCollectionRef
-            .orderBy('exchangeTradeId')
-            .offset(start)
-            .limit(pageSize)
-            .get()
+        const entityRefCollection = await entityCollectionRef.orderBy('tradeId').offset(start).limit(pageSize).get()
         const tradeList = entityRefCollection.docs
             .map((entityDoc) => {
                 const entity = entityDoc.data() as TExchangeTrade
