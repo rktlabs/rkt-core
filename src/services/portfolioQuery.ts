@@ -35,6 +35,12 @@ export class PortfolioQuery {
         }
     }
 
+    async getPortfolioHoldingDetailAsync(portfolioId: string, orderId: string) {
+        return {
+            data: await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, orderId),
+        }
+    }
+
     async getPortfolioActivityAsync(portfolioId: string, qs?: any) {
         return {
             data: await this.portfolioActivityRepository.getListAsync(portfolioId, qs),
