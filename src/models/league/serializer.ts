@@ -4,23 +4,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('league', {
-        whitelist: [
-            'createdAt',
-            'ownerId',
-            'displayName',
-            'description',
-            // 'currencySource',
-            // 'pt',
-            // 'key',
-            // 'startAt',
-            // 'endAt',
-            // 'acceptEarningsAfter',
-            // 'ignoreEarningsAfter',
-            'tags',
-            'managedAssets',
-            // 'currencyId',
-            // 'currencySource',
-        ],
+        whitelist: ['createdAt', 'ownerId', 'displayName', 'description', 'tags', 'managedAssets'],
         links: (record: any) => {
             return {
                 self: {
@@ -61,21 +45,21 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const displayCount = data.length
 
     const collectionLinks: any = {
-        self: { href: `${selfUrl}`, rel: 'collection:assets' },
+        self: { href: `${selfUrl}`, rel: 'collection:leagues' },
     }
 
     if (page > 1 || hasMore) {
         collectionLinks.first = {
-            href: `${baseUrl}?${linkQS}page=1&pageSize=${pageSize}`,
+            href: `${baseUrl}/leagues?${linkQS}page=1&pageSize=${pageSize}`,
         }
         if (page > 1) {
             collectionLinks.prev = {
-                href: `${baseUrl}?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/leagues?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
             }
         }
         if (hasMore) {
             collectionLinks.next = {
-                href: `${baseUrl}?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/leagues?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
     }
@@ -83,21 +67,11 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const serializer = new HALSerializer()
 
     serializer.register('leagues', {
-        whitelist: [
-            //'createdAt',
-            //'ownerId',
-            'displayName',
-            'description',
-            //'currencySource',
-            //'pt',
-            //'key',
-            // 'startAt',
-            // 'endAt',
-        ],
+        whitelist: ['displayName', 'description'],
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/${record.leagueId}`,
+                    href: `${baseUrl}/leagues/${record.contactId}`,
                     rel: 'league',
                 },
             }
