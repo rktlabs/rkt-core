@@ -1,9 +1,9 @@
-import { PortfolioActivityRepository, PortfolioHoldingsRepository } from '..';
-import { PortfolioRepository } from '../repositories/portfolioRepository';
+import { PortfolioRepository, PortfolioActivityRepository, PortfolioHoldingsRepository, PortfolioOrdersRepository } from '..';
 export declare class PortfolioQuery {
     portfolioRepository: PortfolioRepository;
     portfolioActivityRepository: PortfolioActivityRepository;
     portfolioHoldingsRepository: PortfolioHoldingsRepository;
+    portfolioOrdersRepository: PortfolioOrdersRepository;
     constructor();
     getListAsync(qs?: any): Promise<{
         data: import("..").TPortfolio[];
@@ -14,5 +14,8 @@ export declare class PortfolioQuery {
     }>;
     getPortfolioActivityAsync(portfolioId: string, qs?: any): Promise<{
         data: import("..").TTransaction[];
+    }>;
+    getPortfolioOrdersAsync(portfolioId: string, qs?: any): Promise<{
+        data: import("../models/portfolioOrder").TOrder[];
     }>;
 }

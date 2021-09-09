@@ -1,15 +1,21 @@
-import { PortfolioActivityRepository, PortfolioHoldingsRepository } from '..'
-import { PortfolioRepository } from '../repositories/portfolioRepository'
+import {
+    PortfolioRepository,
+    PortfolioActivityRepository,
+    PortfolioHoldingsRepository,
+    PortfolioOrdersRepository,
+} from '..'
 
 export class PortfolioQuery {
     portfolioRepository: PortfolioRepository
     portfolioActivityRepository: PortfolioActivityRepository
     portfolioHoldingsRepository: PortfolioHoldingsRepository
+    portfolioOrdersRepository: PortfolioOrdersRepository
 
     constructor() {
         this.portfolioRepository = new PortfolioRepository()
         this.portfolioActivityRepository = new PortfolioActivityRepository()
         this.portfolioHoldingsRepository = new PortfolioHoldingsRepository()
+        this.portfolioOrdersRepository = new PortfolioOrdersRepository()
     }
 
     async getListAsync(qs?: any) {
@@ -32,6 +38,12 @@ export class PortfolioQuery {
     async getPortfolioActivityAsync(portfolioId: string, qs?: any) {
         return {
             data: await this.portfolioActivityRepository.getListAsync(portfolioId, qs),
+        }
+    }
+
+    async getPortfolioOrdersAsync(portfolioId: string, qs?: any) {
+        return {
+            data: await this.portfolioOrdersRepository.getListAsync(portfolioId, qs),
         }
     }
 }
