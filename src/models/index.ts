@@ -6,6 +6,7 @@ export * from './maker'
 export * from './portfolio'
 export * from './portfolioHolding'
 export * from './portfolioActivity'
+export * from './portfolioOrder'
 
 export * from './user'
 

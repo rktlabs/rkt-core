@@ -19,9 +19,9 @@ export declare class PortfolioQuery {
         data: import("..").TTransaction[];
     }>;
     getPortfolioOrdersAsync(portfolioId: string, qs?: any): Promise<{
-        data: import("../models/portfolioOrder").TOrder[];
+        data: import("..").TOrder[];
     }>;
     getPortfolioOrderDetailAsync(portfolioId: string, orderId: string): Promise<{
-        data: import("../models/portfolioOrder").TOrder | null;
+        data: import("..").TOrder | null;
     }>;
 }
