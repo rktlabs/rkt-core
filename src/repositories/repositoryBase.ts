@@ -10,7 +10,7 @@ export class RepositoryBase {
         const start = (page - 1) * pageSize
 
         if (orderBy) {
-            entityRefCollection = entityRefCollection.orderBy('orderId')
+            entityRefCollection = entityRefCollection.orderBy(orderBy)
         }
 
         entityRefCollection = entityRefCollection.offset(start).limit(pageSize)
