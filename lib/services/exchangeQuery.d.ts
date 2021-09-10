@@ -10,6 +10,9 @@ export declare class ExchangeQuery {
     getExchangeTradeDetailAsync(tradeId: string): Promise<{
         data: import("..").TExchangeTrade | null;
     }>;
+    getExchangeQuotesAsync(qs?: any): Promise<{
+        data: import("..").TExchangeQuote[];
+    }>;
     getExchangeQuoteAsync(assetId: string): Promise<{
         data: import("..").TExchangeQuote | null;
     }>;

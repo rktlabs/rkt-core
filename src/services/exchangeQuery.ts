@@ -23,6 +23,12 @@ export class ExchangeQuery {
         }
     }
 
+    async getExchangeQuotesAsync(qs?: any) {
+        return {
+            data: await this.exchangeQuoteRepository.getListAsync(qs),
+        }
+    }
+
     async getExchangeQuoteAsync(assetId: string) {
         return {
             data: await this.exchangeQuoteRepository.getDetailAsync(assetId),
