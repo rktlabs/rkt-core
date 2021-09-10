@@ -21,7 +21,7 @@ export class ExchangeQuoteRepository extends RepositoryBase {
 
         entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
 
-        entityRefCollection = this.generatePagingProperties(qs, entityRefCollection, 'exchangeQuoteId')
+        entityRefCollection = this.generatePagingProperties(qs, entityRefCollection, 'assetId')
         const entityCollectionRefs = await entityRefCollection.get()
         const entityList = entityCollectionRefs.docs.map((entityDoc) => {
             const entity = entityDoc.data() as TExchangeQuote
