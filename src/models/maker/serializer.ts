@@ -4,18 +4,23 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('maker', {
-        whitelist: ['createdAt', 'type', 'makerId', 'currentPrice', 'madeUnits', 'params'],
-        links: () => {
+        //whitelist: ['bid', 'ask', 'last', 'params'],
+        links: (record: any) => {
             return {
                 self: {
                     href: `${selfUrl}`,
                     rel: 'maker',
                 },
                 asset: {
-                    href: `${baseUrl}/assets/${data.assetId}`,
+                    href: `${baseUrl}/assets/${record.assetId}`,
                     rel: 'asset',
-                    id: data.assetId,
+                    id: record.assetId,
                 },
+                // portfolio: {
+                //     href: `${baseUrl}/portfolios/${data.portfolioId}`,
+                //     rel: 'portfolio',
+                //     id: data.portfolioId,
+                // },
             }
         },
     })
@@ -45,10 +50,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const displayCount = data.length
 
     const collectionLinks: any = {
-        self: {
-            href: `${selfUrl}`,
-            rel: 'collection:makers',
-        },
+        self: { href: `${selfUrl}`, rel: 'collection:assets' },
     }
 
     if (page > 1 || hasMore) {
@@ -71,11 +73,10 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         //     }
         // }
     }
-
     const serializer = new HALSerializer()
 
     serializer.register('makers', {
-        whitelist: ['type', 'makerId', 'symbol', 'displayName', 'bid', 'ask', 'last'],
+        //whitelist: ['bid', 'ask', 'last', 'params'],
         links: (record: any) => {
             return {
                 self: {
@@ -90,8 +91,6 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
                 page: extraOptions.page,
                 pageSize: extraOptions.pageSize,
                 count: extraOptions.count,
-                // pages: extraOptions.pages,
-                // total: extraOptions.total,
             }
         },
     })
@@ -100,8 +99,6 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         page,
         pageSize,
         count: displayCount,
-        // pages: pages,
-        // total: rowcount,
     })
     return serialized
 }

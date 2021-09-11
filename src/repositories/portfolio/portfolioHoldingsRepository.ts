@@ -63,7 +63,7 @@ export class PortfolioHoldingsRepository extends RepositoryBase {
         await entityRef.set(entityData)
     }
 
-    async deletePAsync(portfolioId: string, assetId: string) {
+    async deleteAsync(portfolioId: string, assetId: string) {
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)

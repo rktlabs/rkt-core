@@ -1,5 +1,6 @@
 import { RepositoryBase } from '../repositoryBase';
 import { TLeague, TLeagueUpdate } from '../../models/league';
+import { TAsset } from '../..';
 export declare class LeagueRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;
     constructor();
@@ -9,4 +10,7 @@ export declare class LeagueRepository extends RepositoryBase {
     storeAsync(entity: TLeague): Promise<void>;
     updateAsync(leagueId: string, entityData: TLeagueUpdate): Promise<void>;
     deleteAsync(leagueId: string): Promise<void>;
+    isPortfolioUsed(portfolioId: string): Promise<string | null>;
+    dropLeagueAsset(leagueId: string, assetId: string): Promise<void>;
+    addLeagueAsset(leagueId: string, asset: TAsset): Promise<void>;
 }

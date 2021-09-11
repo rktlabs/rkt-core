@@ -6,6 +6,7 @@ export declare class Asset {
     assetId: string;
     displayName: string;
     ownerId: string;
+    portfolioId?: string;
     leagueId: string;
     leagueDisplayName: string;
     tags?: any;

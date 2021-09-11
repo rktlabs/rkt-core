@@ -18,7 +18,7 @@ export type TAsset = {
     symbol: string
     assetId: string
     ownerId: string
-    // portfolioId?: string
+    portfolioId?: string
     displayName: string
 
     leagueId: string
@@ -28,6 +28,7 @@ export type TAsset = {
     xids?: any
 
     // initialPrice?: number
+
     bid?: number
     ask?: number
     last?: number
@@ -37,4 +38,10 @@ export type TAssetUpdate = {
     bid?: number
     ask?: number
     last?: number
+}
+
+export type TLeagueAssetDef = {
+    assetId: string
+    displayName: string
+    initialPrice: number
 }

@@ -4,8 +4,9 @@ import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 import { TLeague, TLeagueUpdate } from '../../models/league'
+import { TAsset } from '../..'
 
-const COLLECTION_NAME = 'contracts'
+const COLLECTION_NAME = 'leagues'
 
 export class LeagueRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore
@@ -16,7 +17,7 @@ export class LeagueRepository extends RepositoryBase {
 
     filterMap: any = {
         leagueId: 'leagueId',
-        contractId: 'contractId',
+        contracId: 'contracId',
         type: 'type',
     }
 
@@ -67,35 +68,52 @@ export class LeagueRepository extends RepositoryBase {
         await deleteDocument(entityRef)
     }
 
-    // async dropLeagueLeague(leagueId: string, leagueId: string) {
-    //     const entityRef = this.db.collection(COLLECTION_NAME).doc(leagueId)
-    //     await this.db.runTransaction(async (t) => {
-    //         const entityDoc = await t.get(entityRef)
-    //         if (entityDoc.exists) {
-    //             const entity = entityDoc.data()
-    //             if (entity) {
-    //                 const leagueList = entity.managedLeagues || []
-    //                 const newLeagueList = leagueList.filter((targetId: string) => {
-    //                     return targetId != leagueId
-    //                 })
-    //                 t.update(entityRef, { managedLeagues: newLeagueList })
-    //             }
-    //         }
-    //     })
-    // }
+    async isPortfolioUsed(portfolioId: string) {
+        // check for linked leagues
+        const entityRefCollection = this.db.collection('leagues').where('portfolioId', '==', portfolioId)
+        const entityCollectionRefs = await entityRefCollection.get()
+        if (entityCollectionRefs.size > 0) {
+            const ids = entityCollectionRefs.docs.map((doc) => {
+                const data = doc.data()
+                return data.leagueId
+            })
 
-    // async addLeagueLeague(leagueId: string, leagueId: string) {
-    //     const entityRef = this.db.collection(COLLECTION_NAME).doc(leagueId)
-    //     await this.db.runTransaction(async (t) => {
-    //         const entityDoc = await t.get(entityRef)
-    //         if (entityDoc.exists) {
-    //             const entity = entityDoc.data() as TLeague
-    //             if (entity) {
-    //                 const leagueList = entity.managedLeagues || []
-    //                 const newLeagueList = [...leagueList, leagueId]
-    //                 t.update(entityRef, { managedLeagues: newLeagueList })
-    //             }
-    //         }
-    //     })
-    // }
+            const idList = ids.join(', ')
+            return idList
+        } else {
+            return null
+        }
+    }
+
+    async dropLeagueAsset(leagueId: string, assetId: string) {
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(leagueId)
+        await this.db.runTransaction(async (t) => {
+            const entityDoc = await t.get(entityRef)
+            if (entityDoc.exists) {
+                const entity = entityDoc.data()
+                if (entity) {
+                    const assetList = entity.managedAssets || []
+                    const newAssetList = assetList.filter((targetId: string) => {
+                        return targetId != assetId
+                    })
+                    t.update(entityRef, { managedAssets: newAssetList })
+                }
+            }
+        })
+    }
+
+    async addLeagueAsset(leagueId: string, asset: TAsset) {
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(leagueId)
+        await this.db.runTransaction(async (t) => {
+            const entityDoc = await t.get(entityRef)
+            if (entityDoc.exists) {
+                const entity = entityDoc.data() as TLeague
+                if (entity) {
+                    const assetList = entity.managedAssets || []
+                    const newAssetList = [...assetList, { id: asset.assetId, displayName: asset.displayName }]
+                    t.update(entityRef, { managedAssets: newAssetList })
+                }
+            }
+        })
+    }
 }

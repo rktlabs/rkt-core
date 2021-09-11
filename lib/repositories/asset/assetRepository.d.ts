@@ -13,4 +13,6 @@ export declare class AssetRepository extends RepositoryBase {
         id: string;
         displayName: string;
     }[]>;
+    isPortfolioUsed(portfolioId: string): Promise<string | null>;
+    isLeagueUsed(leagueId: string): Promise<string | null>;
 }

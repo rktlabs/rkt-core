@@ -12,7 +12,7 @@ export class Asset {
     assetId: string
     displayName: string
     ownerId: string
-    // portfolioId?: string
+    portfolioId?: string
 
     leagueId: string
     leagueDisplayName: string
@@ -21,6 +21,7 @@ export class Asset {
     xids?: any
 
     // initialPrice?: number
+
     bid?: number
     ask?: number
     last?: number
@@ -32,7 +33,7 @@ export class Asset {
         this.assetId = props.assetId
         this.displayName = props.displayName
         this.ownerId = props.ownerId
-        // this.portfolioId = props.portfolioId
+        this.portfolioId = props.portfolioId
 
         this.leagueId = props.leagueId
         this.leagueDisplayName = props.leagueDisplayName

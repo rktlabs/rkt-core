@@ -83,4 +83,38 @@ export class AssetRepository extends RepositoryBase {
             return []
         }
     }
+
+    async isPortfolioUsed(portfolioId: string) {
+        // check for linked assets
+        const entityRefCollection = this.db.collection('assets').where('portfolioId', '==', portfolioId)
+        const entityCollectionRefs = await entityRefCollection.get()
+        if (entityCollectionRefs.size > 0) {
+            const ids = entityCollectionRefs.docs.map((doc) => {
+                const data = doc.data()
+                return data.assetId
+            })
+
+            const idList = ids.join(', ')
+            return idList
+        } else {
+            return null
+        }
+    }
+
+    async isLeagueUsed(leagueId: string) {
+        // check for linked assets
+        const entityRefCollection = this.db.collection('assets').where('leagueId', '==', leagueId)
+        const entityCollectionRefs = await entityRefCollection.get()
+        if (entityCollectionRefs.size > 0) {
+            const ids = entityCollectionRefs.docs.map((doc) => {
+                const data = doc.data()
+                return data.assetId
+            })
+
+            const idList = ids.join(', ')
+            return idList
+        } else {
+            return null
+        }
+    }
 }

@@ -13,6 +13,7 @@ export declare type TAsset = {
     symbol: string;
     assetId: string;
     ownerId: string;
+    portfolioId?: string;
     displayName: string;
     leagueId: string;
     leagueDisplayName: string;
@@ -26,4 +27,9 @@ export declare type TAssetUpdate = {
     bid?: number;
     ask?: number;
     last?: number;
+};
+export declare type TLeagueAssetDef = {
+    assetId: string;
+    displayName: string;
+    initialPrice: number;
 };

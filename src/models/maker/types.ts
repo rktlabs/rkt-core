@@ -1,40 +1,30 @@
 export type TNewMaker = {
+    type: string
     ownerId: string
-    symbol: string
-    displayName?: string
+    assetId: string
 
-    leagueId: string
-    leagueDisplayName?: string
+    settings?: any
 
-    tags?: any
-    xids?: any
-
-    // initialPrice?: number
+    params?: any
 }
 
 export type TMaker = {
     createdAt: string
+    portfolioId?: string
+
     type: string
-    symbol: string
-    makerId: string
     ownerId: string
-    // portfolioId?: string
-    displayName: string
+    assetId: string
 
-    leagueId: string
-    leagueDisplayName: string
+    madeUnits: number
 
-    tags?: any
-    xids?: any
+    currentPrice?: number
 
-    // initialPrice?: number
-    bid?: number
-    ask?: number
-    last?: number
+    params?: any
 }
 
-export type TMakerUpdate = {
-    bid?: number
-    ask?: number
-    last?: number
+export type TMakerPatch = {
+    currentPrice?: number
+
+    params?: any
 }

@@ -1,4 +1,4 @@
-// export type TLeagueEarnerDef = {
+// export type TLeagueAssetDef = {
 //     earnerId: string
 //     initialPrice: number
 //     displayName: string
@@ -16,7 +16,7 @@ export type TNewLeague = {
     // key?: string
     // pt?: number
     tags?: any
-    // earnerList?: TLeagueEarnerDef[]
+    // earnerList?: TLeagueAssetDef[]
 }
 
 export type TLeague = {

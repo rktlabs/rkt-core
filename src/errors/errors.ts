@@ -41,11 +41,11 @@ export class ServerError extends HttpError {
     }
 }
 
-// export class NotFoundError extends HttpError {
-//     constructor(message: string, additionalData: any = {}) {
-//         super(404, 'Not Found Error', message, additionalData)
-//     }
-// }
+export class NotFoundError extends HttpError {
+    constructor(message: string, additionalData: any = {}) {
+        super(404, 'Not Found Error', message, additionalData)
+    }
+}
 
 export class ClientError extends HttpError {
     constructor(message: string, additionalData: any = {}) {
@@ -53,11 +53,11 @@ export class ClientError extends HttpError {
     }
 }
 
-// export class DuplicateError extends HttpError {
-//     constructor(message: string, additionalData: any = {}) {
-//         super(409, 'Conflict Error', message, additionalData)
-//     }
-// }
+export class DuplicateError extends HttpError {
+    constructor(message: string, additionalData: any = {}) {
+        super(409, 'Conflict Error', message, additionalData)
+    }
+}
 
 // export class ArgumentError extends HttpError {
 //     constructor(message: string, additionalData: any = {}) {
@@ -65,11 +65,11 @@ export class ClientError extends HttpError {
 //     }
 // }
 
-// export class UnprocessableError extends HttpError {
-//     constructor(message: string, additionalData: any = {}) {
-//         super(422, 'Unprocessable Error', message, additionalData)
-//     }
-// }
+export class UnprocessableError extends HttpError {
+    constructor(message: string, additionalData: any = {}) {
+        super(422, 'Unprocessable Error', message, additionalData)
+    }
+}
 
 export class ValidationError extends ClientError {
     constructor(jsonValidationError: any, additionalData: any = {}) {
@@ -77,11 +77,11 @@ export class ValidationError extends ClientError {
     }
 }
 
-// export class InvalidTransaction extends UnprocessableError {
-//     constructor(message: string, additionalData: any = {}) {
-//         super(message, additionalData)
-//     }
-// }
+export class InvalidTransaction extends UnprocessableError {
+    constructor(message: string, additionalData: any = {}) {
+        super(message, additionalData)
+    }
+}
 
 // export class CancelOrderFailure extends UnprocessableError {
 //     constructor(message: string) {
@@ -131,11 +131,11 @@ export class NameError extends ServerError {
 // //     }
 // // }
 
-// export class ConflictError extends HttpError {
-//     constructor(message: string, additionalData: any = {}) {
-//         super(409, 'Conflict Error', message, additionalData)
-//     }
-// }
+export class ConflictError extends HttpError {
+    constructor(message: string, additionalData: any = {}) {
+        super(409, 'Conflict Error', message, additionalData)
+    }
+}
 
 // // export class RetryableInsufficientBalance extends HttpError {
 // //     constructor(message: string, additionalData: any = {}) {
@@ -144,8 +144,8 @@ export class NameError extends ServerError {
 // //     }
 // // }
 
-// export class InsufficientBalance extends HttpError {
-//     constructor(message: string, additionalData: any = {}) {
-//         super(409, 'Conflict Error', message, additionalData)
-//     }
-// }
+export class InsufficientBalance extends HttpError {
+    constructor(message: string, additionalData: any = {}) {
+        super(409, 'Conflict Error', message, additionalData)
+    }
+}

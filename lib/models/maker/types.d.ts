@@ -1,29 +1,21 @@
 export declare type TNewMaker = {
+    type: string;
     ownerId: string;
-    symbol: string;
-    displayName?: string;
-    leagueId: string;
-    leagueDisplayName?: string;
-    tags?: any;
-    xids?: any;
+    assetId: string;
+    settings?: any;
+    params?: any;
 };
 export declare type TMaker = {
     createdAt: string;
+    portfolioId?: string;
     type: string;
-    symbol: string;
-    makerId: string;
     ownerId: string;
-    displayName: string;
-    leagueId: string;
-    leagueDisplayName: string;
-    tags?: any;
-    xids?: any;
-    bid?: number;
-    ask?: number;
-    last?: number;
+    assetId: string;
+    madeUnits: number;
+    currentPrice?: number;
+    params?: any;
 };
-export declare type TMakerUpdate = {
-    bid?: number;
-    ask?: number;
-    last?: number;
+export declare type TMakerPatch = {
+    currentPrice?: number;
+    params?: any;
 };

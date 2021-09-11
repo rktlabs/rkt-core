@@ -1,9 +1,9 @@
 'use strict'
+import { TMaker, TMakerPatch } from '../../models/maker'
 import { deleteDocument } from '../../util/deleters'
 
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
-import { TMaker, TMakerUpdate } from '../../models/maker'
 
 const COLLECTION_NAME = 'makers'
 
@@ -47,13 +47,13 @@ export class MakerRepository extends RepositoryBase {
     }
 
     async storeAsync(entity: TMaker) {
-        const entityId = entity.makerId
+        const entityId = entity.assetId
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.set(entityData)
     }
 
-    async updateAsync(makerId: string, entityData: TMakerUpdate) {
+    async updateAsync(makerId: string, entityData: TMakerPatch) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(makerId)
         await entityRef.update(entityData)
     }
@@ -61,5 +61,22 @@ export class MakerRepository extends RepositoryBase {
     async deleteAsync(makerId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(makerId)
         await deleteDocument(entityRef)
+    }
+
+    async isPortfolioUsed(portfolioId: string) {
+        // check for linked makers
+        const entityRefCollection = this.db.collection('makers').where('portfolioId', '==', portfolioId)
+        const entityCollectionRefs = await entityRefCollection.get()
+        if (entityCollectionRefs.size > 0) {
+            const ids = entityCollectionRefs.docs.map((doc) => {
+                const data = doc.data()
+                return data.assetId
+            })
+
+            const idList = ids.join(', ')
+            return idList
+        } else {
+            return null
+        }
     }
 }
