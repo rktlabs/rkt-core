@@ -1,5 +1,5 @@
 'use strict'
-import { TMaker, TMakerPatch } from '../../services/makerFactory/makers/makerBase/types'
+import { TMaker, TMakerPatch } from '../../services/makerService/makers/makerBase/types'
 import { deleteDocument } from '../../util/deleters'
 
 import { getConnectionProps } from '../getConnectionProps'

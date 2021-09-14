@@ -8,7 +8,6 @@ export class AssetService {
     private assetRepository: AssetRepository
 
     private portfolioService: PortfolioService
-    private leagueService: LeagueService
     private makerService: MakerService
     private portfolioHoldingService: PortfolioHoldingsService
 
@@ -18,7 +17,6 @@ export class AssetService {
 
         this.portfolioHoldingService = new PortfolioHoldingsService()
         this.portfolioService = new PortfolioService()
-        this.leagueService = new LeagueService()
         this.makerService = new MakerService()
     }
 
@@ -63,14 +61,6 @@ export class AssetService {
     }
 
     async scrubAsset(assetId: string) {
-        const asset = await this.assetRepository.getDetailAsync(assetId)
-        if (asset) {
-            const leagueId = asset.leagueId
-            if (leagueId) {
-                this.leagueService.dropAsset(leagueId, asset.assetId)
-            }
-        }
-
         await this.portfolioHoldingService.scrubAssetHolders(assetId)
 
         await this.portfolioService.scrubPortfolio(`asset::${assetId}`)

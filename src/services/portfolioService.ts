@@ -23,6 +23,7 @@ export class PortfolioService {
     private leagueRepository: LeagueRepository
     private portfolioActivityRepository: PortfolioActivityRepository
     private portfolioDepositRepository: PortfolioDepositRepository
+
     private portfolioHoldingsService: PortfolioHoldingsService
 
     constructor() {
@@ -32,6 +33,7 @@ export class PortfolioService {
         this.makerRepository = new MakerRepository()
         this.leagueRepository = new LeagueRepository()
         this.portfolioDepositRepository = new PortfolioDepositRepository()
+
         this.portfolioHoldingsService = new PortfolioHoldingsService()
     }
 

@@ -9,7 +9,7 @@ export declare class LeagueService {
     newLeague(payload: TNewLeague): Promise<League>;
     deleteLeague(leagueId: string): Promise<void>;
     scrubLeague(leagueId: string): Promise<void>;
-    scrubLeagueAsset(assetId: string): Promise<any[]>;
+    scrubLeagueAsset(leagueId: string, assetId: string): Promise<any[]>;
     newAsset(leagueSpec: string | League, assetDef: TLeagueAssetDef): Promise<void>;
     dropAsset(leagueSpec: string | League, assetId: string): Promise<void>;
     private createLeagueImpl;

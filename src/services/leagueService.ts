@@ -18,6 +18,7 @@ export class LeagueService {
     private assetRepository: AssetRepository
     private leagueRepository: LeagueRepository
     private portfolioRepository: PortfolioRepository
+
     private portfolioService: PortfolioService
     private assetService: AssetService
 
@@ -25,6 +26,7 @@ export class LeagueService {
         this.assetRepository = new AssetRepository()
         this.leagueRepository = new LeagueRepository()
         this.portfolioRepository = new PortfolioRepository()
+
         this.portfolioService = new PortfolioService()
         this.assetService = new AssetService()
     }
@@ -74,7 +76,7 @@ export class LeagueService {
 
         const promises: any[] = []
         managedAssetIds.forEach((asset) => {
-            promises.push(this.scrubLeagueAsset(asset.id))
+            promises.push(this.scrubLeagueAsset(leagueId, asset.assetId))
         })
 
         // scrub the associated portfolio
@@ -87,9 +89,10 @@ export class LeagueService {
         await Promise.all(promises)
     }
 
-    async scrubLeagueAsset(assetId: string) {
+    async scrubLeagueAsset(leagueId: string, assetId: string) {
         const promises: any[] = []
         promises.push(this.assetService.scrubAsset(assetId))
+        promises.push(this.dropAsset(leagueId, assetId))
         return Promise.all(promises)
     }
 

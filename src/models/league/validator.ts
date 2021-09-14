@@ -12,12 +12,8 @@ const _leagueSchema = {
     properties: {
         ownerId: { type: 'string' },
         displayName: { type: 'string' },
-        startAt: { type: 'string' },
-        endAt: { type: 'string' },
-        key: { type: 'string' },
-        pt: { type: 'number' },
     },
-    required: ['displayName', 'startAt', 'endAt', 'key', 'pt'],
+    required: ['displayName'],
 }
 
 const _validateLeagueSchema = (jsonPayload: any, schema: any) => {

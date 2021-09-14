@@ -1,4 +1,4 @@
-import { TMaker, TMakerPatch } from '../../services/makerFactory/makers/makerBase/types';
+import { TMaker, TMakerPatch } from '../../services/makerService/makers/makerBase/types';
 import { RepositoryBase } from '../repositoryBase';
 export declare class MakerRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;

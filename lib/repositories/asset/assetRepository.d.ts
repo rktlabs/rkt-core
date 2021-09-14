@@ -1,5 +1,5 @@
 import { RepositoryBase } from '../repositoryBase';
-import { TAsset, TAssetUpdate } from '../../models/asset';
+import { TAsset, TAssetCore, TAssetUpdate } from '../../models/asset';
 export declare class AssetRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;
     constructor();
@@ -9,10 +9,7 @@ export declare class AssetRepository extends RepositoryBase {
     storeAsync(entity: TAsset): Promise<void>;
     updateAsync(assetId: string, entityData: TAssetUpdate): Promise<void>;
     deleteAsync(assetId: string): Promise<void>;
-    getLeagueAssetsAsync(leagueId: string): Promise<{
-        id: string;
-        displayName: string;
-    }[]>;
+    getLeagueAssetsAsync(leagueId: string): Promise<TAssetCore[]>;
     isPortfolioUsed(portfolioId: string): Promise<string | null>;
     isLeagueUsed(leagueId: string): Promise<string | null>;
 }

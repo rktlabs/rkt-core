@@ -43,10 +43,6 @@ describe('League Repository', () => {
                 ownerId: 'tester',
                 leagueId: leagueId,
                 portfolioId: `league::${leagueId}`,
-                startAt: DateTime.local(2020, 8, 15).toString(),
-                endAt: DateTime.local(2020, 12, 31).toString(),
-                key: 'seasons',
-                pt: 1,
             }
 
             const league = League.newLeague(data)
@@ -74,10 +70,6 @@ describe('League Repository', () => {
                 ownerId: 'tester',
                 leagueId: leagueId,
                 portfolioId: `league::${leagueId}`,
-                startAt: DateTime.local(2020, 8, 15).toString(),
-                endAt: DateTime.local(2020, 12, 31).toString(),
-                key: 'seasons',
-                pt: 1,
             }
 
             const league = League.newLeague(data)

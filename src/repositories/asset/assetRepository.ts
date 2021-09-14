@@ -3,7 +3,7 @@ import { deleteDocument } from '../../util/deleters'
 
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
-import { TAsset, TAssetUpdate } from '../../models/asset'
+import { TAsset, TAssetCore, TAssetUpdate } from '../../models/asset'
 
 const COLLECTION_NAME = 'assets'
 
@@ -68,7 +68,7 @@ export class AssetRepository extends RepositoryBase {
         await deleteDocument(entityRef)
     }
 
-    async getLeagueAssetsAsync(leagueId: string) {
+    async getLeagueAssetsAsync(leagueId: string): Promise<TAssetCore[]> {
         // TODO: renaem contractId to leagueId
         //let entityRefCollection = this.db.collection(COLLECTION_NAME).where('leagueId', '==', leagueId)
         const entityRefCollection = this.db.collection(COLLECTION_NAME).where('contractId', '==', leagueId)
@@ -76,7 +76,7 @@ export class AssetRepository extends RepositoryBase {
         if (!entityCollectionRefs.empty) {
             const assetList = entityCollectionRefs.docs.map((entityDoc) => {
                 const entity = entityDoc.data() as TAsset
-                return { id: entity.assetId, displayName: entity.displayName }
+                return { assetId: entity.assetId, displayName: entity.displayName }
             })
             return assetList
         } else {

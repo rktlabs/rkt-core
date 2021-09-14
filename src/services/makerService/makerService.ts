@@ -18,12 +18,14 @@ export class MakerService {
     private assetRepository: AssetRepository
     private makerRepository: MakerRepository
     private portfolioRepository: PortfolioRepository
+
     private portfolioService: PortfolioService
 
     constructor() {
         this.assetRepository = new AssetRepository()
         this.makerRepository = new MakerRepository()
         this.portfolioRepository = new PortfolioRepository()
+
         this.portfolioService = new PortfolioService()
     }
 

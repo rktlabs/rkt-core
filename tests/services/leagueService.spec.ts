@@ -57,10 +57,6 @@ describe('League Service', function () {
                 ownerId: 'tester',
                 leagueId: leagueId,
                 portfolioId: `league::${leagueId}`,
-                startAt: DateTime.local(2020, 8, 15).toString(),
-                endAt: DateTime.local(2020, 12, 31).toString(),
-                key: 'seasons',
-                pt: 1,
             }
 
             await leagueService.newLeague(data)
@@ -88,10 +84,6 @@ describe('League Service', function () {
                 ownerId: 'tester',
                 leagueId: leagueId,
                 portfolioId: `league::${leagueId}`,
-                startAt: DateTime.local(2020, 8, 15).toString(),
-                endAt: DateTime.local(2020, 12, 31).toString(),
-                key: 'seasons',
-                pt: 1,
             }
 
             const league = await leagueService.newLeague(data)
