@@ -51,14 +51,14 @@ describe('Transaction Service', function () {
     })
 
     // describe('Fund Portfolio', () => {
-    //     it('should move funds from mint contract to user portfolio', async () => {
+    //     it('should move funds from mint league to user portfolio', async () => {
     //         await transactionService.mintCoinsToPortfolio('user::hedbot', 10)
 
     //         // verify that treasury has balance of 10
     //         expect(await portfolioHoldingsService.getPortfolioHoldingsBalance('user::hedbot', 'coin::fantx')).to.eq(10)
 
     //         // verify that mint has balance of -10
-    //         expect(await portfolioHoldingsService.getPortfolioHoldingsBalance('contract::mint', 'coin::fantx')).to.eq(-10)
+    //         expect(await portfolioHoldingsService.getPortfolioHoldingsBalance('league::mint', 'coin::fantx')).to.eq(-10)
 
     //         //expect(eventPublisher.publishTransactionEventUpdatePortfolioAsync.callCount).to.eq(2)
     //         expect(eventPublisher.publishTransactionEventCompleteAsync.callCount).to.eq(1)

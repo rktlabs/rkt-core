@@ -46,11 +46,11 @@ export class TransactionService {
     // Public Methods
     /////////////////////////////
 
-    // EJH: used by contract service buyContractAsset(), sellAssetToContractImpl()
+    // EJH: used by league service buyLeagueAsset(), sellAssetToLeagueImpl()
     // takes simple structure and fills out the rest:
     // eg:
     // const data: TPurchase = {
-    //     buyerPorfolioId: contractPortfolioId,
+    //     buyerPorfolioId: leaguePortfolioId,
     //     sellerPortfolioId: portfolioId,
     //     assetId: assetId,
     //     units: units,
@@ -76,7 +76,7 @@ export class TransactionService {
             ],
             outputs: [
                 {
-                    // shares out to contract asset
+                    // shares out to league asset
                     portfolioId: exchangeData.buyerPorfolioId,
                     assetId: exchangeData.assetId,
                     units: exchangeData.units,
@@ -93,7 +93,7 @@ export class TransactionService {
         return this.newTransactionAsync(transaction)
     }
 
-    // EJH: used by contract service mintContractAssetUnitsToPortfolioImpl(), fundContractImplAsync()
+    // EJH: used by league service mintLeagueAssetUnitsToPortfolioImpl(), fundLeagueImplAsync()
     // and userService depositCoins()
     // and transactionhandler..
     // a transfer is a transaction with one in put, out output, and one asset
@@ -279,7 +279,7 @@ export class TransactionService {
     async mintCoinsToPortfolio(
         portfolioId: string,
         units: number,
-        sourcePortfolioId: string = 'contract::mint',
+        sourcePortfolioId: string = 'league::mint',
         assetId: string = 'coin::rkt',
     ) {
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
@@ -350,8 +350,8 @@ export class TransactionService {
                 const isMint = portfolioType === 'mint'
                 const isBank = portfolioType === 'bank'
                 const isMaker = portfolioType === 'maker'
-                const isContract = portfolioType === 'contract'
-                const canShort = isMint || isBank || isMaker || isContract
+                const isLeague = portfolioType === 'league'
+                const canShort = isMint || isBank || isMaker || isLeague
 
                 // EJH TEST TEST TEST
                 // configure so anything can run negative balance

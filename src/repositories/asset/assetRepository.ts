@@ -16,7 +16,6 @@ export class AssetRepository extends RepositoryBase {
 
     filterMap: any = {
         leagueId: 'leagueId',
-        contractId: 'contractId',
         type: 'type',
     }
 
@@ -69,9 +68,8 @@ export class AssetRepository extends RepositoryBase {
     }
 
     async getLeagueAssetsAsync(leagueId: string): Promise<TAssetCore[]> {
-        // TODO: renaem contractId to leagueId
-        //let entityRefCollection = this.db.collection(COLLECTION_NAME).where('leagueId', '==', leagueId)
-        const entityRefCollection = this.db.collection(COLLECTION_NAME).where('contractId', '==', leagueId)
+        // TODO: renaem leagueId to leagueId
+        const entityRefCollection = this.db.collection(COLLECTION_NAME).where('leagueId', '==', leagueId)
         const entityCollectionRefs = await entityRefCollection.get()
         if (!entityCollectionRefs.empty) {
             const assetList = entityCollectionRefs.docs.map((entityDoc) => {

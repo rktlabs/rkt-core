@@ -78,8 +78,8 @@
 //     //         const data: TNewAsset = {
 //     //             ownerId: 'tester',
 //     //             symbol: 'card::the.card',
-//     //             contractId: 'theContractId',
-//     //             contractDisplayName: 'theContractDisplayName',
+//     //             leagueId: 'theLeagueId',
+//     //             leagueDisplayName: 'theLeagueDisplayName',
 //     //             earnerId: 'theEarnerId',
 //     //             earnerDisplayName: 'theEarnerDisplayName',
 //     //         }
@@ -99,8 +99,8 @@
 //     //                 assetId: 'card::the.card',
 //     //                 ownerId: 'tester',
 //     //                 displayName: 'card::the.card',
-//     //                 contractId: 'theContractId',
-//     //                 contractDisplayName: 'theContractDisplayName',
+//     //                 leagueId: 'theLeagueId',
+//     //                 leagueDisplayName: 'theLeagueDisplayName',
 //     //                 earnerId: 'theEarnerId',
 //     //                 earnerDisplayName: 'theEarnerDisplayName',
 //     //             },

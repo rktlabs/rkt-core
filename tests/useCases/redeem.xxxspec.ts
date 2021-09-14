@@ -10,7 +10,7 @@
 //     PortfolioService,
 //     TransactionService,
 //     PortfolioAssetService,
-//     ContractService,
+//     LeagueService,
 //     EarnerService,
 // } from '../../src/services'
 // import { BootstrapService } from '../../src/services'
@@ -23,7 +23,7 @@
 //     let transactionService: TransactionService
 //     let portfolioAssetService: PortfolioAssetService
 //     let bootstrapService: BootstrapService
-//     let contractService: ContractService
+//     let leagueService: LeagueService
 
 //     let eventPublisher: sinon.SinonStubbedInstance<EventPublisher>
 
@@ -34,14 +34,14 @@
 //         earnerService = new EarnerService(db, eventPublisher as any as EventPublisher)
 //         portfolioAssetService = new PortfolioAssetService(db, eventPublisher as any as EventPublisher)
 //         portfolioService = new PortfolioService(db, eventPublisher as any as EventPublisher)
-//         contractService = new ContractService(db, eventPublisher as any as EventPublisher)
+//         leagueService = new LeagueService(db, eventPublisher as any as EventPublisher)
 //         transactionService = new TransactionService(db, eventPublisher as any as EventPublisher)
 //         bootstrapService = new BootstrapService(db, eventPublisher as any as EventPublisher)
 //     })
 
 //     beforeEach(async () => {
 //         await bootstrapService.clearDb()
-//         await bootstrapService.bootstrap() // create mint, coin, and test contract
+//         await bootstrapService.bootstrap() // create mint, coin, and test league
 
 //         // crete asset  card::jbone::test
 //         await bootstrapService.setupTestAsset()
@@ -53,12 +53,12 @@
 //             portfolioId: 'user::hedbot',
 //         })
 
-//         const contractCoins = 1000
-//         await transactionService.mintCoinsToPortfolio('contract::test', contractCoins)
+//         const leagueCoins = 1000
+//         await transactionService.mintCoinsToPortfolio('league::test', leagueCoins)
 
 //         // move 10 units to the user
 //         const units = 10
-//         await contractService.mintContractAssetUnitsToPortfolio('user::hedbot', 'card::jbone::test', units)
+//         await leagueService.mintLeagueAssetUnitsToPortfolio('user::hedbot', 'card::jbone::test', units)
 //     })
 
 //     describe('Redeem units of asset with no earnings.', () => {
@@ -68,33 +68,33 @@
 //             const units = 10
 
 //             //user protfolio has units
-//             const [assetUnitBalance, userUnitBalance, contractCoins, userCoins] = await Promise.all([
-//                 contractService.getAssetUnitsIssued(assetId),
+//             const [assetUnitBalance, userUnitBalance, leagueCoins, userCoins] = await Promise.all([
+//                 leagueService.getAssetUnitsIssued(assetId),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, assetId),
-//                 portfolioAssetService.getPortfolioAssetBalance('contract::test', 'coin::fantx'),
+//                 portfolioAssetService.getPortfolioAssetBalance('league::test', 'coin::fantx'),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, 'coin::fantx'),
 //             ])
 //             console.log(
-//                 `init: asset units: ${assetUnitBalance}, portfolio units: ${userUnitBalance} contratCoins: ${contractCoins} userCoints: ${userCoins}`,
+//                 `init: asset units: ${assetUnitBalance}, portfolio units: ${userUnitBalance} contratCoins: ${leagueCoins} userCoints: ${userCoins}`,
 //             )
 
-//             await contractService.redeemAsset('card::jbone::test')
+//             await leagueService.redeemAsset('card::jbone::test')
 
-//             const [newAssetUnitBalance, newUserUnitBalance, newContractCoins, newUserCoins] = await Promise.all([
-//                 contractService.getAssetUnitsIssued(assetId),
+//             const [newAssetUnitBalance, newUserUnitBalance, newLeagueCoins, newUserCoins] = await Promise.all([
+//                 leagueService.getAssetUnitsIssued(assetId),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, assetId),
-//                 portfolioAssetService.getPortfolioAssetBalance('contract::test', 'coin::fantx'),
+//                 portfolioAssetService.getPortfolioAssetBalance('league::test', 'coin::fantx'),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, 'coin::fantx'),
 //             ])
 
 //             console.log(
-//                 `after: asset units: ${newAssetUnitBalance}, portfolio units: ${newUserUnitBalance} contratCoins: ${newContractCoins} userCoints: ${newUserCoins}`,
+//                 `after: asset units: ${newAssetUnitBalance}, portfolio units: ${newUserUnitBalance} contratCoins: ${newLeagueCoins} userCoints: ${newUserCoins}`,
 //             )
 //         })
 //     })
 
 //     describe('Redeem units of asset with accumulated earnings earnings.', () => {
-//         it('should move funds from contract to user portfolio', async () => {
+//         it('should move funds from league to user portfolio', async () => {
 //             const userPortfolio = 'user::hedbot'
 //             const earnerId = 'card::jbone'
 //             const assetId = 'card::jbone::test'
@@ -103,27 +103,27 @@
 //             await earnerService.submitEarnings(earnerId, { units, event: { description: 'test earnings1' } })
 //             await earnerService.submitEarnings(earnerId, { units, event: { description: 'test earnings2' } })
 
-//             const [assetUnitBalance, userUnitBalance, contractCoins, userCoins] = await Promise.all([
-//                 contractService.getAssetUnitsIssued(assetId),
+//             const [assetUnitBalance, userUnitBalance, leagueCoins, userCoins] = await Promise.all([
+//                 leagueService.getAssetUnitsIssued(assetId),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, assetId),
-//                 portfolioAssetService.getPortfolioAssetBalance('contract::test', 'coin::fantx'),
+//                 portfolioAssetService.getPortfolioAssetBalance('league::test', 'coin::fantx'),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, 'coin::fantx'),
 //             ])
 //             console.log(
-//                 `init: asset units: ${assetUnitBalance}, portfolio units: ${userUnitBalance} contractCoins: ${contractCoins} userCoints: ${userCoins}`,
+//                 `init: asset units: ${assetUnitBalance}, portfolio units: ${userUnitBalance} leagueCoins: ${leagueCoins} userCoints: ${userCoins}`,
 //             )
 
-//             await contractService.redeemAsset('card::jbone::test')
+//             await leagueService.redeemAsset('card::jbone::test')
 
-//             const [newAssetUnitBalance, newUserUnitBalance, newContractCoins, newUserCoins] = await Promise.all([
-//                 contractService.getAssetUnitsIssued(assetId),
+//             const [newAssetUnitBalance, newUserUnitBalance, newLeagueCoins, newUserCoins] = await Promise.all([
+//                 leagueService.getAssetUnitsIssued(assetId),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, assetId),
-//                 portfolioAssetService.getPortfolioAssetBalance('contract::test', 'coin::fantx'),
+//                 portfolioAssetService.getPortfolioAssetBalance('league::test', 'coin::fantx'),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, 'coin::fantx'),
 //             ])
 
 //             console.log(
-//                 `after: asset units: ${newAssetUnitBalance}, portfolio units: ${newUserUnitBalance} contractCoins: ${newContractCoins} userCoints: ${newUserCoins}`,
+//                 `after: asset units: ${newAssetUnitBalance}, portfolio units: ${newUserUnitBalance} leagueCoins: ${newLeagueCoins} userCoints: ${newUserCoins}`,
 //             )
 //         })
 //     })

@@ -15,12 +15,10 @@ const _assetSchema = {
         assetId: { type: 'string' },
         symbol: { type: 'string' },
         displayName: { type: 'string' },
-        contractId: { type: 'string' },
-        contractDisplayName: { type: 'string' },
-        earnerId: { type: 'string' },
-        earnerDisplayName: { type: 'string' },
+        leagueId: { type: 'string' },
+        leagueDisplayName: { type: 'string' },
     },
-    required: ['ownerId', 'symbol', 'type', 'contractId', 'earnerId', 'displayName'],
+    required: ['ownerId', 'symbol', 'type', 'leagueId', 'earnerId', 'displayName'],
 }
 
 const _validateAssetSchema = (jsonPayload: any, schema: any) => {

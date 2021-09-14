@@ -22,7 +22,6 @@ export class PortfolioActivityRepository extends RepositoryBase {
 
     filterMap: any = {
         leagueId: 'leagueId',
-        contractId: 'contractId',
         type: 'type',
     }
 

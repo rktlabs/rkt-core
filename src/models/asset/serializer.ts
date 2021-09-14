@@ -12,10 +12,10 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                     rel: 'asset',
                 },
                 league: {
-                    href: `${baseUrl}/leagues/${data.contractId}`,
+                    href: `${baseUrl}/leagues/${data.leagueId}`,
                     rel: 'league',
-                    id: data.contractId,
-                    title: data.contractDisplayName,
+                    id: data.leagueId,
+                    title: data.leagueDisplayName,
                 },
                 portfolio: {
                     href: `${baseUrl}/portfolios/${data.portfolioId}`,
