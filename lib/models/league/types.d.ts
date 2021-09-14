@@ -1,5 +1,5 @@
 import { TAssetCore } from '..';
-export declare type TNewLeague = {
+export declare type TNewLeagueConfig = {
     leagueId: string;
     ownerId: string;
     displayName?: string;

@@ -39,11 +39,11 @@ export class BootstrapService {
             displayName: assetId,
         }
 
-        await this.assetService.newAsset(assetDef)
+        await this.assetService.createAsset(assetDef)
     }
 
     async bootTestLeague() {
-        await this.leagueService.newLeague({
+        await this.leagueService.createLeague({
             ownerId: 'test',
             leagueId: 'test',
         })
@@ -59,7 +59,7 @@ export class BootstrapService {
 
         let asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
-            await this.leagueService.newAsset(leagueId, {
+            await this.leagueService.createAsset(leagueId, {
                 symbol: assetId,
                 displayName: assetId,
             })
@@ -69,7 +69,7 @@ export class BootstrapService {
     async setupAccount() {
         let portfolio = await this.portfolioRepository.getDetailAsync('user::hedbot')
         if (!portfolio) {
-            await this.portfolioService.createPortfolio({
+            await this.portfolioService.createOrKeepPortfolio({
                 type: 'user',
                 ownerId: 'test',
                 portfolioId: 'user::hedbot',
@@ -80,7 +80,7 @@ export class BootstrapService {
     async setupTreasury() {
         let portfolio = await this.portfolioRepository.getDetailAsync('bank::treasury')
         if (!portfolio) {
-            await this.portfolioService.createPortfolio({
+            await this.portfolioService.createOrKeepPortfolio({
                 type: 'bank',
                 ownerId: 'test',
                 portfolioId: 'bank::treasury',

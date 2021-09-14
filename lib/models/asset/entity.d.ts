@@ -1,4 +1,4 @@
-import { TAsset, TNewAsset } from '.';
+import { TAsset, TNewAssetConfig } from '.';
 export declare class Asset {
     createdAt: string;
     type: string;
@@ -16,7 +16,7 @@ export declare class Asset {
     last?: number;
     constructor(props: TAsset);
     toString(): string;
-    static newAsset(props: TNewAsset): Asset;
+    static newAsset(props: TNewAssetConfig): Asset;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;

@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { generateId } from '../..'
 import { ValidationError, TypeError, NameError } from '../../errors'
 import { serialize, serializeCollection } from './serializer'
-import { TUser, TNewUser } from './types'
+import { TUser, TNewUserConfig } from './types'
 import { validate } from './validator'
 
 // User holds value (coin) and shares to be sold.
@@ -43,7 +43,7 @@ export class User {
     }
 
     // Member Properties for new model
-    static newUser(props: TNewUser) {
+    static newUser(props: TNewUserConfig) {
         let userId: string
         if (props.userId) {
             userId = props.userId

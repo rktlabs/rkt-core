@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { TAsset, TNewAsset } from '.'
+import { TAsset, TNewAssetConfig } from '.'
 import { ValidationError, TypeError, NameError } from '../../errors'
 import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
@@ -51,7 +51,7 @@ export class Asset {
         return `[asset: ${this.assetId}]`
     }
 
-    static newAsset(props: TNewAsset) {
+    static newAsset(props: TNewAssetConfig) {
         const symbolParts = props.symbol.split(':')
         if (symbolParts.length < 2 || symbolParts[1] !== '') {
             throw new Error('New Asset: Invalid symbol')

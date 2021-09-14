@@ -56,7 +56,7 @@ export class TransactionService {
     //     units: units,
     //     coins: cost,
     // }
-    async newPurchaseAsync(exchangeData: TPurchase) {
+    async executePurchaseAsync(exchangeData: TPurchase) {
         const coinAssetId = 'coin::rkt'
 
         const transaction: TTransactionNew = {
@@ -90,14 +90,14 @@ export class TransactionService {
             ],
         }
 
-        return this.newTransactionAsync(transaction)
+        return this.executeTransactionAsync(transaction)
     }
 
     // EJH: used by league service mintLeagueAssetUnitsToPortfolioImpl(), fundLeagueImplAsync()
     // and userService depositCoins()
     // and transactionhandler..
     // a transfer is a transaction with one in put, out output, and one asset
-    async newTransferAsync(transferData: TTransfer) {
+    async executeTransferAsync(transferData: TTransfer) {
         //logger.debug(`Handle Transfer: ${JSON.stringify(transferData)}`)
 
         const inputPortfolioId = transferData.inputPortfolioId
@@ -131,11 +131,11 @@ export class TransactionService {
             transaction.tags = transferData.tags
         }
 
-        return this.newTransactionAsync(transaction)
+        return this.executeTransactionAsync(transaction)
     }
 
     // EJH: used by exchangeService xact()
-    async newTransactionAsync(transactionData: TTransactionNew) {
+    async executeTransactionAsync(transactionData: TTransactionNew) {
         //logger.debug(`Handle Create Transaction: ${JSON.stringify(transactionData)}`)
 
         const transaction = Transaction.newTransaction(transactionData)
@@ -326,7 +326,7 @@ export class TransactionService {
             },
         }
 
-        await this.newTransactionAsync(newTransactionData)
+        await this.executeTransactionAsync(newTransactionData)
     }
 
     private async verifyAssetsAsync(transaction: Transaction) {
@@ -365,7 +365,7 @@ export class TransactionService {
                     // short and no holding, then will fail for insufficient balance)
                     if (!holding) {
                         // eslint-disable-next-line no-await-in-loop
-                        holding = await this.portfolioHoldingsService.newPortfolioHolding(portfolioId, assetId)
+                        holding = await this.portfolioHoldingsService.createPortfolioHolding(portfolioId, assetId)
                     }
                 }
 
@@ -409,7 +409,7 @@ export class TransactionService {
                 let holding = await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, assetId)
                 if (!holding) {
                     // eslint-disable-next-line no-await-in-loop
-                    holding = await this.portfolioHoldingsService.newPortfolioHolding(portfolioId, assetId)
+                    holding = await this.portfolioHoldingsService.createPortfolioHolding(portfolioId, assetId)
                 }
 
                 if (!isCoin) {

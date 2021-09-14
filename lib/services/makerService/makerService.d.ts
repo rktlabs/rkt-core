@@ -8,7 +8,7 @@ export declare class MakerService {
     private portfolioService;
     constructor();
     getMakerAsync(assetId: string): Promise<IMaker | null>;
-    newMaker(payload: TNewMakerConfig, shouldCreatePortfolio?: boolean): Promise<MakerBase>;
+    createMaker(payload: TNewMakerConfig, shouldCreatePortfolio?: boolean): Promise<MakerBase>;
     deleteMaker(assetId: string): Promise<void>;
     scrubMaker(assetId: string): Promise<void>;
     private createMakerImpl;

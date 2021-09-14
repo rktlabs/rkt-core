@@ -5,12 +5,12 @@ import {
     AssetRepository,
     LeagueRepository,
     PortfolioRepository,
-    TNewLeague,
+    TNewLeagueConfig,
     DuplicateError,
     ConflictError,
     League,
     TLeagueAssetDef,
-    TNewAsset,
+    TNewAssetConfig,
     TAssetCore,
 } from '..'
 
@@ -31,7 +31,7 @@ export class LeagueService {
         this.assetService = new AssetService()
     }
 
-    async newLeague(payload: TNewLeague) {
+    async createLeague(payload: TNewLeagueConfig) {
         const leagueId = payload.leagueId
 
         if (leagueId) {
@@ -96,14 +96,14 @@ export class LeagueService {
         return Promise.all(promises)
     }
 
-    async newAsset(leagueSpec: string | League, assetDef: TLeagueAssetDef) {
+    async createAsset(leagueSpec: string | League, assetDef: TLeagueAssetDef) {
         const league =
             typeof leagueSpec === 'string' ? await this.leagueRepository.getDetailAsync(leagueSpec) : leagueSpec
         if (!league) {
             throw new Error(`League Not Found: ${leagueSpec}`)
         }
 
-        await this.newAssetImpl(league, assetDef)
+        await this.createAssetImpl(league, assetDef)
     }
 
     async dropAsset(leagueSpec: string | League, assetId: string) {
@@ -120,7 +120,7 @@ export class LeagueService {
     // PRIVATE
     ///////////////////////////////////////////////////////
 
-    private async createLeagueImpl(payload: TNewLeague) {
+    private async createLeagueImpl(payload: TNewLeagueConfig) {
         const league = League.newLeague(payload)
         const portfolioId = await this.createLeaguePortfolioImpl(league)
         league.portfolioId = portfolioId
@@ -149,15 +149,15 @@ export class LeagueService {
             },
         }
 
-        const portfolio = await this.portfolioService.newPortfolio(leaguePortfolioDef)
+        const portfolio = await this.portfolioService.createPortfolio(leaguePortfolioDef)
         return portfolio.portfolioId
     }
 
-    private async newAssetImpl(league: League, assetDef: TLeagueAssetDef) {
+    private async createAssetImpl(league: League, assetDef: TLeagueAssetDef) {
         const displayName = assetDef.displayName
         const assetSymbol = `${assetDef.symbol}`
 
-        const assetConfig: TNewAsset = {
+        const assetConfig: TNewAssetConfig = {
             ownerId: league.ownerId,
             symbol: assetSymbol,
             displayName: displayName,
@@ -166,7 +166,7 @@ export class LeagueService {
         }
 
         try {
-            const asset = await this.assetService.newAsset(assetConfig)
+            const asset = await this.assetService.createAsset(assetConfig)
             console.log(`new asset: ${asset.assetId} `)
             await this.addAssetToLeague(league, asset)
         } catch (err) {

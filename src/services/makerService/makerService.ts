@@ -7,7 +7,7 @@ import {
     PortfolioRepository,
     DuplicateError,
     ConflictError,
-    TNewPortfolio,
+    TNewPortfolioConfig,
 } from '../..'
 import { KMaker, Bonding1Maker, Bonding2Maker, LogarithmicMaker } from './makers'
 import { MakerBase } from './makers/makerBase/entity'
@@ -62,7 +62,7 @@ export class MakerService {
         return maker
     }
 
-    async newMaker(payload: TNewMakerConfig, shouldCreatePortfolio = false) {
+    async createMaker(payload: TNewMakerConfig, shouldCreatePortfolio = false) {
         const assetId = payload.assetId
 
         if (assetId) {
@@ -144,7 +144,7 @@ export class MakerService {
     }
 
     private async createMakerPortfolioImpl(maker: MakerBase) {
-        const makerPortfolioDef: TNewPortfolio = {
+        const makerPortfolioDef: TNewPortfolioConfig = {
             type: 'maker',
             portfolioId: `maker::${maker.assetId}`,
             ownerId: maker.ownerId,
@@ -154,7 +154,7 @@ export class MakerService {
             },
         }
 
-        const portfolio = await this.portfolioService.newPortfolio(makerPortfolioDef)
+        const portfolio = await this.portfolioService.createPortfolio(makerPortfolioDef)
         return portfolio.portfolioId
     }
 }

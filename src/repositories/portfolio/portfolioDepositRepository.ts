@@ -56,7 +56,7 @@ export class PortfolioDepositRepository extends RepositoryBase {
     //     await deleteDocument(entityRef)
     // }
 
-    async scrubPortfolioDeposits(portfolioId: string) {
+    async scrubAsync(portfolioId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(portfolioId).collection(SUB_COLLECTION_NAME)
         await deleteCollection(entityRef)
     }

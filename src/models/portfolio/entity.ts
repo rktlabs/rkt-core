@@ -3,7 +3,7 @@ import { generateId } from '../../util/idGenerator'
 import { ValidationError, TypeError, NameError } from '../../errors'
 import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
-import { TPortfolio, TNewPortfolio } from '.'
+import { TPortfolio, TNewPortfolioConfig } from '.'
 
 export class Portfolio {
     portfolioId: string
@@ -28,7 +28,7 @@ export class Portfolio {
         this.deposits = props.deposits
     }
 
-    static newPortfolio(props: TNewPortfolio) {
+    static newPortfolio(props: TNewPortfolioConfig) {
         // can supply portfolioId or type. If supply portfolioId, it must embed type
         let type: string
         let portfolioId: string

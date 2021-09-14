@@ -8,7 +8,7 @@ import {
     LeagueRepository,
     PortfolioActivityRepository,
     PortfolioDepositRepository,
-    TNewPortfolio,
+    TNewPortfolioConfig,
     DuplicateError,
     Portfolio,
     TPortfolioUpdate,
@@ -38,7 +38,7 @@ export class PortfolioService {
     }
 
     // create new portfolio. Fail if it already exists.
-    async newPortfolio(payload: TNewPortfolio) {
+    async createPortfolio(payload: TNewPortfolioConfig) {
         const portfolioId = payload.portfolioId
         if (portfolioId) {
             const existing = await this.portfolioRepository.getDetailAsync(portfolioId)
@@ -52,25 +52,6 @@ export class PortfolioService {
         await this.portfolioRepository.storeAsync(portfolio)
 
         return portfolio
-    }
-
-    // ensure that portfolio is created. crate new portfolio and new cache if don't exist
-    // leave in place anything already there.
-    async createPortfolio(payload: TNewPortfolio) {
-        if (!payload || !payload.portfolioId) {
-            throw new Error('Portfolio Creation Failed - no portfolioId')
-        }
-
-        const promises: any[] = []
-
-        const portfolioId = payload.portfolioId
-        const existing = await this.portfolioRepository.getDetailAsync(portfolioId)
-        if (!existing) {
-            const portfolio = Portfolio.newPortfolio(payload)
-            promises.push(this.portfolioRepository.storeAsync(portfolio))
-        }
-
-        return Promise.all(promises)
     }
 
     async updatePortfolio(portfolioId: string, payload: TPortfolioUpdate) {
@@ -94,13 +75,7 @@ export class PortfolioService {
             throw new ConflictError(`Cannot Delete Portfolio. Portfolio linked to league: ${leagueIds}`)
         }
 
-        await this.portfolioHoldingsService.scrubPortfolioHoldings(portfolioId)
-
-        await this.portfolioActivityRepository.scrubCollectionAsync(portfolioId)
-
-        await this.portfolioDepositRepository.scrubPortfolioDeposits(portfolioId)
-
-        await this.portfolioRepository.deleteAsync(portfolioId)
+        await this.scrubPortfolio(portfolioId)
     }
 
     async scrubPortfolio(portfolioId: string) {
@@ -108,7 +83,7 @@ export class PortfolioService {
 
         await this.portfolioActivityRepository.scrubCollectionAsync(portfolioId)
 
-        await this.portfolioDepositRepository.scrubPortfolioDeposits(portfolioId)
+        await this.portfolioDepositRepository.scrubAsync(portfolioId)
 
         await this.portfolioRepository.deleteAsync(portfolioId)
     }
@@ -129,5 +104,25 @@ export class PortfolioService {
             return acc + deposit.units
         }, 0)
         return total
+    }
+
+    // ensure that portfolio is created. crate new portfolio if don't exist
+    // leave in place anything already there.
+    // (used by bootstrapper)
+    async createOrKeepPortfolio(payload: TNewPortfolioConfig) {
+        if (!payload || !payload.portfolioId) {
+            throw new Error('Portfolio Creation Failed - no portfolioId')
+        }
+
+        const promises: any[] = []
+
+        const portfolioId = payload.portfolioId
+        const existing = await this.portfolioRepository.getDetailAsync(portfolioId)
+        if (!existing) {
+            const portfolio = Portfolio.newPortfolio(payload)
+            promises.push(this.portfolioRepository.storeAsync(portfolio))
+        }
+
+        return Promise.all(promises)
     }
 }

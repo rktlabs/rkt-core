@@ -1,4 +1,4 @@
-import { TNewAsset, Asset } from '..';
+import { TNewAssetConfig, Asset } from '..';
 export declare class AssetService {
     private portfolioRepository;
     private assetRepository;
@@ -6,7 +6,7 @@ export declare class AssetService {
     private makerService;
     private portfolioHoldingService;
     constructor();
-    newAsset(payload: TNewAsset, shouldCreatePortfolio?: boolean): Promise<Asset>;
+    createAsset(payload: TNewAssetConfig, shouldCreatePortfolio?: boolean): Promise<Asset>;
     deleteAsset(assetId: string): Promise<void>;
     scrubAsset(assetId: string): Promise<void>;
     private createAssetImpl;

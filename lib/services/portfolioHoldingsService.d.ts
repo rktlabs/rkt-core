@@ -5,7 +5,7 @@ export declare class PortfolioHoldingsService {
     private portfolioActivityRepository;
     private assetHoldersRepository;
     constructor();
-    newPortfolioHolding(portfolioId: string, assetId: string): Promise<{
+    createPortfolioHolding(portfolioId: string, assetId: string): Promise<{
         portfolioId: string;
         assetId: string;
         units: number;

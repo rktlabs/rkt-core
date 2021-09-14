@@ -26,7 +26,7 @@ export class PortfolioHoldingsService {
         this.portfolioActivityRepository = new PortfolioActivityRepository()
     }
 
-    async newPortfolioHolding(portfolioId: string, assetId: string) {
+    async createPortfolioHolding(portfolioId: string, assetId: string) {
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (asset) {
             const assetDisplayName = asset.displayName || assetId

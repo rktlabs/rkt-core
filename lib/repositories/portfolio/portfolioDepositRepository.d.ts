@@ -5,5 +5,5 @@ export declare class PortfolioDepositRepository extends RepositoryBase {
     constructor();
     listPortfolioDeposits(portfolioId: string): Promise<TPortfolioDeposit[]>;
     storePortfolioDeposit(portfolioId: string, entity: TPortfolioDeposit): Promise<void>;
-    scrubPortfolioDeposits(portfolioId: string): Promise<void>;
+    scrubAsync(portfolioId: string): Promise<void>;
 }

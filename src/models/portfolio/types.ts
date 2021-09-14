@@ -17,7 +17,7 @@ export type TPortfolioUpdate = {
     deposits?: any
 }
 
-export type TNewPortfolio = {
+export type TNewPortfolioConfig = {
     type?: string // supply type OR portfolioId. If portfolioId specified, type is overridden
     portfolioId?: string
     ownerId: string

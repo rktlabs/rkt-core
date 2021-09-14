@@ -8,9 +8,9 @@ export declare class TransactionService {
     private transactionRepository;
     private portfolioHoldingsService;
     constructor(eventPublisher?: IEventPublisher);
-    newPurchaseAsync(exchangeData: TPurchase): Promise<any[]>;
-    newTransferAsync(transferData: TTransfer): Promise<any[]>;
-    newTransactionAsync(transactionData: TTransactionNew): Promise<any[]>;
+    executePurchaseAsync(exchangeData: TPurchase): Promise<any[]>;
+    executeTransferAsync(transferData: TTransfer): Promise<any[]>;
+    executeTransactionAsync(transactionData: TTransactionNew): Promise<any[]>;
     mintCoinsToPortfolio(portfolioId: string, units: number, sourcePortfolioId?: string, assetId?: string): Promise<void>;
     private mintCoinsToPortfolioImpl;
     private verifyAssetsAsync;

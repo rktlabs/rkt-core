@@ -1,4 +1,4 @@
-export declare type TNewAsset = {
+export declare type TNewAssetConfig = {
     ownerId: string;
     symbol: string;
     displayName?: string;

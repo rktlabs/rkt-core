@@ -1,4 +1,4 @@
-export type TNewUser = {
+export type TNewUserConfig = {
     userId?: string
     dob: string
     email: string

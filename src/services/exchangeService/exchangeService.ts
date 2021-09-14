@@ -308,7 +308,7 @@ export class ExchangeService {
             }
         }
 
-        return this.transactionService.newTransactionAsync(newTransactionData)
+        return this.transactionService.executeTransactionAsync(newTransactionData)
     }
 
     private async verifyAssetsAsync(exchangeOrder: ExchangeOrder) {

@@ -14,7 +14,7 @@ export declare type TPortfolioUpdate = {
     xids?: any;
     deposits?: any;
 };
-export declare type TNewPortfolio = {
+export declare type TNewPortfolioConfig = {
     type?: string;
     portfolioId?: string;
     ownerId: string;

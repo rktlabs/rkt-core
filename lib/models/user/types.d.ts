@@ -1,4 +1,4 @@
-export declare type TNewUser = {
+export declare type TNewUserConfig = {
     userId?: string;
     dob: string;
     email: string;

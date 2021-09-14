@@ -7,7 +7,7 @@
 //         // this.orderRepository = new PortfolioOrdersRepository(db)
 //     }
 
-//     async newOrder(orderPayload: TNewOrderProps) {
+//     async createOrder(orderPayload: TNewOrderProps) {
 //         // // verify that asset exists.
 //         // const orderAssetId = orderPayload.assetId
 //         // const orderAsset = await this.assetCache.lookupAsset(orderAssetId)

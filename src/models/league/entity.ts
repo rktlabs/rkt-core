@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { generateId } from '../../util/idGenerator'
 import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
-import { TLeague, TNewLeague } from '.'
+import { TLeague, TNewLeagueConfig } from '.'
 import { TAssetCore } from '..'
 
 // League holds value (coin) and shares to be sold.
@@ -29,7 +29,7 @@ export class League {
     }
 
     // Member Properties for new model
-    static newLeague(props: TNewLeague) {
+    static newLeague(props: TNewLeagueConfig) {
         const leagueId = props.leagueId || `${generateId()}`
         const createdAt = DateTime.utc().toString()
         const displayName = props.displayName || leagueId

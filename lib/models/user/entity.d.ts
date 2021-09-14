@@ -1,4 +1,4 @@
-import { TUser, TNewUser } from './types';
+import { TUser, TNewUserConfig } from './types';
 export declare class User {
     createdAt: string;
     userId: string;
@@ -14,7 +14,7 @@ export declare class User {
     referrerId?: string;
     constructor(props: TUser);
     toString(): string;
-    static newUser(props: TNewUser): User;
+    static newUser(props: TNewUserConfig): User;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;

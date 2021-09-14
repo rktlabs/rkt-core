@@ -1,7 +1,7 @@
 'use strict'
 
 import { PortfolioService } from '.'
-import { UserRepository, PortfolioRepository, TNewUser, DuplicateError, ConflictError, User } from '..'
+import { UserRepository, PortfolioRepository, TNewUserConfig, DuplicateError, ConflictError, User } from '..'
 
 const BANK_PORTFOLIO = 'bank::treasury'
 //const COIN = 'coin::rkt'
@@ -19,7 +19,7 @@ export class UserService {
         // this.transactionService = new TransactionService(this.eventPublisher)
     }
 
-    async newUser(payload: TNewUser) {
+    async createUser(payload: TNewUserConfig) {
         const userId = payload.userId
         if (userId) {
             const existing = await this.userRepository.getDetailAsync(userId)
@@ -171,7 +171,7 @@ export class UserService {
     // Private Methods
     ///////////////////////////////////////////
 
-    private async createUserImpl(payload: TNewUser) {
+    private async createUserImpl(payload: TNewUserConfig) {
         const user = User.newUser(payload)
         const portfolioId = await this.createUserPortfolioImpl(user)
         user.portfolioId = portfolioId
@@ -188,7 +188,7 @@ export class UserService {
             ownerId: user.userId,
         }
 
-        const portfolio = await this.portfolioService.newPortfolio(userPortfolioDef)
+        const portfolio = await this.portfolioService.createPortfolio(userPortfolioDef)
         return portfolio.portfolioId
     }
 }

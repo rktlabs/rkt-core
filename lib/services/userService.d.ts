@@ -1,10 +1,10 @@
-import { TNewUser, User } from '..';
+import { TNewUserConfig, User } from '..';
 export declare class UserService {
     private userRepository;
     private portfolioRepository;
     private portfolioService;
     constructor();
-    newUser(payload: TNewUser): Promise<User>;
+    createUser(payload: TNewUserConfig): Promise<User>;
     deleteUser(userId: string): Promise<void>;
     scrubUser(userId: string): Promise<void>;
     private createUserImpl;

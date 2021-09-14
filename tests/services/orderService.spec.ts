@@ -57,7 +57,7 @@ describe('Order Service', function () {
     //             orderType: 'market',
     //         }
 
-    //         const order = await orderService.newOrder(data)
+    //         const order = await orderService.createOrder(data)
 
     //         const readBack = await orderRepository.getPortfolioOrder(portfolioId, order.orderId)
     //         expect(readBack).to.exist

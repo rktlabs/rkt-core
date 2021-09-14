@@ -1,4 +1,4 @@
-export type TNewAsset = {
+export type TNewAssetConfig = {
     ownerId: string
     symbol: string
     displayName?: string
