@@ -6,7 +6,7 @@ const firebase = require( 'firebase-admin')
 if (firebase.apps.length === 0) {
   firebase.initializeApp({
       credential: firebase.credential.applicationDefault(),
-      databaseURL: 'https://rkt-sandbox-314020.firebaseio.com',
+      databaseURL: 'https://rkt-fant.firebaseio.com',
   });
 }
 

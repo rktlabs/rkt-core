@@ -78,7 +78,7 @@ describe('League Service', function () {
         })
     })
 
-    describe.only('Delete Empty League', () => {
+    describe('Delete Empty League', () => {
         beforeEach(async () => {
             await leagueService.scrubLeague(leagueId)
         })
