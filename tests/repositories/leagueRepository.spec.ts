@@ -9,7 +9,7 @@ import { LeagueRepository } from '../../src/repositories'
 
 describe('League Repository', () => {
     let leagueRepository: LeagueRepository
-    const leagueId = 'card::test1'
+    const leagueId = 'test1'
 
     before(async () => {
         leagueRepository = new LeagueRepository()
