@@ -24,6 +24,8 @@ export class RepositoryBase {
         entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>,
     ) {
         const filter = Object.assign({}, qs)
+        delete filter.pageSize
+        delete filter.page
 
         for (const filterParm in filter) {
             const mappedColumn = filterMap[filterParm]
