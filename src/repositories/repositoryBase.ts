@@ -35,6 +35,8 @@ export class RepositoryBase {
                     const filterValue = filter[filterParm]
                     entityRefCollection = entityRefCollection.where(filterParm, '==', filterValue)
                 }
+            } else {
+                console.log(`********* INVALID FILTER: ${filterParm}`)
             }
         }
 
