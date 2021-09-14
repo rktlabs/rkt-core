@@ -89,7 +89,6 @@ describe('League Repository', () => {
             const readBack = await leagueRepository.getDetailAsync(leagueId)
             expect(readBack).to.exist
             expect(readBack!!.managedAssets).to.be.instanceOf(Array)
-            console.log(readBack!!.managedAssets)
             expect(readBack!!.managedAssets.length).to.eq(1)
             expect(readBack!!.managedAssets[0].assetId).to.eq('card::asset2')
         })

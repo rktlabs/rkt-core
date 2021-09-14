@@ -170,7 +170,7 @@ export class LeagueService {
             console.log(`new asset: ${asset.assetId} `)
             await this.addAssetToLeague(league, asset)
         } catch (err) {
-            console.log(`new asset error: ${assetConfig.symbol} - ${err}`)
+            console.log(`create asset error: ${assetConfig.symbol} - ${err}`)
         }
     }
 }
