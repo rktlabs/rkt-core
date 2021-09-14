@@ -3,7 +3,7 @@ export declare class PortfolioHoldingsService {
     private assetRepository;
     private portfolioHoldingsRepository;
     private portfolioActivityRepository;
-    private assetHolderRepository;
+    private assetHoldersRepository;
     constructor();
     newPortfolioHolding(portfolioId: string, assetId: string): Promise<{
         portfolioId: string;
@@ -16,6 +16,6 @@ export declare class PortfolioHoldingsService {
     proessTransaction(transactionId: string, updateSet: TPortfolioHoldingUpdateItem[], transaction: TTransaction): Promise<void>;
     scrubPortfolioHoldings(portfolioId: string): Promise<void[]>;
     scrubAssetHolders(assetId: string): Promise<void[]>;
-    scrubPortfolioHolding(portfolioId: string, assetId: string): Promise<void[]>;
+    deletePortfolioHolding(portfolioId: string, assetId: string): Promise<void[]>;
     getPortfolioHoldingBalance(portfolioId: string, assetId: string): Promise<number>;
 }

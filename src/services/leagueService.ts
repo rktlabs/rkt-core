@@ -11,7 +11,6 @@ import {
     League,
     TLeagueAssetDef,
     TNewAsset,
-    TAsset,
     TAssetCore,
 } from '..'
 
@@ -104,6 +103,16 @@ export class LeagueService {
         await this.newAssetImpl(league, assetDef)
     }
 
+    async dropAsset(leagueSpec: string | League, assetId: string) {
+        const league =
+            typeof leagueSpec === 'string' ? await this.leagueRepository.getDetailAsync(leagueSpec) : leagueSpec
+        if (!league) {
+            throw new Error(`League Not Found: ${leagueSpec}`)
+        }
+
+        await this.dropAssetFromLeague(league, assetId)
+    }
+
     ///////////////////////////////////////////////////////
     // PRIVATE
     ///////////////////////////////////////////////////////
@@ -114,6 +123,14 @@ export class LeagueService {
         league.portfolioId = portfolioId
         await this.leagueRepository.storeAsync(league)
         return league
+    }
+
+    private async addAssetToLeague(league: League, asset: TAssetCore) {
+        await this.leagueRepository.addLeagueAsset(league.leagueId, asset)
+    }
+
+    private async dropAssetFromLeague(league: League, assetId: string) {
+        await this.leagueRepository.dropLeagueAsset(league.leagueId, assetId)
     }
 
     private async createLeaguePortfolioImpl(league: League) {
@@ -152,9 +169,5 @@ export class LeagueService {
         } catch (err) {
             console.log(`new asset error: ${assetConfig.symbol} - ${err}`)
         }
-    }
-
-    private async addAssetToLeague(league: League, asset: TAssetCore) {
-        await this.leagueRepository.addLeagueAsset(league.leagueId, asset)
     }
 }

@@ -4,7 +4,7 @@ import { PortfolioService } from '.'
 import { UserRepository, PortfolioRepository, TNewUser, DuplicateError, ConflictError, User } from '..'
 
 const BANK_PORTFOLIO = 'bank::treasury'
-const COIN = 'coin::rkt'
+//const COIN = 'coin::rkt'
 
 export class UserService {
     private userRepository: UserRepository

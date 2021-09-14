@@ -3,6 +3,7 @@ export declare class AssetService {
     private portfolioRepository;
     private assetRepository;
     private portfolioService;
+    private leagueService;
     private makerService;
     private portfolioHoldingService;
     constructor();
