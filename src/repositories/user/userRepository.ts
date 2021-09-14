@@ -16,7 +16,10 @@ export class UserRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    filterMap: any = {}
+    filterMap: any = {
+        username: 'username',
+        email: 'email',
+    }
 
     async getListAsync(qs?: any) {
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
