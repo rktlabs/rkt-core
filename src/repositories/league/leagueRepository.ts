@@ -4,7 +4,7 @@ import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 import { TLeague, TLeagueUpdate } from '../../models/league'
-import { TAsset } from '../..'
+import { TAssetCore } from '../..'
 
 const COLLECTION_NAME = 'leagues'
 
@@ -93,8 +93,8 @@ export class LeagueRepository extends RepositoryBase {
                 const entity = entityDoc.data()
                 if (entity) {
                     const assetList = entity.managedAssets || []
-                    const newAssetList = assetList.filter((targetId: string) => {
-                        return targetId != assetId
+                    const newAssetList = assetList.filter((target: TAssetCore) => {
+                        return target.assetId != assetId
                     })
                     t.update(entityRef, { managedAssets: newAssetList })
                 }
@@ -102,7 +102,7 @@ export class LeagueRepository extends RepositoryBase {
         })
     }
 
-    async addLeagueAsset(leagueId: string, asset: TAsset) {
+    async addLeagueAsset(leagueId: string, asset: TAssetCore) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(leagueId)
         await this.db.runTransaction(async (t) => {
             const entityDoc = await t.get(entityRef)
@@ -110,7 +110,7 @@ export class LeagueRepository extends RepositoryBase {
                 const entity = entityDoc.data() as TLeague
                 if (entity) {
                     const assetList = entity.managedAssets || []
-                    const newAssetList = [...assetList, { id: asset.assetId, displayName: asset.displayName }]
+                    const newAssetList = [...assetList, { assetId: asset.assetId, displayName: asset.displayName }]
                     t.update(entityRef, { managedAssets: newAssetList })
                 }
             }

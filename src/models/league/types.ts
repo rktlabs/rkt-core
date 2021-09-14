@@ -1,22 +1,11 @@
-// export type TLeagueAssetDef = {
-//     earnerId: string
-//     initialPrice: number
-//     displayName: string
-// }
+import { TAssetCore } from '..'
 
 export type TNewLeague = {
     leagueId: string
     ownerId: string
     displayName?: string
     description?: string
-    // startAt?: string
-    // endAt?: string
-    // acceptEarningsAfter?: string
-    // ignoreEarningsAfter?: string
-    // key?: string
-    // pt?: number
     tags?: any
-    // earnerList?: TLeagueAssetDef[]
 }
 
 export type TLeague = {
@@ -26,17 +15,8 @@ export type TLeague = {
     portfolioId: string
     displayName: string
     description: string
-    // startAt?: string
-    // endAt?: string
-    // acceptEarningsAfter?: string
-    // ignoreEarningsAfter?: string
-    // key?: string
-    // pt?: number
     tags?: any
-    //playerList?: TLeagueAssetDef[]
-    managedAssets: string[]
-    // currencyId: string
-    // currencySource: string
+    managedAssets: TAssetCore[]
 }
 
 export type TLeagueUpdate = {

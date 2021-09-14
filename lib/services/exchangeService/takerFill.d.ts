@@ -1,19 +1,4 @@
 import { OrderSide, OrderType } from './types';
-export declare type TakerFillEvent = {
-    assetId: string;
-    orderId: string;
-    portfolioId: string;
-    orderSide: string;
-    orderSize: number;
-    orderType?: string;
-    tags?: any;
-    sizeRemaining: number;
-    filledSize: number;
-    filledValue: number;
-    filledPrice: number;
-    isPartial: boolean;
-    isClosed: boolean;
-};
 export declare class TakerFill {
     readonly assetId: string;
     readonly orderSide: string;

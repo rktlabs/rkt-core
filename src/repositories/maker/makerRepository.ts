@@ -1,5 +1,5 @@
 'use strict'
-import { TMaker, TMakerPatch } from '../../models/maker'
+import { TMaker, TMakerPatch } from '../../services/makerFactory/makers/makerBase/types'
 import { deleteDocument } from '../../util/deleters'
 
 import { getConnectionProps } from '../getConnectionProps'
@@ -56,6 +56,11 @@ export class MakerRepository extends RepositoryBase {
     async updateAsync(makerId: string, entityData: TMakerPatch) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(makerId)
         await entityRef.update(entityData)
+    }
+
+    async updateMakerStateAsync(makerId: string, stateUpdate: any) {
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(makerId)
+        await entityRef.update(stateUpdate)
     }
 
     async deleteAsync(makerId: string) {

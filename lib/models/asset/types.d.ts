@@ -2,7 +2,7 @@ export declare type TNewAsset = {
     ownerId: string;
     symbol: string;
     displayName?: string;
-    leagueId: string;
+    leagueId?: string;
     leagueDisplayName?: string;
     tags?: any;
     xids?: any;
@@ -15,13 +15,17 @@ export declare type TAsset = {
     ownerId: string;
     portfolioId?: string;
     displayName: string;
-    leagueId: string;
-    leagueDisplayName: string;
+    leagueId?: string;
+    leagueDisplayName?: string;
     tags?: any;
     xids?: any;
     bid?: number;
     ask?: number;
     last?: number;
+};
+export declare type TAssetCore = {
+    assetId: string;
+    displayName: string;
 };
 export declare type TAssetUpdate = {
     bid?: number;
@@ -29,7 +33,6 @@ export declare type TAssetUpdate = {
     last?: number;
 };
 export declare type TLeagueAssetDef = {
-    assetId: string;
+    symbol: string;
     displayName: string;
-    initialPrice: number;
 };

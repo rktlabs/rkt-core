@@ -1,3 +1,4 @@
+import { TAssetCore } from '..';
 export declare type TNewLeague = {
     leagueId: string;
     ownerId: string;
@@ -13,7 +14,7 @@ export declare type TLeague = {
     displayName: string;
     description: string;
     tags?: any;
-    managedAssets: string[];
+    managedAssets: TAssetCore[];
 };
 export declare type TLeagueUpdate = {
     managedAssets: string[];

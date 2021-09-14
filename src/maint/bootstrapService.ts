@@ -1,21 +1,20 @@
 'use strict'
-import * as firebase from 'firebase-admin'
 import {
     AssetRepository,
     PortfolioRepository,
     PortfolioService,
     TransactionService,
     IEventPublisher,
-    deleteCollection,
     LeagueService,
     PortfolioHoldingsService,
+    AssetService,
 } from '..'
-import { getConnectionProps } from '../repositories/getConnectionProps'
 
 export class BootstrapService {
     private assetRepository: AssetRepository
     private portfolioRepository: PortfolioRepository
 
+    private assetService: AssetService
     private portfolioService: PortfolioService
     private leagueService: LeagueService
     private portfolioHoldingsService: PortfolioHoldingsService
@@ -24,20 +23,23 @@ export class BootstrapService {
     constructor(eventPublisher?: IEventPublisher) {
         this.assetRepository = new AssetRepository()
         this.portfolioRepository = new PortfolioRepository()
+        this.assetService = new AssetService()
         this.portfolioService = new PortfolioService()
         this.portfolioHoldingsService = new PortfolioHoldingsService()
         this.leagueService = new LeagueService()
         this.transactionService = new TransactionService(eventPublisher)
     }
 
-    // bootstrap the system with the "mint" league and the "coin" asset
-    async bootMint() {
-        const mintLeague = await this.leagueService.newLeague({
-            ownerId: 'system',
-            leagueId: 'mint',
-        })
+    // bootstrap the system with the "rkt" coin
+    async createRkt() {
+        const assetId = 'coin::rkt'
+        const assetDef = {
+            ownerId: 'test',
+            symbol: assetId,
+            displayName: assetId,
+        }
 
-        // await this.leagueService.newSimpleAsset(mintLeague, 'coin', 'fantx')
+        await this.assetService.newAsset(assetDef)
     }
 
     async bootTestLeague() {
@@ -48,7 +50,7 @@ export class BootstrapService {
     }
 
     async bootstrap() {
-        await Promise.all([this.bootMint(), this.bootTestLeague()])
+        await Promise.all([this.createRkt(), this.bootTestLeague()])
     }
 
     async setupTestAsset() {
@@ -58,9 +60,8 @@ export class BootstrapService {
         let asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             await this.leagueService.newAsset(leagueId, {
-                assetId: assetId,
+                symbol: assetId,
                 displayName: assetId,
-                initialPrice: 11,
             })
         }
     }
@@ -94,12 +95,12 @@ export class BootstrapService {
         await Promise.all([this.setupTestAsset(), this.setupAccount()])
     }
 
-    async scrub() {
+    async fullScrub() {
         // scrub asset first. If do all in one promise, then they
         // may trample on one other so do assets and portfolios separately
         await Promise.all([
             this.leagueService.scrubLeague('test'), // scrubs coin too
-            this.leagueService.scrubLeague('mint'), // scrubs coin too
+            this.assetService.scrubAsset('coin::rkt'), // scrubs coin too
         ])
         await Promise.all([this.portfolioService.scrubPortfolio('user::hedbot')])
     }
@@ -108,45 +109,38 @@ export class BootstrapService {
         // scrub asset holders first. If do all in one promise, then they
         // may trample on one other so do assets and portfolios separately
         await Promise.all([
-            this.portfolioHoldingsService.scrubAssetHolders('coin::fantx'),
+            this.portfolioHoldingsService.scrubAssetHolders('coin::rkt'),
             this.portfolioHoldingsService.scrubAssetHolders('card::jbone::test'),
         ])
         await Promise.all([
             this.portfolioHoldingsService.scrubPortfolioHoldings('user::hedbot'),
-            this.portfolioHoldingsService.scrubPortfolioHoldings('league::mint'),
             this.portfolioHoldingsService.scrubPortfolioHoldings('league::test'),
         ])
     }
 
-    async clearDb() {
-        const targets = [
-            'earners',
-            'portfolios',
-            'portfolioCache',
-            'assets',
-            'assetCache',
-            'makers',
-            'leagues',
-            'transactions',
-            'exchangeOrders',
-            'exchangeTrades',
-            'users',
-        ]
+    // async clearDb() {
+    //     const targets = [
+    //         'users',
+    //         'portfolios',
+    //         'assets',
+    //         'makers',
+    //         'leagues',
+    //         'transactions',
+    //         'exchangeOrders',
+    //         'exchangeTrades',
+    //         'exchangeQuotes',
+    //     ]
 
-        ////////////////////////////////////////////
-        // ONLY CLEAR TEST DB
-        ////////////////////////////////////////////
-        let db = getConnectionProps()
-        if (firebase.apps[0]!!.options.databaseURL !== 'https://fantx-test.firebaseio.com') {
-            throw new Error('Cannot clear non-test database')
-        }
+    //     ////////////////////////////////////////////
+    //     // ONLY CLEAR TEST DB
+    //     ////////////////////////////////////////////
+    //     let db = getConnectionProps()
+    //     const promises: any[] = []
+    //     targets.forEach((target) => {
+    //         const entityRef = db.collection(target)
+    //         promises.push(deleteCollection(entityRef))
+    //     })
 
-        const promises: any[] = []
-        targets.forEach((target) => {
-            const entityRef = db.collection(target)
-            promises.push(deleteCollection(entityRef))
-        })
-
-        await Promise.all(promises)
-    }
+    //     await Promise.all(promises)
+    // }
 }

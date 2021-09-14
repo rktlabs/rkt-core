@@ -1,9 +1,9 @@
-// tslint:disable:max-classes-per-file
+// // tslint:disable:max-classes-per-file
 
-import { Event } from './event'
+// import { Event } from './event'
 
-export class AssetNewEvent extends Event {
-    constructor(attributes = {}) {
-        super('AssetNew', attributes)
-    }
-}
+// export class AssetNewEvent extends Event {
+//     constructor(attributes = {}) {
+//         super('AssetNew', attributes)
+//     }
+// }

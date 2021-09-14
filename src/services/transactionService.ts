@@ -31,7 +31,6 @@ export class TransactionService {
     private assetRepository: AssetRepository
     private portfolioHoldingsRepository: PortfolioHoldingsRepository
     private transactionRepository: TransactionRepository
-
     private portfolioHoldingsService: PortfolioHoldingsService
 
     constructor(eventPublisher?: IEventPublisher) {
@@ -40,7 +39,6 @@ export class TransactionService {
         this.assetRepository = new AssetRepository()
         this.portfolioHoldingsRepository = new PortfolioHoldingsRepository()
         this.transactionRepository = new TransactionRepository()
-
         this.portfolioHoldingsService = new PortfolioHoldingsService()
     }
 
@@ -59,7 +57,7 @@ export class TransactionService {
     //     coins: cost,
     // }
     async newPurchaseAsync(exchangeData: TPurchase) {
-        const coinAssetId = 'coin::fantx'
+        const coinAssetId = 'coin::rkt'
 
         const transaction: TTransactionNew = {
             inputs: [
@@ -190,38 +188,6 @@ export class TransactionService {
                 await this.portfolioHoldingsService.proessTransaction(transactionId, updates, transaction)
             }
 
-            //////////////////////////
-            // publish events that holdings updated
-            // if (transaction.inputs) {
-            //     const inputLegs = transaction.inputs
-            //     for (let i = 0; i < inputLegs.length; ++i) {
-            //         const inputLeg = inputLegs[i]
-            //         // eslint-disable-next-line no-await-in-loop
-            //         if (this.eventPublisher) {
-            //             await this.eventPublisher.publishTransactionEventUpdatePortfolioAsync(
-            //                 transaction,
-            //                 inputLeg,
-            //                 'transactionHandler',
-            //             )
-            //         }
-            //     }
-            // }
-
-            // if (transaction.outputs) {
-            //     const outputLegs = transaction.outputs
-            //     for (let i = 0; i < outputLegs.length; ++i) {
-            //         const outputLeg = outputLegs[i]
-            //         // eslint-disable-next-line no-await-in-loop
-            //         if (this.eventPublisher) {
-            //             await this.eventPublisher.publishTransactionEventUpdatePortfolioAsync(
-            //                 transaction,
-            //                 outputLeg,
-            //                 'transactionHandler',
-            //             )
-            //         }
-            //     }
-            // }
-
             transaction.status = 'success'
             await this.transactionRepository.updateAsync(transactionId, { status: transaction.status })
 
@@ -314,7 +280,7 @@ export class TransactionService {
         portfolioId: string,
         units: number,
         sourcePortfolioId: string = 'contract::mint',
-        assetId: string = 'coin::fantx',
+        assetId: string = 'coin::rkt',
     ) {
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {

@@ -3,13 +3,11 @@ export type TNewAsset = {
     symbol: string
     displayName?: string
 
-    leagueId: string
+    leagueId?: string
     leagueDisplayName?: string
 
     tags?: any
     xids?: any
-
-    // initialPrice?: number
 }
 
 export type TAsset = {
@@ -21,17 +19,20 @@ export type TAsset = {
     portfolioId?: string
     displayName: string
 
-    leagueId: string
-    leagueDisplayName: string
+    leagueId?: string
+    leagueDisplayName?: string
 
     tags?: any
     xids?: any
 
-    // initialPrice?: number
-
     bid?: number
     ask?: number
     last?: number
+}
+
+export type TAssetCore = {
+    assetId: string
+    displayName: string
 }
 
 export type TAssetUpdate = {
@@ -41,7 +42,6 @@ export type TAssetUpdate = {
 }
 
 export type TLeagueAssetDef = {
-    assetId: string
+    symbol: string
     displayName: string
-    initialPrice: number
 }

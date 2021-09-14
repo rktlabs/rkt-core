@@ -1,8 +1,6 @@
 export * from './asset'
 export * from './assetHolder'
 
-export * from './maker'
-
 export * from './portfolio'
 export * from './portfolioHolding'
 export * from './portfolioActivity'

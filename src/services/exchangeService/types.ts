@@ -1,3 +1,5 @@
+'use strict'
+
 export type OrderSide = 'bid' | 'ask'
 
 export type OrderType = 'market'

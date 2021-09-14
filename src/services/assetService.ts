@@ -1,6 +1,6 @@
 'use strict'
 
-import { PortfolioService, PortfolioHoldingsService } from '.'
+import { PortfolioService, PortfolioHoldingsService, MakerService } from '.'
 import { PortfolioRepository, AssetRepository, TNewAsset, DuplicateError, ConflictError, Asset } from '..'
 
 export class AssetService {
@@ -8,6 +8,7 @@ export class AssetService {
     private assetRepository: AssetRepository
 
     private portfolioService: PortfolioService
+    private makerService: MakerService
     private portfolioHoldingService: PortfolioHoldingsService
 
     constructor() {
@@ -16,9 +17,10 @@ export class AssetService {
 
         this.portfolioHoldingService = new PortfolioHoldingsService()
         this.portfolioService = new PortfolioService()
+        this.makerService = new MakerService()
     }
 
-    async newAsset(payload: TNewAsset, shouldCreatePortfolio: boolean = false) {
+    async newAsset(payload: TNewAsset, shouldCreatePortfolio: boolean = true) {
         const assetId = payload.symbol
         if (assetId) {
             const asset = await this.assetRepository.getDetailAsync(assetId)
@@ -63,6 +65,8 @@ export class AssetService {
 
         await this.portfolioService.scrubPortfolio(`asset::${assetId}`)
 
+        await this.makerService.scrubMaker(assetId)
+
         await this.assetRepository.deleteAsync(assetId)
     }
 
@@ -82,9 +86,6 @@ export class AssetService {
 
         await this.assetRepository.storeAsync(asset)
 
-        // if (this.eventPublisher) {
-        //     await this.eventPublisher.publishAssetNewEventAsync(asset, 'assetService')
-        // }
         return asset
     }
 

@@ -41,11 +41,11 @@ export interface IEventPublisher {
     // Transaction Events
     ////////////////////////////////////////////////////////
 
-    publishTransactionEventUpdatePortfolioAsync(
-        transaction: Models.Transaction,
-        leg: any,
-        source?: string,
-    ): Promise<string>
+    // publishTransactionEventUpdatePortfolioAsync(
+    //     transaction: Models.Transaction,
+    //     leg: any,
+    //     source?: string,
+    // ): Promise<string>
 
     publishTransactionEventCompleteAsync(transaction: Models.Transaction, source?: string): Promise<string>
 

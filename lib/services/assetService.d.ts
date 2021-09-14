@@ -3,6 +3,7 @@ export declare class AssetService {
     private portfolioRepository;
     private assetRepository;
     private portfolioService;
+    private makerService;
     private portfolioHoldingService;
     constructor();
     newAsset(payload: TNewAsset, shouldCreatePortfolio?: boolean): Promise<Asset>;

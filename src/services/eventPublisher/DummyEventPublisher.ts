@@ -76,18 +76,18 @@ export class DummyEventPublisher implements IEventPublisher {
     //     return this.publishMessageToTopicAsync('portfolioEvent', event, source)
     // }
 
-    async publishTransactionEventUpdatePortfolioAsync(transaction: Models.Transaction, leg: any, source?: string) {
-        const event = new Events.TransactionEventPortfolioUpdateEvent({
-            transactionId: transaction.transactionId,
-            xids: transaction.xids,
-            portfolioId: leg.portfolioId,
-            assetId: leg.assetId,
-            units: leg.units,
-            tags: transaction.tags,
-        })
+    // async publishTransactionEventUpdatePortfolioAsync(transaction: Models.Transaction, leg: any, source?: string) {
+    //     const event = new Events.TransactionEventPortfolioUpdateEvent({
+    //         transactionId: transaction.transactionId,
+    //         xids: transaction.xids,
+    //         portfolioId: leg.portfolioId,
+    //         assetId: leg.assetId,
+    //         units: leg.units,
+    //         tags: transaction.tags,
+    //     })
 
-        return this.publishMessageToTopicAsync('transactionEvent', event, source)
-    }
+    //     return this.publishMessageToTopicAsync('transactionEvent', event, source)
+    // }
 
     async publishTransactionEventCompleteAsync(transaction: Models.Transaction, source?: string) {
         const event = new Events.TransactionEventComplete({

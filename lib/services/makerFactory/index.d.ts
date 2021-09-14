@@ -1,2 +1,1 @@
-export * from './makerServiceFactory';
-export * from './types';
+export * from './makerService';

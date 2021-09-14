@@ -9,7 +9,6 @@ export * from './portfolioHoldingsService';
 export * from './transactionService';
 export * from './eventPublisher';
 export * from './exchangeService';
-export * from './makerService';
 export * from './makerFactory';
 export * from './leagueService';
 export * from './userService';

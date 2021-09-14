@@ -1,1 +1,1 @@
-export * from './BondingMaker2Service'
+export * from './Bonding2Maker'

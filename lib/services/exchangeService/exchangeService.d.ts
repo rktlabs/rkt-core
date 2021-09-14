@@ -1,20 +1,17 @@
 import { TNewExchangeOrder, ExchangeOrder, EventPublisher } from '../..';
 export declare class ExchangeService {
-    private eventPublisher;
-    private assetRepository;
-    private leagueRepository;
-    private portfolioHoldingsCache;
-    private portfolioCache;
+    private orderEventPublisher;
+    private portfolioRepository;
+    private portfolioHoldingsRepository;
     private exchangeOrderRepository;
     private exchangeTradeRepository;
+    private exchangeQuoteRepository;
     private transactionService;
-    private makerService;
+    private makerFactoryService;
     constructor(eventPublisher?: EventPublisher);
-    handleNewExchangeOrderAsync(orderPayload: TNewExchangeOrder): Promise<ExchangeOrder | null>;
-    private processOrder;
+    handleNewExchangeOrderAsync(orderPayload: TNewExchangeOrder): Promise<ExchangeOrder>;
     private onFill;
     private onTrade;
-    private onUpdateQuote;
     private xact;
     private verifyAssetsAsync;
     private verifyFundsAsync;

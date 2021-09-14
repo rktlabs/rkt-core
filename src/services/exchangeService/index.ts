@@ -1,6 +1,7 @@
 export * from './exchangeService'
 export { OrderSide, OrderType, OrderState, OrderStatus, TQuote } from './types'
-export { TakerFill, TakerFillEvent } from './takerFill'
+export { TakerFill } from './takerFill'
+// export { TakerFillEvent } from './takerFillEvent'
 export { MakerFill } from './makerFill'
 export { Trade } from './trade'
 export { MarketOrder } from './marketOrder'

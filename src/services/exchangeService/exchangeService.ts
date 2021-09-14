@@ -4,53 +4,55 @@ import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
 const logger = log4js.getLogger()
 
-import { MarketOrder, OrderSide, Trade, TQuote, TakerFillEvent, MakerFill, TakerFill } from '.'
+import { MarketOrder, OrderSide, Trade, TakerFill } from '.'
 
 import {
-    AssetRepository,
     ExchangeOrderRepository,
     ExchangeTradeRepository,
     TNewExchangeOrder,
     ExchangeOrder,
-    TAssetUpdate,
     round4,
     ConflictError,
     InsufficientBalance,
-    LeagueRepository,
-    NotFoundError,
     EventPublisher,
     TransactionService,
     PortfolioHoldingsRepository,
     PortfolioRepository,
-    MakerServiceFactory,
+    MakerService,
+    ExchangeQuoteRepository,
 } from '../..'
 
-export class ExchangeService {
-    private eventPublisher: EventPublisher
+///////////////////////////////////////////////////
+// Exchnage Service
+// - recieves orders
+// - resolves markerMakr for asset in order
+// - applies order to markerMaker
+// - emits order events as order is processecd
+// - applies transaction returned from market maker?
 
-    private assetRepository: AssetRepository
-    private leagueRepository: LeagueRepository
-    private portfolioHoldingsCache: PortfolioHoldingsRepository
-    private portfolioCache: PortfolioRepository
+export class ExchangeService {
+    private orderEventPublisher: EventPublisher
+
+    private portfolioRepository: PortfolioRepository
+    private portfolioHoldingsRepository: PortfolioHoldingsRepository
     private exchangeOrderRepository: ExchangeOrderRepository
     private exchangeTradeRepository: ExchangeTradeRepository
+    private exchangeQuoteRepository: ExchangeQuoteRepository
     private transactionService: TransactionService
-    private makerService: MakerServiceFactory
+    private makerFactoryService: MakerService
 
     constructor(eventPublisher?: EventPublisher) {
-        this.eventPublisher = eventPublisher || new EventPublisher()
+        this.orderEventPublisher = eventPublisher || new EventPublisher()
 
-        this.assetRepository = new AssetRepository()
-        this.leagueRepository = new LeagueRepository()
-        this.portfolioHoldingsCache = new PortfolioHoldingsRepository()
-        this.portfolioCache = new PortfolioRepository()
+        this.portfolioHoldingsRepository = new PortfolioHoldingsRepository()
+        this.portfolioRepository = new PortfolioRepository()
 
         this.exchangeOrderRepository = new ExchangeOrderRepository()
         this.exchangeTradeRepository = new ExchangeTradeRepository()
+        this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
         this.transactionService = new TransactionService()
-
-        this.makerService = new MakerServiceFactory()
+        this.makerFactoryService = new MakerService()
     }
 
     ////////////////////////////////////////////////////
@@ -65,26 +67,6 @@ export class ExchangeService {
             // save order
             exchangeOrder = ExchangeOrder.newExchangeOrder(orderPayload)
 
-            ////////////////////////////
-            // verify that asset exists
-            ////////////////////////////
-            const assetId = exchangeOrder.assetId
-            const asset = await this.assetRepository.getDetailAsync(assetId)
-            if (!asset) {
-                const msg = `Invalid Order: Asset: ${assetId} does not exist`
-                throw new NotFoundError(msg, { assetId })
-            }
-
-            ////////////////////////////
-            // verify that league exists - not sure why it matters. should always be true
-            ////////////////////////////
-            const leagueId = asset.leagueId
-            const league = await this.leagueRepository.getDetailAsync(leagueId)
-            if (!league) {
-                const msg = `Invalid Order: League: ${leagueId} does not exist`
-                throw new NotFoundError(msg, { leagueId })
-            }
-
             ////////////////////////////////////
             // order is reasonably complete so mark it as received
             // and STORE it
@@ -98,8 +80,12 @@ export class ExchangeService {
             if (exchangeOrder.orderSide === 'bid') {
                 await this.verifyAssetsAsync(exchangeOrder)
             } else if (exchangeOrder.orderSide === 'ask') {
-                const price = asset?.bid || 0
-                await this.verifyFundsAsync(exchangeOrder, price)
+                ////////////////////////////
+                // get bid price and verify funds
+                ////////////////////////////
+                const quote = await this.exchangeQuoteRepository.getDetailAsync(exchangeOrder.assetId)
+                const bid = quote?.bid || 1
+                await this.verifyFundsAsync(exchangeOrder, bid)
             }
 
             // verify that maker exists.
@@ -118,63 +104,32 @@ export class ExchangeService {
             ////////////////////////////////////////////////////////
             // Process the order
             ////////////////////////////////////////////////////////
-            const makerPortfolioId = league.portfolioId
-            //const trade = await this.processOrder(order, makerPortfolioId)
 
-            ///////////////////////////////////////////////////
-            // create trade and fill in maker from asset pools
-            const trade = new Trade(order)
-            const taker = trade.taker
+            const maker = await this.makerFactoryService.getMakerAsync(exchangeOrder.assetId)
+            if (maker) {
+                const trade = await maker.processOrder(maker, order)
 
-            // for bid (a buy) I'm "removing" units from the pool, so flip sign
-            const signedTakeSize = trade.taker.orderSide === 'ask' ? taker.orderSize * -1 : taker.orderSize
+                if (trade) {
+                    if (trade.taker.filledSize) {
+                        await this.onFill(trade.taker)
+                        await this.onTrade(trade)
 
-            // console.log('------------- ORDER -------------')
-            // console.log(order)
-            // console.log(trade)
-            // console.log(`signedTakeSize: ${signedTakeSize}`)
+                        const takerPortfolioId = trade.taker.portfolioId
+                        const takerDeltaUnits = trade.taker.filledSize
+                        const takerDeltaValue = trade.taker.filledValue
 
-            //const assetId = order.assetId
-            const taken = await this.makerService.takeUnits(assetId, signedTakeSize)
-            if (!taken) {
-                return null
-            }
-            // console.log('------------- taken -------------')
-            // console.log(taken)
+                        const makerPortfolioId = trade.makers[0].portfolioId
 
-            const { bid, ask, makerDeltaUnits: makerDeltaUnits, makerDeltaCoins: makerDeltaCoins } = taken
-
-            const makerFill = new MakerFill({
-                assetId: taker.assetId,
-                portfolioId: makerPortfolioId,
-                orderSide: taker.orderSide === 'bid' ? 'ask' : 'bid', // flip side from taker
-                orderSize: taker.orderSize,
-            })
-
-            trade.fillMaker(makerFill, makerDeltaUnits, makerDeltaCoins)
-
-            if (trade.taker.filledSize !== 0) {
-                await this.onFill(trade.taker)
-                await this.onTrade(trade)
-                await this.onUpdateQuote(trade, bid, ask)
-            }
-
-            if (trade) {
-                const makerPortfolioId = league.portfolioId
-
-                if (trade.taker.filledSize) {
-                    const takerPortfolioId = trade.taker.portfolioId
-                    const takerDeltaUnits = trade.taker.filledSize
-                    const takerDeltaValue = trade.taker.filledValue
-                    await this.xact(
-                        orderId,
-                        assetId,
-                        trade.tradeId,
-                        takerPortfolioId,
-                        takerDeltaUnits,
-                        takerDeltaValue,
-                        makerPortfolioId,
-                    )
+                        await this.xact(
+                            orderId,
+                            exchangeOrder.assetId,
+                            trade.tradeId,
+                            takerPortfolioId,
+                            takerDeltaUnits,
+                            takerDeltaValue,
+                            makerPortfolioId,
+                        )
+                    }
                 }
             }
         } catch (error: any) {
@@ -189,7 +144,7 @@ export class ExchangeService {
                     reason,
                 })
 
-                this.eventPublisher.publishOrderEventFailedAsync(
+                this.orderEventPublisher.publishOrderEventFailedAsync(
                     exchangeOrder.portfolioId,
                     exchangeOrder.orderId,
                     reason,
@@ -202,72 +157,20 @@ export class ExchangeService {
         return exchangeOrder
     }
 
-    private async processOrder(order: MarketOrder, makerPortfolioId: string) {
-        ///////////////////////////////////////////////////
-        // create trade and fill in maker from asset pools
-        const trade = new Trade(order)
-        const taker = trade.taker
-
-        // for bid (a buy) I'm "removing" units from the pool, so flip sign
-        const signedTakeSize = trade.taker.orderSide === 'ask' ? taker.orderSize * -1 : taker.orderSize
-
-        const assetId = order.assetId
-        const taken = await this.makerService.takeUnits(assetId, signedTakeSize)
-        if (!taken) {
-            return null
-        }
-
-        const { bid, ask, makerDeltaUnits, makerDeltaCoins } = taken
-
-        const makerFill = new MakerFill({
-            assetId: taker.assetId,
-            portfolioId: makerPortfolioId,
-            orderSide: taker.orderSide === 'bid' ? 'ask' : 'bid', // flip side from taker
-            orderSize: taker.orderSize,
-        })
-
-        trade.fillMaker(makerFill, makerDeltaUnits, makerDeltaCoins)
-
-        if (trade.taker.filledSize !== 0) {
-            await this.onFill(trade.taker)
-            await this.onTrade(trade)
-            await this.onUpdateQuote(trade, bid, ask)
-        }
-
-        return trade
-    }
-
     ////////////////////////////////////////////////////
     //  onFill
     //  - handle order fill resulting from trade
     ////////////////////////////////////////////////////
+
     private async onFill(taker: TakerFill) {
-        const event: TakerFillEvent = {
-            assetId: taker.assetId,
-            orderId: taker.orderId,
-            portfolioId: taker.portfolioId,
-            orderType: taker.orderType,
-            orderSide: taker.orderSide,
-            orderSize: taker.orderSize,
-            sizeRemaining: taker.sizeRemaining,
-            tags: taker.tags,
-            filledSize: taker.filledSize,
-            filledValue: taker.filledValue,
-            filledPrice: taker.filledPrice,
-            isPartial: taker.isPartial,
-            isClosed: taker.isClosed,
-        }
+        const orderId = taker.orderId
+        const portfolioId = taker.portfolioId
+        const filledSize = taker.filledSize
+        const filledValue = taker.filledValue
+        const filledPrice = taker.filledPrice
+        const makerRemaining = taker.sizeRemaining
 
-        //logger.debug('onFill: %o', event)
-        const orderId = event.orderId
-        const portfolioId = event.portfolioId
-
-        const filledSize = event.filledSize
-        const filledValue = event.filledValue
-        const filledPrice = event.filledPrice
-        const makerRemaining = event.sizeRemaining
-
-        this.eventPublisher.publishOrderEventFillAsync(
+        this.orderEventPublisher.publishOrderEventFillAsync(
             portfolioId,
             orderId,
             filledSize,
@@ -277,8 +180,8 @@ export class ExchangeService {
             'marketMaker',
         ) // async - don't wait to finish
 
-        const newMakerStatus = event.isClosed ? 'filled' : 'partial'
-        const newMakerState = !event.isClosed && event.sizeRemaining > 0 ? 'open' : 'closed'
+        const newMakerStatus = taker.isClosed ? 'filled' : 'partial'
+        const newMakerState = !taker.isClosed && taker.sizeRemaining > 0 ? 'open' : 'closed'
 
         await this.exchangeOrderRepository.updateAsync(portfolioId, orderId, {
             status: newMakerStatus,
@@ -297,44 +200,14 @@ export class ExchangeService {
     //  - publish trade to clearing house
     ////////////////////////////////////////////////////
     private onTrade = async (trade: Trade) => {
-        // logger.debug('onTrade: %o', trade)
         await this.exchangeTradeRepository.storeAsync(trade) // async - don't wait to finish
 
-        this.eventPublisher.publishOrderEventCompleteAsync(
+        this.orderEventPublisher.publishOrderEventCompleteAsync(
             trade.taker.portfolioId,
             trade.taker.orderId,
             trade.tradeId,
             'marketMaker',
         ) // async - don't wait to finish
-    }
-
-    ////////////////////////////////////////////////////
-    //  onUpdateQuote
-    //  - store new quoted for the asset indicated
-    ////////////////////////////////////////////////////
-    private onUpdateQuote = async (trade: Trade, bid: number, ask: number) => {
-        const timeAtNow = DateTime.utc().toString()
-        const event: TQuote = {
-            assetId: trade.assetId,
-            quoteAt: timeAtNow,
-            bid,
-            ask,
-            lastTrade: {
-                side: trade.taker.orderSide,
-                volume: Math.abs(trade.taker.filledSize),
-                price: trade.taker.filledPrice,
-                executedAt: trade.executedAt,
-            },
-        }
-        //logger.debug('onUpdateQuote: %o', event)
-
-        const assetId = event.assetId
-        // const bid = event.bid
-        // const ask = event.ask
-        const last = event.lastTrade?.price || 0
-
-        const updateProps: TAssetUpdate = { bid, ask, last }
-        await this.assetRepository.updateAsync(assetId, updateProps)
     }
 
     ////////////////////////////////////////////////////
@@ -352,11 +225,6 @@ export class ExchangeService {
     ) {
         let newTransactionData: any
 
-        // console.log(`takerPortfolioId: ${takerPortfolioId} `)
-        // console.log(`takerDeltaUnits: ${takerDeltaUnits} `)
-        // console.log(`takerDeltaValue: ${takerDeltaValue} `)
-        // console.log(`makerPortfolioId: ${makerPortfolioId} `)
-
         if (takerDeltaUnits > 0) {
             // deltaUnits > 0 means adding to taker portfolio from asset
             // NOTE: Transaction inputs must have negative size so have to do transaction
@@ -371,7 +239,7 @@ export class ExchangeService {
                     },
                     {
                         portfolioId: takerPortfolioId,
-                        assetId: 'coin::fantx',
+                        assetId: 'coin::rkt',
                         units: takerDeltaValue,
                         cost: takerDeltaValue,
                     },
@@ -385,7 +253,7 @@ export class ExchangeService {
                     },
                     {
                         portfolioId: makerPortfolioId,
-                        assetId: 'coin::fantx',
+                        assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
                         cost: takerDeltaValue * -1,
                     },
@@ -400,7 +268,6 @@ export class ExchangeService {
                 },
             }
         } else {
-            // takerDeltaUnits < 0 ( an ask/sale )
             newTransactionData = {
                 inputs: [
                     {
@@ -411,7 +278,7 @@ export class ExchangeService {
                     },
                     {
                         portfolioId: makerPortfolioId,
-                        assetId: 'coin::fantx',
+                        assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
                         cost: takerDeltaValue * -1,
                     },
@@ -425,7 +292,7 @@ export class ExchangeService {
                     },
                     {
                         portfolioId: takerPortfolioId,
-                        assetId: 'coin::fantx',
+                        assetId: 'coin::rkt',
                         units: takerDeltaValue,
                         cost: takerDeltaValue,
                     },
@@ -441,15 +308,13 @@ export class ExchangeService {
             }
         }
 
-        // logger.debug('Transaction: ', newTransactionData)
-
         return this.transactionService.newTransactionAsync(newTransactionData)
     }
 
     private async verifyAssetsAsync(exchangeOrder: ExchangeOrder) {
         // verify that portfolio exists.
         const orderPortfolioId = exchangeOrder.portfolioId
-        const exchangeOrderPortfolio = await this.portfolioCache.getDetailAsync(orderPortfolioId)
+        const exchangeOrderPortfolio = await this.portfolioRepository.getDetailAsync(orderPortfolioId)
         if (!exchangeOrderPortfolio) {
             const msg = `Exchange Order Failed - input portfolioId not registered (${orderPortfolioId})`
             throw new ConflictError(msg, { exchangeOrder })
@@ -460,7 +325,7 @@ export class ExchangeService {
         const unitsRequired = exchangeOrder.orderSide === 'ask' ? round4(exchangeOrder.orderSize) : 0
 
         if (unitsRequired > 0) {
-            const portfolioHoldings = await this.portfolioHoldingsCache.getDetailAsync(portfolioId, assetId)
+            const portfolioHoldings = await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, assetId)
             const portfolioHoldingsUnits = round4(portfolioHoldings?.units || 0)
             if (portfolioHoldingsUnits < unitsRequired) {
                 // exception
@@ -473,7 +338,7 @@ export class ExchangeService {
     private async verifyFundsAsync(exchangeOrder: ExchangeOrder, price: number) {
         // verify that portfolio exists.
         const orderPortfolioId = exchangeOrder.portfolioId
-        const exchangeOrderPortfolio = await this.portfolioCache.getDetailAsync(orderPortfolioId)
+        const exchangeOrderPortfolio = await this.portfolioRepository.getDetailAsync(orderPortfolioId)
         if (!exchangeOrderPortfolio) {
             const msg = `Exchange Order Failed - input portfolioId not registered (${orderPortfolioId})`
             throw new ConflictError(msg, { exchangeOrder })
@@ -481,12 +346,12 @@ export class ExchangeService {
 
         const COIN_BUFFER_FACTOR = 1.05
         const portfolioId = exchangeOrder.portfolioId
-        const paymentAssetId = 'coin::fantx'
+        const paymentAssetId = 'coin::rkt'
         const coinsRequired =
             exchangeOrder.orderSide === 'bid' ? round4(exchangeOrder.orderSize * price) * COIN_BUFFER_FACTOR : 0
 
         if (coinsRequired > 0) {
-            const coinsHeld = await this.portfolioHoldingsCache.getDetailAsync(portfolioId, paymentAssetId)
+            const coinsHeld = await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, paymentAssetId)
             const portfolioHoldingsUnits = round4(coinsHeld?.units || 0)
             if (portfolioHoldingsUnits < coinsRequired) {
                 // exception

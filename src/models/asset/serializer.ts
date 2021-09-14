@@ -12,9 +12,6 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                     rel: 'asset',
                 },
                 league: {
-                    //href: `${baseUrl}/leagues/${data.leagueId}`, // TODO: change to leagueId
-                    //id: data.leagueId,
-                    // title: data.leagueDisplayName,
                     href: `${baseUrl}/leagues/${data.contractId}`,
                     rel: 'league',
                     id: data.contractId,

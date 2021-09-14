@@ -7,8 +7,8 @@ export declare class Asset {
     displayName: string;
     ownerId: string;
     portfolioId?: string;
-    leagueId: string;
-    leagueDisplayName: string;
+    leagueId?: string;
+    leagueDisplayName?: string;
     tags?: any;
     xids?: any;
     bid?: number;

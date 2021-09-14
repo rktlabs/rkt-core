@@ -5,7 +5,6 @@ export declare class LeagueService {
     private portfolioRepository;
     private portfolioService;
     private assetService;
-    private makerService;
     constructor();
     newLeague(payload: TNewLeague): Promise<League>;
     deleteLeague(leagueId: string): Promise<void>;

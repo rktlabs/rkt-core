@@ -4,6 +4,7 @@ import { generateId } from '../../util/idGenerator'
 import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
 import { TLeague, TNewLeague } from '.'
+import { TAssetCore } from '..'
 
 // League holds value (coin) and shares to be sold.
 export class League {
@@ -14,7 +15,7 @@ export class League {
     displayName: string
     description: string
     tags?: any
-    managedAssets: string[]
+    managedAssets: TAssetCore[]
 
     constructor(props: TLeague) {
         this.createdAt = props.createdAt

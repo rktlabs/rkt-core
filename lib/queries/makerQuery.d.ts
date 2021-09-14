@@ -3,7 +3,7 @@ export declare class MakerQuery {
     makerRepository: MakerRepository;
     constructor();
     getListAsync(qs?: any): Promise<{
-        data: import("..").TMaker[];
+        data: import("../services/makerFactory/makers/makerBase/types").TMaker[];
     }>;
-    getDetailAsync(id: string): Promise<import("..").TMaker | null>;
+    getDetailAsync(id: string): Promise<import("../services/makerFactory/makers/makerBase/types").TMaker | null>;
 }

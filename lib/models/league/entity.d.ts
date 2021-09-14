@@ -1,4 +1,5 @@
 import { TLeague, TNewLeague } from '.';
+import { TAssetCore } from '..';
 export declare class League {
     createdAt: string;
     leagueId: string;
@@ -7,7 +8,7 @@ export declare class League {
     displayName: string;
     description: string;
     tags?: any;
-    managedAssets: string[];
+    managedAssets: TAssetCore[];
     constructor(props: TLeague);
     static newLeague(props: TNewLeague): League;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;

@@ -14,8 +14,8 @@ export class Asset {
     ownerId: string
     portfolioId?: string
 
-    leagueId: string
-    leagueDisplayName: string
+    leagueId?: string
+    leagueDisplayName?: string
 
     tags?: any
     xids?: any

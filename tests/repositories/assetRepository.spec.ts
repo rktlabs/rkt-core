@@ -2,7 +2,6 @@
 /* eslint-env node, mocha */
 
 import { expect } from 'chai'
-
 import { Asset, TNewAsset } from '../../src/models'
 import { AssetRepository } from '../../src/repositories'
 
@@ -57,11 +56,11 @@ describe('Asset Repository', () => {
             }
 
             const asset = Asset.newAsset(data)
-            await assetRepository.storeAsset(asset)
+            await assetRepository.storeAsync(asset)
 
-            await assetRepository.deleteAsset(testAssetId)
+            await assetRepository.deleteAsync(testAssetId)
 
-            const readBack = await assetRepository.getAsset(testAssetId)
+            const readBack = await assetRepository.getDetailAsync(testAssetId)
             expect(readBack).to.not.exist
         })
     })
@@ -82,9 +81,9 @@ describe('Asset Repository', () => {
             }
 
             const asset = Asset.newAsset(data)
-            await assetRepository.storeAsset(asset)
+            await assetRepository.storeAsync(asset)
 
-            const readBack = await assetRepository.getAsset(testAssetId)
+            const readBack = await assetRepository.getDetailAsync(testAssetId)
             expect(readBack).to.exist
             if (readBack) {
                 expect(readBack).to.have.property('tags')
@@ -95,7 +94,7 @@ describe('Asset Repository', () => {
 
     describe('Get Assets', () => {
         it('should read list', async () => {
-            const assetList = await assetRepository.listAssets({ pageSize: 2 })
+            const assetList = await assetRepository.getListAsync({ pageSize: 2 })
             expect(assetList).to.exist
             expect(assetList.length).to.eq(2)
         })
@@ -103,7 +102,7 @@ describe('Asset Repository', () => {
 
     describe('Get FilteredAssets', () => {
         it('should read filterred list', async () => {
-            const assetList = await assetRepository.listAssets({ pageSize: 2, type: 'coin' })
+            const assetList = await assetRepository.getListAsync({ pageSize: 2, type: 'coin' })
             expect(assetList).to.exist
             expect(assetList.length).to.eq(1)
         })
