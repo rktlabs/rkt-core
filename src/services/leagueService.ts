@@ -106,6 +106,16 @@ export class LeagueService {
         await this.createAssetImpl(league, assetDef)
     }
 
+    async addAsset(leagueSpec: string | League, asset: TAssetCore) {
+        const league =
+            typeof leagueSpec === 'string' ? await this.leagueRepository.getDetailAsync(leagueSpec) : leagueSpec
+        if (!league) {
+            throw new Error(`League Not Found: ${leagueSpec}`)
+        }
+
+        await this.addAssetToLeague(league, asset)
+    }
+
     async dropAsset(leagueSpec: string | League, assetId: string) {
         const league =
             typeof leagueSpec === 'string' ? await this.leagueRepository.getDetailAsync(leagueSpec) : leagueSpec
