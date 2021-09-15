@@ -36,9 +36,11 @@ export abstract class MakerBase implements IMaker {
             type: this.type,
             assetId: this.assetId,
             ownerId: this.ownerId,
-            portfolioId: this.portfolioId,
             currentPrice: this.currentPrice,
             params: this.params,
+        }
+        if (this.portfolioId) {
+            tMaker.portfolioId = this.portfolioId
         }
         return tMaker
     }
