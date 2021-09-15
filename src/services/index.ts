@@ -17,6 +17,5 @@ export * from './userService'
 export * from './assetService'
 export * from './portfolioService'
 
-// export * from './bootstrapService'
-// export * from './orderService'
-// export * from './orderEventService'
+export * from './portfolioOrderService'
+export * from './portfolioOrderEventService'
