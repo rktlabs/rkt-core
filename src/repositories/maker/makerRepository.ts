@@ -1,4 +1,5 @@
 'use strict'
+import { MakerBase } from '../../services/makerService/makers/makerBase/entity'
 import { TMaker, TMakerPatch } from '../../services/makerService/makers/makerBase/types'
 import { deleteDocument } from '../../util/deleters'
 
@@ -46,9 +47,16 @@ export class MakerRepository extends RepositoryBase {
         }
     }
 
-    async storeAsync(entity: TMaker) {
-        const entityId = entity.assetId
-        const entityData = JSON.parse(JSON.stringify(entity))
+    async storeAsync(entity: MakerBase | TMaker) {
+        let theEntity: TMaker
+        if (entity instanceof MakerBase) {
+            theEntity = entity.toTMaker()
+        } else {
+            theEntity = entity
+        }
+
+        const entityId = theEntity.assetId
+        const entityData = JSON.parse(JSON.stringify(theEntity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.set(entityData)
     }
