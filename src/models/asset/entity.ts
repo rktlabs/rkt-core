@@ -71,6 +71,7 @@ export class Asset {
             symbol: props.symbol,
             leagueId: props.leagueId,
             leagueDisplayName: props.leagueDisplayName || props.leagueId,
+            subject: props.subject,
         }
 
         if (props.tags) {

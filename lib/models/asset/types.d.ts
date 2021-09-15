@@ -4,6 +4,7 @@ export declare type TNewAssetConfig = {
     displayName?: string;
     leagueId?: string;
     leagueDisplayName?: string;
+    subject?: any;
     tags?: any;
     xids?: any;
 };
@@ -17,6 +18,7 @@ export declare type TAsset = {
     displayName: string;
     leagueId?: string;
     leagueDisplayName?: string;
+    subject?: any;
     tags?: any;
     xids?: any;
     bid?: number;

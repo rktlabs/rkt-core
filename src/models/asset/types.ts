@@ -6,6 +6,7 @@ export type TNewAssetConfig = {
     leagueId?: string
     leagueDisplayName?: string
 
+    subject?: any
     tags?: any
     xids?: any
 }
@@ -22,6 +23,7 @@ export type TAsset = {
     leagueId?: string
     leagueDisplayName?: string
 
+    subject?: any
     tags?: any
     xids?: any
 

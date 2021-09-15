@@ -30,8 +30,27 @@ export abstract class MakerBase implements IMaker {
         this.makerRepository = new MakerRepository()
     }
 
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
+    toTMaker() {
+        const tMaker: TMaker = {
+            createdAt: this.createdAt,
+            type: this.type,
+            assetId: this.assetId,
+            ownerId: this.ownerId,
+            portfolioId: this.portfolioId,
+            currentPrice: this.currentPrice,
+            params: this.params,
+        }
+        return tMaker
+    }
+
+    static serialize(selfUrl: string, baseUrl: string, data: MakerBase | TMaker) {
+        let theData: TMaker
+        if (data instanceof MakerBase) {
+            theData = data.toTMaker()
+        } else {
+            theData = data
+        }
+        return serialize(selfUrl, baseUrl, theData)
     }
 
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
