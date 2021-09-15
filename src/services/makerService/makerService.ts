@@ -138,10 +138,7 @@ export class MakerService {
             maker.portfolioId = portfolioId
         }
 
-        const tMaker = JSON.parse(JSON.stringify(maker))
-
-        await this.makerRepository.storeAsync(tMaker)
-
+        await this.makerRepository.storeAsync(maker)
         return maker
     }
 
