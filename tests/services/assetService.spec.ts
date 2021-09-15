@@ -3,7 +3,7 @@
 
 import { assert, expect } from 'chai'
 import * as sinon from 'sinon'
-import { AssetRepository, PortfolioRepository, AssetService, TNewAsset } from '../../src'
+import { AssetRepository, PortfolioRepository, AssetService, TNewAssetConfig } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe('Asset Service', function () {
@@ -39,7 +39,7 @@ describe('Asset Service', function () {
 
     describe('Create Basic Asset - no portfolio', () => {
         it('should create', async () => {
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 ownerId: 'tester',
                 symbol: assetId,
                 displayName: 'display-me',
@@ -47,7 +47,7 @@ describe('Asset Service', function () {
                 leagueDisplayName: 'theLeagueDisplayName',
             }
 
-            await assetService.newAsset(data)
+            await assetService.createAsset(data)
 
             const readBack = await assetRepository.getDetailAsync(assetId)
             expect(readBack).to.exist
@@ -56,7 +56,7 @@ describe('Asset Service', function () {
 
     describe('Create Basic Asset - with portfolio', () => {
         it('should create', async () => {
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 ownerId: 'tester',
                 symbol: assetId,
                 displayName: 'display-me',
@@ -64,7 +64,7 @@ describe('Asset Service', function () {
                 leagueDisplayName: 'theLeagueDisplayName',
             }
 
-            await assetService.newAsset(data, true)
+            await assetService.createAsset(data, true)
 
             const readBack = await assetRepository.getDetailAsync(assetId)
             expect(readBack).to.exist
@@ -79,7 +79,7 @@ describe('Asset Service', function () {
 
     describe('Create Asset where already exists', () => {
         it('should create new portfolio', async () => {
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 ownerId: 'tester',
                 symbol: assetId,
                 displayName: 'display-me',
@@ -87,12 +87,12 @@ describe('Asset Service', function () {
                 leagueDisplayName: 'theLeagueDisplayName',
             }
 
-            await assetService.newAsset(data)
+            await assetService.createAsset(data)
             const readBack = await assetRepository.getDetailAsync(assetId)
             expect(readBack).to.exist
 
             await assetService
-                .newAsset(data)
+                .createAsset(data)
                 .then(() => {
                     assert.fail('Function should not complete')
                 })

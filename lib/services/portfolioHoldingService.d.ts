@@ -1,7 +1,7 @@
 import { TPortfolioHoldingUpdateItem, TTransaction } from '..';
-export declare class PortfolioHoldingsService {
+export declare class PortfolioHoldingService {
     private assetRepository;
-    private portfolioHoldingsRepository;
+    private portfolioHoldingRepository;
     private portfolioActivityRepository;
     private assetHoldersRepository;
     constructor();

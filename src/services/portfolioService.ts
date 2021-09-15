@@ -1,6 +1,6 @@
 'use strict'
 
-import { PortfolioHoldingsService } from '.'
+import { PortfolioHoldingService } from '.'
 import {
     PortfolioRepository,
     AssetRepository,
@@ -24,7 +24,7 @@ export class PortfolioService {
     private portfolioActivityRepository: PortfolioActivityRepository
     private portfolioDepositRepository: PortfolioDepositRepository
 
-    private portfolioHoldingsService: PortfolioHoldingsService
+    private portfolioHoldingService: PortfolioHoldingService
 
     constructor() {
         this.portfolioRepository = new PortfolioRepository()
@@ -34,7 +34,7 @@ export class PortfolioService {
         this.leagueRepository = new LeagueRepository()
         this.portfolioDepositRepository = new PortfolioDepositRepository()
 
-        this.portfolioHoldingsService = new PortfolioHoldingsService()
+        this.portfolioHoldingService = new PortfolioHoldingService()
     }
 
     // create new portfolio. Fail if it already exists.
@@ -79,7 +79,7 @@ export class PortfolioService {
     }
 
     async scrubPortfolio(portfolioId: string) {
-        await this.portfolioHoldingsService.scrubPortfolioHoldings(portfolioId)
+        await this.portfolioHoldingService.scrubPortfolioHoldings(portfolioId)
 
         await this.portfolioActivityRepository.scrubCollectionAsync(portfolioId)
 
@@ -99,7 +99,7 @@ export class PortfolioService {
     }
 
     async computePortfolioNetDeposits(portfolioId: string) {
-        const deposits = await this.portfolioDepositRepository.listPortfolioDeposits(portfolioId)
+        const deposits = await this.portfolioDepositRepository.getPortfolioDeposits(portfolioId)
         const total = deposits.reduce((acc: number, deposit: TPortfolioDeposit) => {
             return acc + deposit.units
         }, 0)

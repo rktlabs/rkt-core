@@ -1,9 +1,9 @@
-import { PortfolioRepository, PortfolioActivityRepository, PortfolioHoldingsRepository, PortfolioOrdersRepository } from '..';
+import { PortfolioRepository, PortfolioActivityRepository, PortfolioHoldingRepository, PortfolioOrderRepository } from '..';
 export declare class PortfolioQuery {
     portfolioRepository: PortfolioRepository;
     portfolioActivityRepository: PortfolioActivityRepository;
-    portfolioHoldingsRepository: PortfolioHoldingsRepository;
-    portfolioOrdersRepository: PortfolioOrdersRepository;
+    portfolioHoldingRepository: PortfolioHoldingRepository;
+    portfolioOrderRepository: PortfolioOrderRepository;
     constructor();
     getListAsync(qs?: any): Promise<{
         data: import("..").TPortfolio[];

@@ -8,9 +8,8 @@ import {
     PortfolioRepository,
     UserService,
     EventPublisher,
-    TNewUser,
-    InsufficientBalance,
-    PortfolioHoldingsService,
+    PortfolioHoldingService,
+    TNewUserConfig,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -33,7 +32,7 @@ describe('User Service', function () {
         eventPublisher = sinon.createStubInstance(EventPublisher)
         userRepository = new UserRepository()
         portfolioRepository = new PortfolioRepository()
-        userService = new UserService()
+        userService = new UserService(eventPublisher)
     })
 
     describe('User Service Simple', () => {
@@ -45,7 +44,7 @@ describe('User Service', function () {
 
         describe('Create Basic User - with portfolio', () => {
             it('should create', async () => {
-                const user = await userService.newUser(userTemplate)
+                const user = await userService.createUser(userTemplate)
                 userId = user.userId
 
                 const readBack = await userRepository.getDetailAsync(user.userId)
@@ -69,7 +68,7 @@ describe('User Service', function () {
                     username: 'bjcleaver',
                 }
 
-                const user = await userService.newUser(userTemplate2)
+                const user = await userService.createUser(userTemplate2)
                 userId = user.userId
                 expect(userId).to.eq('12345')
 
@@ -86,7 +85,7 @@ describe('User Service', function () {
 
         describe('Create User where username already exists', () => {
             it('should fail with exception', async () => {
-                const user = await userService.newUser({
+                const user = await userService.createUser({
                     dob: '1/2/2021',
                     email: 'bjcleaver@cleaver.com',
                     name: 'Boris Cleaver',
@@ -94,7 +93,7 @@ describe('User Service', function () {
                 })
                 userId = user.userId
 
-                const data2: TNewUser = {
+                const data2: TNewUserConfig = {
                     dob: '1/3/2021',
                     email: 'jcleave@cleaver.com',
                     name: 'Janice Cleaver',
@@ -102,7 +101,7 @@ describe('User Service', function () {
                 }
 
                 await userService
-                    .newUser(data2)
+                    .createUser(data2)
                     .then(() => {
                         assert.fail('Function should not complete')
                     })
@@ -115,10 +114,10 @@ describe('User Service', function () {
 
         describe('Create User where email already exists', () => {
             it('should fail with exception', async () => {
-                const user = await userService.newUser(userTemplate)
+                const user = await userService.createUser(userTemplate)
                 userId = user.userId
 
-                const data2: TNewUser = {
+                const data2: TNewUserConfig = {
                     dob: '1/3/2021',
                     email: 'bjcleaver@cleaver.com',
                     name: 'Janice Cleaver',
@@ -126,7 +125,7 @@ describe('User Service', function () {
                 }
 
                 await userService
-                    .newUser(data2)
+                    .createUser(data2)
                     .then(() => {
                         assert.fail('Function should not complete')
                     })
@@ -142,12 +141,12 @@ describe('User Service', function () {
 
     describe('User Service Boot', () => {
         let bootstrapper: BootstrapService
-        let portfolioHoldingsService: PortfolioHoldingsService
+        let portfolioHoldingService: PortfolioHoldingService
 
         let userId: string
 
         before(async () => {
-            portfolioHoldingsService = new PortfolioHoldingsService()
+            portfolioHoldingService = new PortfolioHoldingService()
             bootstrapper = new BootstrapService(eventPublisher as any as EventPublisher)
         })
 
@@ -170,7 +169,7 @@ describe('User Service', function () {
 
         //         // verify that user has coins
         //         const portfolioId = user.portfolioId!!
-        //         const madeUnits = await portfolioHoldingsService.getPortfolioHoldingsBalance(portfolioId, 'coin::fantx')
+        //         const madeUnits = await portfolioHoldingService.getPortfolioHoldingsBalance(portfolioId, 'coin::fantx')
 
         //         expect(madeUnits).to.eq(depositUnits, 'verify units deposited')
         //     })
@@ -181,7 +180,7 @@ describe('User Service', function () {
         //         const user = await userService.newUser(userTemplate)
         //         userId = user.id
 
-        //         const treasuryUnits = await portfolioHoldingsService.getPortfolioHoldingsBalance(
+        //         const treasuryUnits = await portfolioHoldingService.getPortfolioHoldingsBalance(
         //             'bank::treasury',
         //             'coin::fantx',
         //         )
@@ -192,8 +191,8 @@ describe('User Service', function () {
 
         //         // verify that user has coins
         //         const portfolioId = user.portfolioId!!
-        //         const madeUnits = await portfolioHoldingsService.getPortfolioHoldingsBalance(portfolioId, 'coin::fantx')
-        //         const remainingTreasuryUnits = await portfolioHoldingsService.getPortfolioHoldingsBalance(
+        //         const madeUnits = await portfolioHoldingService.getPortfolioHoldingsBalance(portfolioId, 'coin::fantx')
+        //         const remainingTreasuryUnits = await portfolioHoldingService.getPortfolioHoldingsBalance(
         //             'bank::treasury',
         //             'coin::fantx',
         //         )
@@ -233,7 +232,7 @@ describe('User Service', function () {
         //         const portfolioUnits = 1000
         //         await userService.depositCoins(user.userId, portfolioUnits)
 
-        //         const treasuryUnits = await portfolioHoldingsService.getPortfolioHoldingsBalance(
+        //         const treasuryUnits = await portfolioHoldingService.getPortfolioHoldingsBalance(
         //             'bank::treasury',
         //             'coin::fantx',
         //         )
@@ -243,8 +242,8 @@ describe('User Service', function () {
 
         //         // verify that user has coins
         //         const portfolioId = user.portfolioId!!
-        //         const madeUnits = await portfolioHoldingsService.getPortfolioHoldingsBalance(portfolioId, 'coin::fantx')
-        //         const remainingTreasuryUnits = await portfolioHoldingsService.getPortfolioHoldingsBalance(
+        //         const madeUnits = await portfolioHoldingService.getPortfolioHoldingsBalance(portfolioId, 'coin::fantx')
+        //         const remainingTreasuryUnits = await portfolioHoldingService.getPortfolioHoldingsBalance(
         //             'bank::treasury',
         //             'coin::fantx',
         //         )

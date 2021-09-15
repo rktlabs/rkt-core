@@ -1,21 +1,21 @@
 import {
     PortfolioRepository,
     PortfolioActivityRepository,
-    PortfolioHoldingsRepository,
-    PortfolioOrdersRepository,
+    PortfolioHoldingRepository,
+    PortfolioOrderRepository,
 } from '..'
 
 export class PortfolioQuery {
     portfolioRepository: PortfolioRepository
     portfolioActivityRepository: PortfolioActivityRepository
-    portfolioHoldingsRepository: PortfolioHoldingsRepository
-    portfolioOrdersRepository: PortfolioOrdersRepository
+    portfolioHoldingRepository: PortfolioHoldingRepository
+    portfolioOrderRepository: PortfolioOrderRepository
 
     constructor() {
         this.portfolioRepository = new PortfolioRepository()
         this.portfolioActivityRepository = new PortfolioActivityRepository()
-        this.portfolioHoldingsRepository = new PortfolioHoldingsRepository()
-        this.portfolioOrdersRepository = new PortfolioOrdersRepository()
+        this.portfolioHoldingRepository = new PortfolioHoldingRepository()
+        this.portfolioOrderRepository = new PortfolioOrderRepository()
     }
 
     async getListAsync(qs?: any) {
@@ -31,13 +31,13 @@ export class PortfolioQuery {
 
     async getPortfolioHoldingsAsync(portfolioId: string, qs?: any) {
         return {
-            data: await this.portfolioHoldingsRepository.getListAsync(portfolioId, qs),
+            data: await this.portfolioHoldingRepository.getListAsync(portfolioId, qs),
         }
     }
 
     async getPortfolioHoldingDetailAsync(portfolioId: string, orderId: string) {
         return {
-            data: await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, orderId),
+            data: await this.portfolioHoldingRepository.getDetailAsync(portfolioId, orderId),
         }
     }
 
@@ -49,13 +49,13 @@ export class PortfolioQuery {
 
     async getPortfolioOrdersAsync(portfolioId: string, qs?: any) {
         return {
-            data: await this.portfolioOrdersRepository.getListAsync(portfolioId, qs),
+            data: await this.portfolioOrderRepository.getListAsync(portfolioId, qs),
         }
     }
 
     async getPortfolioOrderDetailAsync(portfolioId: string, orderId: string) {
         return {
-            data: await this.portfolioOrdersRepository.getDetailAsync(portfolioId, orderId),
+            data: await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId),
         }
     }
 }

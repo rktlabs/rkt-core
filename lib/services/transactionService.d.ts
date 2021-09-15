@@ -4,9 +4,9 @@ export declare class TransactionService {
     private eventPublisher;
     private portfolioRepository;
     private assetRepository;
-    private portfolioHoldingsRepository;
+    private portfolioHoldingRepository;
     private transactionRepository;
-    private portfolioHoldingsService;
+    private portfolioHoldingService;
     constructor(eventPublisher?: IEventPublisher);
     executePurchaseAsync(exchangeData: TPurchase): Promise<any[]>;
     executeTransferAsync(transferData: TTransfer): Promise<any[]>;

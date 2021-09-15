@@ -1,22 +1,38 @@
 'use strict'
 
-import { PortfolioService } from '.'
-import { UserRepository, PortfolioRepository, TNewUserConfig, DuplicateError, ConflictError, User } from '..'
+import { DateTime } from 'luxon'
+import { EventPublisher, IEventPublisher, PortfolioService, TransactionService } from '.'
+import {
+    UserRepository,
+    PortfolioRepository,
+    TNewUserConfig,
+    DuplicateError,
+    ConflictError,
+    User,
+    NotFoundError,
+    TPortfolioDeposit,
+    TTransfer,
+} from '..'
 
 const BANK_PORTFOLIO = 'bank::treasury'
-//const COIN = 'coin::rkt'
+const COIN = 'coin::rkt'
+
+const logger = require('log4js').getLogger('transactionHandler')
 
 export class UserService {
+    private eventPublisher: IEventPublisher
     private userRepository: UserRepository
     private portfolioRepository: PortfolioRepository
     private portfolioService: PortfolioService
-    // private transactionService: TransactionService
+    private transactionService: TransactionService
 
-    constructor() {
+    constructor(eventPublisher?: IEventPublisher) {
+        this.eventPublisher = eventPublisher || new EventPublisher({ logger: logger })
+
         this.userRepository = new UserRepository()
         this.portfolioRepository = new PortfolioRepository()
         this.portfolioService = new PortfolioService()
-        // this.transactionService = new TransactionService(this.eventPublisher)
+        this.transactionService = new TransactionService(this.eventPublisher)
     }
 
     async createUser(payload: TNewUserConfig) {
@@ -83,89 +99,89 @@ export class UserService {
         await this.userRepository.deleteAsync(userId)
     }
 
-    // async depositCoins(userId: string, units: number, coinId = COIN) {
-    //     const user = await this.userRepository.getDetailAsync(userId)
-    //     if (!user) {
-    //         const msg = `Cannot deposit to user: ${userId} does not exist`
-    //         throw new NotFoundError(msg, { userId })
-    //     }
+    async depositCoins(userId: string, units: number, coinId = COIN) {
+        const user = await this.userRepository.getDetailAsync(userId)
+        if (!user) {
+            const msg = `Cannot deposit to user: ${userId} does not exist`
+            throw new NotFoundError(msg, { userId })
+        }
 
-    //     const portfolioId = user.portfolioId
-    //     if (!portfolioId) {
-    //         const msg = `Cannot deposit to user: no portfolioId`
-    //         throw new NotFoundError(msg, { userId })
-    //     }
+        const portfolioId = user.portfolioId
+        if (!portfolioId) {
+            const msg = `Cannot deposit to user: no portfolioId`
+            throw new NotFoundError(msg, { userId })
+        }
 
-    //     const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
-    //     if (!portfolio) {
-    //         const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
-    //         throw new NotFoundError(msg, { portfolioId })
-    //     }
+        const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
+        if (!portfolio) {
+            const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
+            throw new NotFoundError(msg, { portfolioId })
+        }
 
-    //     const sourcePortfolioId = BANK_PORTFOLIO
+        const sourcePortfolioId = BANK_PORTFOLIO
 
-    //     const data: TTransfer = {
-    //         inputPortfolioId: sourcePortfolioId,
-    //         outputPortfolioId: portfolioId,
-    //         assetId: coinId,
-    //         units: units,
-    //         tags: {
-    //             source: 'Deposit',
-    //         },
-    //     }
-    //     await this.transactionService.newTransferAsync(data)
+        const data: TTransfer = {
+            inputPortfolioId: sourcePortfolioId,
+            outputPortfolioId: portfolioId,
+            assetId: coinId,
+            units: units,
+            tags: {
+                source: 'Deposit',
+            },
+        }
+        await this.transactionService.executeTransferAsync(data)
 
-    //     const createdAt = DateTime.utc().toString()
-    //     const deposit: TPortfolioDeposit = {
-    //         createdAt: createdAt,
-    //         portfolioId: portfolioId,
-    //         assetId: 'currency::usd',
-    //         units: units,
-    //     }
-    //     return this.portfolioService.submitPortfolioDeposit(deposit)
-    // }
+        const createdAt = DateTime.utc().toString()
+        const deposit: TPortfolioDeposit = {
+            createdAt: createdAt,
+            portfolioId: portfolioId,
+            assetId: 'currency::usd',
+            units: units,
+        }
+        return this.portfolioService.submitPortfolioDeposit(deposit)
+    }
 
-    // async withdrawCoins(userId: string, units: number, coinId = COIN) {
-    //     const user = await this.userRepository.getUser(userId)
-    //     if (!user) {
-    //         const msg = `Cannot deposit to user: ${userId} does not exist`
-    //         throw new NotFoundError(msg, { userId })
-    //     }
+    async withdrawCoins(userId: string, units: number, coinId = COIN) {
+        const user = await this.userRepository.getDetailAsync(userId)
+        if (!user) {
+            const msg = `Cannot deposit to user: ${userId} does not exist`
+            throw new NotFoundError(msg, { userId })
+        }
 
-    //     const portfolioId = user.portfolioId
-    //     if (!portfolioId) {
-    //         const msg = `Cannot deposit to user: no portfolioId`
-    //         throw new NotFoundError(msg, { userId })
-    //     }
+        const portfolioId = user.portfolioId
+        if (!portfolioId) {
+            const msg = `Cannot deposit to user: no portfolioId`
+            throw new NotFoundError(msg, { userId })
+        }
 
-    //     const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
-    //     if (!portfolio) {
-    //         const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
-    //         throw new NotFoundError(msg, { portfolioId })
-    //     }
+        const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
+        if (!portfolio) {
+            const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
+            throw new NotFoundError(msg, { portfolioId })
+        }
 
-    //     const sourcePortfolioId = BANK_PORTFOLIO
+        const sourcePortfolioId = BANK_PORTFOLIO
 
-    //     const data: TTransfer = {
-    //         inputPortfolioId: portfolioId,
-    //         outputPortfolioId: sourcePortfolioId,
-    //         assetId: coinId,
-    //         units: units,
-    //         tags: {
-    //             source: 'Withdraw',
-    //         },
-    //     }
-    //     await this.transactionService.newTransferAsync(data)
+        const data: TTransfer = {
+            inputPortfolioId: portfolioId,
+            outputPortfolioId: sourcePortfolioId,
+            assetId: coinId,
+            units: units,
+            tags: {
+                source: 'Withdraw',
+            },
+        }
+        await this.transactionService.executeTransferAsync(data)
 
-    //     const createdAt = DateTime.utc().toString()
-    //     const deposit: TPortfolioDeposit = {
-    //         createdAt: createdAt,
-    //         portfolioId: portfolioId,
-    //         assetId: 'currency::usd',
-    //         units: -1 * units,
-    //     }
-    //     return this.portfolioService.submitPortfolioDeposit(deposit)
-    // }
+        const createdAt = DateTime.utc().toString()
+        const deposit: TPortfolioDeposit = {
+            createdAt: createdAt,
+            portfolioId: portfolioId,
+            assetId: 'currency::usd',
+            units: -1 * units,
+        }
+        return this.portfolioService.submitPortfolioDeposit(deposit)
+    }
 
     ///////////////////////////////////////////
     // Private Methods

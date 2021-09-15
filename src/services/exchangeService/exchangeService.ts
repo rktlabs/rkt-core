@@ -16,7 +16,7 @@ import {
     InsufficientBalance,
     EventPublisher,
     TransactionService,
-    PortfolioHoldingsRepository,
+    PortfolioHoldingRepository,
     PortfolioRepository,
     MakerService,
     ExchangeQuoteRepository,
@@ -34,7 +34,7 @@ export class ExchangeService {
     private orderEventPublisher: EventPublisher
 
     private portfolioRepository: PortfolioRepository
-    private portfolioHoldingsRepository: PortfolioHoldingsRepository
+    private portfolioHoldingRepository: PortfolioHoldingRepository
     private exchangeOrderRepository: ExchangeOrderRepository
     private exchangeTradeRepository: ExchangeTradeRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
@@ -44,7 +44,7 @@ export class ExchangeService {
     constructor(eventPublisher?: EventPublisher) {
         this.orderEventPublisher = eventPublisher || new EventPublisher()
 
-        this.portfolioHoldingsRepository = new PortfolioHoldingsRepository()
+        this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.portfolioRepository = new PortfolioRepository()
 
         this.exchangeOrderRepository = new ExchangeOrderRepository()
@@ -325,11 +325,11 @@ export class ExchangeService {
         const unitsRequired = exchangeOrder.orderSide === 'ask' ? round4(exchangeOrder.orderSize) : 0
 
         if (unitsRequired > 0) {
-            const portfolioHoldings = await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, assetId)
-            const portfolioHoldingsUnits = round4(portfolioHoldings?.units || 0)
-            if (portfolioHoldingsUnits < unitsRequired) {
+            const portfolioHoldings = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId)
+            const portfolioHoldingUnits = round4(portfolioHoldings?.units || 0)
+            if (portfolioHoldingUnits < unitsRequired) {
                 // exception
-                const msg = ` portfolio: [${portfolioId}] asset holding: [${assetId}] has: [${portfolioHoldingsUnits}] of required: [${unitsRequired}] `
+                const msg = ` portfolio: [${portfolioId}] asset holding: [${assetId}] has: [${portfolioHoldingUnits}] of required: [${unitsRequired}] `
                 throw new InsufficientBalance(msg, { payload: exchangeOrder })
             }
         }
@@ -351,11 +351,11 @@ export class ExchangeService {
             exchangeOrder.orderSide === 'bid' ? round4(exchangeOrder.orderSize * price) * COIN_BUFFER_FACTOR : 0
 
         if (coinsRequired > 0) {
-            const coinsHeld = await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, paymentAssetId)
-            const portfolioHoldingsUnits = round4(coinsHeld?.units || 0)
-            if (portfolioHoldingsUnits < coinsRequired) {
+            const coinsHeld = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, paymentAssetId)
+            const portfolioHoldingUnits = round4(coinsHeld?.units || 0)
+            if (portfolioHoldingUnits < coinsRequired) {
                 // exception
-                const msg = ` portfolio: [${portfolioId}] coin holding: [${paymentAssetId}] has: [${portfolioHoldingsUnits}] of required: [${coinsRequired}] `
+                const msg = ` portfolio: [${portfolioId}] coin holding: [${paymentAssetId}] has: [${portfolioHoldingUnits}] of required: [${coinsRequired}] `
                 throw new InsufficientBalance(msg, { payload: exchangeOrder })
             }
         }

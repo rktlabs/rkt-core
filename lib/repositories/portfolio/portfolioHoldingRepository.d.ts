@@ -1,6 +1,6 @@
 import { TPortfolioHolding } from '../..';
 import { RepositoryBase } from '../repositoryBase';
-export declare class PortfolioHoldingsRepository extends RepositoryBase {
+export declare class PortfolioHoldingRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;
     constructor();
     filterMap: any;

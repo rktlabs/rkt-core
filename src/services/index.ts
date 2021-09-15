@@ -6,7 +6,7 @@ export * from '../queries/userQuery'
 export * from '../queries/exchangeQuery'
 export * from '../queries/leagueQuery'
 
-export * from './portfolioHoldingsService'
+export * from './portfolioHoldingService'
 export * from './transactionService'
 export * from './eventPublisher'
 export * from './exchangeService'

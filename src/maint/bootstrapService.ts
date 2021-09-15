@@ -6,7 +6,7 @@ import {
     TransactionService,
     IEventPublisher,
     LeagueService,
-    PortfolioHoldingsService,
+    PortfolioHoldingService,
     AssetService,
 } from '..'
 
@@ -17,7 +17,7 @@ export class BootstrapService {
     private assetService: AssetService
     private portfolioService: PortfolioService
     private leagueService: LeagueService
-    private portfolioHoldingsService: PortfolioHoldingsService
+    private portfolioHoldingService: PortfolioHoldingService
     private transactionService: TransactionService
 
     constructor(eventPublisher?: IEventPublisher) {
@@ -25,7 +25,7 @@ export class BootstrapService {
         this.portfolioRepository = new PortfolioRepository()
         this.assetService = new AssetService()
         this.portfolioService = new PortfolioService()
-        this.portfolioHoldingsService = new PortfolioHoldingsService()
+        this.portfolioHoldingService = new PortfolioHoldingService()
         this.leagueService = new LeagueService()
         this.transactionService = new TransactionService(eventPublisher)
     }
@@ -109,12 +109,12 @@ export class BootstrapService {
         // scrub asset holders first. If do all in one promise, then they
         // may trample on one other so do assets and portfolios separately
         await Promise.all([
-            this.portfolioHoldingsService.scrubAssetHolders('coin::rkt'),
-            this.portfolioHoldingsService.scrubAssetHolders('card::jbone::test'),
+            this.portfolioHoldingService.scrubAssetHolders('coin::rkt'),
+            this.portfolioHoldingService.scrubAssetHolders('card::jbone::test'),
         ])
         await Promise.all([
-            this.portfolioHoldingsService.scrubPortfolioHoldings('user::hedbot'),
-            this.portfolioHoldingsService.scrubPortfolioHoldings('league::test'),
+            this.portfolioHoldingService.scrubPortfolioHoldings('user::hedbot'),
+            this.portfolioHoldingService.scrubPortfolioHoldings('league::test'),
         ])
     }
 

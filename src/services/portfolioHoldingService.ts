@@ -2,7 +2,7 @@
 
 import {
     AssetRepository,
-    PortfolioHoldingsRepository,
+    PortfolioHoldingRepository,
     PortfolioActivityRepository,
     AssetHoldersRepository,
     TPortfolioHoldingUpdateItem,
@@ -13,15 +13,15 @@ import {
 // Public Methods
 /////////////////////////////
 
-export class PortfolioHoldingsService {
+export class PortfolioHoldingService {
     private assetRepository: AssetRepository
-    private portfolioHoldingsRepository: PortfolioHoldingsRepository
+    private portfolioHoldingRepository: PortfolioHoldingRepository
     private portfolioActivityRepository: PortfolioActivityRepository
     private assetHoldersRepository: AssetHoldersRepository
 
     constructor() {
         this.assetRepository = new AssetRepository()
-        this.portfolioHoldingsRepository = new PortfolioHoldingsRepository()
+        this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.assetHoldersRepository = new AssetHoldersRepository()
         this.portfolioActivityRepository = new PortfolioActivityRepository()
     }
@@ -48,7 +48,7 @@ export class PortfolioHoldingsService {
             }
 
             await Promise.all([
-                this.portfolioHoldingsRepository.storeAsync(portfolioId, assetId, entity),
+                this.portfolioHoldingRepository.storeAsync(portfolioId, assetId, entity),
                 this.assetHoldersRepository.storeAsync(assetId, portfolioId, cache),
             ])
 
@@ -67,11 +67,11 @@ export class PortfolioHoldingsService {
     }
 
     async scrubPortfolioHoldings(portfolioId: string) {
-        const portfolioHoldingss = await this.portfolioHoldingsRepository.getListAsync(portfolioId)
+        const portfolioHoldings = await this.portfolioHoldingRepository.getListAsync(portfolioId)
         const promises: Promise<void>[] = []
-        portfolioHoldingss.forEach((portfolioHoldings) => {
+        portfolioHoldings.forEach((portfolioHoldings) => {
             const assetId = portfolioHoldings.assetId
-            promises.push(this.portfolioHoldingsRepository.deleteAsync(portfolioId, assetId))
+            promises.push(this.portfolioHoldingRepository.deleteAsync(portfolioId, assetId))
             promises.push(this.assetHoldersRepository.deleteAsync(assetId, portfolioId))
         })
         return Promise.all(promises)
@@ -83,7 +83,7 @@ export class PortfolioHoldingsService {
         assetHolders.forEach((holder) => {
             const portfolioId = holder.portfolioId
             promises.push(this.assetHoldersRepository.deleteAsync(assetId, portfolioId))
-            promises.push(this.portfolioHoldingsRepository.deleteAsync(portfolioId, assetId))
+            promises.push(this.portfolioHoldingRepository.deleteAsync(portfolioId, assetId))
         })
         return Promise.all(promises)
     }
@@ -91,14 +91,14 @@ export class PortfolioHoldingsService {
     async deletePortfolioHolding(portfolioId: string, assetId: string) {
         const promises = [
             this.assetHoldersRepository.deleteAsync(assetId, portfolioId),
-            this.portfolioHoldingsRepository.deleteAsync(portfolioId, assetId),
+            this.portfolioHoldingRepository.deleteAsync(portfolioId, assetId),
         ]
 
         return Promise.all(promises)
     }
 
     async getPortfolioHoldingBalance(portfolioId: string, assetId: string) {
-        const par = await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, assetId)
+        const par = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId)
         if (!par) {
             return 0
         } else {

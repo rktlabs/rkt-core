@@ -9,7 +9,7 @@ import {
     AssetService,
     TransactionService,
     EventPublisher,
-    PortfolioHoldingsService,
+    PortfolioHoldingService,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -19,7 +19,7 @@ describe('Transaction Service', function () {
     let transactionRepository: TransactionRepository
     let bootstrapper: BootstrapService
     let portfolioService: PortfolioService
-    let portfolioHoldingsService: PortfolioHoldingsService
+    let portfolioHoldingService: PortfolioHoldingService
     let assetService: AssetService
     let transactionService: TransactionService
 
@@ -31,7 +31,7 @@ describe('Transaction Service', function () {
         transactionRepository = new TransactionRepository()
 
         portfolioService = new PortfolioService()
-        portfolioHoldingsService = new PortfolioHoldingsService()
+        portfolioHoldingService = new PortfolioHoldingService()
         assetService = new AssetService()
         transactionService = new TransactionService(eventPublisher as any as EventPublisher)
         bootstrapper = new BootstrapService(eventPublisher as any as EventPublisher)
@@ -55,10 +55,10 @@ describe('Transaction Service', function () {
     //         await transactionService.mintCoinsToPortfolio('user::hedbot', 10)
 
     //         // verify that treasury has balance of 10
-    //         expect(await portfolioHoldingsService.getPortfolioHoldingsBalance('user::hedbot', 'coin::fantx')).to.eq(10)
+    //         expect(await portfolioHoldingService.getPortfolioHoldingsBalance('user::hedbot', 'coin::fantx')).to.eq(10)
 
     //         // verify that mint has balance of -10
-    //         expect(await portfolioHoldingsService.getPortfolioHoldingsBalance('league::mint', 'coin::fantx')).to.eq(-10)
+    //         expect(await portfolioHoldingService.getPortfolioHoldingsBalance('league::mint', 'coin::fantx')).to.eq(-10)
 
     //         //expect(eventPublisher.publishTransactionEventUpdatePortfolioAsync.callCount).to.eq(2)
     //         expect(eventPublisher.publishTransactionEventCompleteAsync.callCount).to.eq(1)

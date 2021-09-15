@@ -1,6 +1,6 @@
 import { TOrder, TOrderPatch } from '../../models/portfolioOrder';
 import { RepositoryBase } from '../repositoryBase';
-export declare class PortfolioOrdersRepository extends RepositoryBase {
+export declare class PortfolioOrderRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;
     constructor();
     filterMap: any;

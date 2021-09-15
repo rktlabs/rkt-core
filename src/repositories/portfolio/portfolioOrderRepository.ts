@@ -6,7 +6,7 @@ import { RepositoryBase } from '../repositoryBase'
 const COLLECTION_NAME = 'portfolios'
 const SUB_COLLECTION_NAME = 'orders'
 
-export class PortfolioOrdersRepository extends RepositoryBase {
+export class PortfolioOrderRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore
     constructor() {
         super()

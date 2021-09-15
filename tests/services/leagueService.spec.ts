@@ -11,7 +11,7 @@ import {
     PortfolioRepository,
     LeagueService,
     EventPublisher,
-    PortfolioHoldingsService,
+    PortfolioHoldingService,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -22,7 +22,7 @@ describe('League Service', function () {
     let assetRepository: AssetRepository
     let profileRepository: PortfolioRepository
 
-    let portfolioHoldingsService: PortfolioHoldingsService
+    let portfolioHoldingService: PortfolioHoldingService
     let leagueService: LeagueService
     let boostrapService: BootstrapService
 
@@ -37,7 +37,7 @@ describe('League Service', function () {
         profileRepository = new PortfolioRepository()
         assetRepository = new AssetRepository()
 
-        portfolioHoldingsService = new PortfolioHoldingsService()
+        portfolioHoldingService = new PortfolioHoldingService()
         leagueService = new LeagueService()
         boostrapService = new BootstrapService(eventPublisher as any as EventPublisher)
     })
@@ -59,7 +59,7 @@ describe('League Service', function () {
                 portfolioId: `league::${leagueId}`,
             }
 
-            await leagueService.newLeague(data)
+            await leagueService.createLeague(data)
 
             const league = await leagueRepository.getDetailAsync(leagueId)
             expect(league).to.exist
@@ -86,7 +86,7 @@ describe('League Service', function () {
                 portfolioId: `league::${leagueId}`,
             }
 
-            const league = await leagueService.newLeague(data)
+            const league = await leagueService.createLeague(data)
             await leagueService.deleteLeague(league.leagueId)
 
             const readBack = await leagueRepository.getDetailAsync(leagueId)
@@ -137,10 +137,10 @@ describe('League Service', function () {
     //         await leagueService.mintLeagueAssetUnitsToPortfolio('user::hedbot', 'card::jbone::test', 10)
 
     //         // verify that treasury has balance of 10
-    //         expect(await portfolioHoldingsService.getPortfolioHoldingsBalance('user::hedbot', 'card::jbone::test')).to.eq(10)
+    //         expect(await portfolioHoldingService.getPortfolioHoldingsBalance('user::hedbot', 'card::jbone::test')).to.eq(10)
 
     //         // verify that mint has balance of -10
-    //         expect(await portfolioHoldingsService.getPortfolioHoldingsBalance('league::test', 'card::jbone::test')).to.eq(
+    //         expect(await portfolioHoldingService.getPortfolioHoldingsBalance('league::test', 'card::jbone::test')).to.eq(
     //             -10,
     //         )
 

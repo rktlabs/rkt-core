@@ -38,7 +38,7 @@ describe('Portfolio Service', function () {
                 portfolioId: portfolioId,
             }
 
-            await portfolioService.newPortfolio(data)
+            await portfolioService.createPortfolio(data)
 
             const readBack = await portfolioRepository.getDetailAsync(portfolioId)
             expect(readBack).to.exist
@@ -71,7 +71,7 @@ describe('Portfolio Service', function () {
             await portfolioService.createPortfolio(data)
 
             await portfolioService
-                .newPortfolio(data)
+                .createPortfolio(data)
                 .then(() => {
                     assert.fail('Function should not complete')
                 })

@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import * as sinon from 'sinon'
 import { MakerService, MakerRepository, PortfolioRepository, Publisher, EventPublisher } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
-import { TNewMakerConfig } from '../../src/services/makerFactory/makers/makerBase/types'
+import { TNewMakerConfig } from '../../src/services/makerService/makers/makerBase/types'
 
 describe('Maker Service', function () {
     this.timeout(5000)
@@ -49,7 +49,7 @@ describe('Maker Service', function () {
                 },
             }
 
-            await makerService.newMaker(data)
+            await makerService.createMaker(data)
 
             const readBack = await makerRepository.getDetailAsync(assetId)
             expect(readBack).to.exist
@@ -67,7 +67,7 @@ describe('Maker Service', function () {
                 },
             }
 
-            await makerService.newMaker(data, true)
+            await makerService.createMaker(data, true)
 
             const readBack = await makerRepository.getDetailAsync(assetId)
             expect(readBack).to.exist

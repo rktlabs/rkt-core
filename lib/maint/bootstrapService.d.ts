@@ -5,7 +5,7 @@ export declare class BootstrapService {
     private assetService;
     private portfolioService;
     private leagueService;
-    private portfolioHoldingsService;
+    private portfolioHoldingService;
     private transactionService;
     constructor(eventPublisher?: IEventPublisher);
     createRkt(): Promise<void>;

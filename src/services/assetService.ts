@@ -1,6 +1,6 @@
 'use strict'
 
-import { PortfolioService, PortfolioHoldingsService, MakerService, LeagueService } from '.'
+import { PortfolioService, PortfolioHoldingService, MakerService, LeagueService } from '.'
 import { PortfolioRepository, AssetRepository, TNewAssetConfig, DuplicateError, ConflictError, Asset } from '..'
 
 export class AssetService {
@@ -9,13 +9,13 @@ export class AssetService {
 
     private portfolioService: PortfolioService
     private makerService: MakerService
-    private portfolioHoldingService: PortfolioHoldingsService
+    private portfolioHoldingService: PortfolioHoldingService
 
     constructor() {
         this.assetRepository = new AssetRepository()
         this.portfolioRepository = new PortfolioRepository()
 
-        this.portfolioHoldingService = new PortfolioHoldingsService()
+        this.portfolioHoldingService = new PortfolioHoldingService()
         this.portfolioService = new PortfolioService()
         this.makerService = new MakerService()
     }

@@ -1,11 +1,11 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { IEventPublisher, PortfolioHoldingsService, EventPublisher } from '.'
+import { IEventPublisher, PortfolioHoldingService, EventPublisher } from '.'
 import {
     PortfolioRepository,
     AssetRepository,
-    PortfolioHoldingsRepository,
+    PortfolioHoldingRepository,
     TransactionRepository,
     TPurchase,
     TTransactionNew,
@@ -29,17 +29,17 @@ export class TransactionService {
 
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
-    private portfolioHoldingsRepository: PortfolioHoldingsRepository
+    private portfolioHoldingRepository: PortfolioHoldingRepository
     private transactionRepository: TransactionRepository
-    private portfolioHoldingsService: PortfolioHoldingsService
+    private portfolioHoldingService: PortfolioHoldingService
 
     constructor(eventPublisher?: IEventPublisher) {
         this.eventPublisher = eventPublisher || new EventPublisher({ logger: logger })
         this.portfolioRepository = new PortfolioRepository()
         this.assetRepository = new AssetRepository()
-        this.portfolioHoldingsRepository = new PortfolioHoldingsRepository()
+        this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.transactionRepository = new TransactionRepository()
-        this.portfolioHoldingsService = new PortfolioHoldingsService()
+        this.portfolioHoldingService = new PortfolioHoldingService()
     }
 
     /////////////////////////////
@@ -185,7 +185,7 @@ export class TransactionService {
                     }
                 })
 
-                await this.portfolioHoldingsService.proessTransaction(transactionId, updates, transaction)
+                await this.portfolioHoldingService.proessTransaction(transactionId, updates, transaction)
             }
 
             transaction.status = 'success'
@@ -358,14 +358,14 @@ export class TransactionService {
                 //const canShort = true
 
                 // eslint-disable-next-line no-await-in-loop
-                let holding = await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, assetId)
+                let holding = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId)
                 if (canShort) {
                     // if can short, create input holding if it doesn't already
                     // exist. new holding may end up with negative balance. (if cannot
                     // short and no holding, then will fail for insufficient balance)
                     if (!holding) {
                         // eslint-disable-next-line no-await-in-loop
-                        holding = await this.portfolioHoldingsService.createPortfolioHolding(portfolioId, assetId)
+                        holding = await this.portfolioHoldingService.createPortfolioHolding(portfolioId, assetId)
                     }
                 }
 
@@ -406,10 +406,10 @@ export class TransactionService {
                 const isCoin = assetType === 'coin'
 
                 // eslint-disable-next-line no-await-in-loop
-                let holding = await this.portfolioHoldingsRepository.getDetailAsync(portfolioId, assetId)
+                let holding = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId)
                 if (!holding) {
                     // eslint-disable-next-line no-await-in-loop
-                    holding = await this.portfolioHoldingsService.createPortfolioHolding(portfolioId, assetId)
+                    holding = await this.portfolioHoldingService.createPortfolioHolding(portfolioId, assetId)
                 }
 
                 if (!isCoin) {
