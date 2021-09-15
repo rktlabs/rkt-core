@@ -9,6 +9,7 @@ export declare class Asset {
     portfolioId?: string;
     leagueId?: string;
     leagueDisplayName?: string;
+    subject?: string;
     tags?: any;
     xids?: any;
     bid?: number;

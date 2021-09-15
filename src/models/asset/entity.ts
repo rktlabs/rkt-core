@@ -16,6 +16,7 @@ export class Asset {
 
     leagueId?: string
     leagueDisplayName?: string
+    subject?: string
 
     tags?: any
     xids?: any
@@ -37,6 +38,7 @@ export class Asset {
 
         this.leagueId = props.leagueId
         this.leagueDisplayName = props.leagueDisplayName
+        this.subject = props.subject
 
         this.xids = props.xids
         this.tags = props.tags
@@ -52,9 +54,6 @@ export class Asset {
     }
 
     static newAsset(props: TNewAssetConfig) {
-        console.log('creating')
-        console.log(props)
-
         const symbolParts = props.symbol.split(':')
         if (symbolParts.length < 2 || symbolParts[1] !== '') {
             throw new Error('New Asset: Invalid symbol')
