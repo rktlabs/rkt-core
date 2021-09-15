@@ -43,14 +43,8 @@ export abstract class MakerBase implements IMaker {
         return tMaker
     }
 
-    static serialize(selfUrl: string, baseUrl: string, data: MakerBase | TMaker) {
-        let theData: TMaker
-        if (data instanceof MakerBase) {
-            theData = data.toTMaker()
-        } else {
-            theData = data
-        }
-        return serialize(selfUrl, baseUrl, theData)
+    static serialize(selfUrl: string, baseUrl: string, data: any) {
+        return serialize(selfUrl, baseUrl, data)
     }
 
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {

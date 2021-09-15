@@ -14,7 +14,7 @@ export declare abstract class MakerBase implements IMaker {
     params?: any;
     constructor(props: TMaker);
     toTMaker(): TMaker;
-    static serialize(selfUrl: string, baseUrl: string, data: MakerBase | TMaker): any;
+    static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
     abstract computeMakerStateUpdate(stateUpdate: any): any;
     abstract processOrderUnits(takeSize: number): TTakeResult | null;
