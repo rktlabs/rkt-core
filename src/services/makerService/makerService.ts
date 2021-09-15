@@ -62,7 +62,7 @@ export class MakerService {
         return maker
     }
 
-    async createMaker(payload: TNewMakerConfig, shouldCreatePortfolio = false) {
+    async createMaker(payload: TNewMakerConfig, shouldCreatePortfolio = true) {
         const assetId = payload.assetId
 
         if (assetId) {
@@ -138,7 +138,9 @@ export class MakerService {
             maker.portfolioId = portfolioId
         }
 
-        await this.makerRepository.storeAsync(maker)
+        const tMaker = JSON.parse(JSON.stringify(maker))
+
+        await this.makerRepository.storeAsync(tMaker)
 
         return maker
     }
