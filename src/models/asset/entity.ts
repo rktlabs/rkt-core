@@ -52,6 +52,9 @@ export class Asset {
     }
 
     static newAsset(props: TNewAssetConfig) {
+        console.log('creating')
+        console.log(props)
+
         const symbolParts = props.symbol.split(':')
         if (symbolParts.length < 2 || symbolParts[1] !== '') {
             throw new Error('New Asset: Invalid symbol')
