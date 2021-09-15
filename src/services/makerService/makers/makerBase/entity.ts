@@ -30,7 +30,7 @@ export abstract class MakerBase implements IMaker {
         this.makerRepository = new MakerRepository()
     }
 
-    toTMaker() {
+    flattenMaker() {
         const tMaker: TMaker = {
             createdAt: this.createdAt,
             type: this.type,

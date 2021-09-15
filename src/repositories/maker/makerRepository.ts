@@ -54,7 +54,7 @@ export class MakerRepository extends RepositoryBase {
             console.log('8888888888888888888888888888')
             console.log('I am a base')
             console.log(entity)
-            theEntity = entity.toTMaker()
+            theEntity = entity.flattenMaker()
             console.log('8888888888888888888888888888')
         } else {
             console.log('I am a type')

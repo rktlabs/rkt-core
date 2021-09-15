@@ -13,7 +13,7 @@ export declare abstract class MakerBase implements IMaker {
     currentPrice?: number;
     params?: any;
     constructor(props: TMaker);
-    toTMaker(): TMaker;
+    flattenMaker(): TMaker;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
     abstract computeMakerStateUpdate(stateUpdate: any): any;
