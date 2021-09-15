@@ -47,11 +47,13 @@ export class MakerRepository extends RepositoryBase {
         }
     }
 
-    async storeAsync(entity: MakerBase | TMaker) {
+    async storeAsync(entity: MakerBase) {
         let theEntity: TMaker
         if (entity instanceof MakerBase) {
+            console.log('I am a base')
             theEntity = entity.toTMaker()
         } else {
+            console.log('I am a type')
             theEntity = entity
         }
 
