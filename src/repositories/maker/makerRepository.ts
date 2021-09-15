@@ -49,16 +49,9 @@ export class MakerRepository extends RepositoryBase {
 
     async storeAsync(entity: MakerBase | TMaker) {
         let theEntity: TMaker
-        // if (MakerBase.isAssignableFrom(MakerBase)) {
-        // if ('assetRepository' in entity) {
         if (entity instanceof MakerBase) {
-            console.log('8888888888888888888888888888')
-            console.log('I am a base')
-            console.log(entity)
             theEntity = (entity as MakerBase).flattenMaker()
-            console.log('8888888888888888888888888888')
         } else {
-            console.log('I am a type')
             theEntity = entity
         }
 
