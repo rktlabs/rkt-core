@@ -191,9 +191,9 @@ export class TransactionService {
             transaction.status = 'success'
             await this.transactionRepository.updateAsync(transactionId, { status: transaction.status })
 
-            if (this.eventPublisher) {
-                await this.eventPublisher.publishTransactionEventCompleteAsync(transaction, 'transactionHandler')
-            }
+            // if (this.eventPublisher) {
+            //     await this.eventPublisher.publishTransactionEventCompleteAsync(transaction, 'transactionHandler')
+            // }
 
             return commitStates
         } catch (error: any) {
@@ -206,13 +206,13 @@ export class TransactionService {
                     error: transaction.error,
                 })
 
-                if (this.eventPublisher) {
-                    await this.eventPublisher.publishTransactionEventErrorAsync(
-                        transaction,
-                        error.message,
-                        'transactionHandler',
-                    )
-                }
+                // if (this.eventPublisher) {
+                //     await this.eventPublisher.publishTransactionEventErrorAsync(
+                //         transaction,
+                //         error.message,
+                //         'transactionHandler',
+                //     )
+                // }
 
                 throw error
             } else if (error instanceof InsufficientBalance) {
@@ -224,13 +224,13 @@ export class TransactionService {
                     error: transaction.error,
                 })
 
-                if (this.eventPublisher) {
-                    await this.eventPublisher.publishTransactionEventErrorAsync(
-                        transaction,
-                        error.message,
-                        'transactionHandler',
-                    )
-                }
+                // if (this.eventPublisher) {
+                //     await this.eventPublisher.publishTransactionEventErrorAsync(
+                //         transaction,
+                //         error.message,
+                //         'transactionHandler',
+                //     )
+                // }
 
                 throw error
             } else if (error instanceof InvalidTransaction) {
@@ -243,13 +243,13 @@ export class TransactionService {
                     error: transaction.error,
                 })
 
-                if (this.eventPublisher) {
-                    await this.eventPublisher.publishTransactionEventErrorAsync(
-                        transaction,
-                        error.message,
-                        'transactionHandler',
-                    )
-                }
+                // if (this.eventPublisher) {
+                //     await this.eventPublisher.publishTransactionEventErrorAsync(
+                //         transaction,
+                //         error.message,
+                //         'transactionHandler',
+                //     )
+                // }
 
                 throw error
             } else {
@@ -260,14 +260,14 @@ export class TransactionService {
                     error: transaction.error,
                 })
 
-                if (this.eventPublisher) {
-                    await this.eventPublisher.publishTransactionEventErrorAsync(
-                        transaction,
-                        error.message,
-                        'transactionHandler',
-                        error.stack,
-                    )
-                }
+                // if (this.eventPublisher) {
+                //     await this.eventPublisher.publishTransactionEventErrorAsync(
+                //         transaction,
+                //         error.message,
+                //         'transactionHandler',
+                //         error.stack,
+                //     )
+                // }
 
                 throw error // unknown error, rethrow it (**)
             }
