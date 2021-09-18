@@ -9,10 +9,10 @@ export declare class BootstrapService {
     constructor();
     bootRkt(): Promise<void>;
     bootBank(): Promise<void>;
-    bootTestLeague(): Promise<void>;
+    bootLeague(): Promise<void>;
+    bootUser(): Promise<void>;
     bootstrap(): Promise<void>;
     bootTestAsset(): Promise<void>;
-    bootUser(): Promise<void>;
     fullBoot(): Promise<void>;
     fullScrub(): Promise<void>;
     clearHoldings(): Promise<void>;

@@ -14,15 +14,13 @@ import {
     ValidationError,
     InsufficientBalance,
     InvalidTransaction,
-    NotFoundError,
-    TPortfolio,
+    // NotFoundError,
+    // TPortfolio,
     //round4,
     ConflictError,
     TransactionLeg,
     generateId,
 } from '..'
-
-const logger = require('log4js').getLogger('transactionHandler')
 
 export class TransactionService {
     private eventPublisher: IEventPublisher
@@ -137,6 +135,8 @@ export class TransactionService {
     // EJH: used by exchangeService xact()
     async executeTransactionAsync(transactionData: TTransactionNew) {
         //logger.debug(`Handle Create Transaction: ${JSON.stringify(transactionData)}`)
+
+        console.log(transactionData)
 
         const transaction = Transaction.newTransaction(transactionData)
         const transactionId = transaction.transactionId
@@ -274,60 +274,60 @@ export class TransactionService {
         }
     }
 
-    // EJH: Used by bootstrapService()
-    // fund portfolio from treasury using portfolioId
-    async mintCoinsToPortfolio(
-        portfolioId: string,
-        units: number,
-        sourcePortfolioId: string = 'league::mint',
-        assetId: string = 'coin::rkt',
-    ) {
-        const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
-        if (!portfolio) {
-            const msg = `Cannot mint to portfolio: ${portfolioId} does not exist`
-            throw new NotFoundError(msg, { portfolioId })
-        }
-        return this.mintCoinsToPortfolioImpl(portfolio, units, sourcePortfolioId, assetId)
-    }
+    // // EJH: Used by bootstrapService()
+    // // fund portfolio from treasury using portfolioId
+    // async mintCoinsToPortfolio(
+    //     portfolioId: string,
+    //     units: number,
+    //     sourcePortfolioId: string = 'league::mint',
+    //     assetId: string = 'coin::rkt',
+    // ) {
+    //     const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
+    //     if (!portfolio) {
+    //         const msg = `Cannot mint to portfolio: ${portfolioId} does not exist`
+    //         throw new NotFoundError(msg, { portfolioId })
+    //     }
+    //     return this.mintCoinsToPortfolioImpl(portfolio, units, sourcePortfolioId, assetId)
+    // }
 
-    ///////////////////////////////////////////
-    // Private Methods
-    ///////////////////////////////////////////
+    // ///////////////////////////////////////////
+    // // Private Methods
+    // ///////////////////////////////////////////
 
-    // fund portfolio from treasury - implementation using portfolio entity
-    private async mintCoinsToPortfolioImpl(
-        portfolio: TPortfolio,
-        units: number,
-        sourcePortfolioId: string,
-        assetId: string,
-    ) {
-        const portfolioId = portfolio.portfolioId
+    // // fund portfolio from treasury - implementation using portfolio entity
+    // private async mintCoinsToPortfolioImpl(
+    //     portfolio: TPortfolio,
+    //     units: number,
+    //     sourcePortfolioId: string,
+    //     assetId: string,
+    // ) {
+    //     const portfolioId = portfolio.portfolioId
 
-        const newTransactionData = {
-            inputs: [
-                {
-                    portfolioId: sourcePortfolioId,
-                    assetId,
-                    units: units * -1,
-                },
-            ],
-            outputs: [
-                {
-                    portfolioId,
-                    assetId,
-                    units,
-                },
-            ],
-            tags: {
-                source: 'FUND_PORTFOLIO',
-            },
-            xids: {
-                assetId,
-            },
-        }
+    //     const newTransactionData = {
+    //         inputs: [
+    //             {
+    //                 portfolioId: sourcePortfolioId,
+    //                 assetId,
+    //                 units: units * -1,
+    //             },
+    //         ],
+    //         outputs: [
+    //             {
+    //                 portfolioId,
+    //                 assetId,
+    //                 units,
+    //             },
+    //         ],
+    //         tags: {
+    //             source: 'FUND_PORTFOLIO',
+    //         },
+    //         xids: {
+    //             assetId,
+    //         },
+    //     }
 
-        await this.executeTransactionAsync(newTransactionData)
-    }
+    //     await this.executeTransactionAsync(newTransactionData)
+    // }
 
     private async verifyAssetsAsync(transaction: Transaction) {
         //////////////////////////

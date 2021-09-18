@@ -69,7 +69,7 @@ export class BootstrapService {
         })
     }
 
-    async bootTestLeague() {
+    async bootLeague() {
         await this.leagueService.scrubLeague('test')
 
         await this.leagueService.createLeague({
@@ -78,8 +78,23 @@ export class BootstrapService {
         })
     }
 
+    async bootUser() {
+        const userId = 'testbot'
+
+        await this.userService.scrubUser(userId)
+
+        await this.userService.createUser({
+            userId: userId,
+            dob: '1963-05-07',
+            email: 'testbot@hedbot.com',
+            name: 'EJ Testbot',
+            username: 'testbot',
+            displayName: 'TestBot',
+        })
+    }
+
     async bootstrap() {
-        await Promise.all([this.bootRkt(), this.bootBank(), this.bootTestLeague()])
+        await Promise.all([this.bootRkt(), this.bootBank(), this.bootLeague(), this.bootUser()])
     }
 
     async bootTestAsset() {
@@ -95,21 +110,6 @@ export class BootstrapService {
                 displayName: assetId,
             })
         }
-    }
-
-    async bootUser() {
-        const userId = 'hedbot'
-
-        await this.userService.scrubUser(userId)
-
-        const user = await this.userService.createUser({
-            userId: userId,
-            dob: '1963-05-07',
-            email: 'hed@hedbot.com',
-            name: 'EJHedbot',
-            username: 'hedbot',
-            displayName: 'HedBot',
-        })
     }
 
     // async setupTreasury() {

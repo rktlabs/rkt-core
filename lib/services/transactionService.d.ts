@@ -11,8 +11,6 @@ export declare class TransactionService {
     executePurchaseAsync(exchangeData: TPurchase): Promise<any[]>;
     executeTransferAsync(transferData: TTransfer): Promise<any[]>;
     executeTransactionAsync(transactionData: TTransactionNew): Promise<any[]>;
-    mintCoinsToPortfolio(portfolioId: string, units: number, sourcePortfolioId?: string, assetId?: string): Promise<void>;
-    private mintCoinsToPortfolioImpl;
     private verifyAssetsAsync;
     private validateLegsAsync;
     private verifyTransactionBalance;

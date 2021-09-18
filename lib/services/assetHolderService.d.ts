@@ -5,7 +5,7 @@ export declare class AssetHolderService {
     private portfolioActivityRepository;
     private assetHolderRepository;
     constructor();
-    addAssetHolder(portfolioId: string, assetId: string): Promise<{
+    addAssetHolder(assetId: string, portfolioId: string): Promise<{
         portfolioId: string;
         assetId: string;
         units: number;

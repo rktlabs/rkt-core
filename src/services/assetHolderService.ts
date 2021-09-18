@@ -27,7 +27,7 @@ export class AssetHolderService {
         this.portfolioActivityRepository = new PortfolioActivityRepository()
     }
 
-    async addAssetHolder(portfolioId: string, assetId: string) {
+    async addAssetHolder(assetId: string, portfolioId: string) {
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (asset) {
             const assetDisplayName = asset.displayName || assetId
