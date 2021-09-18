@@ -1,20 +1,18 @@
 export declare class BootstrapService {
     private assetRepository;
-    private portfolioRepository;
+    private userService;
     private assetService;
     private portfolioService;
     private leagueService;
     private assetHolderService;
-    private transactionService;
     private eventPublisher;
     constructor();
     bootRkt(): Promise<void>;
     bootBank(): Promise<void>;
     bootTestLeague(): Promise<void>;
     bootstrap(): Promise<void>;
-    setupTestAsset(): Promise<void>;
-    setupAccount(): Promise<void>;
-    setupTreasury(): Promise<void>;
+    bootTestAsset(): Promise<void>;
+    bootUser(): Promise<void>;
     fullBoot(): Promise<void>;
     fullScrub(): Promise<void>;
     clearHoldings(): Promise<void>;

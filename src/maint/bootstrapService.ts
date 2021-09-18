@@ -1,36 +1,39 @@
 'use strict'
 import {
     AssetRepository,
-    PortfolioRepository,
+    //PortfolioRepository,
     PortfolioService,
-    TransactionService,
+    //TransactionService,
     IEventPublisher,
     LeagueService,
     AssetHolderService,
     AssetService,
     NullEventPublisher,
+    UserService,
 } from '..'
 
 export class BootstrapService {
     private assetRepository: AssetRepository
-    private portfolioRepository: PortfolioRepository
+    //private portfolioRepository: PortfolioRepository
 
+    private userService: UserService
     private assetService: AssetService
     private portfolioService: PortfolioService
     private leagueService: LeagueService
     private assetHolderService: AssetHolderService
-    private transactionService: TransactionService
+    //private transactionService: TransactionService
     private eventPublisher: IEventPublisher
 
     constructor() {
         this.eventPublisher = new NullEventPublisher()
         this.assetRepository = new AssetRepository()
-        this.portfolioRepository = new PortfolioRepository()
+        this.userService = new UserService()
+        //this.portfolioRepository = new PortfolioRepository()
         this.assetService = new AssetService()
         this.portfolioService = new PortfolioService()
         this.assetHolderService = new AssetHolderService()
         this.leagueService = new LeagueService()
-        this.transactionService = new TransactionService(this.eventPublisher)
+        //this.transactionService = new TransactionService(this.eventPublisher)
     }
 
     // bootstrap the system with the "rkt" coin
@@ -67,6 +70,8 @@ export class BootstrapService {
     }
 
     async bootTestLeague() {
+        await this.leagueService.scrubLeague('test')
+
         await this.leagueService.createLeague({
             ownerId: 'test',
             leagueId: 'test',
@@ -74,13 +79,15 @@ export class BootstrapService {
     }
 
     async bootstrap() {
-        await Promise.all([this.bootRkt(), this.bootTestLeague()])
+        await Promise.all([this.bootRkt(), this.bootBank(), this.bootTestLeague()])
     }
 
-    async setupTestAsset() {
-        const leagueId = 'test'
+    async bootTestAsset() {
         const assetId = 'card::jbone'
 
+        this.assetService.scrubAsset(assetId)
+
+        const leagueId = 'test'
         let asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             await this.leagueService.createAsset(leagueId, {
@@ -90,33 +97,37 @@ export class BootstrapService {
         }
     }
 
-    async setupAccount() {
-        let portfolio = await this.portfolioRepository.getDetailAsync('user::hedbot')
-        if (!portfolio) {
-            await this.portfolioService.createOrKeepPortfolio({
-                type: 'user',
-                ownerId: 'test',
-                portfolioId: 'user::hedbot',
-            })
-        }
+    async bootUser() {
+        const userId = 'user::hedbot'
+
+        this.userService.scrubUser(userId)
+
+        const user = this.userService.createUser({
+            userId: userId,
+            dob: '1963-05-07',
+            email: 'hed@hedbot.com',
+            name: 'EJHedbot',
+            username: 'hedbot',
+            displayName: 'HedBot',
+        })
     }
 
-    async setupTreasury() {
-        let portfolio = await this.portfolioRepository.getDetailAsync('bank::treasury')
-        if (!portfolio) {
-            await this.portfolioService.createOrKeepPortfolio({
-                type: 'bank',
-                ownerId: 'test',
-                portfolioId: 'bank::treasury',
-            })
-        }
+    // async setupTreasury() {
+    //     let portfolio = await this.portfolioRepository.getDetailAsync('bank::treasury')
+    //     if (!portfolio) {
+    //         await this.portfolioService.createOrKeepPortfolio({
+    //             type: 'bank',
+    //             ownerId: 'test',
+    //             portfolioId: 'bank::treasury',
+    //         })
+    //     }
 
-        await this.transactionService.mintCoinsToPortfolio('bank::treasury', 1000000)
-    }
+    //     await this.transactionService.mintCoinsToPortfolio('bank::treasury', 1000000)
+    // }
 
     async fullBoot() {
         await this.bootstrap()
-        await Promise.all([this.setupTestAsset(), this.setupAccount()])
+        await Promise.all([this.bootTestAsset(), this.bootUser()])
     }
 
     async fullScrub() {
