@@ -111,6 +111,15 @@ export class AssetHolderService {
         return total
     }
 
+    async getAssetHoldingBalance(assetId: string, portfolioId: string) {
+        const assetHolder = await this.assetHolderRepository.getDetailAsync(assetId, portfolioId)
+        if (!assetHolder) {
+            return 0
+        } else {
+            return assetHolder.units
+        }
+    }
+
     async getPortfolioHoldingBalance(portfolioId: string, assetId: string) {
         const portfolioHolding = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId)
         if (!portfolioHolding) {
