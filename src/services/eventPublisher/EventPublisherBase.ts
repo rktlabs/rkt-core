@@ -1,23 +1,16 @@
-// tslint:disable:no-unused-expression
-
 'use strict'
 
 import { DateTime } from 'luxon'
-import { Logger } from 'log4js'
-import { Publisher } from './Publisher'
 import * as Models from '../../models'
 import * as Events from './events'
 import { IEventPublisher } from './IEventPublisher'
+import { IPublisher } from './publishers/iPublisher'
 
-export class EventPublisher implements IEventPublisher {
-    private publisher
+export class EventPublisherBase implements IEventPublisher {
+    private publisher: IPublisher
 
-    constructor(opts?: { publisher?: Publisher; logger?: Logger }) {
-        if (opts?.publisher) {
-            this.publisher = opts.publisher
-        } else {
-            this.publisher = new Publisher({ logger: opts?.logger })
-        }
+    constructor(publisher: IPublisher) {
+        this.publisher = publisher
     }
 
     ////////////////////////////////////////////////////////
@@ -27,18 +20,18 @@ export class EventPublisher implements IEventPublisher {
     // NOT USED
     // async publishAssetCreateAsync(asset: Models.Asset, source?: string) {
     //     const event = new Events.AssetNewEvent(asset)
-    //     return this.publishMessageToTopicAsync('assetCreate', event, source)
+    //     return this.publishMessage('assetCreate', event, source)
     // }
 
     // NOT USED
     // async publishPortfolioCreateAsync(portfolio: Models.Portfolio, source?: string) {
     //     const event = new Events.PortfolioNewEvent(portfolio)
-    //     return this.publishMessageToTopicAsync('portfolioCreate', event, source)
+    //     return this.publishMessage('portfolioCreate', event, source)
     // }
 
     // async publishTransactionCreateAsync(transaction: Models.Transaction, source?: string) {
     //     const event = new Events.TransactionEventNew(transaction)
-    //     return this.publishMessageToTopicAsync('transactionCreate', event, source)
+    //     return this.publishMessage('transactionCreate', event, source)
     // }
 
     ////////////////////////////////////////////////////////
@@ -47,12 +40,12 @@ export class EventPublisher implements IEventPublisher {
 
     async publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrder, source?: string) {
         const event = new Events.ExchangeOrderEventNew(exchangeOrder)
-        return this.publishMessageToTopicAsync('exchangeOrderCreate', event, source)
+        return this.publishMessage('exchangeOrderCreate', event, source)
     }
 
     async publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source?: string) {
         const event = new Events.ExchangeOrderEventCancel(cancelOrder)
-        return this.publishMessageToTopicAsync('exchangeOrderCreate', event, source)
+        return this.publishMessage('exchangeOrderCreate', event, source)
     }
 
     ////////////////////////////////////////////////////////
@@ -62,13 +55,13 @@ export class EventPublisher implements IEventPublisher {
     // NOT USED - keep
     async publishErrorEventAsync(error: any, sourceData?: any) {
         const event = new Events.ErrorEvent(error)
-        return this.publishMessageToTopicAsync('errorEvent', event, sourceData)
+        return this.publishMessage('errorEvent', event, sourceData)
     }
 
     // NOT USED - keep
     async publishWarningEventAsync(error: any, sourceData?: any) {
         const event = new Events.WarningEvent(error)
-        return this.publishMessageToTopicAsync('errorEvent', event, sourceData)
+        return this.publishMessage('errorEvent', event, sourceData)
     }
 
     // NOT USED
@@ -81,7 +74,7 @@ export class EventPublisher implements IEventPublisher {
     //         tags: asset.tags,
     //     })
 
-    //     return this.publishMessageToTopicAsync('assetEvent', event, source)
+    //     return this.publishMessage('assetEvent', event, source)
     // }
 
     // async publishPortfolioNewEventAsync(portfolio: Models.Portfolio, source?: string) {
@@ -92,7 +85,7 @@ export class EventPublisher implements IEventPublisher {
     //         tags: portfolio.tags,
     //     })
 
-    //     return this.publishMessageToTopicAsync('portfolioEvent', event, source)
+    //     return this.publishMessage('portfolioEvent', event, source)
     // }
 
     ////////////////////////////////////////////////////////
@@ -109,7 +102,7 @@ export class EventPublisher implements IEventPublisher {
     //         tags: transaction.tags,
     //     })
 
-    //     return this.publishMessageToTopicAsync('transactionEvent', event, source)
+    //     return this.publishMessage('transactionEvent', event, source)
     // }
 
     async publishTransactionEventCompleteAsync(transaction: Models.Transaction, source?: string) {
@@ -120,7 +113,7 @@ export class EventPublisher implements IEventPublisher {
             status: transaction.status,
         })
 
-        return this.publishMessageToTopicAsync('transactionEvent', event, source)
+        return this.publishMessage('transactionEvent', event, source)
     }
 
     async publishTransactionEventErrorAsync(
@@ -139,7 +132,7 @@ export class EventPublisher implements IEventPublisher {
             event.attributes.stack = stack
         }
 
-        return this.publishMessageToTopicAsync('transactionEvent', event, source)
+        return this.publishMessage('transactionEvent', event, source)
     }
 
     ////////////////////////////////////////////////////////
@@ -153,7 +146,7 @@ export class EventPublisher implements IEventPublisher {
             reason,
         })
 
-        return this.publishMessageToTopicAsync('orderEvent', event, source)
+        return this.publishMessage('orderEvent', event, source)
     }
 
     async publishOrderEventCompleteAsync(portfolioId: string, orderId: string, tradeId: string, source?: string) {
@@ -163,7 +156,7 @@ export class EventPublisher implements IEventPublisher {
             tradeId,
         })
 
-        return this.publishMessageToTopicAsync('orderEvent', event, source)
+        return this.publishMessage('orderEvent', event, source)
     }
 
     async publishOrderEventFillAsync(
@@ -184,18 +177,18 @@ export class EventPublisher implements IEventPublisher {
             sizeRemaining,
         })
 
-        return this.publishMessageToTopicAsync('orderEvent', event, source)
+        return this.publishMessage('orderEvent', event, source)
     }
 
     ////////////////////////////////////////////////////////
     // Private
     ////////////////////////////////////////////////////////
 
-    private async publishMessageToTopicAsync(topicName: string, payload: any, source?: string) {
+    private async publishMessage(topicName: string, payload: any, source?: string) {
         payload.publishedAt = DateTime.utc().toString()
         if (source) {
             payload.source = source
         }
-        return this.publisher.publishMessageToTopicAsync(topicName, payload)
+        return this.publisher.publishMessage(topicName, payload)
     }
 }

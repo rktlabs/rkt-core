@@ -2,7 +2,6 @@
 /* eslint-env node, mocha */
 
 import { expect } from 'chai'
-import { DateTime } from 'luxon'
 
 import * as sinon from 'sinon'
 import {
@@ -10,7 +9,6 @@ import {
     AssetRepository,
     PortfolioRepository,
     LeagueService,
-    EventPublisher,
     PortfolioHoldingService,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
@@ -28,18 +26,14 @@ describe('League Service', function () {
 
     let leagueId: string = 'testleague1'
 
-    let eventPublisher: sinon.SinonStubbedInstance<EventPublisher>
-
     before(async () => {
-        eventPublisher = sinon.createStubInstance(EventPublisher)
-
         leagueRepository = new LeagueRepository()
         profileRepository = new PortfolioRepository()
         assetRepository = new AssetRepository()
 
         portfolioHoldingService = new PortfolioHoldingService()
         leagueService = new LeagueService()
-        boostrapService = new BootstrapService(eventPublisher as any as EventPublisher)
+        boostrapService = new BootstrapService()
     })
 
     beforeEach(async () => {

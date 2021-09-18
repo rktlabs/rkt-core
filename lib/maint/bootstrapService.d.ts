@@ -1,4 +1,3 @@
-import { IEventPublisher } from '..';
 export declare class BootstrapService {
     private assetRepository;
     private portfolioRepository;
@@ -7,7 +6,8 @@ export declare class BootstrapService {
     private leagueService;
     private portfolioHoldingService;
     private transactionService;
-    constructor(eventPublisher?: IEventPublisher);
+    private eventPublisher;
+    constructor();
     createRkt(): Promise<void>;
     bootTestLeague(): Promise<void>;
     bootstrap(): Promise<void>;

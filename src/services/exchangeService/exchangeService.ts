@@ -14,12 +14,13 @@ import {
     round4,
     ConflictError,
     InsufficientBalance,
-    EventPublisher,
     TransactionService,
     PortfolioHoldingRepository,
     PortfolioRepository,
     MakerService,
     ExchangeQuoteRepository,
+    NullEventPublisher,
+    IEventPublisher,
 } from '../..'
 
 ///////////////////////////////////////////////////
@@ -31,7 +32,7 @@ import {
 // - applies transaction returned from market maker?
 
 export class ExchangeService {
-    private orderEventPublisher: EventPublisher
+    private orderEventPublisher: IEventPublisher
 
     private portfolioRepository: PortfolioRepository
     private portfolioHoldingRepository: PortfolioHoldingRepository
@@ -41,8 +42,8 @@ export class ExchangeService {
     private transactionService: TransactionService
     private makerFactoryService: MakerService
 
-    constructor(eventPublisher?: EventPublisher) {
-        this.orderEventPublisher = eventPublisher || new EventPublisher()
+    constructor(eventPublisher?: IEventPublisher) {
+        this.orderEventPublisher = eventPublisher || new NullEventPublisher()
 
         this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.portfolioRepository = new PortfolioRepository()

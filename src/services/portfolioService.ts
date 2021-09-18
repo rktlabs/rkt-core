@@ -54,6 +54,26 @@ export class PortfolioService {
         return portfolio
     }
 
+    // ensure that portfolio is created. crate new portfolio if don't exist
+    // leave in place anything already there.
+    // (used by bootstrapper)
+    async createOrKeepPortfolio(payload: TNewPortfolioConfig) {
+        if (!payload || !payload.portfolioId) {
+            throw new Error('Portfolio Creation Failed - no portfolioId')
+        }
+
+        const promises: any[] = []
+
+        const portfolioId = payload.portfolioId
+        const existing = await this.portfolioRepository.getDetailAsync(portfolioId)
+        if (!existing) {
+            const portfolio = Portfolio.newPortfolio(payload)
+            promises.push(this.portfolioRepository.storeAsync(portfolio))
+        }
+
+        return Promise.all(promises)
+    }
+
     async updatePortfolio(portfolioId: string, payload: TPortfolioUpdate) {
         return await this.portfolioRepository.updateAsync(portfolioId, payload)
     }
@@ -88,7 +108,7 @@ export class PortfolioService {
         await this.portfolioRepository.deleteAsync(portfolioId)
     }
 
-    async submitPortfolioDeposit(deposit: TPortfolioDeposit) {
+    async recordPortfolioDeposit(deposit: TPortfolioDeposit) {
         const portfolioId = deposit.portfolioId
 
         await this.portfolioDepositRepository.storePortfolioDeposit(portfolioId, deposit)
@@ -104,25 +124,5 @@ export class PortfolioService {
             return acc + deposit.units
         }, 0)
         return total
-    }
-
-    // ensure that portfolio is created. crate new portfolio if don't exist
-    // leave in place anything already there.
-    // (used by bootstrapper)
-    async createOrKeepPortfolio(payload: TNewPortfolioConfig) {
-        if (!payload || !payload.portfolioId) {
-            throw new Error('Portfolio Creation Failed - no portfolioId')
-        }
-
-        const promises: any[] = []
-
-        const portfolioId = payload.portfolioId
-        const existing = await this.portfolioRepository.getDetailAsync(portfolioId)
-        if (!existing) {
-            const portfolio = Portfolio.newPortfolio(payload)
-            promises.push(this.portfolioRepository.storeAsync(portfolio))
-        }
-
-        return Promise.all(promises)
     }
 }

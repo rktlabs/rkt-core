@@ -9,10 +9,10 @@ export declare class PortfolioService {
     private portfolioHoldingService;
     constructor();
     createPortfolio(payload: TNewPortfolioConfig): Promise<Portfolio>;
+    createOrKeepPortfolio(payload: TNewPortfolioConfig): Promise<any[]>;
     updatePortfolio(portfolioId: string, payload: TPortfolioUpdate): Promise<void>;
     deletePortfolio(portfolioId: string): Promise<void>;
     scrubPortfolio(portfolioId: string): Promise<void>;
-    submitPortfolioDeposit(deposit: TPortfolioDeposit): Promise<void>;
+    recordPortfolioDeposit(deposit: TPortfolioDeposit): Promise<void>;
     computePortfolioNetDeposits(portfolioId: string): Promise<number>;
-    createOrKeepPortfolio(payload: TNewPortfolioConfig): Promise<any[]>;
 }

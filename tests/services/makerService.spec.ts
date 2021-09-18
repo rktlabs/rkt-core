@@ -2,8 +2,7 @@
 /* eslint-env node, mocha */
 
 import { expect } from 'chai'
-import * as sinon from 'sinon'
-import { MakerService, MakerRepository, PortfolioRepository, Publisher, EventPublisher } from '../../src'
+import { MakerService, MakerRepository, PortfolioRepository } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 import { TNewMakerConfig } from '../../src/services/makerService/makers/makerBase/types'
 
@@ -14,19 +13,14 @@ describe('Maker Service', function () {
     let makerRepository: MakerRepository
     let portfolioRepository: PortfolioRepository
     let bootstrapper: BootstrapService
-    let publisherStub: sinon.SinonStub
     let assetId: string = 'card::test1'
 
     before(async () => {
-        const publisher = new Publisher()
-        const eventPublisher = new EventPublisher({ publisher: publisher })
-        publisherStub = sinon.stub(publisher, 'publishMessageToTopicAsync')
-
         makerService = new MakerService()
         makerRepository = new MakerRepository()
         portfolioRepository = new PortfolioRepository()
 
-        bootstrapper = new BootstrapService(eventPublisher)
+        bootstrapper = new BootstrapService()
 
         //await bootstrapper.clearDb()
         await bootstrapper.bootstrap()

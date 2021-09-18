@@ -1,6 +1,9 @@
-export * from './events'
+'use strict'
 
-export * from './Publisher'
-export * from './EventPublisher'
-export * from './DummyEventPublisher'
+export * from './events'
+export * from './publishers'
 export * from './IEventPublisher'
+export * from './NullEventPublisher'
+export * from './ConsoleEventPublisher'
+export * from './QueueEventPublisher'
+export * from './LogEventPublisher'

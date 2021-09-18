@@ -1,7 +1,7 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { IEventPublisher, PortfolioHoldingService, EventPublisher } from '.'
+import { IEventPublisher, PortfolioHoldingService, NullEventPublisher } from '.'
 import {
     PortfolioRepository,
     AssetRepository,
@@ -34,7 +34,7 @@ export class TransactionService {
     private portfolioHoldingService: PortfolioHoldingService
 
     constructor(eventPublisher?: IEventPublisher) {
-        this.eventPublisher = eventPublisher || new EventPublisher({ logger: logger })
+        this.eventPublisher = eventPublisher || new NullEventPublisher()
         this.portfolioRepository = new PortfolioRepository()
         this.assetRepository = new AssetRepository()
         this.portfolioHoldingRepository = new PortfolioHoldingRepository()

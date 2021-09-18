@@ -8,6 +8,7 @@ import {
     LeagueService,
     PortfolioHoldingService,
     AssetService,
+    NullEventPublisher,
 } from '..'
 
 export class BootstrapService {
@@ -19,15 +20,17 @@ export class BootstrapService {
     private leagueService: LeagueService
     private portfolioHoldingService: PortfolioHoldingService
     private transactionService: TransactionService
+    private eventPublisher: IEventPublisher
 
-    constructor(eventPublisher?: IEventPublisher) {
+    constructor() {
+        this.eventPublisher = new NullEventPublisher()
         this.assetRepository = new AssetRepository()
         this.portfolioRepository = new PortfolioRepository()
         this.assetService = new AssetService()
         this.portfolioService = new PortfolioService()
         this.portfolioHoldingService = new PortfolioHoldingService()
         this.leagueService = new LeagueService()
-        this.transactionService = new TransactionService(eventPublisher)
+        this.transactionService = new TransactionService(this.eventPublisher)
     }
 
     // bootstrap the system with the "rkt" coin

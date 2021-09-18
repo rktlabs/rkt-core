@@ -9,33 +9,33 @@ export interface IEventPublisher {
     ////////////////////////////////////////////////////////
 
     // NOT USED
-    // publishAssetCreateAsync(asset: Models.Asset, source?: string): Promise<string>
+    // publishAssetCreateAsync(asset: Models.Asset, source?: string): Promise<void>
 
     // NOT USED
-    // publishPortfolioCreateAsync(portfolio: Models.Portfolio, source?: string): Promise<string>
+    // publishPortfolioCreateAsync(portfolio: Models.Portfolio, source?: string): Promise<void>
 
-    // publishTransactionCreateAsync(transaction: Models.Transaction, source?: string): Promise<string>
+    // publishTransactionCreateAsync(transaction: Models.Transaction, source?: string): Promise<void>
 
     ////////////////////////////////////////////////////////
     // Exchange Order Messages
     ////////////////////////////////////////////////////////
 
-    publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrder, source?: string): Promise<string>
+    publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrder, source?: string): Promise<void>
 
-    publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source?: string): Promise<string>
+    publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source?: string): Promise<void>
 
     ////////////////////////////////////////////////////////
     // Error Events
     ////////////////////////////////////////////////////////
 
-    publishErrorEventAsync(error: any, sourceData?: any): Promise<string>
+    publishErrorEventAsync(error: any, sourceData?: any): Promise<void>
 
-    publishWarningEventAsync(error: any, sourceData?: any): Promise<string>
+    publishWarningEventAsync(error: any, sourceData?: any): Promise<void>
 
     // NOT USED
-    // publishAssetNewEventAsync(asset: Models.Asset, source?: string): Promise<string>
+    // publishAssetNewEventAsync(asset: Models.Asset, source?: string): Promise<void>
 
-    // publishPortfolioNewEventAsync(portfolio: Models.Portfolio, source?: string): Promise<string>
+    // publishPortfolioNewEventAsync(portfolio: Models.Portfolio, source?: string): Promise<void>
 
     ////////////////////////////////////////////////////////
     // Transaction Events
@@ -45,29 +45,29 @@ export interface IEventPublisher {
     //     transaction: Models.Transaction,
     //     leg: any,
     //     source?: string,
-    // ): Promise<string>
+    // ): Promise<void>
 
-    publishTransactionEventCompleteAsync(transaction: Models.Transaction, source?: string): Promise<string>
+    publishTransactionEventCompleteAsync(transaction: Models.Transaction, source?: string): Promise<void>
 
     publishTransactionEventErrorAsync(
         transaction: Models.Transaction,
         reason: string,
         source?: string,
         stack?: any,
-    ): Promise<string>
+    ): Promise<void>
 
     ////////////////////////////////////////////////////////
     // Order Events
     ////////////////////////////////////////////////////////
 
-    publishOrderEventFailedAsync(portfolioId: string, orderId: string, reason: string, source?: string): Promise<string>
+    publishOrderEventFailedAsync(portfolioId: string, orderId: string, reason: string, source?: string): Promise<void>
 
     publishOrderEventCompleteAsync(
         portfolioId: string,
         orderId: string,
         tradeId: string,
         source?: string,
-    ): Promise<string>
+    ): Promise<void>
 
     publishOrderEventFillAsync(
         portfolioId: string,
@@ -77,5 +77,5 @@ export interface IEventPublisher {
         filledPrice: number,
         sizeRemaining: number,
         source?: string,
-    ): Promise<string>
+    ): Promise<void>
 }

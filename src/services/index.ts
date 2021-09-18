@@ -19,3 +19,4 @@ export * from './portfolioService'
 
 export * from './portfolioOrderService'
 export * from './portfolioOrderEventService'
+export * from './treasuryService'

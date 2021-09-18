@@ -2,15 +2,7 @@
 /* eslint-env node, mocha */
 
 import { assert, expect } from 'chai'
-import * as sinon from 'sinon'
-import {
-    UserRepository,
-    PortfolioRepository,
-    UserService,
-    EventPublisher,
-    PortfolioHoldingService,
-    TNewUserConfig,
-} from '../../src'
+import { UserRepository, PortfolioRepository, UserService, PortfolioHoldingService, TNewUserConfig } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe('User Service', function () {
@@ -19,7 +11,6 @@ describe('User Service', function () {
     let userRepository: UserRepository
     let portfolioRepository: PortfolioRepository
     let userService: UserService
-    let eventPublisher: sinon.SinonStubbedInstance<EventPublisher>
 
     const userTemplate = {
         dob: '1/2/2021',
@@ -29,10 +20,9 @@ describe('User Service', function () {
     }
 
     before(async () => {
-        eventPublisher = sinon.createStubInstance(EventPublisher)
         userRepository = new UserRepository()
         portfolioRepository = new PortfolioRepository()
-        userService = new UserService(eventPublisher)
+        userService = new UserService()
     })
 
     describe('User Service Simple', () => {
@@ -147,7 +137,7 @@ describe('User Service', function () {
 
         before(async () => {
             portfolioHoldingService = new PortfolioHoldingService()
-            bootstrapper = new BootstrapService(eventPublisher as any as EventPublisher)
+            bootstrapper = new BootstrapService()
         })
 
         beforeEach(async () => {

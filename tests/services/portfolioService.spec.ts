@@ -6,7 +6,7 @@ import * as chai from 'chai'
 import * as chaiSubset from 'chai-subset'
 chai.use(chaiSubset)
 
-import { PortfolioRepository, PortfolioService, Publisher } from '../../src'
+import { PortfolioRepository, PortfolioService } from '../../src'
 
 describe('Portfolio Service', function () {
     this.timeout(5000)
@@ -16,8 +16,6 @@ describe('Portfolio Service', function () {
     let portfolioId: string = 'aaa::test1'
 
     before(async () => {
-        const publisher = new Publisher()
-
         portfolioRepository = new PortfolioRepository()
         portfolioService = new PortfolioService()
     })
