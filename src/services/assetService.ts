@@ -1,6 +1,6 @@
 'use strict'
 
-import { PortfolioService, PortfolioHoldingService, MakerService, LeagueService } from '.'
+import { PortfolioService, AssetHolderService, MakerService, LeagueService } from '.'
 import { PortfolioRepository, AssetRepository, TNewAssetConfig, DuplicateError, ConflictError, Asset } from '..'
 
 export class AssetService {
@@ -9,13 +9,13 @@ export class AssetService {
 
     private portfolioService: PortfolioService
     private makerService: MakerService
-    private portfolioHoldingService: PortfolioHoldingService
+    private assetHolderService: AssetHolderService
 
     constructor() {
         this.assetRepository = new AssetRepository()
         this.portfolioRepository = new PortfolioRepository()
 
-        this.portfolioHoldingService = new PortfolioHoldingService()
+        this.assetHolderService = new AssetHolderService()
         this.portfolioService = new PortfolioService()
         this.makerService = new MakerService()
     }
@@ -48,7 +48,7 @@ export class AssetService {
     }
 
     async deleteAsset(assetId: string) {
-        await this.portfolioHoldingService.scrubAssetHolders(assetId)
+        await this.assetHolderService.scrubAssetHolders(assetId)
 
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (asset) {
@@ -61,7 +61,7 @@ export class AssetService {
     }
 
     async scrubAsset(assetId: string) {
-        await this.portfolioHoldingService.scrubAssetHolders(assetId)
+        await this.assetHolderService.scrubAssetHolders(assetId)
 
         await this.portfolioService.scrubPortfolio(`asset::${assetId}`)
 

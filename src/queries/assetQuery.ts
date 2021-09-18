@@ -1,13 +1,13 @@
-import { AssetHoldersRepository } from '../repositories/asset/assetHoldersRepository'
+import { AssetHolderRepository } from '../repositories/asset/assetHolderRepository'
 import { AssetRepository } from '../repositories/asset/assetRepository'
 
 export class AssetQuery {
     assetRepository: AssetRepository
-    assetHoldersRepository: AssetHoldersRepository
+    assetHolderRepository: AssetHolderRepository
 
     constructor() {
         this.assetRepository = new AssetRepository()
-        this.assetHoldersRepository = new AssetHoldersRepository()
+        this.assetHolderRepository = new AssetHolderRepository()
     }
 
     async getListAsync(qs?: any) {
@@ -23,7 +23,7 @@ export class AssetQuery {
 
     async getAssetHoldersAsync(qs?: any) {
         return {
-            data: await this.assetHoldersRepository.getListAsync(qs),
+            data: await this.assetHolderRepository.getListAsync(qs),
         }
     }
 }

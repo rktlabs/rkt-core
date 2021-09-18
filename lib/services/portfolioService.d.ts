@@ -6,7 +6,7 @@ export declare class PortfolioService {
     private leagueRepository;
     private portfolioActivityRepository;
     private portfolioDepositRepository;
-    private portfolioHoldingService;
+    private assetHolderService;
     constructor();
     createPortfolio(payload: TNewPortfolioConfig): Promise<Portfolio>;
     createOrKeepPortfolio(payload: TNewPortfolioConfig): Promise<any[]>;

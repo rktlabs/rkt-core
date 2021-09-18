@@ -4,7 +4,7 @@ export declare class BootstrapService {
     private assetService;
     private portfolioService;
     private leagueService;
-    private portfolioHoldingService;
+    private assetHolderService;
     private transactionService;
     private eventPublisher;
     constructor();

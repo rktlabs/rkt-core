@@ -1,2 +1,2 @@
-export * from './assetHoldersRepository';
+export * from './assetHolderRepository';
 export * from './assetRepository';

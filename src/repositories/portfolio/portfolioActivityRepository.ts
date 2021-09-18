@@ -1,4 +1,4 @@
-import { TPortfolioHoldingUpdateItem, TTransaction } from '../../models'
+import { TAssetHolderUpdateItem, TTransaction } from '../../models'
 import { deleteCollection } from '../../util/deleters'
 
 import * as admin from 'firebase-admin'
@@ -50,12 +50,12 @@ export class PortfolioActivityRepository extends RepositoryBase {
 
     async atomicUpdateTransactionAsync(
         transactionId: string,
-        updateSet: TPortfolioHoldingUpdateItem[],
+        updateSet: TAssetHolderUpdateItem[],
         transaction: TTransaction,
     ) {
         // compile the refs and increments (outside of batch)
-        const updates = updateSet.map((updateItem: TPortfolioHoldingUpdateItem) => {
-            const entityRef = this.db
+        const updates = updateSet.map((updateItem: TAssetHolderUpdateItem) => {
+            const portfolioHoldingRef = this.db
                 .collection(COLLECTION_NAME)
                 .doc(updateItem.portfolioId)
                 .collection(HOLDINGS_COLLECTION_NAME)
@@ -67,21 +67,29 @@ export class PortfolioActivityRepository extends RepositoryBase {
                 .collection(HOLDERS_COLLECTION_NAME)
                 .doc(updateItem.portfolioId)
 
+            // bit of a hack here for now, but want to update asset unitsIssued, but ONLY
+            // if the portfolio for the update is the assets portfolio
+            let assetRef = null
+            if (updateItem.portfolioId == `asset::${updateItem.assetId}`) {
+                assetRef = this.db.collection(ASSET_COLLECTION_NAME).doc(updateItem.assetId)
+            }
+
             const deltaUnits = FieldValue.increment(updateItem.deltaUnits)
-            const deltaNet = FieldValue.increment(updateItem.deltaNet)
-            const deltaCost = FieldValue.increment(updateItem.deltaCost)
+            // const deltaNet = FieldValue.increment(updateItem.deltaNet)
+            // const deltaCost = FieldValue.increment(updateItem.deltaCost)
             return {
-                ref: entityRef,
-                holder: assetHolderRef,
+                portfolioHoldingRef: portfolioHoldingRef,
+                assetHolderRef: assetHolderRef,
+                assetRef: assetRef,
                 deltaUnits,
-                deltaNet,
-                deltaCost,
+                // deltaNet,
+                // deltaCost,
             }
         })
 
         const activityMap = new Map()
 
-        updateSet.forEach((updateItem: TPortfolioHoldingUpdateItem) => {
+        updateSet.forEach((updateItem: TAssetHolderUpdateItem) => {
             const portfolioId = updateItem.portfolioId
             if (!activityMap.get(portfolioId)) {
                 const entityRef = this.db
@@ -89,7 +97,7 @@ export class PortfolioActivityRepository extends RepositoryBase {
                     .doc(updateItem.portfolioId)
                     .collection(ACTIVITY_COLLECTION_NAME)
                     .doc(transactionId)
-                activityMap.set(portfolioId, { ref: entityRef, transaction })
+                activityMap.set(portfolioId, { portfolioActivityRef: entityRef, transaction })
             }
         })
 
@@ -99,14 +107,20 @@ export class PortfolioActivityRepository extends RepositoryBase {
         const batch = this.db.batch()
         updates.forEach((item) => {
             // update portfolios.holdings
-            batch.update(item.ref, { units: item.deltaUnits, net: item.deltaNet, cost: item.deltaCost })
+            batch.update(item.portfolioHoldingRef, { units: item.deltaUnits })
+
             // update assets.holders
-            batch.update(item.holder, { units: item.deltaUnits })
+            batch.update(item.assetHolderRef, { units: item.deltaUnits })
+
+            // update asset unitsIssued
+            if (item.assetRef) {
+                batch.update(item.assetRef, { issuedUnits: item.deltaUnits })
+            }
         })
 
         activity.forEach((item) => {
             const jsonData = JSON.parse(JSON.stringify(item.transaction))
-            batch.set(item.ref, jsonData)
+            batch.set(item.portfolioActivityRef, jsonData)
         })
 
         await batch.commit()

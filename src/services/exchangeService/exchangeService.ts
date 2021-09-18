@@ -15,12 +15,12 @@ import {
     ConflictError,
     InsufficientBalance,
     TransactionService,
-    PortfolioHoldingRepository,
     PortfolioRepository,
     MakerService,
     ExchangeQuoteRepository,
     NullEventPublisher,
     IEventPublisher,
+    AssetHolderRepository,
 } from '../..'
 
 ///////////////////////////////////////////////////
@@ -35,7 +35,7 @@ export class ExchangeService {
     private orderEventPublisher: IEventPublisher
 
     private portfolioRepository: PortfolioRepository
-    private portfolioHoldingRepository: PortfolioHoldingRepository
+    private assetHolderRepository: AssetHolderRepository
     private exchangeOrderRepository: ExchangeOrderRepository
     private exchangeTradeRepository: ExchangeTradeRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
@@ -45,7 +45,7 @@ export class ExchangeService {
     constructor(eventPublisher?: IEventPublisher) {
         this.orderEventPublisher = eventPublisher || new NullEventPublisher()
 
-        this.portfolioHoldingRepository = new PortfolioHoldingRepository()
+        this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioRepository = new PortfolioRepository()
 
         this.exchangeOrderRepository = new ExchangeOrderRepository()
@@ -326,7 +326,7 @@ export class ExchangeService {
         const unitsRequired = exchangeOrder.orderSide === 'ask' ? round4(exchangeOrder.orderSize) : 0
 
         if (unitsRequired > 0) {
-            const portfolioHoldings = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId)
+            const portfolioHoldings = await this.assetHolderRepository.getDetailAsync(assetId, portfolioId)
             const portfolioHoldingUnits = round4(portfolioHoldings?.units || 0)
             if (portfolioHoldingUnits < unitsRequired) {
                 // exception
@@ -352,7 +352,7 @@ export class ExchangeService {
             exchangeOrder.orderSide === 'bid' ? round4(exchangeOrder.orderSize * price) * COIN_BUFFER_FACTOR : 0
 
         if (coinsRequired > 0) {
-            const coinsHeld = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, paymentAssetId)
+            const coinsHeld = await this.assetHolderRepository.getDetailAsync(paymentAssetId, portfolioId)
             const portfolioHoldingUnits = round4(coinsHeld?.units || 0)
             if (portfolioHoldingUnits < coinsRequired) {
                 // exception

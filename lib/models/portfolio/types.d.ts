@@ -30,12 +30,10 @@ export declare type TPortfolioHolding = {
     cost: number;
     net: number;
 };
-export declare type TPortfolioHoldingUpdateItem = {
-    portfolioId: string;
+export declare type TAssetHolderUpdateItem = {
     assetId: string;
+    portfolioId: string;
     deltaUnits: number;
-    deltaNet: number;
-    deltaCost: number;
 };
 export declare type TPortfolioDeposit = {
     createdAt: string;

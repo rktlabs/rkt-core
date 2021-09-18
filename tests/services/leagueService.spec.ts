@@ -92,10 +92,10 @@ describe('League Service', function () {
     // describe('Create Assets', () => {
     //     let leagueId: string = 'testleague1'
     //     let assetList: TLeagueEarnerDef[] = [
-    //         { earnerId: 'card::aaa', initialPrice: 10, displayName: 'helloa' },
-    //         { earnerId: 'card::bbb', initialPrice: 20, displayName: 'hellob' },
-    //         { earnerId: 'card::ccc', initialPrice: 30, displayName: 'helloc' },
-    //         { earnerId: 'card::ddd', initialPrice: 40, displayName: 'hellod' },
+    //         { earnerId: 'card::aaa', displayName: 'helloa' },
+    //         { earnerId: 'card::bbb', displayName: 'hellob' },
+    //         { earnerId: 'card::ccc', displayName: 'helloc' },
+    //         { earnerId: 'card::ddd', displayName: 'hellod' },
     //     ]
 
     //     beforeEach(async () => {

@@ -1,11 +1,11 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { IEventPublisher, PortfolioHoldingService, NullEventPublisher } from '.'
+import { IEventPublisher, AssetHolderService, NullEventPublisher } from '.'
 import {
     PortfolioRepository,
     AssetRepository,
-    PortfolioHoldingRepository,
+    AssetHolderRepository,
     TransactionRepository,
     TPurchase,
     TTransactionNew,
@@ -29,17 +29,17 @@ export class TransactionService {
 
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
-    private portfolioHoldingRepository: PortfolioHoldingRepository
+    private assetHolderRepository: AssetHolderRepository
     private transactionRepository: TransactionRepository
-    private portfolioHoldingService: PortfolioHoldingService
+    private assetHolderService: AssetHolderService
 
     constructor(eventPublisher?: IEventPublisher) {
         this.eventPublisher = eventPublisher || new NullEventPublisher()
         this.portfolioRepository = new PortfolioRepository()
         this.assetRepository = new AssetRepository()
-        this.portfolioHoldingRepository = new PortfolioHoldingRepository()
+        this.assetHolderRepository = new AssetHolderRepository()
         this.transactionRepository = new TransactionRepository()
-        this.portfolioHoldingService = new PortfolioHoldingService()
+        this.assetHolderService = new AssetHolderService()
     }
 
     /////////////////////////////
@@ -180,20 +180,20 @@ export class TransactionService {
                         portfolioId: commitState.portfolioId,
                         assetId: commitState.assetId,
                         deltaUnits: commitState.units,
-                        deltaNet: commitState.deltaNet,
-                        deltaCost: commitState.deltaCost,
+                        // deltaNet: commitState.deltaNet,
+                        // deltaCost: commitState.deltaCost,
                     }
                 })
 
-                await this.portfolioHoldingService.proessTransaction(transactionId, updates, transaction)
+                await this.assetHolderService.proessTransaction(transactionId, updates, transaction)
             }
 
             transaction.status = 'success'
             await this.transactionRepository.updateAsync(transactionId, { status: transaction.status })
 
-            // if (this.eventPublisher) {
-            //     await this.eventPublisher.publishTransactionEventCompleteAsync(transaction, 'transactionHandler')
-            // }
+            if (this.eventPublisher) {
+                await this.eventPublisher.publishTransactionEventCompleteAsync(transaction, 'transactionHandler')
+            }
 
             return commitStates
         } catch (error: any) {
@@ -206,13 +206,13 @@ export class TransactionService {
                     error: transaction.error,
                 })
 
-                // if (this.eventPublisher) {
-                //     await this.eventPublisher.publishTransactionEventErrorAsync(
-                //         transaction,
-                //         error.message,
-                //         'transactionHandler',
-                //     )
-                // }
+                if (this.eventPublisher) {
+                    await this.eventPublisher.publishTransactionEventErrorAsync(
+                        transaction,
+                        error.message,
+                        'transactionHandler',
+                    )
+                }
 
                 throw error
             } else if (error instanceof InsufficientBalance) {
@@ -224,13 +224,13 @@ export class TransactionService {
                     error: transaction.error,
                 })
 
-                // if (this.eventPublisher) {
-                //     await this.eventPublisher.publishTransactionEventErrorAsync(
-                //         transaction,
-                //         error.message,
-                //         'transactionHandler',
-                //     )
-                // }
+                if (this.eventPublisher) {
+                    await this.eventPublisher.publishTransactionEventErrorAsync(
+                        transaction,
+                        error.message,
+                        'transactionHandler',
+                    )
+                }
 
                 throw error
             } else if (error instanceof InvalidTransaction) {
@@ -243,13 +243,13 @@ export class TransactionService {
                     error: transaction.error,
                 })
 
-                // if (this.eventPublisher) {
-                //     await this.eventPublisher.publishTransactionEventErrorAsync(
-                //         transaction,
-                //         error.message,
-                //         'transactionHandler',
-                //     )
-                // }
+                if (this.eventPublisher) {
+                    await this.eventPublisher.publishTransactionEventErrorAsync(
+                        transaction,
+                        error.message,
+                        'transactionHandler',
+                    )
+                }
 
                 throw error
             } else {
@@ -260,14 +260,14 @@ export class TransactionService {
                     error: transaction.error,
                 })
 
-                // if (this.eventPublisher) {
-                //     await this.eventPublisher.publishTransactionEventErrorAsync(
-                //         transaction,
-                //         error.message,
-                //         'transactionHandler',
-                //         error.stack,
-                //     )
-                // }
+                if (this.eventPublisher) {
+                    await this.eventPublisher.publishTransactionEventErrorAsync(
+                        transaction,
+                        error.message,
+                        'transactionHandler',
+                        error.stack,
+                    )
+                }
 
                 throw error // unknown error, rethrow it (**)
             }
@@ -358,14 +358,14 @@ export class TransactionService {
                 //const canShort = true
 
                 // eslint-disable-next-line no-await-in-loop
-                let holding = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId)
+                let holding = await this.assetHolderRepository.getDetailAsync(assetId, portfolioId)
                 if (canShort) {
                     // if can short, create input holding if it doesn't already
                     // exist. new holding may end up with negative balance. (if cannot
                     // short and no holding, then will fail for insufficient balance)
                     if (!holding) {
                         // eslint-disable-next-line no-await-in-loop
-                        holding = await this.portfolioHoldingService.createPortfolioHolding(portfolioId, assetId)
+                        holding = await this.assetHolderService.addAssetHolder(assetId, portfolioId)
                     }
                 }
 
@@ -385,12 +385,12 @@ export class TransactionService {
                     }
                 }
 
-                const unitCost = holding.units === 0 ? 0 : round4((holding.cost || 0) / holding.units)
-                if (!isCoin) {
-                    inputLeg._unitCost = unitCost
-                    inputLeg._deltaCost = round4(unitCost * units)
-                    inputLeg._deltaNet = round4(inputLeg.cost || 0) * -1
-                }
+                // const unitCost = holding.units === 0 ? 0 : round4((holding.cost || 0) / holding.units)
+                // if (!isCoin) {
+                //     inputLeg._unitCost = unitCost
+                //     inputLeg._deltaCost = round4(unitCost * units)
+                //     inputLeg._deltaNet = round4(inputLeg.cost || 0) * -1
+                // }
             }
         }
 
@@ -406,16 +406,16 @@ export class TransactionService {
                 const isCoin = assetType === 'coin'
 
                 // eslint-disable-next-line no-await-in-loop
-                let holding = await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId)
+                let holding = await this.assetHolderRepository.getDetailAsync(assetId, portfolioId)
                 if (!holding) {
                     // eslint-disable-next-line no-await-in-loop
-                    holding = await this.portfolioHoldingService.createPortfolioHolding(portfolioId, assetId)
+                    holding = await this.assetHolderService.addAssetHolder(assetId, portfolioId)
                 }
 
-                if (!isCoin) {
-                    outputLeg._deltaCost = round4(outputLeg.cost || 0)
-                    outputLeg._deltaNet = round4(outputLeg.cost || 0) * -1
-                }
+                // if (!isCoin) {
+                //     outputLeg._deltaCost = round4(outputLeg.cost || 0)
+                //     outputLeg._deltaNet = round4(outputLeg.cost || 0) * -1
+                // }
             }
         }
     }
@@ -543,8 +543,8 @@ export class TransactionService {
             portfolioId: leg.portfolioId,
             assetId: leg.assetId,
             units: leg.units,
-            deltaNet: leg._deltaNet || 0,
-            deltaCost: leg._deltaCost || 0,
+            // deltaNet: leg._deltaNet || 0,
+            // deltaCost: leg._deltaCost || 0,
             timestamp: timeAtNow,
         }
 

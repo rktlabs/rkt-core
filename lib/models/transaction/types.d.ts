@@ -29,9 +29,6 @@ export declare type TransactionLeg = {
     portfolioId: string;
     units: number;
     cost?: number;
-    _deltaCost?: number;
-    _deltaNet?: number;
-    _unitCost?: number;
 };
 export declare type TTransaction = {
     transactionId: string;

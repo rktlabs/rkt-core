@@ -18,6 +18,7 @@ export declare type TAsset = {
     displayName: string;
     leagueId?: string;
     leagueDisplayName?: string;
+    issuedUnits: number;
     subject?: any;
     tags?: any;
     xids?: any;

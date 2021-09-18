@@ -4,7 +4,7 @@ export declare class AssetService {
     private assetRepository;
     private portfolioService;
     private makerService;
-    private portfolioHoldingService;
+    private assetHolderService;
     constructor();
     createAsset(payload: TNewAssetConfig, shouldCreatePortfolio?: boolean): Promise<Asset>;
     deleteAsset(assetId: string): Promise<void>;

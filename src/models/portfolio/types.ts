@@ -36,12 +36,12 @@ export type TPortfolioHolding = {
     net: number
 }
 
-export type TPortfolioHoldingUpdateItem = {
-    portfolioId: string
+export type TAssetHolderUpdateItem = {
     assetId: string
+    portfolioId: string
     deltaUnits: number
-    deltaNet: number
-    deltaCost: number
+    // deltaNet: number
+    // deltaCost: number
 }
 
 export type TPortfolioDeposit = {

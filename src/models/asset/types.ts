@@ -23,7 +23,10 @@ export type TAsset = {
     leagueId?: string
     leagueDisplayName?: string
 
+    issuedUnits: number
+
     subject?: any
+
     tags?: any
     xids?: any
 

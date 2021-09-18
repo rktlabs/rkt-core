@@ -16,12 +16,13 @@ export class Asset {
 
     leagueId?: string
     leagueDisplayName?: string
+
+    issuedUnits: number
+
     subject?: string
 
     tags?: any
     xids?: any
-
-    // initialPrice?: number
 
     bid?: number
     ask?: number
@@ -38,12 +39,14 @@ export class Asset {
 
         this.leagueId = props.leagueId
         this.leagueDisplayName = props.leagueDisplayName
+
+        this.issuedUnits = props.issuedUnits
+
         this.subject = props.subject
 
         this.xids = props.xids
         this.tags = props.tags
 
-        // this.initialPrice = props.initialPrice
         this.bid = props.bid
         this.ask = props.ask
         this.last = props.last
@@ -74,6 +77,7 @@ export class Asset {
             leagueId: props.leagueId,
             leagueDisplayName: props.leagueDisplayName || props.leagueId,
             subject: props.subject,
+            issuedUnits: 0,
         }
 
         if (props.tags) {
@@ -83,13 +87,6 @@ export class Asset {
         if (props.xids) {
             assetProps.xids = Object.assign({}, props.xids)
         }
-
-        // if (props.initialPrice) {
-        //     assetProps.initialPrice = props.initialPrice
-        //     assetProps.bid = props.initialPrice
-        //     assetProps.ask = props.initialPrice
-        //     assetProps.last = props.initialPrice
-        // }
 
         const newEntity = new Asset(assetProps)
         return newEntity

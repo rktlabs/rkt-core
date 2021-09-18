@@ -1,6 +1,6 @@
 import { TAssetHolder } from '../../models/assetHolder';
 import { RepositoryBase } from '../repositoryBase';
-export declare class AssetHoldersRepository extends RepositoryBase {
+export declare class AssetHolderRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;
     constructor();
     getListAsync(assetId: string): Promise<TAssetHolder[]>;

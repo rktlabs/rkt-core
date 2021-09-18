@@ -2,7 +2,7 @@ import { TNewExchangeOrder, ExchangeOrder, IEventPublisher } from '../..';
 export declare class ExchangeService {
     private orderEventPublisher;
     private portfolioRepository;
-    private portfolioHoldingRepository;
+    private assetHolderRepository;
     private exchangeOrderRepository;
     private exchangeTradeRepository;
     private exchangeQuoteRepository;

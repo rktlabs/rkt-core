@@ -51,7 +51,6 @@
 //         // crete asset  card::jbone::test
 //         await leagueService.newAsset('test', {
 //             earnerId: 'card::jbone',
-//             initialPrice: 11,
 //             displayName: 'Jbone Genie',
 //         })
 //     })
