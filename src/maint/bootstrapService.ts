@@ -100,9 +100,9 @@ export class BootstrapService {
     async bootUser() {
         const userId = 'hedbot'
 
-        this.userService.scrubUser(userId)
+        await this.userService.scrubUser(userId)
 
-        const user = this.userService.createUser({
+        const user = await this.userService.createUser({
             userId: userId,
             dob: '1963-05-07',
             email: 'hed@hedbot.com',
