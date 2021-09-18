@@ -8,7 +8,8 @@ export declare class BootstrapService {
     private transactionService;
     private eventPublisher;
     constructor();
-    createRkt(): Promise<void>;
+    bootRkt(): Promise<void>;
+    bootBank(): Promise<void>;
     bootTestLeague(): Promise<void>;
     bootstrap(): Promise<void>;
     setupTestAsset(): Promise<void>;

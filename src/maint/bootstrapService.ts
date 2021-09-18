@@ -34,8 +34,10 @@ export class BootstrapService {
     }
 
     // bootstrap the system with the "rkt" coin
-    async createRkt() {
+    async bootRkt() {
         const assetId = 'coin::rkt'
+        await this.assetService.scrubAsset(assetId)
+
         const assetDef = {
             ownerId: 'test',
             symbol: assetId,
@@ -43,6 +45,25 @@ export class BootstrapService {
         }
 
         await this.assetService.createAsset(assetDef)
+    }
+
+    async bootBank() {
+        const treasuryId = 'bank::treasury'
+        const mintId = 'bank::mint'
+        await this.portfolioService.scrubPortfolio(treasuryId)
+        await this.portfolioService.scrubPortfolio(mintId)
+
+        await this.portfolioService.createOrKeepPortfolio({
+            type: 'bank',
+            ownerId: 'test',
+            portfolioId: treasuryId,
+        })
+
+        await this.portfolioService.createOrKeepPortfolio({
+            type: 'bank',
+            ownerId: 'test',
+            portfolioId: mintId,
+        })
     }
 
     async bootTestLeague() {
@@ -53,7 +74,7 @@ export class BootstrapService {
     }
 
     async bootstrap() {
-        await Promise.all([this.createRkt(), this.bootTestLeague()])
+        await Promise.all([this.bootRkt(), this.bootTestLeague()])
     }
 
     async setupTestAsset() {
