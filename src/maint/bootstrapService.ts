@@ -98,7 +98,7 @@ export class BootstrapService {
     }
 
     async bootUser() {
-        const userId = 'user::hedbot'
+        const userId = 'hedbot'
 
         this.userService.scrubUser(userId)
 
