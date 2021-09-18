@@ -24,6 +24,7 @@ export type TAsset = {
     leagueDisplayName?: string
 
     issuedUnits: number
+    burnedUnits: number
 
     subject?: any
 
@@ -44,6 +45,11 @@ export type TAssetUpdate = {
     bid?: number
     ask?: number
     last?: number
+}
+
+export type TAssetUpdate2 = {
+    issuedUnits?: number
+    burnedUnits?: number
 }
 
 export type TLeagueAssetDef = {

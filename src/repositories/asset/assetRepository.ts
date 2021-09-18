@@ -4,6 +4,8 @@ import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 import { TAsset, TAssetCore, TAssetUpdate } from '../../models/asset'
+import * as admin from 'firebase-admin'
+const FieldValue = admin.firestore.FieldValue
 
 const COLLECTION_NAME = 'assets'
 
@@ -60,6 +62,16 @@ export class AssetRepository extends RepositoryBase {
     async updateAsync(assetId: string, entityData: TAssetUpdate) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await entityRef.update(entityData)
+    }
+
+    async addMinted(assetId: string, units: number) {
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
+        await entityRef.update({ issuedUnits: FieldValue.increment(units) })
+    }
+
+    async addBurned(assetId: string, units: number) {
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
+        await entityRef.update({ burnedUnits: FieldValue.increment(units) })
     }
 
     async deleteAsync(assetId: string) {

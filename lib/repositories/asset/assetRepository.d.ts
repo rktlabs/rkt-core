@@ -8,6 +8,8 @@ export declare class AssetRepository extends RepositoryBase {
     getDetailAsync(assetId: string): Promise<TAsset | null>;
     storeAsync(entity: TAsset): Promise<void>;
     updateAsync(assetId: string, entityData: TAssetUpdate): Promise<void>;
+    addMinted(assetId: string, units: number): Promise<void>;
+    addBurned(assetId: string, units: number): Promise<void>;
     deleteAsync(assetId: string): Promise<void>;
     getLeagueAssetsAsync(leagueId: string): Promise<TAssetCore[]>;
     isPortfolioUsed(portfolioId: string): Promise<string | null>;

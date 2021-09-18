@@ -19,6 +19,7 @@ export declare type TAsset = {
     leagueId?: string;
     leagueDisplayName?: string;
     issuedUnits: number;
+    burnedUnits: number;
     subject?: any;
     tags?: any;
     xids?: any;
@@ -34,6 +35,10 @@ export declare type TAssetUpdate = {
     bid?: number;
     ask?: number;
     last?: number;
+};
+export declare type TAssetUpdate2 = {
+    issuedUnits?: number;
+    burnedUnits?: number;
 };
 export declare type TLeagueAssetDef = {
     symbol: string;

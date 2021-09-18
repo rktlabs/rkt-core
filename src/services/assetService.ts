@@ -1,7 +1,17 @@
 'use strict'
 
 import { PortfolioService, AssetHolderService, MakerService, LeagueService } from '.'
-import { PortfolioRepository, AssetRepository, TNewAssetConfig, DuplicateError, ConflictError, Asset } from '..'
+import {
+    PortfolioRepository,
+    AssetRepository,
+    TNewAssetConfig,
+    DuplicateError,
+    ConflictError,
+    Asset,
+    ExchangeOrderRepository,
+    TAssetUpdate,
+    TAssetUpdate2,
+} from '..'
 
 export class AssetService {
     private portfolioRepository: PortfolioRepository

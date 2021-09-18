@@ -10,6 +10,7 @@ export declare class Asset {
     leagueId?: string;
     leagueDisplayName?: string;
     issuedUnits: number;
+    burnedUnits: number;
     subject?: string;
     tags?: any;
     xids?: any;

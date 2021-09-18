@@ -18,6 +18,7 @@ export class Asset {
     leagueDisplayName?: string
 
     issuedUnits: number
+    burnedUnits: number
 
     subject?: string
 
@@ -41,6 +42,7 @@ export class Asset {
         this.leagueDisplayName = props.leagueDisplayName
 
         this.issuedUnits = props.issuedUnits
+        this.burnedUnits = props.burnedUnits
 
         this.subject = props.subject
 
@@ -78,6 +80,7 @@ export class Asset {
             leagueDisplayName: props.leagueDisplayName || props.leagueId,
             subject: props.subject,
             issuedUnits: 0,
+            burnedUnits: 0,
         }
 
         if (props.tags) {
