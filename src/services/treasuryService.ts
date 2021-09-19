@@ -9,6 +9,7 @@ import {
     TPortfolioDeposit,
     TTransfer,
     AssetHolderService,
+    AssetRepository,
     //Principal,
 } from '..'
 
@@ -18,6 +19,7 @@ const COIN = 'coin::rkt'
 export class TreasuryService {
     private eventPublisher: IEventPublisher
     private userRepository: UserRepository
+    private assetRepository: AssetRepository
     private assetHolderService: AssetHolderService
     private portfolioRepository: PortfolioRepository
     private portfolioService: PortfolioService
@@ -30,6 +32,7 @@ export class TreasuryService {
         this.eventPublisher = eventPublisher || new NullEventPublisher()
 
         this.userRepository = new UserRepository()
+        this.assetRepository = new AssetRepository()
         this.portfolioRepository = new PortfolioRepository()
         this.portfolioService = new PortfolioService()
         this.assetHolderService = new AssetHolderService()
@@ -37,7 +40,47 @@ export class TreasuryService {
         this.mintService = new MintService()
     }
 
-    async depositCoins(userId: string, units: number, coinId = COIN) {
+    async mintUnits(units: number) {
+        const assetId = COIN
+        const asset = await this.assetRepository.getDetailAsync(assetId)
+        if (!asset) {
+            const msg = `Cannot deposit to asset: ${assetId} does not exist`
+            throw new NotFoundError(msg, { assetId: assetId })
+        }
+
+        const assetPortfolioId = asset.portfolioId
+        if (!assetPortfolioId) {
+            const msg = `Cannot deposit to asset: ${assetId} portfolio does not exist`
+            throw new NotFoundError(msg, { assetId: assetId })
+        }
+
+        // get current treasury balance to make sure adequate funds
+        const balance = await this.assetHolderService.getAssetHolderBalance(assetId, assetPortfolioId)
+        if (balance < units) {
+            const delta = balance - units
+            await this.mintService.mintUnits(COIN, delta)
+        }
+
+        const portfolioId = BANK_PORTFOLIO
+        const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
+        if (!portfolio) {
+            const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
+            throw new NotFoundError(msg, { portfolioId })
+        }
+
+        const data: TTransfer = {
+            inputPortfolioId: assetPortfolioId,
+            outputPortfolioId: portfolioId,
+            assetId: assetId,
+            units: units,
+            tags: {
+                source: 'Mint',
+            },
+        }
+        await this.transactionService.executeTransferAsync(data)
+    }
+
+    async depositCoins(userId: string, units: number) {
         const user = await this.userRepository.getDetailAsync(userId)
         if (!user) {
             const msg = `Cannot deposit to user: ${userId} does not exist`
@@ -57,18 +100,19 @@ export class TreasuryService {
         }
 
         const sourcePortfolioId = BANK_PORTFOLIO
+        const assetId = COIN
 
         // get current treasury balance to make sure adequate funds
-        const balance = await this.assetHolderService.getAssetHolderBalance(coinId, sourcePortfolioId)
+        const balance = await this.assetHolderService.getAssetHolderBalance(assetId, sourcePortfolioId)
         if (balance < units) {
             const delta = balance - units
-            this.mintService.mintUnits(coinId, delta)
+            await this.mintUnits(delta)
         }
 
         const data: TTransfer = {
             inputPortfolioId: sourcePortfolioId,
             outputPortfolioId: portfolioId,
-            assetId: coinId,
+            assetId: assetId,
             units: units,
             tags: {
                 source: 'Deposit',
