@@ -93,6 +93,7 @@ export class Bonding1Maker extends MakerBase {
     }
 
     async processTakerOrder(order: TakerOrder) {
+        console.log('77888888888888888888888888888')
         const assetId = order.assetId
         const orderSide = order.orderSide
         const orderSize = order.orderSize
@@ -160,6 +161,47 @@ export class Bonding1Maker extends MakerBase {
     async processSimpleOrder(assetId: string, orderSide: string, orderSize: number) {
         // for bid (a buy) I'm "removing" units from the pool, so flip sign
         const signedOrderSize = orderSide === 'ask' ? orderSize * -1 : orderSize
+
+        ////////////////////////////
+        // verify that asset exists
+        ////////////////////////////
+        const asset = await this.assetRepository.getDetailAsync(assetId)
+        if (!asset) {
+            const msg = `Invalid Order: Asset: ${assetId} does not exist`
+            throw new NotFoundError(msg, { assetId })
+        }
+
+        ////////////////////////////////////////////////////////
+        // Process the order
+        ////////////////////////////////////////////////////////
+        // TODO: There is an assumption that the maker portfolio is the asset. That would,
+        // actually, be up to the maker, yes?
+        const assetPortfolioId = asset.portfolioId
+        if (assetPortfolioId) {
+            const assetPortfolio = await this.portfolioRepository.getDetailAsync(assetPortfolioId)
+            if (!assetPortfolio) {
+                const msg = `Invalid Order: Asset Portfolio: ${assetPortfolioId} does not exist`
+                throw new NotFoundError(msg, { assetPortfolioId })
+            }
+        } else {
+            const msg = `Invalid Order: Asset Portfolio: not configured`
+            throw new NotFoundError(msg)
+        }
+
+        console.log('888888888888888888888888888')
+        console.log(orderSide)
+        console.log(orderSize)
+        if (orderSide == 'bid' && orderSize > 0) {
+            console.log('*********** this is a bid *********')
+            // test that asset has enough units to transact
+            const assetPortfolioHoldings = await this.assetHolderRepository.getDetailAsync(assetId, assetPortfolioId)
+            const portfolioHoldingUnits = round4(assetPortfolioHoldings?.units || 0)
+            if (portfolioHoldingUnits < orderSize) {
+                const delta = orderSize - portfolioHoldingUnits
+                // not enough. mint me sonme
+                await this.mintService.mintUnits(assetId, delta)
+            }
+        }
 
         const taken = this.processOrderUnits(signedOrderSize)
         if (taken) {
