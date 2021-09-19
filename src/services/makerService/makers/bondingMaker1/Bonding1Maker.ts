@@ -124,7 +124,11 @@ export class Bonding1Maker extends MakerBase {
             throw new NotFoundError(msg)
         }
 
+        console.log('888888888888888888888888888')
+        console.log(orderSide)
+        console.log(orderSize)
         if (orderSide == 'bid' && orderSize > 0) {
+            console.log('*********** this is a bid *********')
             // test that asset has enough units to transact
             const assetPortfolioHoldings = await this.assetHolderRepository.getDetailAsync(assetId, assetPortfolioId)
             const portfolioHoldingUnits = round4(assetPortfolioHoldings?.units || 0)
