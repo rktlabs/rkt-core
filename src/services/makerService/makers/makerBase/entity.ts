@@ -1,5 +1,13 @@
-import { TakerOrder, MakerTrade } from '../../..'
-import { AssetRepository, MakerRepository, TAssetUpdate } from '../../../..'
+import { TakerOrder, MakerTrade, MakerFill } from '../../..'
+import {
+    Asset,
+    AssetRepository,
+    MakerRepository,
+    NotFoundError,
+    PortfolioRepository,
+    round4,
+    TAssetUpdate,
+} from '../../../..'
 import { IMaker } from './interfaces'
 import { serialize, serializeCollection } from './serializer'
 import { TMaker } from './types'
@@ -8,6 +16,7 @@ import { TMaker } from './types'
 export abstract class MakerBase implements IMaker {
     assetRepository: AssetRepository
     makerRepository: MakerRepository
+    portfolioRepository: PortfolioRepository
 
     createdAt: string
     type: string
@@ -28,6 +37,7 @@ export abstract class MakerBase implements IMaker {
 
         this.assetRepository = new AssetRepository()
         this.makerRepository = new MakerRepository()
+        this.portfolioRepository = new PortfolioRepository()
     }
 
     flattenMaker() {
@@ -53,13 +63,62 @@ export abstract class MakerBase implements IMaker {
         return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 
-    abstract processTakerOrder(order: TakerOrder): Promise<MakerTrade | null>
-
-    abstract processSimpleOrder(
-        assetId: string,
+    abstract processOrderImpl(
         orderSide: string,
         orderSize: number,
     ): Promise<{ makerDeltaUnits: number; makerDeltaCoins: number } | null>
+
+    async resolveAssetSpec(assetSpec: string | Asset) {
+        const asset = typeof assetSpec === 'string' ? await this.assetRepository.getDetailAsync(assetSpec) : assetSpec
+        if (!asset) {
+            throw new Error(`Asset Not Found: ${assetSpec}`)
+        }
+        return asset
+    }
+
+    async processTakerOrder(order: TakerOrder) {
+        const assetId = order.assetId
+        const orderSide = order.orderSide
+        const orderSize = order.orderSize
+        const trade = new MakerTrade(order)
+
+        ////////////////////////////
+        // verify that asset exists
+        ////////////////////////////
+        const asset = await this.assetRepository.getDetailAsync(assetId)
+        if (!asset) {
+            const msg = `Invalid Order: Asset: ${assetId} does not exist`
+            throw new NotFoundError(msg, { assetId })
+        }
+
+        ////////////////////////////////////////////////////////
+        // Process the order
+        ////////////////////////////////////////////////////////
+        // TODO: There is an assumption that the maker portfolio is the asset. That would,
+        // actually, be up to the maker, yes?
+        const assetPortfolioId = asset.portfolioId
+        if (!assetPortfolioId) {
+            const msg = `Invalid Order: Asset Portfolio: not configured`
+            throw new NotFoundError(msg)
+        }
+
+        const tradeStats = await this.processOrderImpl(orderSide, orderSize)
+        if (tradeStats) {
+            let { makerDeltaUnits, makerDeltaCoins } = tradeStats
+            const makerFill = new MakerFill({
+                assetId: assetId,
+                portfolioId: assetPortfolioId,
+                orderSide: orderSide === 'bid' ? 'ask' : 'bid', // flip side from taker
+                orderSize: orderSize,
+            })
+
+            trade.fillMaker(makerFill, makerDeltaUnits, makerDeltaCoins)
+
+            return trade
+        } else {
+            return null
+        }
+    }
 
     ////////////////////////////////////////////////////
     //  onUpdateQuote

@@ -4,7 +4,7 @@ import { IPublisher } from './publishers/iPublisher';
 export declare class EventPublisherBase implements IEventPublisher {
     private publisher;
     constructor(publisher: IPublisher);
-    publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrder, source?: string): Promise<void>;
+    publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrderConfig, source?: string): Promise<void>;
     publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source?: string): Promise<void>;
     publishErrorEventAsync(error: any, sourceData?: any): Promise<void>;
     publishWarningEventAsync(error: any, sourceData?: any): Promise<void>;

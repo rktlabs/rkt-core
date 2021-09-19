@@ -1,11 +1,4 @@
-export declare type TExchangeCancelOrder = {
-    operation: string;
-    assetId: string;
-    portfolioId: string;
-    orderId: string;
-    refOrderId: string;
-};
-export declare type TNewExchangeOrder = {
+export declare type TNewExchangeOrderConfig = {
     operation: string;
     orderType: string;
     orderSide: string;
@@ -15,6 +8,13 @@ export declare type TNewExchangeOrder = {
     orderSize: number;
     orderId: string;
     tags?: any;
+};
+export declare type TExchangeCancelOrder = {
+    operation: string;
+    assetId: string;
+    portfolioId: string;
+    orderId: string;
+    refOrderId: string;
 };
 export declare type TExchangeOrder = {
     operation: string;

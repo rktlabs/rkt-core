@@ -1,4 +1,3 @@
-import { TakerOrder, MakerTrade } from '../../../..';
 import { MakerBase } from '../makerBase/entity';
 import { TNewMakerConfig, TMaker } from '../makerBase/types';
 declare type TLogarithmicParamsUpdate = {
@@ -14,7 +13,8 @@ declare type TLogarithmicMakerParams = {
     k: number;
 };
 export declare class LogarithmicMaker extends MakerBase {
-    private portfolioRepository;
+    private assetHolderRepository;
+    private mintService;
     static newMaker(props: TNewMakerConfig): LogarithmicMaker;
     constructor(props: TMaker);
     computeInitialState(newMakerConfig: TNewMakerConfig): TLogarithmicMakerParams;
@@ -22,9 +22,10 @@ export declare class LogarithmicMaker extends MakerBase {
         "params.madeUnits": FirebaseFirestore.FieldValue;
         currentPrice: number;
     };
-    processTakerOrder(order: TakerOrder): Promise<MakerTrade | null>;
-    processSimpleOrder(assetId: string, orderSide: string, orderSize: number): Promise<null>;
-    updateMakerStateAsync(assetId: string, data: any): Promise<void>;
+    processOrderImpl(orderSide: string, orderSize: number): Promise<{
+        makerDeltaUnits: number;
+        makerDeltaCoins: number;
+    } | null>;
     private processOrderUnits;
 }
 export {};

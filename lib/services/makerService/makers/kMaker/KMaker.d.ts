@@ -1,4 +1,3 @@
-import { TakerOrder, MakerTrade } from '../../../..';
 import { MakerBase } from '../makerBase/entity';
 import { TNewMakerConfig, TMaker } from '../makerBase/types';
 declare type TKMakerParamsUpdate = {
@@ -16,7 +15,6 @@ declare type TKMakerParams = {
     k: number;
 };
 export declare class KMaker extends MakerBase {
-    private portfolioRepository;
     static newMaker(props: TNewMakerConfig): KMaker;
     constructor(props: TMaker);
     computeInitialState(newMakerConfig: TNewMakerConfig): TKMakerParams;
@@ -27,9 +25,10 @@ export declare class KMaker extends MakerBase {
         madeUnits: FirebaseFirestore.FieldValue;
         currentPrice: number;
     };
-    processTakerOrder(order: TakerOrder): Promise<MakerTrade | null>;
-    processSimpleOrder(assetId: string, orderSide: string, orderSize: number): Promise<null>;
-    updateMakerStateAsync(assetId: string, data: any): Promise<void>;
+    processOrderImpl(orderSide: string, orderSize: number): Promise<{
+        makerDeltaUnits: number;
+        makerDeltaCoins: number;
+    } | null>;
     private processOrderUnits;
     private computePrice;
 }

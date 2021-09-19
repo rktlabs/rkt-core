@@ -1,12 +1,4 @@
-export type TExchangeCancelOrder = {
-    operation: string
-    assetId: string
-    portfolioId: string
-    orderId: string
-    refOrderId: string
-}
-
-export type TNewExchangeOrder = {
+export type TNewExchangeOrderConfig = {
     operation: string // one of order, cancel
     orderType: string // market or limit
     orderSide: string
@@ -17,6 +9,14 @@ export type TNewExchangeOrder = {
     orderId: string
     tags?: any
     //refOrderId?: string
+}
+
+export type TExchangeCancelOrder = {
+    operation: string
+    assetId: string
+    portfolioId: string
+    orderId: string
+    refOrderId: string
 }
 
 export type TExchangeOrder = {

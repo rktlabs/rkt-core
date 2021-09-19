@@ -1,4 +1,3 @@
-import { TakerOrder as TakerOrder, MakerTrade } from '../../../..';
 import { MakerBase } from '../makerBase/entity';
 import { TNewMakerConfig, TMaker } from '../makerBase/types';
 declare type TBonding1MakerParamsUpdate = {
@@ -10,7 +9,6 @@ declare type TBonding1MakerParams = {
     x0: number;
 };
 export declare class Bonding1Maker extends MakerBase {
-    private portfolioRepository;
     private assetHolderRepository;
     private mintService;
     static newMaker(props: TNewMakerConfig): Bonding1Maker;
@@ -20,12 +18,10 @@ export declare class Bonding1Maker extends MakerBase {
         "params.madeUnits": FirebaseFirestore.FieldValue;
         currentPrice: number;
     };
-    processTakerOrder(order: TakerOrder): Promise<MakerTrade | null>;
-    processSimpleOrder(assetId: string, orderSide: string, orderSize: number): Promise<{
+    processOrderImpl(orderSide: string, orderSize: number): Promise<{
         makerDeltaUnits: number;
         makerDeltaCoins: number;
     } | null>;
-    updateMakerStateAsync(assetId: string, data: any): Promise<void>;
     private processOrderUnits;
 }
 export {};

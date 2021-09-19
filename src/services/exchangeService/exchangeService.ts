@@ -9,7 +9,7 @@ import { MakerTrade, TakerOrder, OrderSide, TakerFill } from '.'
 import {
     ExchangeOrderRepository,
     ExchangeTradeRepository,
-    TNewExchangeOrder,
+    TNewExchangeOrderConfig,
     ExchangeOrder,
     round4,
     ConflictError,
@@ -21,8 +21,6 @@ import {
     NullEventPublisher,
     IEventPublisher,
     AssetHolderRepository,
-    UserRepository,
-    AssetRepository,
 } from '../..'
 
 ///////////////////////////////////////////////////
@@ -36,8 +34,6 @@ import {
 export class ExchangeService {
     private orderEventPublisher: IEventPublisher
 
-    private userRepository: UserRepository
-    private assetRepository: AssetRepository
     private portfolioRepository: PortfolioRepository
     private assetHolderRepository: AssetHolderRepository
     private exchangeOrderRepository: ExchangeOrderRepository
@@ -51,8 +47,6 @@ export class ExchangeService {
 
         this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioRepository = new PortfolioRepository()
-        this.userRepository = new UserRepository()
-        this.assetRepository = new AssetRepository()
 
         this.exchangeOrderRepository = new ExchangeOrderRepository()
         this.exchangeTradeRepository = new ExchangeTradeRepository()
@@ -62,82 +56,11 @@ export class ExchangeService {
         this.makerService = new MakerService()
     }
 
-    async buy(userId: string, assetId: string, orderSize: number) {
-        return this.user_transact(userId, assetId, 'bid', orderSize)
-    }
-
-    async sell(userId: string, assetId: string, orderSize: number) {
-        return this.user_transact(userId, assetId, 'ask', orderSize)
-    }
-
-    async user_transact(userId: string, assetId: string, orderSide: string, orderSize: number) {
-        const user = await this.userRepository.getDetailAsync(userId)
-        if (!user) {
-            const msg = `Order Failed - user not found (${userId})`
-            throw new ConflictError(msg)
-        }
-        const portfolioId = user.portfolioId
-        if (!portfolioId) {
-            const msg = `Order Failed - user portfolio not found (${userId})`
-            throw new ConflictError(msg)
-        }
-        return this.portfolio_transact(portfolioId, assetId, orderSide, orderSize)
-    }
-
-    async portfolio_transact(portfolioId: string, assetId: string, orderSide: string, orderSize: number) {
-        if (orderSide === 'bid') {
-            await this.verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
-        } else if (orderSide === 'ask') {
-            await this.verifyFundsAsync(portfolioId, assetId, orderSide, orderSize)
-        }
-
-        const asset = await this.assetRepository.getDetailAsync(assetId)
-        if (!asset) {
-            const msg = `Order Failed - asset not found (${assetId})`
-            throw new ConflictError(msg)
-        }
-        const assetPortfolioId = asset.portfolioId
-        if (!assetPortfolioId) {
-            const msg = `Order Failed - asset portfolio not defined (${assetId})`
-            throw new ConflictError(msg)
-        }
-
-        const maker = await this.makerService.getMakerAsync(assetId)
-        if (!maker) {
-            const msg = `Order Failed - marketMaker not found (${assetId})`
-            throw new ConflictError(msg)
-        }
-
-        const tradeUnits = await maker.processSimpleOrder(assetId, orderSide, orderSize)
-        if (tradeUnits) {
-            const { makerDeltaUnits, makerDeltaCoins } = tradeUnits
-
-            if (makerDeltaUnits) {
-                const orderId = '--NA--'
-                const tradeId = '--NA--'
-                const takerPortfolioId = portfolioId
-                const takerDeltaUnits = makerDeltaUnits * -1
-                const takerDeltaValue = makerDeltaCoins * -1
-                const makerPortfolioId = assetPortfolioId
-
-                await this.process_transaction(
-                    orderId,
-                    assetId,
-                    tradeId,
-                    takerPortfolioId,
-                    takerDeltaUnits,
-                    takerDeltaValue,
-                    makerPortfolioId,
-                )
-            }
-        }
-    }
-
     ////////////////////////////////////////////////////
     //  handleNewExchangeOrderAsync
     //  - new order handler - accepts raw json as input
     ////////////////////////////////////////////////////
-    async handleNewExchangeOrderAsync(orderPayload: TNewExchangeOrder) {
+    async processNewExchangeOrderAsync(orderPayload: TNewExchangeOrderConfig) {
         logger.debug(`Handle Exchange Order: ${JSON.stringify(orderPayload)}`)
 
         let exchangeOrder: ExchangeOrder | undefined

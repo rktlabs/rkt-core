@@ -1,4 +1,4 @@
-import { TExchangeOrder, TNewExchangeOrder } from '.';
+import { TExchangeOrder, TNewExchangeOrderConfig } from '.';
 export declare class ExchangeOrder {
     operation: string;
     orderType: string;
@@ -17,7 +17,7 @@ export declare class ExchangeOrder {
     refOrderId?: string;
     error?: string;
     constructor(props: TExchangeOrder);
-    static newExchangeOrder(props: TNewExchangeOrder): ExchangeOrder;
+    static newExchangeOrder(props: TNewExchangeOrderConfig): ExchangeOrder;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;

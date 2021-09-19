@@ -1,11 +1,11 @@
 'use strict'
 
-import { round4, MakerFill, TakerOrder, NotFoundError, MakerTrade, PortfolioRepository } from '../../../..'
-
-import * as admin from 'firebase-admin'
 import { DateTime } from 'luxon'
+import { MintService } from '../../..'
+import { AssetHolderRepository, NotFoundError, round4 } from '../../../..'
 import { MakerBase } from '../makerBase/entity'
 import { TNewMakerConfig, TMaker, TTakeResult } from '../makerBase/types'
+import * as admin from 'firebase-admin'
 const FieldValue = admin.firestore.FieldValue
 
 type TLogarithmicParamsUpdate = {
@@ -57,7 +57,8 @@ const inverseBondingFunction = (
 }
 
 export class LogarithmicMaker extends MakerBase {
-    private portfolioRepository: PortfolioRepository
+    private assetHolderRepository: AssetHolderRepository
+    private mintService: MintService
 
     static newMaker(props: TNewMakerConfig) {
         const createdAt = DateTime.utc().toString()
@@ -81,7 +82,8 @@ export class LogarithmicMaker extends MakerBase {
 
     constructor(props: TMaker) {
         super(props)
-        this.portfolioRepository = new PortfolioRepository()
+        this.assetHolderRepository = new AssetHolderRepository()
+        this.mintService = new MintService()
     }
 
     computeInitialState(newMakerConfig: TNewMakerConfig) {
@@ -104,24 +106,11 @@ export class LogarithmicMaker extends MakerBase {
         return data
     }
 
-    async processTakerOrder(order: TakerOrder) {
-        ///////////////////////////////////////////////////
-        // create trade and fill in maker from asset pools
-        const trade = new MakerTrade(order)
-        const taker = trade.taker
-
-        // for bid (a buy) I'm "removing" units from the pool, so flip sign
-        const signedTakeSize = trade.taker.orderSide === 'ask' ? taker.orderSize * -1 : taker.orderSize
-
+    async processOrderImpl(orderSide: string, orderSize: number) {
         ////////////////////////////
         // verify that asset exists
         ////////////////////////////
-        const assetId = order.assetId
-        const asset = await this.assetRepository.getDetailAsync(assetId)
-        if (!asset) {
-            const msg = `Invalid Order: Asset: ${assetId} does not exist`
-            throw new NotFoundError(msg, { assetId })
-        }
+        const asset = await this.resolveAssetSpec(this.assetId)
 
         ////////////////////////////////////////////////////////
         // Process the order
@@ -129,53 +118,38 @@ export class LogarithmicMaker extends MakerBase {
         // TODO: There is an assumption that the maker portfolio is the asset. That would,
         // actually, be up to the maker, yes?
         const assetPortfolioId = asset.portfolioId
-        if (assetPortfolioId) {
-            const assetPortfolio = await this.portfolioRepository.getDetailAsync(assetPortfolioId)
-            if (!assetPortfolio) {
-                const msg = `Invalid Order: Asset Portfolio: ${assetPortfolioId} does not exist`
-                throw new NotFoundError(msg, { assetPortfolioId })
-            }
-        } else {
+        if (!assetPortfolioId) {
             const msg = `Invalid Order: Asset Portfolio: not configured`
             throw new NotFoundError(msg)
         }
 
-        const makerPortfolioId = assetPortfolioId
+        if (orderSide == 'bid' && orderSize > 0) {
+            // test that asset has enough units to transact
+            const assetPortfolioHoldings = await this.assetHolderRepository.getDetailAsync(
+                this.assetId,
+                assetPortfolioId,
+            )
+            const portfolioHoldingUnits = round4(assetPortfolioHoldings?.units || 0)
+            if (portfolioHoldingUnits < orderSize) {
+                const delta = orderSize - portfolioHoldingUnits
+                // not enough. mint me sonme
+                await this.mintService.mintUnits(this.assetId, delta)
+            }
+        }
 
-        const taken = this.processOrderUnits(signedTakeSize)
+        // for bid (a buy) I'm "removing" units from the pool, so flip sign
+        const signedOrderSize = orderSide === 'ask' ? orderSize * -1 : orderSize
+        const taken = this.processOrderUnits(signedOrderSize)
         if (taken) {
             const data = taken.statusUpdate
-            await this.updateMakerStateAsync(assetId, data)
+            await this.makerRepository.updateMakerStateAsync(this.assetId, data)
 
             const { makerDeltaUnits, makerDeltaCoins } = taken
 
-            const makerFill = new MakerFill({
-                assetId: taker.assetId,
-                portfolioId: makerPortfolioId,
-                orderSide: taker.orderSide === 'bid' ? 'ask' : 'bid', // flip side from taker
-                orderSize: taker.orderSize,
-            })
-
-            trade.fillMaker(makerFill, makerDeltaUnits, makerDeltaCoins)
-
-            // if (trade.taker.filledSize !== 0) {
-            //     //     // await this.onFill(trade.taker)
-            //     //     // await this.onTrade(trade)
-            //     await this.onUpdateQuote(trade, bid, ask)
-            // }
-
-            return trade
+            return { makerDeltaUnits, makerDeltaCoins }
         } else {
             return null
         }
-    }
-
-    async processSimpleOrder(assetId: string, orderSide: string, orderSize: number) {
-        return null
-    }
-
-    async updateMakerStateAsync(assetId: string, data: any) {
-        return this.makerRepository.updateMakerStateAsync(assetId, data)
     }
 
     ////////////////////////////////////////////////////////

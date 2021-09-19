@@ -4,7 +4,7 @@ import {
     PortfolioOrderRepository,
     PortfolioRepository,
     TExchangeCancelOrder,
-    TNewExchangeOrder,
+    TNewExchangeOrderConfig,
 } from '..'
 import { PortfolioOrder, TNewOrderProps, TOrder, TOrderPatch } from '../models/portfolioOrder'
 
@@ -42,7 +42,7 @@ export class PortfolioOrderService {
         const newOrder = PortfolioOrder.newOrder(orderPayload)
         await this.orderRepository.storeAsync(portfolioId, newOrder)
 
-        const exchangeOrder: TNewExchangeOrder = this.generateExchangeOrder(newOrder)
+        const exchangeOrder: TNewExchangeOrderConfig = this.generateExchangeOrder(newOrder)
 
         return newOrder
     }
@@ -71,7 +71,7 @@ export class PortfolioOrderService {
         const newOrder = PortfolioOrder.newOrder(orderPayload)
         await this.orderRepository.storeAsync(portfolioId, newOrder)
 
-        const exchangeOrder: TNewExchangeOrder = this.generateExchangeOrder(newOrder)
+        const exchangeOrder: TNewExchangeOrderConfig = this.generateExchangeOrder(newOrder)
         // if (this.eventPublisher) {
         //     await this.eventPublisher.publishExchangeOrderCreateAsync(exchangeOrder, 'orderHandler')
         // }
@@ -99,7 +99,7 @@ export class PortfolioOrderService {
     ////////////////////////////////////////////////////////
 
     private generateExchangeOrder = (order: TOrder) => {
-        const exchangeOrder: TNewExchangeOrder = {
+        const exchangeOrder: TNewExchangeOrderConfig = {
             operation: 'order',
             orderType: order.orderType,
             orderId: order.orderId,

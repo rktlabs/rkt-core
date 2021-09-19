@@ -38,7 +38,7 @@ export class EventPublisherBase implements IEventPublisher {
     // Exchange Order Events
     ////////////////////////////////////////////////////////
 
-    async publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrder, source?: string) {
+    async publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrderConfig, source?: string) {
         const event = new Events.ExchangeOrderEventNew(exchangeOrder)
         return this.publishMessage('exchangeOrderCreate', event, source)
     }

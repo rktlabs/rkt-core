@@ -20,7 +20,7 @@ export interface IEventPublisher {
     // Exchange Order Messages
     ////////////////////////////////////////////////////////
 
-    publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrder, source?: string): Promise<void>
+    publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrderConfig, source?: string): Promise<void>
 
     publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source?: string): Promise<void>
 

@@ -3,7 +3,7 @@ import { generateId } from '../../util/idGenerator'
 import { ValidationError } from '../../errors'
 import { serialize, serializeCollection } from './serializer'
 import { exchangeOrderValidator as validate } from './validator'
-import { TExchangeOrder, TNewExchangeOrder } from '.'
+import { TExchangeOrder, TNewExchangeOrderConfig } from '.'
 
 export class ExchangeOrder {
     operation: string // one of order, cancel
@@ -51,7 +51,7 @@ export class ExchangeOrder {
     }
 
     // Member Properties for new model
-    static newExchangeOrder(props: TNewExchangeOrder) {
+    static newExchangeOrder(props: TNewExchangeOrderConfig) {
         const orderId = props.orderId || `EXCG::${generateId()}`
         const createdAt = DateTime.utc().toString()
 

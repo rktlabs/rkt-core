@@ -80,7 +80,7 @@ export class SimpleExchangeService {
             throw new ConflictError(msg)
         }
 
-        const tradeUnits = await maker.processSimpleOrder(assetId, orderSide, orderSize)
+        const tradeUnits = await maker.processOrderImpl(orderSide, orderSize)
         if (tradeUnits) {
             const { makerDeltaUnits, makerDeltaCoins } = tradeUnits
 

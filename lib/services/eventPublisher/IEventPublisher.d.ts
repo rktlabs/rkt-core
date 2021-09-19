@@ -1,6 +1,6 @@
 import * as Models from '../../models';
 export interface IEventPublisher {
-    publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrder, source?: string): Promise<void>;
+    publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrderConfig, source?: string): Promise<void>;
     publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source?: string): Promise<void>;
     publishErrorEventAsync(error: any, sourceData?: any): Promise<void>;
     publishWarningEventAsync(error: any, sourceData?: any): Promise<void>;
