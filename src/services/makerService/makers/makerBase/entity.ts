@@ -1,9 +1,8 @@
-import { MarketOrder } from '../../..'
+import { TakerOrder, MakerTrade } from '../../..'
 import { AssetRepository, MakerRepository, TAssetUpdate } from '../../../..'
-import { MakerTrade } from '../../../exchangeService/makerTrade'
 import { IMaker } from './interfaces'
 import { serialize, serializeCollection } from './serializer'
-import { TMaker, TNewMakerConfig, TTakeResult } from './types'
+import { TMaker } from './types'
 
 // Maker holds value (coin) and shares to be sold.
 export abstract class MakerBase implements IMaker {
@@ -54,15 +53,7 @@ export abstract class MakerBase implements IMaker {
         return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 
-    abstract computeInitialState(newMakerConfig: TNewMakerConfig): any
-
-    abstract computeStateUpdate(stateUpdate: any): any
-
-    abstract processOrder(order: MarketOrder): Promise<MakerTrade | null>
-
-    abstract buy(userId: string, assetId: string, units: number): Promise<MakerTrade | null>
-
-    abstract sell(userId: string, assetId: string, units: number): Promise<MakerTrade | null>
+    abstract processTakerOrder(order: TakerOrder): Promise<MakerTrade | null>
 
     abstract processSimpleOrder(
         assetId: string,

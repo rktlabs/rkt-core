@@ -2,7 +2,7 @@
 
 import { OrderType, OrderSide, OrderStatus, OrderState, TMarketOrderOpts } from './types'
 
-export class MarketOrder {
+export class TakerOrder {
     readonly assetId: string
     readonly orderId: string
     readonly portfolioId: string

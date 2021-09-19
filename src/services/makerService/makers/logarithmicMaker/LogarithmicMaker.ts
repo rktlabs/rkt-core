@@ -1,6 +1,6 @@
 'use strict'
 
-import { round4, MakerFill, MarketOrder, NotFoundError, MakerTrade, PortfolioRepository } from '../../../..'
+import { round4, MakerFill, TakerOrder, NotFoundError, MakerTrade, PortfolioRepository } from '../../../..'
 
 import * as admin from 'firebase-admin'
 import { DateTime } from 'luxon'
@@ -104,7 +104,7 @@ export class LogarithmicMaker extends MakerBase {
         return data
     }
 
-    async processOrder(order: MarketOrder) {
+    async processTakerOrder(order: TakerOrder) {
         ///////////////////////////////////////////////////
         // create trade and fill in maker from asset pools
         const trade = new MakerTrade(order)
@@ -176,14 +176,6 @@ export class LogarithmicMaker extends MakerBase {
 
     async updateMakerStateAsync(assetId: string, data: any) {
         return this.makerRepository.updateMakerStateAsync(assetId, data)
-    }
-
-    async buy(userId: string, assetId: string, units: number) {
-        return null
-    }
-
-    async sell(userId: string, assetId: string, units: number) {
-        return null
     }
 
     ////////////////////////////////////////////////////////

@@ -3,7 +3,7 @@
 import { DateTime } from 'luxon'
 import { TakerFill } from './takerFill'
 import { MakerFill } from './makerFill'
-import { MarketOrder } from '.'
+import { TakerOrder } from '.'
 import { generateId } from '../..'
 
 export class MakerTrade {
@@ -13,7 +13,7 @@ export class MakerTrade {
     taker: TakerFill
     makers: MakerFill[]
 
-    constructor(takerOrder: MarketOrder) {
+    constructor(takerOrder: TakerOrder) {
         this.assetId = takerOrder.assetId
 
         // construct TakerFill from Order

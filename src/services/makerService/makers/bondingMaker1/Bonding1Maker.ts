@@ -1,6 +1,16 @@
 'use strict'
 
-import { round4, MakerFill, MarketOrder, NotFoundError, MakerTrade, PortfolioRepository } from '../../../..'
+import {
+    round4,
+    MakerFill,
+    TakerOrder as TakerOrder,
+    NotFoundError,
+    MakerTrade,
+    PortfolioRepository,
+    AssetHolderRepository,
+    InsufficientBalance,
+    MintService,
+} from '../../../..'
 
 import admin = require('firebase-admin')
 import { DateTime } from 'luxon'
@@ -37,6 +47,8 @@ const inverseBondingFunction = (currentPrice: number, madeUnits: number): TBondi
 
 export class Bonding1Maker extends MakerBase {
     private portfolioRepository: PortfolioRepository
+    private assetHolderRepository: AssetHolderRepository
+    private mintService: MintService
 
     static newMaker(props: TNewMakerConfig) {
         const createdAt = DateTime.utc().toString()
@@ -61,6 +73,8 @@ export class Bonding1Maker extends MakerBase {
     constructor(props: TMaker) {
         super(props)
         this.portfolioRepository = new PortfolioRepository()
+        this.assetHolderRepository = new AssetHolderRepository()
+        this.mintService = new MintService()
     }
 
     computeInitialState(newMakerConfig: TNewMakerConfig) {
@@ -78,7 +92,7 @@ export class Bonding1Maker extends MakerBase {
         return data
     }
 
-    async processOrder(order: MarketOrder) {
+    async processTakerOrder(order: TakerOrder) {
         const assetId = order.assetId
         const orderSide = order.orderSide
         const orderSize = order.orderSize
@@ -108,6 +122,17 @@ export class Bonding1Maker extends MakerBase {
         } else {
             const msg = `Invalid Order: Asset Portfolio: not configured`
             throw new NotFoundError(msg)
+        }
+
+        if (orderSide == 'bid' && orderSize > 0) {
+            // test that asset has enough units to transact
+            const assetPortfolioHoldings = await this.assetHolderRepository.getDetailAsync(assetId, assetPortfolioId)
+            const portfolioHoldingUnits = round4(assetPortfolioHoldings?.units || 0)
+            if (portfolioHoldingUnits < orderSize) {
+                const delta = orderSize - portfolioHoldingUnits
+                // not enough. mint me sonme
+                await this.mintService.mintUnits(assetId, delta)
+            }
         }
 
         const tradeStats = await this.processSimpleOrder(assetId, orderSide, orderSize)
@@ -147,32 +172,6 @@ export class Bonding1Maker extends MakerBase {
 
     async updateMakerStateAsync(assetId: string, data: any) {
         return this.makerRepository.updateMakerStateAsync(assetId, data)
-    }
-
-    async buy(userId: string, assetId: string, units: number) {
-        // MarketOrder {
-        //     readonly assetId: string
-        //     readonly orderId: string
-        //     readonly portfolioId: string
-        //     readonly orderType: OrderType
-        //     readonly orderSide: OrderSide
-        //     readonly orderSize: number
-        //     readonly tags?: any // eslint-disable-line
-
-        //     #sizeRemaining: number
-
-        //     orderStatus: OrderStatus
-        //     orderState: OrderState
-
-        //     get sizeRemaining(): number {
-        //         return this.#sizeRemaining
-        //     }
-
-        return null
-    }
-
-    async sell(userId: string, assetId: string, units: number) {
-        return null
     }
 
     ////////////////////////////////////////////////////////

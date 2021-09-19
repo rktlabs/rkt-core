@@ -34,68 +34,74 @@ export class SimpleExchangeService {
         this.makerService = new MakerService()
     }
 
-    async buy(userId: string, assetId: string, units: number) {
-        return this.transact(userId, assetId, 'bid', units)
+    async buy(userId: string, assetId: string, orderSize: number) {
+        return this.user_transact(userId, assetId, 'bid', orderSize)
     }
 
-    async sell(userId: string, assetId: string, units: number) {
-        return this.transact(userId, assetId, 'ask', units)
+    async sell(userId: string, assetId: string, orderSize: number) {
+        return this.user_transact(userId, assetId, 'ask', orderSize)
     }
 
-    async transact(userId: string, assetId: string, orderSide: string, orderSize: number) {
+    async user_transact(userId: string, assetId: string, orderSide: string, orderSize: number) {
         const user = await this.userRepository.getDetailAsync(userId)
         if (!user) {
-            return null
+            const msg = `Order Failed - user not found (${userId})`
+            throw new ConflictError(msg)
         }
         const portfolioId = user.portfolioId
         if (!portfolioId) {
-            return null
+            const msg = `Order Failed - user portfolio not found (${userId})`
+            throw new ConflictError(msg)
         }
+        return this.portfolio_transact(portfolioId, assetId, orderSide, orderSize)
+    }
 
-        const asset = await this.assetRepository.getDetailAsync(assetId)
-        if (!asset) {
-            return null
-        }
-        const assetPortfolioId = asset.portfolioId
-        if (!assetPortfolioId) {
-            return null
-        }
-
-        const orderId = '--NA--' // orderId
-
-        const maker = await this.makerService.getMakerAsync(assetId)
-        if (!maker) {
-            return null
-        }
-
+    async portfolio_transact(portfolioId: string, assetId: string, orderSide: string, orderSize: number) {
         if (orderSide === 'bid') {
             await this.verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
         } else if (orderSide === 'ask') {
             await this.verifyFundsAsync(portfolioId, assetId, orderSide, orderSize)
         }
 
-        const tradeUnits = await maker.processSimpleOrder(assetId, orderSide, orderSize)
-        if (!tradeUnits) {
-            return null
+        const asset = await this.assetRepository.getDetailAsync(assetId)
+        if (!asset) {
+            const msg = `Order Failed - asset not found (${assetId})`
+            throw new ConflictError(msg)
+        }
+        const assetPortfolioId = asset.portfolioId
+        if (!assetPortfolioId) {
+            const msg = `Order Failed - asset portfolio not defined (${assetId})`
+            throw new ConflictError(msg)
         }
 
-        const { makerDeltaUnits, makerDeltaCoins } = tradeUnits
+        const maker = await this.makerService.getMakerAsync(assetId)
+        if (!maker) {
+            const msg = `Order Failed - marketMaker not found (${assetId})`
+            throw new ConflictError(msg)
+        }
 
-        if (makerDeltaUnits) {
-            const takerPortfolioId = portfolioId
-            const takerDeltaUnits = makerDeltaUnits * -1
-            const takerDeltaValue = makerDeltaCoins * -1
-            const makerPortfolioId = assetPortfolioId
+        const tradeUnits = await maker.processSimpleOrder(assetId, orderSide, orderSize)
+        if (tradeUnits) {
+            const { makerDeltaUnits, makerDeltaCoins } = tradeUnits
 
-            await this.xact(
-                orderId,
-                assetId,
-                '--NA--', // tradeId
-                takerPortfolioId,
-                takerDeltaUnits,
-                takerDeltaValue,
-                makerPortfolioId,
-            )
+            if (makerDeltaUnits) {
+                const orderId = '--NA--'
+                const tradeId = '--NA--'
+                const takerPortfolioId = portfolioId
+                const takerDeltaUnits = makerDeltaUnits * -1
+                const takerDeltaValue = makerDeltaCoins * -1
+                const makerPortfolioId = assetPortfolioId
+
+                await this.process_transaction(
+                    orderId,
+                    assetId,
+                    tradeId,
+                    takerPortfolioId,
+                    takerDeltaUnits,
+                    takerDeltaValue,
+                    makerPortfolioId,
+                )
+            }
         }
     }
 
@@ -107,7 +113,7 @@ export class SimpleExchangeService {
     //  xact
     //  - submit new order (order or cancel) to order book
     ////////////////////////////////////////////////////
-    private async xact(
+    private async process_transaction(
         orderId: string,
         assetId: string,
         tradeId: string,
@@ -208,7 +214,7 @@ export class SimpleExchangeService {
         // verify that portfolio exists.
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
-            const msg = `Simple Order Failed - input portfolioId not registered (${portfolioId})`
+            const msg = `Order Failed - input portfolioId not registered (${portfolioId})`
             throw new ConflictError(msg)
         }
 
@@ -219,7 +225,7 @@ export class SimpleExchangeService {
             const portfolioHoldingUnits = round4(portfolioHoldings?.units || 0)
             if (portfolioHoldingUnits < unitsRequired) {
                 // exception
-                const msg = `Simple Order Failed:  portfolio: [${portfolioId}] asset holding: [${assetId}] has: [${portfolioHoldingUnits}] of required: [${unitsRequired}] `
+                const msg = `Order Failed:  portfolio: [${portfolioId}] holding: [${assetId}] has: [${portfolioHoldingUnits}] of required: [${unitsRequired}] `
                 throw new InsufficientBalance(msg)
             }
         }
@@ -229,7 +235,7 @@ export class SimpleExchangeService {
         // verify that portfolio exists.
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
-            const msg = `Simple Order Failed - input portfolioId not registered (${portfolio})`
+            const msg = `Order Failed - input portfolioId not registered (${portfolio})`
             throw new ConflictError(msg)
         }
 
@@ -248,7 +254,7 @@ export class SimpleExchangeService {
             const portfolioHoldingUnits = round4(coinsHeld?.units || 0)
             if (portfolioHoldingUnits < coinsRequired) {
                 // exception
-                const msg = `Simple Order Failed -  portfolio: [${portfolioId}] coin holding: [${paymentAssetId}] has: [${portfolioHoldingUnits}] of required: [${coinsRequired}] `
+                const msg = `Order Failed -  portfolio: [${portfolioId}] holding: [${paymentAssetId}]  has: [${portfolioHoldingUnits}] of required: [${coinsRequired}] `
                 throw new InsufficientBalance(msg)
             }
         }

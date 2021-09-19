@@ -1,5 +1,5 @@
 import { OrderType, OrderSide, OrderStatus, OrderState, TMarketOrderOpts } from './types';
-export declare class MarketOrder {
+export declare class TakerOrder {
     #private;
     readonly assetId: string;
     readonly orderId: string;

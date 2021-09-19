@@ -11,13 +11,14 @@ export declare class ExchangeService {
     private transactionService;
     private makerService;
     constructor(eventPublisher?: IEventPublisher);
-    buy(userId: string, assetId: string, units: number): Promise<null | undefined>;
-    sell(userId: string, assetId: string, units: number): Promise<null | undefined>;
-    transact(userId: string, assetId: string, orderSide: string, orderSize: number): Promise<null | undefined>;
+    buy(userId: string, assetId: string, orderSize: number): Promise<void>;
+    sell(userId: string, assetId: string, orderSize: number): Promise<void>;
+    user_transact(userId: string, assetId: string, orderSide: string, orderSize: number): Promise<void>;
+    portfolio_transact(portfolioId: string, assetId: string, orderSide: string, orderSize: number): Promise<void>;
     handleNewExchangeOrderAsync(orderPayload: TNewExchangeOrder): Promise<ExchangeOrder>;
     private onFill;
     private onTrade;
-    private xact;
+    private process_transaction;
     private verifyAssetsAsync;
     private verifyFundsAsync;
 }
