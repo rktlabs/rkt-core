@@ -154,9 +154,6 @@ export class LeagueService {
             portfolioId: `league::${league.leagueId}`,
             ownerId: league.ownerId,
             displayName: displayName,
-            tags: {
-                source: 'CONTRACT_CREATION',
-            },
         }
 
         const portfolio = await this.portfolioService.createPortfolio(leaguePortfolioDef)

@@ -138,9 +138,6 @@ export class MakerService {
             portfolioId: `maker::${maker.assetId}`,
             ownerId: maker.ownerId,
             displayName: maker.assetId,
-            tags: {
-                source: 'ASSET_CREATION',
-            },
         }
 
         const portfolio = await this.portfolioService.createPortfolio(makerPortfolioDef)

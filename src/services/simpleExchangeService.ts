@@ -152,7 +152,7 @@ export class SimpleExchangeService {
                     },
                 ],
                 tags: {
-                    source: 'AMM',
+                    source: 'Simple',
                 },
                 xids: {
                     portfolioId: takerPortfolioId,
@@ -191,7 +191,7 @@ export class SimpleExchangeService {
                     },
                 ],
                 tags: {
-                    source: 'AMM',
+                    source: 'Simple',
                 },
                 xids: {
                     portfolioId: takerPortfolioId,

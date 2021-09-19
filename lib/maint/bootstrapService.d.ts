@@ -13,5 +13,4 @@ export declare class BootstrapService {
     bootAssets(): Promise<void>;
     bootAsset(assetId: string): Promise<void>;
     fullBoot(): Promise<void>;
-    fullScrub(): Promise<void>;
 }

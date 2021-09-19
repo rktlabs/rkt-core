@@ -1,5 +1,5 @@
 'use strict'
-import { PortfolioService, LeagueService, AssetService, MakerService, UserService, TNewAssetConfig } from '..'
+import { PortfolioService, LeagueService, AssetService, MakerService, UserService } from '..'
 import { TNewMakerConfig } from '../services/makerService/makers/makerBase/types'
 
 export class BootstrapService {
@@ -35,7 +35,6 @@ export class BootstrapService {
         const treasuryId = 'bank::treasury'
         const mintId = 'bank::mint'
         await this.portfolioService.scrubPortfolio(treasuryId)
-        await this.portfolioService.scrubPortfolio(mintId)
 
         await this.portfolioService.createOrKeepPortfolio({
             type: 'bank',
@@ -43,6 +42,7 @@ export class BootstrapService {
             portfolioId: treasuryId,
         })
 
+        await this.portfolioService.scrubPortfolio(mintId)
         await this.portfolioService.createOrKeepPortfolio({
             type: 'bank',
             ownerId: 'test',
@@ -56,6 +56,9 @@ export class BootstrapService {
         await this.leagueService.createLeague({
             ownerId: 'test',
             leagueId: 'test',
+            tags: {
+                test: true,
+            },
         })
     }
 
@@ -71,6 +74,9 @@ export class BootstrapService {
             name: 'EJ Testbot',
             username: 'testbot',
             displayName: 'TestBot',
+            tags: {
+                test: true,
+            },
         })
     }
 
@@ -94,6 +100,9 @@ export class BootstrapService {
             displayName: assetId,
             leagueId: leagueId,
             leagueDisplayName: leagueId,
+            tags: {
+                test: true,
+            },
         })
 
         await this.leagueService.attachAsset(leagueId, { assetId: assetId, displayName: assetId })
@@ -105,45 +114,35 @@ export class BootstrapService {
             settings: {
                 initMadeUnits: 0,
                 initPrice: 1,
+                tags: {
+                    test: true,
+                },
             },
         }
 
         await this.makerService.createMaker(makerConfig, false)
     }
 
-    // async setupTreasury() {
-    //     let portfolio = await this.portfolioRepository.getDetailAsync('bank::treasury')
-    //     if (!portfolio) {
-    //         await this.portfolioService.createOrKeepPortfolio({
-    //             type: 'bank',
-    //             ownerId: 'test',
-    //             portfolioId: 'bank::treasury',
-    //         })
-    //     }
-
-    //     await this.transactionService.mintCoinsToPortfolio('bank::treasury', 1000000)
-    // }
-
     async fullBoot() {
         await this.bootstrap()
         await Promise.all([this.bootAssets()])
     }
 
-    async fullScrub() {
-        // scrub asset first. If do all in one promise, then they
-        // may trample on one other so do assets and portfolios separately
-        await Promise.all([
-            this.leagueService.scrubLeague('test'), // scrubs coin too
-        ])
-        await Promise.all([
-            this.portfolioService.scrubPortfolio('bank::treasury'), // scrubs coin too
-            this.portfolioService.scrubPortfolio('bank::mint'), // scrubs coin too
-        ])
-        await Promise.all([this.userService.scrubUser('hedbot')])
-        await Promise.all([
-            this.assetService.scrubAsset('coin::rkt'), // scrubs coin too
-        ])
-    }
+    // async fullScrub() {
+    //     // scrub asset first. If do all in one promise, then they
+    //     // may trample on one other so do assets and portfolios separately
+    //     await Promise.all([
+    //         this.leagueService.scrubLeague('test'), // scrubs coin too
+    //     ])
+    //     await Promise.all([
+    //         this.portfolioService.scrubPortfolio('bank::treasury'), // scrubs coin too
+    //         this.portfolioService.scrubPortfolio('bank::mint'), // scrubs coin too
+    //     ])
+    //     await Promise.all([this.userService.scrubUser('hedbot')])
+    //     await Promise.all([
+    //         this.assetService.scrubAsset('coin::rkt'), // scrubs coin too
+    //     ])
+    // }
 
     // async clearHoldings() {
     //     // scrub asset holders first. If do all in one promise, then they

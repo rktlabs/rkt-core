@@ -86,9 +86,6 @@ export class AssetService {
             portfolioId: `asset::${asset.assetId}`,
             ownerId: asset.ownerId,
             displayName: `${displayName}`,
-            tags: {
-                source: 'ASSET_CREATION',
-            },
         }
 
         const portfolio = await this.portfolioService.createPortfolio(assetPortfolioDef)
