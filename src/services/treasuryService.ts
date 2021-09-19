@@ -57,7 +57,7 @@ export class TreasuryService {
         // get current treasury balance to make sure adequate funds
         const balance = await this.assetHolderService.getAssetHolderBalance(assetId, assetPortfolioId)
         if (balance < units) {
-            const delta = balance - units
+            const delta = units - balance
             console.log(`********* need to mint ${delta} coin`)
             await this.mintService.mintUnits(COIN, delta)
         }
@@ -108,7 +108,7 @@ export class TreasuryService {
         // get current treasury balance to make sure adequate funds
         const balance = await this.assetHolderService.getAssetHolderBalance(assetId, sourcePortfolioId)
         if (balance < units) {
-            const delta = balance - units
+            const delta = units - balance
             console.log(`********* treasury need to get ${delta} units`)
             await this.mintUnits(delta)
         }
