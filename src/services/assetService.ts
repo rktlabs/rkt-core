@@ -1,17 +1,7 @@
 'use strict'
 
-import { PortfolioService, AssetHolderService, MakerService, LeagueService } from '.'
-import {
-    PortfolioRepository,
-    AssetRepository,
-    TNewAssetConfig,
-    DuplicateError,
-    ConflictError,
-    Asset,
-    ExchangeOrderRepository,
-    TAssetUpdate,
-    TAssetUpdate2,
-} from '..'
+import { PortfolioService, AssetHolderService, MakerService } from '.'
+import { PortfolioRepository, AssetRepository, TNewAssetConfig, DuplicateError, ConflictError, Asset } from '..'
 
 export class AssetService {
     private portfolioRepository: PortfolioRepository
@@ -58,16 +48,7 @@ export class AssetService {
     }
 
     async deleteAsset(assetId: string) {
-        await this.assetHolderService.scrubAssetHolders(assetId)
-
-        const asset = await this.assetRepository.getDetailAsync(assetId)
-        if (asset) {
-            const portfolioId = asset.portfolioId
-            await this.assetRepository.deleteAsync(assetId)
-            if (portfolioId) {
-                await this.portfolioService.deletePortfolio(portfolioId)
-            }
-        }
+        await this.scrubAsset(assetId)
     }
 
     async scrubAsset(assetId: string) {
@@ -80,9 +61,9 @@ export class AssetService {
         await this.assetRepository.deleteAsync(assetId)
     }
 
-    ///////////////////////////////////////////
-    // Private Methods
-    ///////////////////////////////////////////
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
 
     private async createAssetImpl(payload: TNewAssetConfig, shouldCreatePortfolio: boolean) {
         const assetDisplayName = payload.displayName

@@ -1,11 +1,10 @@
 'use strict'
 
-import { round4, MakerFill, MarketOrder, NotFoundError, Trade, PortfolioRepository } from '../../../..'
+import { round4, MakerFill, MarketOrder, NotFoundError, MakerTrade, PortfolioRepository } from '../../../..'
 
 import admin = require('firebase-admin')
 import { DateTime } from 'luxon'
 import { MakerBase } from '../makerBase/entity'
-import { IMaker } from '../makerBase/interfaces'
 import { TNewMakerConfig, TMaker, TTakeResult } from '../makerBase/types'
 const FieldValue = admin.firestore.FieldValue
 
@@ -54,7 +53,7 @@ export class Bonding1Maker extends MakerBase {
         }
 
         const newEntity = new Bonding1Maker(makerProps)
-        newEntity.params = newEntity.computeMakerInitialState(props)
+        newEntity.params = newEntity.computeInitialState(props)
 
         return newEntity
     }
@@ -64,14 +63,14 @@ export class Bonding1Maker extends MakerBase {
         this.portfolioRepository = new PortfolioRepository()
     }
 
-    computeMakerInitialState(newMakerConfig: TNewMakerConfig) {
+    computeInitialState(newMakerConfig: TNewMakerConfig) {
         const initMadeUnits = newMakerConfig.settings?.initMadeUnits || 0
         const initPrice = newMakerConfig.settings?.initPrice || 1
         const makerState = inverseBondingFunction(initPrice, initMadeUnits)
         return makerState
     }
 
-    computeMakerStateUpdate(stateUpdate: TBonding1MakerParamsUpdate) {
+    computeStateUpdate(stateUpdate: TBonding1MakerParamsUpdate) {
         const data = {
             ['params.madeUnits']: FieldValue.increment(stateUpdate.madeUnitsDelta),
             currentPrice: stateUpdate.currentPrice,
@@ -79,19 +78,15 @@ export class Bonding1Maker extends MakerBase {
         return data
     }
 
-    async processOrder(maker: IMaker, order: MarketOrder) {
-        ///////////////////////////////////////////////////
-        // create trade and fill in maker from asset pools
-        const trade = new Trade(order)
-        const taker = trade.taker
-
-        // for bid (a buy) I'm "removing" units from the pool, so flip sign
-        const signedTakeSize = trade.taker.orderSide === 'ask' ? taker.orderSize * -1 : taker.orderSize
+    async processOrder(order: MarketOrder) {
+        const assetId = order.assetId
+        const orderSide = order.orderSide
+        const orderSize = order.orderSize
+        const trade = new MakerTrade(order)
 
         ////////////////////////////
         // verify that asset exists
         ////////////////////////////
-        const assetId = order.assetId
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             const msg = `Invalid Order: Asset: ${assetId} does not exist`
@@ -115,31 +110,36 @@ export class Bonding1Maker extends MakerBase {
             throw new NotFoundError(msg)
         }
 
-        const makerPortfolioId = assetPortfolioId
-
-        const taken = maker.processOrderUnits(signedTakeSize)
-        if (taken) {
-            const data = taken.statusUpdate
-            await this.updateMakerStateAsync(assetId, data)
-
-            const { bid, ask, makerDeltaUnits, makerDeltaCoins } = taken
-
+        const tradeStats = await this.processSimpleOrder(assetId, orderSide, orderSize)
+        if (tradeStats) {
+            let { makerDeltaUnits, makerDeltaCoins } = tradeStats
             const makerFill = new MakerFill({
-                assetId: taker.assetId,
-                portfolioId: makerPortfolioId,
-                orderSide: taker.orderSide === 'bid' ? 'ask' : 'bid', // flip side from taker
-                orderSize: taker.orderSize,
+                assetId: assetId,
+                portfolioId: assetPortfolioId,
+                orderSide: orderSide === 'bid' ? 'ask' : 'bid', // flip side from taker
+                orderSize: orderSize,
             })
 
             trade.fillMaker(makerFill, makerDeltaUnits, makerDeltaCoins)
 
-            if (trade.taker.filledSize !== 0) {
-                //     // await this.onFill(trade.taker)
-                //     // await this.onTrade(trade)
-                await this.onUpdateQuote(trade, bid, ask)
-            }
-
             return trade
+        } else {
+            return null
+        }
+    }
+
+    async processSimpleOrder(assetId: string, orderSide: string, orderSize: number) {
+        // for bid (a buy) I'm "removing" units from the pool, so flip sign
+        const signedOrderSize = orderSide === 'ask' ? orderSize * -1 : orderSize
+
+        const taken = this.processOrderUnits(signedOrderSize)
+        if (taken) {
+            const data = taken.statusUpdate
+            await this.updateMakerStateAsync(assetId, data)
+
+            const { makerDeltaUnits, makerDeltaCoins } = taken
+
+            return { makerDeltaUnits, makerDeltaCoins }
         } else {
             return null
         }
@@ -149,7 +149,37 @@ export class Bonding1Maker extends MakerBase {
         return this.makerRepository.updateMakerStateAsync(assetId, data)
     }
 
-    processOrderUnits(takeSize: number): TTakeResult | null {
+    async buy(userId: string, assetId: string, units: number) {
+        // MarketOrder {
+        //     readonly assetId: string
+        //     readonly orderId: string
+        //     readonly portfolioId: string
+        //     readonly orderType: OrderType
+        //     readonly orderSide: OrderSide
+        //     readonly orderSize: number
+        //     readonly tags?: any // eslint-disable-line
+
+        //     #sizeRemaining: number
+
+        //     orderStatus: OrderStatus
+        //     orderState: OrderState
+
+        //     get sizeRemaining(): number {
+        //         return this.#sizeRemaining
+        //     }
+
+        return null
+    }
+
+    async sell(userId: string, assetId: string, units: number) {
+        return null
+    }
+
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
+
+    private processOrderUnits(takeSize: number): TTakeResult | null {
         const makerParams = this.params as TBonding1MakerParams
         if (!makerParams) {
             return null
@@ -181,24 +211,24 @@ export class Bonding1Maker extends MakerBase {
         }
 
         // last price adjusted based on taker quantity
-        const bid = bondingFunction(this.params.madeUnits - makerDeltaUnits - 1, makerParams)
+        // const bid = bondingFunction(this.params.madeUnits - makerDeltaUnits - 1, makerParams)
         const ask = bondingFunction(this.params.madeUnits - makerDeltaUnits - 0, makerParams)
-        const last = bid
+        // const last = bid
 
         const propsUpdate: TBonding1MakerParamsUpdate = {
             madeUnitsDelta: makerDeltaUnits * -1,
             currentPrice: ask,
         }
 
-        const data = this.computeMakerStateUpdate(propsUpdate)
+        const statusUpdate = this.computeStateUpdate(propsUpdate)
 
         return {
-            bid: bid,
-            ask: ask,
-            last: last,
+            // bid: bid,
+            // ask: ask,
+            // last: last,
             makerDeltaUnits: makerDeltaUnits,
             makerDeltaCoins: makerDeltaCoins,
-            statusUpdate: data,
+            statusUpdate: statusUpdate,
         }
     }
 }

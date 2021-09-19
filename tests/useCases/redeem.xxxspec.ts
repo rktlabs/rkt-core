@@ -41,7 +41,7 @@
 
 //     beforeEach(async () => {
 //         await bootstrapService.clearDb()
-//         await bootstrapService.bootstrap() // create mint, coin, and test league
+//         await bootstrapService.bootstrap() // create mynt, coin, and test league
 
 //         // crete asset  card::jbone::test
 //         await bootstrapService.setupTestAsset()

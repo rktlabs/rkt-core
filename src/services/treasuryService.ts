@@ -9,6 +9,7 @@ import {
     TPortfolioDeposit,
     TTransfer,
     AssetHolderService,
+    Principal,
 } from '..'
 
 const BANK_PORTFOLIO = 'bank::treasury'
@@ -22,8 +23,10 @@ export class TreasuryService {
     private portfolioService: PortfolioService
     private transactionService: TransactionService
     private mintService: MintService
+    private me: Principal
 
-    constructor(eventPublisher?: IEventPublisher) {
+    constructor(me: Principal, eventPublisher?: IEventPublisher) {
+        this.me = me
         this.eventPublisher = eventPublisher || new NullEventPublisher()
 
         this.userRepository = new UserRepository()
@@ -31,7 +34,7 @@ export class TreasuryService {
         this.portfolioService = new PortfolioService()
         this.assetHolderService = new AssetHolderService()
         this.transactionService = new TransactionService(this.eventPublisher)
-        this.mintService = new MintService()
+        this.mintService = new MintService(me)
     }
 
     async depositCoins(userId: string, units: number, coinId = COIN) {
@@ -56,7 +59,7 @@ export class TreasuryService {
         const sourcePortfolioId = BANK_PORTFOLIO
 
         // get current treasury balance to make sure adequate funds
-        const balance = await this.assetHolderService.getAssetHoldingBalance(coinId, sourcePortfolioId)
+        const balance = await this.assetHolderService.getAssetHolderBalance(coinId, sourcePortfolioId)
         if (balance < units) {
             const delta = balance - units
             this.mintService.mintUnits(coinId, delta)
@@ -105,7 +108,7 @@ export class TreasuryService {
         const destPortfolioId = BANK_PORTFOLIO
 
         // get current user balance to make sure adequate units to redeem
-        const balance = await this.assetHolderService.getAssetHoldingBalance(coinId, portfolioId)
+        const balance = await this.assetHolderService.getAssetHolderBalance(coinId, portfolioId)
         if (balance < units) {
             units = balance - units
         }

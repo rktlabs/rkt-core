@@ -16,11 +16,11 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                     rel: 'asset',
                     id: record.assetId,
                 },
-                // portfolio: {
-                //     href: `${baseUrl}/portfolios/${data.portfolioId}`,
-                //     rel: 'portfolio',
-                //     id: data.portfolioId,
-                // },
+                portfolio: {
+                    href: `${baseUrl}/portfolios/${data.portfolioId}`,
+                    rel: 'portfolio',
+                    id: data.portfolioId,
+                },
             }
         },
     })

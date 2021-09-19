@@ -11,7 +11,7 @@ const _portfolioSchema: Schema = {
     type: 'object',
     properties: {
         type: {
-            type: ['mint', 'bank', 'asset', 'user', 'pool', 'maker'],
+            type: ['bank', 'asset', 'user', 'league', 'maker'],
         },
         portfolioId: { type: 'string' },
         displayName: { type: 'string' },

@@ -1,12 +1,7 @@
 import { TNewPortfolioConfig, Portfolio, TPortfolioUpdate, TPortfolioDeposit } from '..';
 export declare class PortfolioService {
     private portfolioRepository;
-    private assetRepository;
-    private makerRepository;
-    private leagueRepository;
-    private portfolioActivityRepository;
     private portfolioDepositRepository;
-    private assetHolderService;
     constructor();
     createPortfolio(payload: TNewPortfolioConfig): Promise<Portfolio>;
     createOrKeepPortfolio(payload: TNewPortfolioConfig): Promise<any[]>;

@@ -92,7 +92,7 @@ export class LeagueService {
     async scrubLeagueAsset(leagueId: string, assetId: string) {
         const promises: any[] = []
         promises.push(this.assetService.scrubAsset(assetId))
-        promises.push(this.dropAsset(leagueId, assetId))
+        promises.push(this.detachAsset(leagueId, assetId))
         return Promise.all(promises)
     }
 
@@ -106,29 +106,29 @@ export class LeagueService {
         await this.createAssetImpl(league, assetDef)
     }
 
-    async addAsset(leagueSpec: string | League, asset: TAssetCore) {
+    async attachAsset(leagueSpec: string | League, asset: TAssetCore) {
         const league =
             typeof leagueSpec === 'string' ? await this.leagueRepository.getDetailAsync(leagueSpec) : leagueSpec
         if (!league) {
             throw new Error(`League Not Found: ${leagueSpec}`)
         }
 
-        await this.addAssetToLeague(league, asset)
+        await this.attachAssetToLeague(league, asset)
     }
 
-    async dropAsset(leagueSpec: string | League, assetId: string) {
+    async detachAsset(leagueSpec: string | League, assetId: string) {
         const league =
             typeof leagueSpec === 'string' ? await this.leagueRepository.getDetailAsync(leagueSpec) : leagueSpec
         if (!league) {
             throw new Error(`League Not Found: ${leagueSpec}`)
         }
 
-        await this.dropAssetFromLeague(league, assetId)
+        await this.detachAssetFromLeague(league, assetId)
     }
 
-    ///////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////
     // PRIVATE
-    ///////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////
 
     private async createLeagueImpl(payload: TNewLeagueConfig) {
         const league = League.newLeague(payload)
@@ -138,12 +138,12 @@ export class LeagueService {
         return league
     }
 
-    private async addAssetToLeague(league: League, asset: TAssetCore) {
-        await this.leagueRepository.addLeagueAsset(league.leagueId, asset)
+    private async attachAssetToLeague(league: League, asset: TAssetCore) {
+        await this.leagueRepository.attachLeagueAsset(league.leagueId, asset)
     }
 
-    private async dropAssetFromLeague(league: League, assetId: string) {
-        await this.leagueRepository.dropLeagueAsset(league.leagueId, assetId)
+    private async detachAssetFromLeague(league: League, assetId: string) {
+        await this.leagueRepository.detachLeagueAsset(league.leagueId, assetId)
     }
 
     private async createLeaguePortfolioImpl(league: League) {
@@ -178,7 +178,7 @@ export class LeagueService {
         try {
             const asset = await this.assetService.createAsset(assetConfig)
             console.log(`new asset: ${asset.assetId} `)
-            await this.addAssetToLeague(league, asset)
+            await this.attachAssetToLeague(league, asset)
         } catch (err) {
             console.log(`create asset error: ${assetConfig.symbol} - ${err}`)
         }

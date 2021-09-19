@@ -2,7 +2,7 @@
 
 import { PortfolioService } from '..'
 import {
-    AssetRepository,
+    // AssetRepository,
     MakerRepository,
     PortfolioRepository,
     DuplicateError,
@@ -15,14 +15,14 @@ import { IMaker } from './makers/makerBase/interfaces'
 import { TNewMakerConfig } from './makers/makerBase/types'
 
 export class MakerService {
-    private assetRepository: AssetRepository
+    // private assetRepository: AssetRepository
     private makerRepository: MakerRepository
     private portfolioRepository: PortfolioRepository
 
     private portfolioService: PortfolioService
 
     constructor() {
-        this.assetRepository = new AssetRepository()
+        // this.assetRepository = new AssetRepository()
         this.makerRepository = new MakerRepository()
         this.portfolioRepository = new PortfolioRepository()
 
@@ -89,21 +89,7 @@ export class MakerService {
     }
 
     async deleteMaker(assetId: string) {
-        const asset = await this.assetRepository.getDetailAsync(assetId)
-        if (asset) {
-            throw new ConflictError(`Cannot Delete Portfolio. Asset Portfolio in use: ${assetId}`)
-        }
-
-        const maker = await this.makerRepository.getDetailAsync(assetId)
-        if (maker) {
-            const portfolioId = maker.portfolioId
-
-            await this.makerRepository.deleteAsync(assetId)
-
-            if (portfolioId) {
-                await this.portfolioService.deletePortfolio(portfolioId)
-            }
-        }
+        await this.scrubMaker(assetId)
     }
 
     async scrubMaker(assetId: string) {
@@ -111,6 +97,10 @@ export class MakerService {
         await this.portfolioService.scrubPortfolio(portfolioId)
         await this.makerRepository.deleteAsync(assetId)
     }
+
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
 
     private async createMakerImpl(config: TNewMakerConfig, shouldCreatePortfolio: boolean) {
         let maker: MakerBase

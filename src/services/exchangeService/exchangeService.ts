@@ -4,7 +4,7 @@ import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
 const logger = log4js.getLogger()
 
-import { MarketOrder, OrderSide, Trade, TakerFill } from '.'
+import { MakerTrade, MarketOrder, OrderSide, TakerFill } from '.'
 
 import {
     ExchangeOrderRepository,
@@ -21,6 +21,8 @@ import {
     NullEventPublisher,
     IEventPublisher,
     AssetHolderRepository,
+    UserRepository,
+    AssetRepository,
 } from '../..'
 
 ///////////////////////////////////////////////////
@@ -34,26 +36,89 @@ import {
 export class ExchangeService {
     private orderEventPublisher: IEventPublisher
 
+    private userRepository: UserRepository
+    private assetRepository: AssetRepository
     private portfolioRepository: PortfolioRepository
     private assetHolderRepository: AssetHolderRepository
     private exchangeOrderRepository: ExchangeOrderRepository
     private exchangeTradeRepository: ExchangeTradeRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
     private transactionService: TransactionService
-    private makerFactoryService: MakerService
+    private makerService: MakerService
 
     constructor(eventPublisher?: IEventPublisher) {
         this.orderEventPublisher = eventPublisher || new NullEventPublisher()
 
         this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioRepository = new PortfolioRepository()
+        this.userRepository = new UserRepository()
+        this.assetRepository = new AssetRepository()
 
         this.exchangeOrderRepository = new ExchangeOrderRepository()
         this.exchangeTradeRepository = new ExchangeTradeRepository()
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
         this.transactionService = new TransactionService()
-        this.makerFactoryService = new MakerService()
+        this.makerService = new MakerService()
+    }
+
+    async buy(userId: string, assetId: string, units: number) {
+        return this.transact(userId, assetId, 'bid', units)
+    }
+
+    async sell(userId: string, assetId: string, units: number) {
+        return this.transact(userId, assetId, 'ask', units)
+    }
+
+    async transact(userId: string, assetId: string, orderSide: string, orderSize: number) {
+        const user = await this.userRepository.getDetailAsync(userId)
+        if (!user) {
+            return null
+        }
+        const userPortfolioId = user.portfolioId
+        if (!userPortfolioId) {
+            return null
+        }
+
+        const asset = await this.assetRepository.getDetailAsync(assetId)
+        if (!asset) {
+            return null
+        }
+        const assetPortfolioId = asset.portfolioId
+        if (!assetPortfolioId) {
+            return null
+        }
+
+        const orderId = '--NA--' // orderId
+
+        const maker = await this.makerService.getMakerAsync(assetId)
+        if (!maker) {
+            return null
+        }
+
+        const tradeUnits = await maker.processSimpleOrder(assetId, orderSide, orderSize)
+        if (!tradeUnits) {
+            return null
+        }
+
+        const { makerDeltaUnits, makerDeltaCoins } = tradeUnits
+
+        if (makerDeltaUnits) {
+            const takerPortfolioId = userPortfolioId
+            const takerDeltaUnits = makerDeltaUnits * -1
+            const takerDeltaValue = makerDeltaCoins * -1
+            const makerPortfolioId = assetPortfolioId
+
+            await this.xact(
+                orderId,
+                assetId,
+                '--NA--', // tradeId
+                takerPortfolioId,
+                takerDeltaUnits,
+                takerDeltaValue,
+                makerPortfolioId,
+            )
+        }
     }
 
     ////////////////////////////////////////////////////
@@ -81,12 +146,7 @@ export class ExchangeService {
             if (exchangeOrder.orderSide === 'bid') {
                 await this.verifyAssetsAsync(exchangeOrder)
             } else if (exchangeOrder.orderSide === 'ask') {
-                ////////////////////////////
-                // get bid price and verify funds
-                ////////////////////////////
-                const quote = await this.exchangeQuoteRepository.getDetailAsync(exchangeOrder.assetId)
-                const bid = quote?.bid || 1
-                await this.verifyFundsAsync(exchangeOrder, bid)
+                await this.verifyFundsAsync(exchangeOrder)
             }
 
             // verify that maker exists.
@@ -106,9 +166,9 @@ export class ExchangeService {
             // Process the order
             ////////////////////////////////////////////////////////
 
-            const maker = await this.makerFactoryService.getMakerAsync(exchangeOrder.assetId)
+            const maker = await this.makerService.getMakerAsync(exchangeOrder.assetId)
             if (maker) {
-                const trade = await maker.processOrder(maker, order)
+                const trade = await maker.processOrder(order)
 
                 if (trade) {
                     if (trade.taker.filledSize) {
@@ -158,6 +218,10 @@ export class ExchangeService {
         return exchangeOrder
     }
 
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
+
     ////////////////////////////////////////////////////
     //  onFill
     //  - handle order fill resulting from trade
@@ -200,7 +264,7 @@ export class ExchangeService {
     //  - store trade
     //  - publish trade to clearing house
     ////////////////////////////////////////////////////
-    private onTrade = async (trade: Trade) => {
+    private onTrade = async (trade: MakerTrade) => {
         await this.exchangeTradeRepository.storeAsync(trade) // async - don't wait to finish
 
         this.orderEventPublisher.publishOrderEventCompleteAsync(
@@ -212,7 +276,7 @@ export class ExchangeService {
     }
 
     ////////////////////////////////////////////////////
-    //  submitOrderToBook
+    //  xact
     //  - submit new order (order or cancel) to order book
     ////////////////////////////////////////////////////
     private async xact(
@@ -336,7 +400,7 @@ export class ExchangeService {
         }
     }
 
-    private async verifyFundsAsync(exchangeOrder: ExchangeOrder, price: number) {
+    private async verifyFundsAsync(exchangeOrder: ExchangeOrder) {
         // verify that portfolio exists.
         const orderPortfolioId = exchangeOrder.portfolioId
         const exchangeOrderPortfolio = await this.portfolioRepository.getDetailAsync(orderPortfolioId)
@@ -344,6 +408,12 @@ export class ExchangeService {
             const msg = `Exchange Order Failed - input portfolioId not registered (${orderPortfolioId})`
             throw new ConflictError(msg, { exchangeOrder })
         }
+
+        ////////////////////////////
+        // get bid price and verify funds
+        ////////////////////////////
+        const quote = await this.exchangeQuoteRepository.getDetailAsync(exchangeOrder.assetId)
+        const price = quote?.bid || 1
 
         const COIN_BUFFER_FACTOR = 1.05
         const portfolioId = exchangeOrder.portfolioId

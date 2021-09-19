@@ -18,3 +18,4 @@ export * from './portfolioOrderService';
 export * from './portfolioOrderEventService';
 export * from './treasuryService';
 export * from './mintService';
+export * from './simpleExchangeService';

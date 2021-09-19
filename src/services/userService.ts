@@ -68,14 +68,7 @@ export class UserService {
     }
 
     async deleteUser(userId: string) {
-        const user = await this.userRepository.getDetailAsync(userId)
-        if (user) {
-            const portfolioId = user.portfolioId
-            await this.userRepository.deleteAsync(userId)
-            if (portfolioId) {
-                await this.portfolioService.deletePortfolio(portfolioId)
-            }
-        }
+        this.scrubUser(userId)
     }
 
     async scrubUser(userId: string) {
@@ -84,9 +77,9 @@ export class UserService {
         await this.userRepository.deleteAsync(userId)
     }
 
-    ///////////////////////////////////////////
-    // Private Methods
-    ///////////////////////////////////////////
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
 
     private async createUserImpl(payload: TNewUserConfig) {
         const user = User.newUser(payload)

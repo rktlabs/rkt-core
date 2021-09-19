@@ -85,7 +85,7 @@ export class LeagueRepository extends RepositoryBase {
         }
     }
 
-    async dropLeagueAsset(leagueId: string, assetId: string) {
+    async detachLeagueAsset(leagueId: string, assetId: string) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(leagueId)
         await this.db.runTransaction(async (t) => {
             const entityDoc = await t.get(entityRef)
@@ -102,7 +102,7 @@ export class LeagueRepository extends RepositoryBase {
         })
     }
 
-    async addLeagueAsset(leagueId: string, asset: TAssetCore) {
+    async attachLeagueAsset(leagueId: string, asset: TAssetCore) {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(leagueId)
         await this.db.runTransaction(async (t) => {
             const entityDoc = await t.get(entityRef)

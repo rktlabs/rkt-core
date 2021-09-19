@@ -11,6 +11,6 @@ export declare class LeagueRepository extends RepositoryBase {
     updateAsync(leagueId: string, entityData: TLeagueUpdate): Promise<void>;
     deleteAsync(leagueId: string): Promise<void>;
     isPortfolioUsed(portfolioId: string): Promise<string | null>;
-    dropLeagueAsset(leagueId: string, assetId: string): Promise<void>;
-    addLeagueAsset(leagueId: string, asset: TAssetCore): Promise<void>;
+    detachLeagueAsset(leagueId: string, assetId: string): Promise<void>;
+    attachLeagueAsset(leagueId: string, asset: TAssetCore): Promise<void>;
 }

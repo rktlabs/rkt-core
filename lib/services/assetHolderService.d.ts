@@ -19,6 +19,6 @@ export declare class AssetHolderService {
     deleteAssetHolder(assetId: string, portfolioId: string): Promise<void[]>;
     deletePortfolioHolding(portfolioId: string, assetId: string): Promise<void[]>;
     getAssetHoldingTotal(assetId: string): Promise<number>;
-    getAssetHoldingBalance(assetId: string, portfolioId: string): Promise<number>;
+    getAssetHolderBalance(assetId: string, portfolioId: string): Promise<number>;
     getPortfolioHoldingBalance(portfolioId: string, assetId: string): Promise<number>;
 }

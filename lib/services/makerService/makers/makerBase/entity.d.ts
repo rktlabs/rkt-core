@@ -1,7 +1,8 @@
-import { MarketOrder, Trade } from '../../..';
+import { MarketOrder } from '../../..';
 import { AssetRepository, MakerRepository } from '../../../..';
+import { MakerTrade } from '../../../exchangeService/makerTrade';
 import { IMaker } from './interfaces';
-import { TMaker, TNewMakerConfig, TTakeResult } from './types';
+import { TMaker, TNewMakerConfig } from './types';
 export declare abstract class MakerBase implements IMaker {
     assetRepository: AssetRepository;
     makerRepository: MakerRepository;
@@ -16,9 +17,14 @@ export declare abstract class MakerBase implements IMaker {
     flattenMaker(): TMaker;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
-    abstract computeMakerStateUpdate(stateUpdate: any): any;
-    abstract processOrderUnits(takeSize: number): TTakeResult | null;
-    abstract computeMakerInitialState(newMakerConfig: TNewMakerConfig): any;
-    abstract processOrder(maker: IMaker, order: MarketOrder): Promise<Trade | null>;
-    onUpdateQuote: (trade: Trade, bid: number, ask: number) => Promise<void>;
+    abstract computeInitialState(newMakerConfig: TNewMakerConfig): any;
+    abstract computeStateUpdate(stateUpdate: any): any;
+    abstract processOrder(order: MarketOrder): Promise<MakerTrade | null>;
+    abstract buy(userId: string, assetId: string, units: number): Promise<MakerTrade | null>;
+    abstract sell(userId: string, assetId: string, units: number): Promise<MakerTrade | null>;
+    abstract processSimpleOrder(assetId: string, orderSide: string, orderSize: number): Promise<{
+        makerDeltaUnits: number;
+        makerDeltaCoins: number;
+    } | null>;
+    onUpdateQuote: (trade: MakerTrade, bid: number, ask: number) => Promise<void>;
 }

@@ -1,39 +1,20 @@
 'use strict'
-import {
-    AssetRepository,
-    //PortfolioRepository,
-    PortfolioService,
-    //TransactionService,
-    IEventPublisher,
-    LeagueService,
-    AssetHolderService,
-    AssetService,
-    NullEventPublisher,
-    UserService,
-} from '..'
+import { PortfolioService, LeagueService, AssetService, MakerService, UserService, TNewAssetConfig } from '..'
+import { TNewMakerConfig } from '../services/makerService/makers/makerBase/types'
 
 export class BootstrapService {
-    private assetRepository: AssetRepository
-    //private portfolioRepository: PortfolioRepository
-
     private userService: UserService
     private assetService: AssetService
     private portfolioService: PortfolioService
     private leagueService: LeagueService
-    private assetHolderService: AssetHolderService
-    //private transactionService: TransactionService
-    private eventPublisher: IEventPublisher
+    private makerService: MakerService
 
     constructor() {
-        this.eventPublisher = new NullEventPublisher()
-        this.assetRepository = new AssetRepository()
         this.userService = new UserService()
-        //this.portfolioRepository = new PortfolioRepository()
+        this.makerService = new MakerService()
         this.assetService = new AssetService()
         this.portfolioService = new PortfolioService()
-        this.assetHolderService = new AssetHolderService()
         this.leagueService = new LeagueService()
-        //this.transactionService = new TransactionService(this.eventPublisher)
     }
 
     // bootstrap the system with the "rkt" coin
@@ -97,19 +78,37 @@ export class BootstrapService {
         await Promise.all([this.bootRkt(), this.bootBank(), this.bootLeague(), this.bootUser()])
     }
 
-    async bootTestAsset() {
-        const assetId = 'card::jbone'
+    async bootAssets() {
+        this.bootAsset('card::jbone')
+        this.bootAsset('card::mhed')
+    }
 
-        this.assetService.scrubAsset(assetId)
-
+    async bootAsset(assetId: string) {
         const leagueId = 'test'
-        let asset = await this.assetRepository.getDetailAsync(assetId)
-        if (!asset) {
-            await this.leagueService.createAsset(leagueId, {
-                symbol: assetId,
-                displayName: assetId,
-            })
+
+        await this.assetService.scrubAsset(assetId)
+
+        await this.assetService.createAsset({
+            ownerId: 'test',
+            symbol: assetId,
+            displayName: assetId,
+            leagueId: leagueId,
+            leagueDisplayName: leagueId,
+        })
+
+        await this.leagueService.attachAsset(leagueId, { assetId: assetId, displayName: assetId })
+
+        const makerConfig: TNewMakerConfig = {
+            type: 'bondingmaker1',
+            ownerId: 'test',
+            assetId: assetId,
+            settings: {
+                initMadeUnits: 0,
+                initPrice: 1,
+            },
         }
+
+        await this.makerService.createMaker(makerConfig, false)
     }
 
     // async setupTreasury() {
@@ -127,7 +126,7 @@ export class BootstrapService {
 
     async fullBoot() {
         await this.bootstrap()
-        await Promise.all([this.bootTestAsset(), this.bootUser()])
+        await Promise.all([this.bootAssets()])
     }
 
     async fullScrub() {
@@ -135,23 +134,29 @@ export class BootstrapService {
         // may trample on one other so do assets and portfolios separately
         await Promise.all([
             this.leagueService.scrubLeague('test'), // scrubs coin too
+        ])
+        await Promise.all([
+            this.portfolioService.scrubPortfolio('bank::treasury'), // scrubs coin too
+            this.portfolioService.scrubPortfolio('bank::mint'), // scrubs coin too
+        ])
+        await Promise.all([this.userService.scrubUser('hedbot')])
+        await Promise.all([
             this.assetService.scrubAsset('coin::rkt'), // scrubs coin too
         ])
-        await Promise.all([this.portfolioService.scrubPortfolio('user::hedbot')])
     }
 
-    async clearHoldings() {
-        // scrub asset holders first. If do all in one promise, then they
-        // may trample on one other so do assets and portfolios separately
-        await Promise.all([
-            this.assetHolderService.scrubAssetHolders('coin::rkt'),
-            this.assetHolderService.scrubAssetHolders('card::jbone::test'),
-        ])
-        await Promise.all([
-            this.assetHolderService.scrubPortfolioHoldings('user::hedbot'),
-            this.assetHolderService.scrubPortfolioHoldings('league::test'),
-        ])
-    }
+    // async clearHoldings() {
+    //     // scrub asset holders first. If do all in one promise, then they
+    //     // may trample on one other so do assets and portfolios separately
+    //     await Promise.all([
+    //         this.assetHolderService.scrubAssetHolders('coin::rkt'),
+    //         this.assetHolderService.scrubAssetHolders('card::jbone::test'),
+    //     ])
+    //     await Promise.all([
+    //         this.assetHolderService.scrubPortfolioHoldings('user::hedbot'),
+    //         this.assetHolderService.scrubPortfolioHoldings('league::test'),
+    //     ])
+    // }
 
     // async clearDb() {
     //     const targets = [

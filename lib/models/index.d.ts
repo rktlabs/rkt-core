@@ -10,3 +10,4 @@ export * from './league';
 export * from './exchangeOrder';
 export * from './exchangeQuote';
 export * from './exchangeTrade';
+export * from './principal';

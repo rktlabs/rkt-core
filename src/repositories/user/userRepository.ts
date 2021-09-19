@@ -4,9 +4,6 @@ import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-// import * as admin from 'firebase-admin'
-// const FieldValue = admin.firestore.FieldValue
-
 const COLLECTION_NAME = 'users'
 
 export class UserRepository extends RepositoryBase {
@@ -100,8 +97,20 @@ export class UserRepository extends RepositoryBase {
         await deleteDocument(entityRef)
     }
 
-    // async updateUser(userId: string, entityData: TUserUpdate) {
-    //     const entityRef = this.db.collection(COLLECTION_NAME).doc(userId)
-    //     await entityRef.update(entityData)
-    // }
+    async isPortfolioUsed(portfolioId: string) {
+        // check for linked leagues
+        const entityRefCollection = this.db.collection(COLLECTION_NAME).where('portfolioId', '==', portfolioId)
+        const entityCollectionRefs = await entityRefCollection.get()
+        if (entityCollectionRefs.size > 0) {
+            const ids = entityCollectionRefs.docs.map((doc) => {
+                const data = doc.data()
+                return data.userId
+            })
+
+            const idList = ids.join(', ')
+            return idList
+        } else {
+            return null
+        }
+    }
 }

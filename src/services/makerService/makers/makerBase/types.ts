@@ -24,9 +24,9 @@ export type TMakerPatch = {
 }
 
 export type TTakeResult = {
-    bid: number
-    ask: number
-    last: number
+    // bid: number
+    // ask: number
+    // last: number
     makerDeltaUnits: number
     makerDeltaCoins: number
     statusUpdate: any

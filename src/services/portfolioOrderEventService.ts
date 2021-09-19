@@ -24,6 +24,10 @@ export class PortfolioOrderEventService {
         })
     }
 
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
+
     private processOrderEvent = (order: TOrder, payload: TEvent): TOrder | undefined => {
         // verify that the message is not a duplicate (using messageId)
         // if it's a dup, don't process.

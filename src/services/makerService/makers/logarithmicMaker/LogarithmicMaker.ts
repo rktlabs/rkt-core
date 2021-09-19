@@ -1,11 +1,10 @@
 'use strict'
 
-import { round4, MakerFill, MarketOrder, NotFoundError, Trade, PortfolioRepository } from '../../../..'
+import { round4, MakerFill, MarketOrder, NotFoundError, MakerTrade, PortfolioRepository } from '../../../..'
 
 import * as admin from 'firebase-admin'
 import { DateTime } from 'luxon'
 import { MakerBase } from '../makerBase/entity'
-import { IMaker } from '../makerBase/interfaces'
 import { TNewMakerConfig, TMaker, TTakeResult } from '../makerBase/types'
 const FieldValue = admin.firestore.FieldValue
 
@@ -75,7 +74,7 @@ export class LogarithmicMaker extends MakerBase {
         }
 
         const newEntity = new LogarithmicMaker(makerProps)
-        newEntity.params = newEntity.computeMakerInitialState(props)
+        newEntity.params = newEntity.computeInitialState(props)
 
         return newEntity
     }
@@ -85,7 +84,7 @@ export class LogarithmicMaker extends MakerBase {
         this.portfolioRepository = new PortfolioRepository()
     }
 
-    computeMakerInitialState(newMakerConfig: TNewMakerConfig) {
+    computeInitialState(newMakerConfig: TNewMakerConfig) {
         const initMadeUnits = newMakerConfig.settings?.initMadeUnits || 0
         const initPrice = newMakerConfig.settings?.initPrice || 1
         if (!newMakerConfig.settings?.limit) {
@@ -97,7 +96,7 @@ export class LogarithmicMaker extends MakerBase {
         return makerState
     }
 
-    computeMakerStateUpdate(stateUpdate: TLogarithmicParamsUpdate) {
+    computeStateUpdate(stateUpdate: TLogarithmicParamsUpdate) {
         const data = {
             ['params.madeUnits']: FieldValue.increment(stateUpdate.madeUnitsDelta),
             currentPrice: stateUpdate.currentPrice,
@@ -105,10 +104,10 @@ export class LogarithmicMaker extends MakerBase {
         return data
     }
 
-    async processOrder(maker: IMaker, order: MarketOrder) {
+    async processOrder(order: MarketOrder) {
         ///////////////////////////////////////////////////
         // create trade and fill in maker from asset pools
-        const trade = new Trade(order)
+        const trade = new MakerTrade(order)
         const taker = trade.taker
 
         // for bid (a buy) I'm "removing" units from the pool, so flip sign
@@ -143,12 +142,12 @@ export class LogarithmicMaker extends MakerBase {
 
         const makerPortfolioId = assetPortfolioId
 
-        const taken = maker.processOrderUnits(signedTakeSize)
+        const taken = this.processOrderUnits(signedTakeSize)
         if (taken) {
             const data = taken.statusUpdate
             await this.updateMakerStateAsync(assetId, data)
 
-            const { bid, ask, makerDeltaUnits, makerDeltaCoins } = taken
+            const { makerDeltaUnits, makerDeltaCoins } = taken
 
             const makerFill = new MakerFill({
                 assetId: taker.assetId,
@@ -159,11 +158,11 @@ export class LogarithmicMaker extends MakerBase {
 
             trade.fillMaker(makerFill, makerDeltaUnits, makerDeltaCoins)
 
-            if (trade.taker.filledSize !== 0) {
-                //     // await this.onFill(trade.taker)
-                //     // await this.onTrade(trade)
-                await this.onUpdateQuote(trade, bid, ask)
-            }
+            // if (trade.taker.filledSize !== 0) {
+            //     //     // await this.onFill(trade.taker)
+            //     //     // await this.onTrade(trade)
+            //     await this.onUpdateQuote(trade, bid, ask)
+            // }
 
             return trade
         } else {
@@ -171,11 +170,27 @@ export class LogarithmicMaker extends MakerBase {
         }
     }
 
+    async processSimpleOrder(assetId: string, orderSide: string, orderSize: number) {
+        return null
+    }
+
     async updateMakerStateAsync(assetId: string, data: any) {
         return this.makerRepository.updateMakerStateAsync(assetId, data)
     }
 
-    processOrderUnits(takeSize: number): TTakeResult | null {
+    async buy(userId: string, assetId: string, units: number) {
+        return null
+    }
+
+    async sell(userId: string, assetId: string, units: number) {
+        return null
+    }
+
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
+
+    private processOrderUnits(takeSize: number): TTakeResult | null {
         const makerParams = this.params as TLogarithmicMakerParams
         if (!makerParams) {
             return null
@@ -207,24 +222,24 @@ export class LogarithmicMaker extends MakerBase {
         }
 
         // last price adjusted based on taker quantity
-        const bid = bondingFunction(this.params.madeUnits - makerDeltaUnits - 1, makerParams)
+        // const bid = bondingFunction(this.params.madeUnits - makerDeltaUnits - 1, makerParams)
         const ask = bondingFunction(this.params.madeUnits - makerDeltaUnits - 0, makerParams)
-        const last = bid
+        // const last = bid
 
         const propsUpdate: TLogarithmicParamsUpdate = {
             madeUnitsDelta: makerDeltaUnits * -1,
             currentPrice: ask,
         }
 
-        const data = this.computeMakerStateUpdate(propsUpdate)
+        const statusUpdate = this.computeStateUpdate(propsUpdate)
 
         return {
-            bid: bid,
-            ask: ask,
-            last: last,
+            // bid: bid,
+            // ask: ask,
+            // last: last,
             makerDeltaUnits: makerDeltaUnits,
             makerDeltaCoins: makerDeltaCoins,
-            statusUpdate: data,
+            statusUpdate: statusUpdate,
         }
     }
 }

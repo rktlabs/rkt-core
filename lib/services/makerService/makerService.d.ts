@@ -2,7 +2,6 @@ import { MakerBase } from './makers/makerBase/entity';
 import { IMaker } from './makers/makerBase/interfaces';
 import { TNewMakerConfig } from './makers/makerBase/types';
 export declare class MakerService {
-    private assetRepository;
     private makerRepository;
     private portfolioRepository;
     private portfolioService;

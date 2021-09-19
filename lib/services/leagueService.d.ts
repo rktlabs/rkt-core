@@ -11,11 +11,11 @@ export declare class LeagueService {
     scrubLeague(leagueId: string): Promise<void>;
     scrubLeagueAsset(leagueId: string, assetId: string): Promise<any[]>;
     createAsset(leagueSpec: string | League, assetDef: TLeagueAssetDef): Promise<void>;
-    addAsset(leagueSpec: string | League, asset: TAssetCore): Promise<void>;
-    dropAsset(leagueSpec: string | League, assetId: string): Promise<void>;
+    attachAsset(leagueSpec: string | League, asset: TAssetCore): Promise<void>;
+    detachAsset(leagueSpec: string | League, assetId: string): Promise<void>;
     private createLeagueImpl;
-    private addAssetToLeague;
-    private dropAssetFromLeague;
+    private attachAssetToLeague;
+    private detachAssetFromLeague;
     private createLeaguePortfolioImpl;
     private createAssetImpl;
 }

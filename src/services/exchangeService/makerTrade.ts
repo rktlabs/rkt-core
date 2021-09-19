@@ -6,7 +6,7 @@ import { MakerFill } from './makerFill'
 import { MarketOrder } from '.'
 import { generateId } from '../..'
 
-export class Trade {
+export class MakerTrade {
     tradeId: string
     assetId: string
     executedAt: string

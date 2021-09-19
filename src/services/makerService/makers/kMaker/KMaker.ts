@@ -1,11 +1,10 @@
 'use strict'
 
-import { round4, MakerFill, MarketOrder, NotFoundError, Trade, PortfolioRepository } from '../../../..'
+import { round4, MakerFill, MarketOrder, NotFoundError, MakerTrade, PortfolioRepository } from '../../../..'
 
 import admin = require('firebase-admin')
 import { DateTime } from 'luxon'
 import { MakerBase } from '../makerBase/entity'
-import { IMaker } from '../makerBase/interfaces'
 import { TNewMakerConfig, TMaker, TTakeResult } from '../makerBase/types'
 const FieldValue = admin.firestore.FieldValue
 
@@ -45,7 +44,7 @@ export class KMaker extends MakerBase {
         }
 
         const newEntity = new KMaker(makerProps)
-        newEntity.params = newEntity.computeMakerInitialState(props)
+        newEntity.params = newEntity.computeInitialState(props)
 
         return newEntity
     }
@@ -55,7 +54,7 @@ export class KMaker extends MakerBase {
         this.portfolioRepository = new PortfolioRepository()
     }
 
-    computeMakerInitialState(newMakerConfig: TNewMakerConfig) {
+    computeInitialState(newMakerConfig: TNewMakerConfig) {
         const initMadeUnits = newMakerConfig.settings?.initMadeUnits || 0
         const initPrice = newMakerConfig.settings?.initPrice || 1
         const initialPoolUnits = newMakerConfig.settings?.initialPoolUnits || 1000
@@ -74,7 +73,7 @@ export class KMaker extends MakerBase {
         return makerState
     }
 
-    computeMakerStateUpdate(stateUpdate: TKMakerParamsUpdate) {
+    computeStateUpdate(stateUpdate: TKMakerParamsUpdate) {
         const data = {
             ['params.poolCoins']: FieldValue.increment(stateUpdate.poolCoinDelta),
             ['params.poolUnits']: FieldValue.increment(stateUpdate.poolUnitDelta),
@@ -85,10 +84,10 @@ export class KMaker extends MakerBase {
         return data
     }
 
-    async processOrder(maker: IMaker, order: MarketOrder) {
+    async processOrder(order: MarketOrder) {
         ///////////////////////////////////////////////////
         // create trade and fill in maker from asset pools
-        const trade = new Trade(order)
+        const trade = new MakerTrade(order)
         const taker = trade.taker
 
         // for bid (a buy) I'm "removing" units from the pool, so flip sign
@@ -123,12 +122,12 @@ export class KMaker extends MakerBase {
 
         const makerPortfolioId = assetPortfolioId
 
-        const taken = maker.processOrderUnits(signedTakeSize)
+        const taken = this.processOrderUnits(signedTakeSize)
         if (taken) {
             const data = taken.statusUpdate
             await this.updateMakerStateAsync(assetId, data)
 
-            const { bid, ask, makerDeltaUnits, makerDeltaCoins } = taken
+            const { makerDeltaUnits, makerDeltaCoins } = taken
 
             const makerFill = new MakerFill({
                 assetId: taker.assetId,
@@ -139,11 +138,11 @@ export class KMaker extends MakerBase {
 
             trade.fillMaker(makerFill, makerDeltaUnits, makerDeltaCoins)
 
-            if (trade.taker.filledSize !== 0) {
-                //     // await this.onFill(trade.taker)
-                //     // await this.onTrade(trade)
-                await this.onUpdateQuote(trade, bid, ask)
-            }
+            // if (trade.taker.filledSize !== 0) {
+            //     //     // await this.onFill(trade.taker)
+            //     //     // await this.onTrade(trade)
+            //     await this.onUpdateQuote(trade, bid, ask)
+            // }
 
             return trade
         } else {
@@ -151,27 +150,46 @@ export class KMaker extends MakerBase {
         }
     }
 
+    async processSimpleOrder(assetId: string, orderSide: string, orderSize: number) {
+        return null
+    }
+
     async updateMakerStateAsync(assetId: string, data: any) {
         return this.makerRepository.updateMakerStateAsync(assetId, data)
     }
 
-    processOrderUnits(takeSize: number): TTakeResult | null {
+    async buy(userId: string, assetId: string, units: number) {
+        return null
+    }
+
+    async sell(userId: string, assetId: string, units: number) {
+        return null
+    }
+
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
+
+    private processOrderUnits(takeSize: number): TTakeResult | null {
         const makerParams = this.params as TKMakerParams
         if (!makerParams) {
             return null
         }
-        const { lastPrice: ask, propsUpdate } = this.computePrice(makerParams, takeSize)
-        const { lastPrice: bid } = this.computePrice(makerParams, takeSize - 1)
+        const {
+            // lastPrice: ask,
+            propsUpdate,
+        } = this.computePrice(makerParams, takeSize)
+        // const { lastPrice: bid } = this.computePrice(makerParams, takeSize - 1)
 
-        const data = this.computeMakerStateUpdate(propsUpdate)
+        const statusUpdate = this.computeStateUpdate(propsUpdate)
 
         return {
-            bid: bid,
-            ask: ask,
-            last: bid,
+            // bid: bid,
+            // ask: ask,
+            // last: bid,
             makerDeltaUnits: propsUpdate.poolUnitDelta,
             makerDeltaCoins: propsUpdate.poolCoinDelta,
-            statusUpdate: data,
+            statusUpdate: statusUpdate,
         }
     }
 
@@ -193,7 +211,7 @@ export class KMaker extends MakerBase {
         const lastPrice = round4(newMakerPoolCoins / newMakerPoolUnits)
 
         return {
-            lastPrice: lastPrice,
+            // lastPrice: lastPrice,
             propsUpdate: {
                 poolUnitDelta: makerPoolUnitDelta * -1,
                 poolCoinDelta: makerPoolCoinDelta,

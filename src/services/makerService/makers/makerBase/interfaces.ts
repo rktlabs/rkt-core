@@ -1,14 +1,22 @@
 'use strict'
 
-import { MarketOrder, Trade } from '../../..'
-import { TTakeResult, TNewMakerConfig } from './types'
+import { MarketOrder, MakerTrade } from '../../..'
+import { TNewMakerConfig } from './types'
 
 export interface IMaker {
-    computeMakerStateUpdate(stateUpdate: any): any
+    computeStateUpdate(stateUpdate: any): any
 
-    processOrderUnits(takeSize: number): TTakeResult | null
+    computeInitialState(newMakerConfig: TNewMakerConfig): any
 
-    computeMakerInitialState(newMakerConfig: TNewMakerConfig): any
+    processOrder(order: MarketOrder): Promise<MakerTrade | null>
 
-    processOrder(maker: IMaker, order: MarketOrder): Promise<Trade | null>
+    buy(userId: string, assetId: string, units: number): Promise<MakerTrade | null>
+
+    sell(userId: string, assetId: string, units: number): Promise<MakerTrade | null>
+
+    processSimpleOrder(
+        assetId: string,
+        orderSide: string,
+        orderSize: number,
+    ): Promise<{ makerDeltaUnits: number; makerDeltaCoins: number } | null>
 }

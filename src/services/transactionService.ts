@@ -14,9 +14,6 @@ import {
     ValidationError,
     InsufficientBalance,
     InvalidTransaction,
-    // NotFoundError,
-    // TPortfolio,
-    //round4,
     ConflictError,
     TransactionLeg,
     generateId,
@@ -44,17 +41,16 @@ export class TransactionService {
     // Public Methods
     /////////////////////////////
 
-    // EJH: used by league service buyLeagueAsset(), sellAssetToLeagueImpl()
-    // takes simple structure and fills out the rest:
-    // eg:
-    // const data: TPurchase = {
-    //     buyerPorfolioId: leaguePortfolioId,
-    //     sellerPortfolioId: portfolioId,
-    //     assetId: assetId,
-    //     units: units,
-    //     coins: cost,
-    // }
     async executePurchaseAsync(exchangeData: TPurchase) {
+        // takes simple structure and fills out the rest:
+        // eg:
+        // const data: TPurchase = {
+        //     buyerPorfolioId: leaguePortfolioId,
+        //     sellerPortfolioId: portfolioId,
+        //     assetId: assetId,
+        //     units: units,
+        //     coins: cost,
+        // }
         const coinAssetId = 'coin::rkt'
 
         const transaction: TTransactionNew = {
@@ -91,10 +87,8 @@ export class TransactionService {
         return this.executeTransactionAsync(transaction)
     }
 
-    // EJH: used by league service mintLeagueAssetUnitsToPortfolioImpl(), fundLeagueImplAsync()
-    // and userService depositCoins()
-    // and transactionhandler..
-    // a transfer is a transaction with one in put, out output, and one asset
+    // EJH: used by treasury service and mint services to move funds from one portfolio to another
+    // a transfer is a transaction with one input, out output, and one asset
     async executeTransferAsync(transferData: TTransfer) {
         //logger.debug(`Handle Transfer: ${JSON.stringify(transferData)}`)
 
@@ -102,12 +96,6 @@ export class TransactionService {
         const outputPortfolioId = transferData.outputPortfolioId
         const assetId = transferData.assetId
         const units = transferData.units
-
-        // const parts = inputPortfolioId.split(':')
-        // if (parts.length > 0 && parts[0] === 'mint') {
-        //     const msg = `Transfer Failed - input portfolio not valid. Cannot transfer from mint (${inputPortfolioId})`
-        //     throw new ConflictError(msg, { payload: transferData })
-        // }
 
         const transaction: TTransactionNew = {
             inputs: [
@@ -135,8 +123,6 @@ export class TransactionService {
     // EJH: used by exchangeService xact()
     async executeTransactionAsync(transactionData: TTransactionNew) {
         //logger.debug(`Handle Create Transaction: ${JSON.stringify(transactionData)}`)
-
-        console.log(transactionData)
 
         const transaction = Transaction.newTransaction(transactionData)
         const transactionId = transaction.transactionId
@@ -274,60 +260,9 @@ export class TransactionService {
         }
     }
 
-    // // EJH: Used by bootstrapService()
-    // // fund portfolio from treasury using portfolioId
-    // async mintCoinsToPortfolio(
-    //     portfolioId: string,
-    //     units: number,
-    //     sourcePortfolioId: string = 'league::mint',
-    //     assetId: string = 'coin::rkt',
-    // ) {
-    //     const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
-    //     if (!portfolio) {
-    //         const msg = `Cannot mint to portfolio: ${portfolioId} does not exist`
-    //         throw new NotFoundError(msg, { portfolioId })
-    //     }
-    //     return this.mintCoinsToPortfolioImpl(portfolio, units, sourcePortfolioId, assetId)
-    // }
-
-    // ///////////////////////////////////////////
-    // // Private Methods
-    // ///////////////////////////////////////////
-
-    // // fund portfolio from treasury - implementation using portfolio entity
-    // private async mintCoinsToPortfolioImpl(
-    //     portfolio: TPortfolio,
-    //     units: number,
-    //     sourcePortfolioId: string,
-    //     assetId: string,
-    // ) {
-    //     const portfolioId = portfolio.portfolioId
-
-    //     const newTransactionData = {
-    //         inputs: [
-    //             {
-    //                 portfolioId: sourcePortfolioId,
-    //                 assetId,
-    //                 units: units * -1,
-    //             },
-    //         ],
-    //         outputs: [
-    //             {
-    //                 portfolioId,
-    //                 assetId,
-    //                 units,
-    //             },
-    //         ],
-    //         tags: {
-    //             source: 'FUND_PORTFOLIO',
-    //         },
-    //         xids: {
-    //             assetId,
-    //         },
-    //     }
-
-    //     await this.executeTransactionAsync(newTransactionData)
-    // }
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
 
     private async verifyAssetsAsync(transaction: Transaction) {
         //////////////////////////
@@ -343,19 +278,9 @@ export class TransactionService {
                 const assetId = inputLeg.assetId
                 const units = inputLeg.units
 
-                const assetType = assetId.split(':')[0]
                 const portfolioType = portfolioId.split(':')[0]
-
-                const isCoin = assetType === 'coin'
-                const isMint = portfolioType === 'mint'
                 const isBank = portfolioType === 'bank'
-                const isMaker = portfolioType === 'maker'
-                const isLeague = portfolioType === 'league'
-                const canShort = isMint || isBank || isMaker || isLeague
-
-                // EJH TEST TEST TEST
-                // configure so anything can run negative balance
-                //const canShort = true
+                const canShort = isBank
 
                 // eslint-disable-next-line no-await-in-loop
                 let holding = await this.assetHolderRepository.getDetailAsync(assetId, portfolioId)
@@ -384,13 +309,6 @@ export class TransactionService {
                         throw new InsufficientBalance(msg, { payload: transaction })
                     }
                 }
-
-                // const unitCost = holding.units === 0 ? 0 : round4((holding.cost || 0) / holding.units)
-                // if (!isCoin) {
-                //     inputLeg._unitCost = unitCost
-                //     inputLeg._deltaCost = round4(unitCost * units)
-                //     inputLeg._deltaNet = round4(inputLeg.cost || 0) * -1
-                // }
             }
         }
 
@@ -411,11 +329,6 @@ export class TransactionService {
                     // eslint-disable-next-line no-await-in-loop
                     holding = await this.assetHolderService.addAssetHolder(assetId, portfolioId)
                 }
-
-                // if (!isCoin) {
-                //     outputLeg._deltaCost = round4(outputLeg.cost || 0)
-                //     outputLeg._deltaNet = round4(outputLeg.cost || 0) * -1
-                // }
             }
         }
     }

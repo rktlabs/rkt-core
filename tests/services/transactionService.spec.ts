@@ -58,7 +58,7 @@ describe('Transaction Service', function () {
     //         expect(await portfolioHoldingService.getPortfolioHoldingsBalance('user::hedbot', 'coin::fantx')).to.eq(10)
 
     //         // verify that mint has balance of -10
-    //         expect(await portfolioHoldingService.getPortfolioHoldingsBalance('league::mint', 'coin::fantx')).to.eq(-10)
+    //         expect(await portfolioHoldingService.getPortfolioHoldingsBalance('league::mynt', 'coin::fantx')).to.eq(-10)
 
     //         //expect(eventPublisher.publishTransactionEventUpdatePortfolioAsync.callCount).to.eq(2)
     //         expect(eventPublisher.publishTransactionEventCompleteAsync.callCount).to.eq(1)

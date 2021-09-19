@@ -1,7 +1,6 @@
-import { MarketOrder, Trade } from '../../../..';
+import { MarketOrder, MakerTrade } from '../../../..';
 import { MakerBase } from '../makerBase/entity';
-import { IMaker } from '../makerBase/interfaces';
-import { TNewMakerConfig, TMaker, TTakeResult } from '../makerBase/types';
+import { TNewMakerConfig, TMaker } from '../makerBase/types';
 declare type TKMakerParamsUpdate = {
     madeUnitsDelta: number;
     currentPrice: number;
@@ -20,17 +19,20 @@ export declare class KMaker extends MakerBase {
     private portfolioRepository;
     static newMaker(props: TNewMakerConfig): KMaker;
     constructor(props: TMaker);
-    computeMakerInitialState(newMakerConfig: TNewMakerConfig): TKMakerParams;
-    computeMakerStateUpdate(stateUpdate: TKMakerParamsUpdate): {
+    computeInitialState(newMakerConfig: TNewMakerConfig): TKMakerParams;
+    computeStateUpdate(stateUpdate: TKMakerParamsUpdate): {
         "params.poolCoins": FirebaseFirestore.FieldValue;
         "params.poolUnits": FirebaseFirestore.FieldValue;
         "params.k": FirebaseFirestore.FieldValue;
         madeUnits: FirebaseFirestore.FieldValue;
         currentPrice: number;
     };
-    processOrder(maker: IMaker, order: MarketOrder): Promise<Trade | null>;
+    processOrder(order: MarketOrder): Promise<MakerTrade | null>;
+    processSimpleOrder(assetId: string, orderSide: string, orderSize: number): Promise<null>;
     updateMakerStateAsync(assetId: string, data: any): Promise<void>;
-    processOrderUnits(takeSize: number): TTakeResult | null;
+    buy(userId: string, assetId: string, units: number): Promise<null>;
+    sell(userId: string, assetId: string, units: number): Promise<null>;
+    private processOrderUnits;
     private computePrice;
 }
 export {};

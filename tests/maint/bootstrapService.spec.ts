@@ -36,7 +36,7 @@ describe('Bootstrap Service', function () {
 
             const [coinAsset, systemPortfolio, testLeague, testPortfolio] = await Promise.all([
                 assetRepository.getDetailAsync('coin::rkt'),
-                portfolioRepository.getDetailAsync('league::mint'),
+                portfolioRepository.getDetailAsync('league::mynt'),
                 leagueRepository.getDetailAsync('test'),
                 portfolioRepository.getDetailAsync('league::test'),
             ])
@@ -45,7 +45,7 @@ describe('Bootstrap Service', function () {
             expect(coinAsset?.assetId).to.eq('coin::rkt')
 
             expect(systemPortfolio).to.exist
-            expect(systemPortfolio?.portfolioId).to.eq('league::mint')
+            expect(systemPortfolio?.portfolioId).to.eq('league::mynt')
 
             expect(testLeague).to.exist
             expect(testLeague?.leagueId).to.eq('test')

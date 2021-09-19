@@ -10,4 +10,5 @@ export declare class UserRepository extends RepositoryBase {
     lookupUserByEmailAsync(email: string): Promise<TUser | null>;
     storeAsync(entity: TUser): Promise<void>;
     deleteAsync(userId: string): Promise<void>;
+    isPortfolioUsed(portfolioId: string): Promise<string | null>;
 }

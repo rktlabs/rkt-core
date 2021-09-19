@@ -14,27 +14,16 @@ import {
     TPortfolioUpdate,
     ConflictError,
     TPortfolioDeposit,
+    UserRepository,
 } from '..'
 
 export class PortfolioService {
     private portfolioRepository: PortfolioRepository
-    private assetRepository: AssetRepository
-    private makerRepository: MakerRepository
-    private leagueRepository: LeagueRepository
-    private portfolioActivityRepository: PortfolioActivityRepository
     private portfolioDepositRepository: PortfolioDepositRepository
-
-    private assetHolderService: AssetHolderService
 
     constructor() {
         this.portfolioRepository = new PortfolioRepository()
-        this.portfolioActivityRepository = new PortfolioActivityRepository()
-        this.assetRepository = new AssetRepository()
-        this.makerRepository = new MakerRepository()
-        this.leagueRepository = new LeagueRepository()
         this.portfolioDepositRepository = new PortfolioDepositRepository()
-
-        this.assetHolderService = new AssetHolderService()
     }
 
     // create new portfolio. Fail if it already exists.
@@ -79,29 +68,42 @@ export class PortfolioService {
     }
 
     async deletePortfolio(portfolioId: string) {
+        const assetRepository = new AssetRepository()
+        const makerRepository = new MakerRepository()
+        const leagueRepository = new LeagueRepository()
+        const userRepository = new UserRepository()
+
         // check for linked assets
-        let assetIds = await this.assetRepository.isPortfolioUsed(portfolioId)
+        let assetIds = await assetRepository.isPortfolioUsed(portfolioId)
         if (assetIds) {
             throw new ConflictError(`Cannot Delete Portfolio. Asset Portfolio in use: ${assetIds}`)
         }
 
-        let makerIds = await this.makerRepository.isPortfolioUsed(portfolioId)
+        let makerIds = await makerRepository.isPortfolioUsed(portfolioId)
         if (makerIds) {
             throw new ConflictError(`Cannot Delete Portfolio. Maker Portfolio in use: ${makerIds}`)
         }
 
-        let leagueIds = await this.leagueRepository.isPortfolioUsed(portfolioId)
+        let leagueIds = await leagueRepository.isPortfolioUsed(portfolioId)
         if (leagueIds) {
             throw new ConflictError(`Cannot Delete Portfolio. Portfolio linked to league: ${leagueIds}`)
+        }
+
+        let userIds = await userRepository.isPortfolioUsed(portfolioId)
+        if (userIds) {
+            throw new ConflictError(`Cannot Delete Portfolio. Portfolio linked to user: ${userIds}`)
         }
 
         await this.scrubPortfolio(portfolioId)
     }
 
     async scrubPortfolio(portfolioId: string) {
-        await this.assetHolderService.scrubPortfolioHoldings(portfolioId)
+        const portfolioActivityRepository = new PortfolioActivityRepository()
+        const assetHolderService = new AssetHolderService()
 
-        await this.portfolioActivityRepository.scrubCollectionAsync(portfolioId)
+        await assetHolderService.scrubPortfolioHoldings(portfolioId)
+
+        await portfolioActivityRepository.scrubCollectionAsync(portfolioId)
 
         await this.portfolioDepositRepository.scrubAsync(portfolioId)
 

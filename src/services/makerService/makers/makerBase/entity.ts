@@ -1,5 +1,6 @@
-import { MarketOrder, Trade } from '../../..'
+import { MarketOrder } from '../../..'
 import { AssetRepository, MakerRepository, TAssetUpdate } from '../../../..'
+import { MakerTrade } from '../../../exchangeService/makerTrade'
 import { IMaker } from './interfaces'
 import { serialize, serializeCollection } from './serializer'
 import { TMaker, TNewMakerConfig, TTakeResult } from './types'
@@ -53,19 +54,27 @@ export abstract class MakerBase implements IMaker {
         return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 
-    abstract computeMakerStateUpdate(stateUpdate: any): any
+    abstract computeInitialState(newMakerConfig: TNewMakerConfig): any
 
-    abstract processOrderUnits(takeSize: number): TTakeResult | null
+    abstract computeStateUpdate(stateUpdate: any): any
 
-    abstract computeMakerInitialState(newMakerConfig: TNewMakerConfig): any
+    abstract processOrder(order: MarketOrder): Promise<MakerTrade | null>
 
-    abstract processOrder(maker: IMaker, order: MarketOrder): Promise<Trade | null>
+    abstract buy(userId: string, assetId: string, units: number): Promise<MakerTrade | null>
+
+    abstract sell(userId: string, assetId: string, units: number): Promise<MakerTrade | null>
+
+    abstract processSimpleOrder(
+        assetId: string,
+        orderSide: string,
+        orderSize: number,
+    ): Promise<{ makerDeltaUnits: number; makerDeltaCoins: number } | null>
 
     ////////////////////////////////////////////////////
     //  onUpdateQuote
     //  - store new quoted for the asset indicated
     ////////////////////////////////////////////////////
-    onUpdateQuote = async (trade: Trade, bid: number, ask: number) => {
+    onUpdateQuote = async (trade: MakerTrade, bid: number, ask: number) => {
         const assetId = trade.assetId
         const last = trade.taker.filledPrice
 

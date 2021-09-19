@@ -1,7 +1,7 @@
 import { TakerFill } from './takerFill';
 import { MakerFill } from './makerFill';
 import { MarketOrder } from '.';
-export declare class Trade {
+export declare class MakerTrade {
     tradeId: string;
     assetId: string;
     executedAt: string;
