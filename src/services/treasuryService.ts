@@ -58,6 +58,7 @@ export class TreasuryService {
         const balance = await this.assetHolderService.getAssetHolderBalance(assetId, assetPortfolioId)
         if (balance < units) {
             const delta = balance - units
+            console.log(`********* need to mint ${delta} coin`)
             await this.mintService.mintUnits(COIN, delta)
         }
 
@@ -77,6 +78,8 @@ export class TreasuryService {
                 source: 'Mint',
             },
         }
+        console.log('****************** second transfer')
+        console.log(data)
         await this.transactionService.executeTransferAsync(data)
     }
 
@@ -106,6 +109,7 @@ export class TreasuryService {
         const balance = await this.assetHolderService.getAssetHolderBalance(assetId, sourcePortfolioId)
         if (balance < units) {
             const delta = balance - units
+            console.log(`********* treasury need to get ${delta} units`)
             await this.mintUnits(delta)
         }
 

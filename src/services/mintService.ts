@@ -57,6 +57,9 @@ export class MintService {
                 source: 'Mint',
             },
         }
+
+        console.log('****************** first transfer')
+        console.log(data)
         await this.transactionService.executeTransferAsync(data)
 
         this.assetRepository.addMinted(assetId, units)
