@@ -1,5 +1,4 @@
 import { IEventPublisher } from '.';
-import { Principal } from '..';
 export declare class TreasuryService {
     private eventPublisher;
     private userRepository;
@@ -8,8 +7,7 @@ export declare class TreasuryService {
     private portfolioService;
     private transactionService;
     private mintService;
-    private me;
-    constructor(me: Principal, eventPublisher?: IEventPublisher);
+    constructor(eventPublisher?: IEventPublisher);
     depositCoins(userId: string, units: number, coinId?: string): Promise<void>;
     withdrawCoins(userId: string, units: number, coinId?: string): Promise<void>;
 }

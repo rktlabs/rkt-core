@@ -9,7 +9,7 @@ import {
     TPortfolioDeposit,
     TTransfer,
     AssetHolderService,
-    Principal,
+    //Principal,
 } from '..'
 
 const BANK_PORTFOLIO = 'bank::treasury'
@@ -23,10 +23,10 @@ export class TreasuryService {
     private portfolioService: PortfolioService
     private transactionService: TransactionService
     private mintService: MintService
-    private me: Principal
+    //private me: Principal
 
-    constructor(me: Principal, eventPublisher?: IEventPublisher) {
-        this.me = me
+    constructor(eventPublisher?: IEventPublisher) {
+        //this.me = me
         this.eventPublisher = eventPublisher || new NullEventPublisher()
 
         this.userRepository = new UserRepository()
@@ -34,7 +34,7 @@ export class TreasuryService {
         this.portfolioService = new PortfolioService()
         this.assetHolderService = new AssetHolderService()
         this.transactionService = new TransactionService(this.eventPublisher)
-        this.mintService = new MintService(me)
+        this.mintService = new MintService()
     }
 
     async depositCoins(userId: string, units: number, coinId = COIN) {
