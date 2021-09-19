@@ -26,9 +26,6 @@ type TKMakerParams = {
 }
 
 export class KMaker extends MakerBase {
-    // private assetHolderRepository: AssetHolderRepository
-    // private mintService: MintService
-
     static newMaker(props: TNewMakerConfig) {
         const createdAt = DateTime.utc().toString()
         const type = props.type
@@ -51,8 +48,6 @@ export class KMaker extends MakerBase {
 
     constructor(props: TMaker) {
         super(props)
-        // this.assetHolderRepository = new AssetHolderRepository()
-        // this.mintService = new MintService()
     }
 
     computeInitialState(newMakerConfig: TNewMakerConfig) {
@@ -86,32 +81,9 @@ export class KMaker extends MakerBase {
     }
 
     async processOrderImpl(orderSide: string, orderSize: number) {
-        ////////////////////////////
-        // verify that asset exists
-        ////////////////////////////
-        // const asset = await this.resolveAssetSpec(this.assetId)
-
         ////////////////////////////////////////////////////////
         // Process the order
         ////////////////////////////////////////////////////////
-        // TODO: There is an assumption that the maker portfolio is the asset. That would,
-        // actually, be up to the maker, yes?
-        // const assetPortfolioId = asset.portfolioId
-        // if (!assetPortfolioId) {
-        //     const msg = `Invalid Order: Asset Portfolio: not configured`
-        //     throw new NotFoundError(msg)
-        // }
-
-        // if (orderSide == 'bid' && orderSize > 0) {
-        //     // test that asset has enough units to transact
-        //     const assetPortfolioHoldings = await this.assetHolderRepository.getDetailAsync(this.assetId, assetPortfolioId)
-        //     const portfolioHoldingUnits = round4(assetPortfolioHoldings?.units || 0)
-        //     if (portfolioHoldingUnits < orderSize) {
-        //         const delta = orderSize - portfolioHoldingUnits
-        //         // not enough. mint me sonme
-        //         await this.mintService.mintUnits(this.assetId, delta)
-        //     }
-        // }
 
         // for bid (a buy) I'm "removing" units from the pool, so flip sign
         const signedOrderSize = orderSide === 'ask' ? orderSize * -1 : orderSize
@@ -137,18 +109,11 @@ export class KMaker extends MakerBase {
         if (!makerParams) {
             return null
         }
-        const {
-            // lastPrice: ask,
-            propsUpdate,
-        } = this.computePrice(makerParams, takeSize)
-        // const { lastPrice: bid } = this.computePrice(makerParams, takeSize - 1)
+        const { propsUpdate } = this.computePrice(makerParams, takeSize)
 
         const statusUpdate = this.computeStateUpdate(propsUpdate)
 
         return {
-            // bid: bid,
-            // ask: ask,
-            // last: bid,
             makerDeltaUnits: propsUpdate.poolUnitDelta,
             makerDeltaCoins: propsUpdate.poolCoinDelta,
             statusUpdate: statusUpdate,

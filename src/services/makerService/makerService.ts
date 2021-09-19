@@ -15,17 +15,13 @@ import { IMaker } from './makers/makerBase/interfaces'
 import { TNewMakerConfig } from './makers/makerBase/types'
 
 export class MakerService {
-    // private assetRepository: AssetRepository
     private makerRepository: MakerRepository
     private portfolioRepository: PortfolioRepository
-
     private portfolioService: PortfolioService
 
     constructor() {
-        // this.assetRepository = new AssetRepository()
         this.makerRepository = new MakerRepository()
         this.portfolioRepository = new PortfolioRepository()
-
         this.portfolioService = new PortfolioService()
     }
 

@@ -49,19 +49,4 @@ export class ExchangeQuoteRepository extends RepositoryBase {
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await deleteDocument(entityRef)
     }
-
-    // async getExchangeQuotessync(assetList: string[]) {
-    //     if (Array.isArray(assetList)) {
-    //         const quoteList = await Promise.all(
-    //             assetList.map(async (assetId) => {
-    //                 const quote = this.getDetailAsync(assetId)
-    //                 return quote
-    //             }),
-    //         )
-    //         return quoteList
-    //     } else {
-    //         const quote = await this.getDetailAsync(assetList)
-    //         return [quote]
-    //     }
-    // }
 }

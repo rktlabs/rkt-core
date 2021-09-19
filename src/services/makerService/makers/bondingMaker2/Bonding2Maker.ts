@@ -158,9 +158,7 @@ export class Bonding2Maker extends MakerBase {
         }
 
         // last price adjusted based on taker quantity
-        //const bid = bondingFunction(this.params.madeUnits - makerDeltaUnits - 1, makerParams)
         const ask = bondingFunction(this.params.madeUnits - makerDeltaUnits - 0, makerParams)
-        // const last = bid
 
         const propsUpdate: TBonding2MakerParamsUpdate = {
             madeUnitsDelta: makerDeltaUnits * -1,
@@ -170,9 +168,6 @@ export class Bonding2Maker extends MakerBase {
         const statusUpdate = this.computeStateUpdate(propsUpdate)
 
         return {
-            // bid: bid,
-            // ask: ask,
-            // last: last,
             makerDeltaUnits: makerDeltaUnits,
             makerDeltaCoins: makerDeltaCoins,
             statusUpdate: statusUpdate,

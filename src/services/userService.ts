@@ -60,10 +60,6 @@ export class UserService {
 
         const user = await this.createUserImpl(payload)
 
-        // if (payload.initialCoins) {
-        //     await this.depositCoins(user.userId, payload.initialCoins)
-        // }
-
         return user
     }
 

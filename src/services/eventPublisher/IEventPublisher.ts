@@ -8,14 +8,6 @@ export interface IEventPublisher {
     // Messages - Full objects - not events
     ////////////////////////////////////////////////////////
 
-    // NOT USED
-    // publishAssetCreateAsync(asset: Models.Asset, source?: string): Promise<void>
-
-    // NOT USED
-    // publishPortfolioCreateAsync(portfolio: Models.Portfolio, source?: string): Promise<void>
-
-    // publishTransactionCreateAsync(transaction: Models.Transaction, source?: string): Promise<void>
-
     ////////////////////////////////////////////////////////
     // Exchange Order Messages
     ////////////////////////////////////////////////////////
@@ -32,20 +24,9 @@ export interface IEventPublisher {
 
     publishWarningEventAsync(error: any, sourceData?: any): Promise<void>
 
-    // NOT USED
-    // publishAssetNewEventAsync(asset: Models.Asset, source?: string): Promise<void>
-
-    // publishPortfolioNewEventAsync(portfolio: Models.Portfolio, source?: string): Promise<void>
-
     ////////////////////////////////////////////////////////
     // Transaction Events
     ////////////////////////////////////////////////////////
-
-    // publishTransactionEventUpdatePortfolioAsync(
-    //     transaction: Models.Transaction,
-    //     leg: any,
-    //     source?: string,
-    // ): Promise<void>
 
     publishTransactionEventCompleteAsync(transaction: Models.Transaction, source?: string): Promise<void>
 

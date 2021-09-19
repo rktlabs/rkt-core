@@ -17,23 +17,6 @@ export class EventPublisherBase implements IEventPublisher {
     // Messages - Full objects - not events
     ////////////////////////////////////////////////////////
 
-    // NOT USED
-    // async publishAssetCreateAsync(asset: Models.Asset, source?: string) {
-    //     const event = new Events.AssetNewEvent(asset)
-    //     return this.publishMessage('assetCreate', event, source)
-    // }
-
-    // NOT USED
-    // async publishPortfolioCreateAsync(portfolio: Models.Portfolio, source?: string) {
-    //     const event = new Events.PortfolioNewEvent(portfolio)
-    //     return this.publishMessage('portfolioCreate', event, source)
-    // }
-
-    // async publishTransactionCreateAsync(transaction: Models.Transaction, source?: string) {
-    //     const event = new Events.TransactionEventNew(transaction)
-    //     return this.publishMessage('transactionCreate', event, source)
-    // }
-
     ////////////////////////////////////////////////////////
     // Exchange Order Events
     ////////////////////////////////////////////////////////
@@ -64,46 +47,9 @@ export class EventPublisherBase implements IEventPublisher {
         return this.publishMessage('errorEvent', event, sourceData)
     }
 
-    // NOT USED
-    // async publishAssetNewEventAsync(asset: Models.Asset, source?: string) {
-    //     const event = new Events.AssetNewEvent({
-    //         assetType: asset.type,
-    //         assetId: asset.assetId,
-    //         portfolioId: asset.portfolioId,
-    //         xids: asset.xids,
-    //         tags: asset.tags,
-    //     })
-
-    //     return this.publishMessage('assetEvent', event, source)
-    // }
-
-    // async publishPortfolioNewEventAsync(portfolio: Models.Portfolio, source?: string) {
-    //     const event = new Events.PortfolioNewEvent({
-    //         portfolioType: portfolio.type,
-    //         portfolioId: portfolio.portfolioId,
-    //         xids: portfolio.xids,
-    //         tags: portfolio.tags,
-    //     })
-
-    //     return this.publishMessage('portfolioEvent', event, source)
-    // }
-
     ////////////////////////////////////////////////////////
     // Transaction Events
     ////////////////////////////////////////////////////////
-
-    // async publishTransactionEventUpdatePortfolioAsync(transaction: Models.Transaction, leg: any, source?: string) {
-    //     const event = new Events.TransactionEventPortfolioUpdateEvent({
-    //         transactionId: transaction.transactionId,
-    //         xids: transaction.xids,
-    //         portfolioId: leg.portfolioId,
-    //         assetId: leg.assetId,
-    //         units: leg.units,
-    //         tags: transaction.tags,
-    //     })
-
-    //     return this.publishMessage('transactionEvent', event, source)
-    // }
 
     async publishTransactionEventCompleteAsync(transaction: Models.Transaction, source?: string) {
         const event = new Events.TransactionEventComplete({

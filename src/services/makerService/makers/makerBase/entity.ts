@@ -12,7 +12,7 @@ import { IMaker } from './interfaces'
 import { serialize, serializeCollection } from './serializer'
 import { TMaker } from './types'
 
-// Maker holds value (coin) and shares to be sold.
+// Maker holds value and shares to be sold.
 export abstract class MakerBase implements IMaker {
     assetRepository: AssetRepository
     makerRepository: MakerRepository

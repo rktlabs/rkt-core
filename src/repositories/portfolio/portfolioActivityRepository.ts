@@ -67,23 +67,11 @@ export class PortfolioActivityRepository extends RepositoryBase {
                 .collection(HOLDERS_COLLECTION_NAME)
                 .doc(updateItem.portfolioId)
 
-            // // bit of a hack here for now, but want to update asset unitsIssued, but ONLY
-            // // if the portfolio for the update is the assets portfolio
-            // let assetRef = null
-            // if (updateItem.portfolioId == `asset::${updateItem.assetId}`) {
-            //     assetRef = this.db.collection(ASSET_COLLECTION_NAME).doc(updateItem.assetId)
-            // }
-
             const deltaUnits = FieldValue.increment(updateItem.deltaUnits)
-            // const deltaNet = FieldValue.increment(updateItem.deltaNet)
-            // const deltaCost = FieldValue.increment(updateItem.deltaCost)
             return {
                 portfolioHoldingRef: portfolioHoldingRef,
                 assetHolderRef: assetHolderRef,
-                // assetRef: assetRef,
                 deltaUnits,
-                // deltaNet,
-                // deltaCost,
             }
         })
 
@@ -111,11 +99,6 @@ export class PortfolioActivityRepository extends RepositoryBase {
 
             // update assets.holders
             batch.update(item.assetHolderRef, { units: item.deltaUnits })
-
-            // // update asset unitsIssued
-            // if (item.assetRef) {
-            //     batch.update(item.assetRef, { issuedUnits: item.deltaUnits })
-            // }
         })
 
         activity.forEach((item) => {

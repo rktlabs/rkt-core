@@ -19,33 +19,3 @@ export class OrderEventFill extends Event {
         super('OrderFill', attributes)
     }
 }
-
-// export class OrderEventAccepted extends Event {
-//     constructor(attributes = {}) {
-//         super('OrderAccepted', attributes)
-//     }
-// }
-
-// export class OrderEventRejected extends Event {
-//     constructor(attributes = {}) {
-//         super('OrderRejected', attributes)
-//     }
-// }
-
-// export class OrderEventCanceled extends Event {
-//     constructor(attributes = {}) {
-//         super('OrderCanceled', attributes)
-//     }
-// }
-
-// export class OrderEventExpired extends Event {
-//     constructor(attributes = {}) {
-//         super('OrderExpired', attributes)
-//     }
-// }
-
-// export class OrderEventTrade extends Event {
-//     constructor(attributes = {}) {
-//         super('OrderTrade', attributes)
-//     }
-// }
