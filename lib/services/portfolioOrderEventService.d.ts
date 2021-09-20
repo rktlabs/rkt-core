@@ -1,8 +1,8 @@
-import { TEvent } from '.';
+import { TNotification } from '.';
 export declare class PortfolioOrderEventService {
     private orderRepository;
     constructor(db: FirebaseFirestore.Firestore);
-    handleOrderEventAsync: (payload: TEvent) => Promise<void>;
+    handleOrderEventAsync: (payload: TNotification) => Promise<void>;
     private processOrderEvent;
     private appendOrderEvent;
     private close;

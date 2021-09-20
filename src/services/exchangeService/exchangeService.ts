@@ -18,8 +18,8 @@ import {
     PortfolioRepository,
     MakerService,
     ExchangeQuoteRepository,
-    NullEventPublisher,
-    IEventPublisher,
+    NullNotificationPublisher,
+    INotificationPublisher,
     AssetHolderRepository,
 } from '../..'
 
@@ -32,7 +32,7 @@ import {
 // - applies transaction returned from market maker?
 
 export class ExchangeService {
-    private orderEventPublisher: IEventPublisher
+    private orderNotificationPublisher: INotificationPublisher
 
     private portfolioRepository: PortfolioRepository
     private assetHolderRepository: AssetHolderRepository
@@ -42,8 +42,8 @@ export class ExchangeService {
     private transactionService: TransactionService
     private makerService: MakerService
 
-    constructor(eventPublisher?: IEventPublisher) {
-        this.orderEventPublisher = eventPublisher || new NullEventPublisher()
+    constructor(eventPublisher?: INotificationPublisher) {
+        this.orderNotificationPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioRepository = new PortfolioRepository()
@@ -141,7 +141,7 @@ export class ExchangeService {
                     reason,
                 })
 
-                this.orderEventPublisher.publishOrderEventFailedAsync(
+                this.orderNotificationPublisher.publishOrderEventFailedAsync(
                     exchangeOrder.portfolioId,
                     exchangeOrder.orderId,
                     reason,
@@ -171,7 +171,7 @@ export class ExchangeService {
         const filledPrice = taker.filledPrice
         const makerRemaining = taker.sizeRemaining
 
-        this.orderEventPublisher.publishOrderEventFillAsync(
+        this.orderNotificationPublisher.publishOrderEventFillAsync(
             portfolioId,
             orderId,
             filledSize,
@@ -203,7 +203,7 @@ export class ExchangeService {
     private onTrade = async (trade: MakerTrade) => {
         await this.exchangeTradeRepository.storeAsync(trade) // async - don't wait to finish
 
-        this.orderEventPublisher.publishOrderEventCompleteAsync(
+        this.orderNotificationPublisher.publishOrderEventCompleteAsync(
             trade.taker.portfolioId,
             trade.taker.orderId,
             trade.tradeId,
@@ -236,13 +236,11 @@ export class ExchangeService {
                         portfolioId: makerPortfolioId,
                         assetId,
                         units: takerDeltaUnits * -1,
-                        cost: takerDeltaValue,
                     },
                     {
                         portfolioId: takerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue,
-                        cost: takerDeltaValue,
                     },
                 ],
                 outputs: [
@@ -250,13 +248,11 @@ export class ExchangeService {
                         portfolioId: takerPortfolioId,
                         assetId,
                         units: takerDeltaUnits,
-                        cost: takerDeltaValue * -1,
                     },
                     {
                         portfolioId: makerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
-                        cost: takerDeltaValue * -1,
                     },
                 ],
                 tags: {
@@ -275,13 +271,11 @@ export class ExchangeService {
                         portfolioId: takerPortfolioId,
                         assetId,
                         units: takerDeltaUnits,
-                        cost: takerDeltaValue * -1,
                     },
                     {
                         portfolioId: makerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
-                        cost: takerDeltaValue * -1,
                     },
                 ],
                 outputs: [
@@ -289,13 +283,11 @@ export class ExchangeService {
                         portfolioId: makerPortfolioId,
                         assetId,
                         units: takerDeltaUnits * -1,
-                        cost: takerDeltaValue,
                     },
                     {
                         portfolioId: takerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue,
-                        cost: takerDeltaValue,
                     },
                 ],
                 tags: {

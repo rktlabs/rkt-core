@@ -27,8 +27,6 @@ export declare type TPortfolioHolding = {
     assetId: string;
     units: number;
     displayName: string;
-    cost: number;
-    net: number;
 };
 export declare type TAssetHolderUpdateItem = {
     assetId: string;

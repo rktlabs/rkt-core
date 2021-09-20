@@ -1,6 +1,6 @@
 'use strict'
 
-import { IEventPublisher, NullEventPublisher, TransactionService } from '.'
+import { INotificationPublisher, NullNotificationPublisher, TransactionService } from '.'
 import {
     AssetRepository,
     PortfolioRepository,
@@ -12,15 +12,15 @@ import {
 const MINT_PORTFOLIO = 'bank::mint'
 
 export class MintService {
-    private eventPublisher: IEventPublisher
+    private eventPublisher: INotificationPublisher
     private assetRepository: AssetRepository
     private portfolioRepository: PortfolioRepository
     private transactionService: TransactionService
     //private me: Principal
 
-    constructor(eventPublisher?: IEventPublisher) {
+    constructor(eventPublisher?: INotificationPublisher) {
         //this.me = me
-        this.eventPublisher = eventPublisher || new NullEventPublisher()
+        this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.assetRepository = new AssetRepository()
         this.portfolioRepository = new PortfolioRepository()

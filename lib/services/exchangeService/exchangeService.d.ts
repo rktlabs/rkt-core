@@ -1,6 +1,6 @@
-import { TNewExchangeOrderConfig, ExchangeOrder, IEventPublisher } from '../..';
+import { TNewExchangeOrderConfig, ExchangeOrder, INotificationPublisher } from '../..';
 export declare class ExchangeService {
-    private orderEventPublisher;
+    private orderNotificationPublisher;
     private portfolioRepository;
     private assetHolderRepository;
     private exchangeOrderRepository;
@@ -8,7 +8,7 @@ export declare class ExchangeService {
     private exchangeQuoteRepository;
     private transactionService;
     private makerService;
-    constructor(eventPublisher?: IEventPublisher);
+    constructor(eventPublisher?: INotificationPublisher);
     processNewExchangeOrderAsync(orderPayload: TNewExchangeOrderConfig): Promise<ExchangeOrder>;
     private onFill;
     private onTrade;

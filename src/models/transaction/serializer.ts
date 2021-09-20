@@ -4,7 +4,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('transactionLeg', {
-        whitelist: ['cost', 'units'],
+        whitelist: ['units'],
         links: (record: any) => {
             return {
                 asset: {

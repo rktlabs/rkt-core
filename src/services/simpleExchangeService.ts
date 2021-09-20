@@ -8,7 +8,7 @@ import {
     PortfolioRepository,
     MakerService,
     ExchangeQuoteRepository,
-    IEventPublisher,
+    INotificationPublisher,
     AssetHolderRepository,
     UserRepository,
     AssetRepository,
@@ -23,7 +23,7 @@ export class SimpleExchangeService {
     private transactionService: TransactionService
     private makerService: MakerService
 
-    constructor(eventPublisher?: IEventPublisher) {
+    constructor(eventPublisher?: INotificationPublisher) {
         this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioRepository = new PortfolioRepository()
         this.userRepository = new UserRepository()
@@ -134,13 +134,11 @@ export class SimpleExchangeService {
                         portfolioId: makerPortfolioId,
                         assetId,
                         units: takerDeltaUnits * -1,
-                        cost: takerDeltaValue,
                     },
                     {
                         portfolioId: takerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue,
-                        cost: takerDeltaValue,
                     },
                 ],
                 outputs: [
@@ -148,13 +146,11 @@ export class SimpleExchangeService {
                         portfolioId: takerPortfolioId,
                         assetId,
                         units: takerDeltaUnits,
-                        cost: takerDeltaValue * -1,
                     },
                     {
                         portfolioId: makerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
-                        cost: takerDeltaValue * -1,
                     },
                 ],
                 tags: {
@@ -173,13 +169,11 @@ export class SimpleExchangeService {
                         portfolioId: takerPortfolioId,
                         assetId,
                         units: takerDeltaUnits,
-                        cost: takerDeltaValue * -1,
                     },
                     {
                         portfolioId: makerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
-                        cost: takerDeltaValue * -1,
                     },
                 ],
                 outputs: [
@@ -187,13 +181,11 @@ export class SimpleExchangeService {
                         portfolioId: makerPortfolioId,
                         assetId,
                         units: takerDeltaUnits * -1,
-                        cost: takerDeltaValue,
                     },
                     {
                         portfolioId: takerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue,
-                        cost: takerDeltaValue,
                     },
                 ],
                 tags: {

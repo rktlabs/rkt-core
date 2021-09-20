@@ -56,7 +56,7 @@ export class PortfolioOrder {
 
         // only use fields we want. ignore others.
         const orderEvent: TOrderEvent = {
-            eventType: 'Created',
+            notificationType: 'Created',
             publishedAt: createdAt,
             messageId: orderId,
             nonce: generateNonce(),

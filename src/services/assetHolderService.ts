@@ -38,8 +38,6 @@ export class AssetHolderService {
                 units: 0,
 
                 displayName: assetDisplayName,
-                net: 0,
-                cost: 0,
             }
 
             const assetHolder = {

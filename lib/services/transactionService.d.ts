@@ -1,4 +1,4 @@
-import { IEventPublisher } from '.';
+import { INotificationPublisher } from '.';
 import { TPurchase, TTransactionNew, TTransfer } from '..';
 export declare class TransactionService {
     private eventPublisher;
@@ -7,7 +7,7 @@ export declare class TransactionService {
     private assetHolderRepository;
     private transactionRepository;
     private assetHolderService;
-    constructor(eventPublisher?: IEventPublisher);
+    constructor(eventPublisher?: INotificationPublisher);
     executePurchaseAsync(exchangeData: TPurchase): Promise<any[]>;
     executeTransferAsync(transferData: TTransfer): Promise<any[]>;
     executeTransactionAsync(transactionData: TTransactionNew): Promise<any[]>;

@@ -4,7 +4,7 @@ export const serialize = (selfUrl: string, portfolioId: string, baseUrl: string,
     const serializer = new HALSerializer()
 
     serializer.register('portfolioAsset', {
-        whitelist: ['assetId', 'displayName', 'units', 'cost', 'net'],
+        whitelist: ['assetId', 'displayName', 'units'],
         links: (record: any) => {
             return {
                 self: {

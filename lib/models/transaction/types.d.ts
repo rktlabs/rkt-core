@@ -28,7 +28,6 @@ export declare type TransactionLeg = {
     assetId: string;
     portfolioId: string;
     units: number;
-    cost?: number;
 };
 export declare type TTransaction = {
     transactionId: string;

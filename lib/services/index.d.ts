@@ -7,7 +7,7 @@ export * from '../queries/exchangeQuery';
 export * from '../queries/leagueQuery';
 export * from './assetHolderService';
 export * from './transactionService';
-export * from './eventPublisher';
+export * from './notificationPublisher';
 export * from './exchangeService';
 export * from './makerService';
 export * from './leagueService';

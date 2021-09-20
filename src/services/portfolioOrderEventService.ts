@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import * as log4js from 'log4js'
-import { TEvent } from '.'
+import { TNotification } from '.'
 import { PortfolioOrderRepository, TOrder, TOrderEvent } from '..'
 
 const logger = log4js.getLogger()
@@ -12,7 +12,7 @@ export class PortfolioOrderEventService {
         this.orderRepository = new PortfolioOrderRepository()
     }
 
-    handleOrderEventAsync = async (payload: TEvent) => {
+    handleOrderEventAsync = async (payload: TNotification) => {
         //logger.debug(`Handle Order TEvent: ${JSON.stringify(payload)}`)
 
         const orderId = payload.attributes.orderId
@@ -28,7 +28,7 @@ export class PortfolioOrderEventService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private processOrderEvent = (order: TOrder, payload: TEvent): TOrder | undefined => {
+    private processOrderEvent = (order: TOrder, payload: TNotification): TOrder | undefined => {
         // verify that the message is not a duplicate (using messageId)
         // if it's a dup, don't process.
         const existingEvent = order.events.filter((event: TOrderEvent) => {
@@ -36,8 +36,8 @@ export class PortfolioOrderEventService {
         })
 
         if (existingEvent.length === 0) {
-            const eventType = payload.eventType
-            switch (eventType) {
+            const notificationType = payload.notificationType
+            switch (notificationType) {
                 case 'OrderFill':
                     order = this.processFillEvent(order, payload)
                     break
@@ -56,10 +56,10 @@ export class PortfolioOrderEventService {
         }
     }
 
-    private appendOrderEvent = (order: TOrder, payload: TEvent) => {
+    private appendOrderEvent = (order: TOrder, payload: TNotification) => {
         const events = order.events || []
         const orderEvent: TOrderEvent = {
-            eventType: payload.eventType,
+            notificationType: payload.notificationType,
             publishedAt: payload.publishedAt,
             messageId: payload.messageId,
             nonce: payload.nonce,
@@ -86,7 +86,7 @@ export class PortfolioOrderEventService {
         return order
     }
 
-    private processFillEvent = (order: TOrder, payload: TEvent) => {
+    private processFillEvent = (order: TOrder, payload: TNotification) => {
         // can fill whenever. don't ignore (if comes out of order)
         order.filledSize = payload.attributes.filledSize
         order.filledValue = payload.attributes.filledValue
@@ -96,7 +96,7 @@ export class PortfolioOrderEventService {
         return order
     }
 
-    private processFailedEvent = (order: TOrder, payload: TEvent) => {
+    private processFailedEvent = (order: TOrder, payload: TNotification) => {
         switch (order.status) {
             case 'received':
                 order = this.updateStatus(order, 'failed', payload.attributes.reason)
@@ -109,7 +109,7 @@ export class PortfolioOrderEventService {
                 logger.warn(
                     `handleOrderEvent: handleFailedEvent(${order.orderId}) status: ${order.status} - ${payload} - IGNORED`,
                 )
-                payload.attributes.error = `order status: ${order.status} received event: ${payload.attributes.eventType}`
+                payload.attributes.error = `order status: ${order.status} received event: ${payload.attributes.notificationType}`
                 break
         }
         order = this.appendOrderEvent(order, payload)
@@ -117,7 +117,7 @@ export class PortfolioOrderEventService {
         return order
     }
 
-    private processCompleteEvent = (order: TOrder, payload: TEvent) => {
+    private processCompleteEvent = (order: TOrder, payload: TNotification) => {
         switch (order.status) {
             case 'received':
                 order = this.updateStatus(order, 'filled')
@@ -128,7 +128,7 @@ export class PortfolioOrderEventService {
             case 'failed':
             default:
                 logger.warn(`handleOrderEvent: handleFailedEvent(${order.orderId}) IGNORED`)
-                payload.attributes.error = `order status: ${order.status} received event: ${payload.attributes.eventType}`
+                payload.attributes.error = `order status: ${order.status} received event: ${payload.attributes.notificationType}`
                 break
         }
         order = this.appendOrderEvent(order, payload)

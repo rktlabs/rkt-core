@@ -12,7 +12,7 @@ export type TNewOrderProps = {
 
 // a data item that is stored on the order in the events[] collection.
 export type TOrderEvent = {
-    eventType: string
+    notificationType: string
     publishedAt: string
     nonce: string
     attributes?: any

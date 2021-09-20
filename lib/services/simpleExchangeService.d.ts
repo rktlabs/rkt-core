@@ -1,4 +1,4 @@
-import { IEventPublisher } from '..';
+import { INotificationPublisher } from '..';
 export declare class SimpleExchangeService {
     private userRepository;
     private assetRepository;
@@ -7,7 +7,7 @@ export declare class SimpleExchangeService {
     private exchangeQuoteRepository;
     private transactionService;
     private makerService;
-    constructor(eventPublisher?: IEventPublisher);
+    constructor(eventPublisher?: INotificationPublisher);
     buy(userId: string, assetId: string, orderSize: number): Promise<void>;
     sell(userId: string, assetId: string, orderSize: number): Promise<void>;
     user_transact(userId: string, assetId: string, orderSide: string, orderSize: number): Promise<void>;

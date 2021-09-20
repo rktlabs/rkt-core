@@ -1,7 +1,7 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { IEventPublisher, AssetHolderService, NullEventPublisher } from '.'
+import { INotificationPublisher, AssetHolderService, NullNotificationPublisher } from '.'
 import {
     PortfolioRepository,
     AssetRepository,
@@ -20,7 +20,7 @@ import {
 } from '..'
 
 export class TransactionService {
-    private eventPublisher: IEventPublisher
+    private eventPublisher: INotificationPublisher
 
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
@@ -28,8 +28,8 @@ export class TransactionService {
     private transactionRepository: TransactionRepository
     private assetHolderService: AssetHolderService
 
-    constructor(eventPublisher?: IEventPublisher) {
-        this.eventPublisher = eventPublisher || new NullEventPublisher()
+    constructor(eventPublisher?: INotificationPublisher) {
+        this.eventPublisher = eventPublisher || new NullNotificationPublisher()
         this.portfolioRepository = new PortfolioRepository()
         this.assetRepository = new AssetRepository()
         this.assetHolderRepository = new AssetHolderRepository()
@@ -49,7 +49,6 @@ export class TransactionService {
         //     sellerPortfolioId: portfolioId,
         //     assetId: assetId,
         //     units: units,
-        //     coins: cost,
         // }
         const coinAssetId = 'coin::rkt'
 

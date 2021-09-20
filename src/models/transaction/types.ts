@@ -34,10 +34,6 @@ export type TransactionLeg = {
     assetId: string
     portfolioId: string
     units: number
-    cost?: number
-    // _deltaCost?: number
-    // _deltaNet?: number
-    // _unitCost?: number
 }
 
 export type TTransaction = {

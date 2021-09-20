@@ -10,8 +10,6 @@ export declare class AssetHolderService {
         assetId: string;
         units: number;
         displayName: string;
-        net: number;
-        cost: number;
     } | null>;
     proessTransaction(transactionId: string, updateSet: TAssetHolderUpdateItem[], transaction: TTransaction): Promise<void>;
     scrubPortfolioHoldings(portfolioId: string): Promise<void[]>;

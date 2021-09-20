@@ -10,7 +10,7 @@ export declare type TNewOrderProps = {
     xids?: any;
 };
 export declare type TOrderEvent = {
-    eventType: string;
+    notificationType: string;
     publishedAt: string;
     nonce: string;
     attributes?: any;

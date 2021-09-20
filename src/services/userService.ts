@@ -1,7 +1,7 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { IEventPublisher, NullEventPublisher, PortfolioService, TransactionService } from '.'
+import { INotificationPublisher, NullNotificationPublisher, PortfolioService, TransactionService } from '.'
 import { UserRepository, PortfolioRepository, TNewUserConfig, DuplicateError, ConflictError, User } from '..'
 
 const BANK_PORTFOLIO = 'bank::treasury'

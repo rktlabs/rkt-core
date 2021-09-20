@@ -1,7 +1,7 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { IEventPublisher, MintService, NullEventPublisher, PortfolioService, TransactionService } from '.'
+import { INotificationPublisher, MintService, NullNotificationPublisher, PortfolioService, TransactionService } from '.'
 import {
     UserRepository,
     PortfolioRepository,
@@ -17,7 +17,7 @@ const BANK_PORTFOLIO = 'bank::treasury'
 const COIN = 'coin::rkt'
 
 export class TreasuryService {
-    private eventPublisher: IEventPublisher
+    private eventPublisher: INotificationPublisher
     private userRepository: UserRepository
     private assetRepository: AssetRepository
     private assetHolderService: AssetHolderService
@@ -27,9 +27,9 @@ export class TreasuryService {
     private mintService: MintService
     //private me: Principal
 
-    constructor(eventPublisher?: IEventPublisher) {
+    constructor(eventPublisher?: INotificationPublisher) {
         //this.me = me
-        this.eventPublisher = eventPublisher || new NullEventPublisher()
+        this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.userRepository = new UserRepository()
         this.assetRepository = new AssetRepository()
