@@ -2,7 +2,7 @@
 /* eslint-env node, mocha */
 
 import { expect } from 'chai'
-import { Asset, AssetQuery, AssetRepository, TNewAsset } from '../../src'
+import { Asset, AssetQuery, AssetRepository, TNewAssetConfig } from '../../src'
 
 describe('Asset Repository', () => {
     let assetRepository: AssetRepository
@@ -16,7 +16,7 @@ describe('Asset Repository', () => {
 
     describe('Create Full Asset', () => {
         it('should create and read back', async () => {
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 ownerId: 'tester',
                 symbol: testAssetId,
                 displayName: 'display-me',

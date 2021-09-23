@@ -8,8 +8,8 @@ import {
     PortfolioService,
     AssetService,
     TransactionService,
-    PortfolioHoldingService,
-    QueueEventPublisher,
+    AssetHolderService,
+    NullNotificationPublisher,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -19,21 +19,21 @@ describe('Transaction Service', function () {
     let transactionRepository: TransactionRepository
     let bootstrapper: BootstrapService
     let portfolioService: PortfolioService
-    let portfolioHoldingService: PortfolioHoldingService
+    let assetHolderService: AssetHolderService
     let assetService: AssetService
     let transactionService: TransactionService
 
-    let eventPublisher: sinon.SinonStubbedInstance<QueueEventPublisher>
+    let eventPublisher: sinon.SinonStubbedInstance<NullNotificationPublisher>
 
     before(async () => {
-        eventPublisher = sinon.createStubInstance(QueueEventPublisher)
+        eventPublisher = sinon.createStubInstance(NullNotificationPublisher)
 
         transactionRepository = new TransactionRepository()
 
         portfolioService = new PortfolioService()
-        portfolioHoldingService = new PortfolioHoldingService()
+        assetHolderService = new AssetHolderService()
         assetService = new AssetService()
-        transactionService = new TransactionService(eventPublisher as any as QueueEventPublisher)
+        transactionService = new TransactionService(eventPublisher as any as NullNotificationPublisher)
         bootstrapper = new BootstrapService()
 
         //await bootstrapper.clearDb()

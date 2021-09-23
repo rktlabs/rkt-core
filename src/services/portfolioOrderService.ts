@@ -6,7 +6,7 @@ import {
     TExchangeCancelOrder,
     TNewExchangeOrderConfig,
 } from '..'
-import { PortfolioOrder, TNewOrderProps, TOrder, TOrderPatch } from '../models/portfolioOrder'
+import { PortfolioOrder, TNewOrderProps, TPortfolioOrder, TPortfolioOrderPatch } from '../models/portfolioOrder'
 
 export class PortfolioOrderService {
     private orderRepository: PortfolioOrderRepository
@@ -85,7 +85,7 @@ export class PortfolioOrderService {
             const exchangeOrder: TExchangeCancelOrder = this.generateCancelExchangeOrder(order)
 
             // update state to 'cancelPending'
-            const patch: TOrderPatch = { status: 'cancelPending' }
+            const patch: TPortfolioOrderPatch = { status: 'cancelPending' }
             const updatedOrder = await this.orderRepository.updateAsync(portfolioId, orderId, patch)
 
             return updatedOrder
@@ -98,7 +98,7 @@ export class PortfolioOrderService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private generateExchangeOrder = (order: TOrder) => {
+    private generateExchangeOrder = (order: TPortfolioOrder) => {
         const exchangeOrder: TNewExchangeOrderConfig = {
             operation: 'order',
             orderType: order.orderType,
@@ -116,7 +116,7 @@ export class PortfolioOrderService {
         return exchangeOrder
     }
 
-    private generateCancelExchangeOrder(order: TOrder) {
+    private generateCancelExchangeOrder(order: TPortfolioOrder) {
         const exchangeOrder: TExchangeCancelOrder = {
             operation: 'cancel',
             assetId: order.assetId,

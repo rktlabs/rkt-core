@@ -48,11 +48,11 @@ describe('League Repository', () => {
             const league = League.newLeague(data)
             await leagueRepository.storeAsync(league)
 
-            await leagueRepository.addLeagueAsset(league.leagueId, {
+            await leagueRepository.attachLeagueAsset(league.leagueId, {
                 assetId: 'card::asset1',
                 displayName: 'card::asset1',
             })
-            await leagueRepository.addLeagueAsset(league.leagueId, {
+            await leagueRepository.attachLeagueAsset(league.leagueId, {
                 assetId: 'card::asset2',
                 displayName: 'card::asset2',
             })
@@ -75,16 +75,16 @@ describe('League Repository', () => {
             const league = League.newLeague(data)
             await leagueRepository.storeAsync(league)
 
-            await leagueRepository.addLeagueAsset(league.leagueId, {
+            await leagueRepository.attachLeagueAsset(league.leagueId, {
                 assetId: 'card::asset1',
                 displayName: 'card::asset1',
             })
-            await leagueRepository.addLeagueAsset(league.leagueId, {
+            await leagueRepository.attachLeagueAsset(league.leagueId, {
                 assetId: 'card::asset2',
                 displayName: 'card::asset2',
             })
 
-            await leagueRepository.dropLeagueAsset(league.leagueId, 'card::asset1')
+            await leagueRepository.detachLeagueAsset(league.leagueId, 'card::asset1')
 
             const readBack = await leagueRepository.getDetailAsync(leagueId)
             expect(readBack).to.exist

@@ -1,3 +1,5 @@
+'use strict'
+
 import { HALSerializer } from 'hal-serializer'
 
 export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
@@ -33,9 +35,9 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                     rel: 'portfolio',
                     id: data.portfolioId,
                 },
-                maker: {
+                marketMaker: {
                     href: `${baseUrl}/makers/${data.assetId}`,
-                    rel: 'maker',
+                    rel: 'marketMaker',
                     id: data.assetId,
                 },
             }

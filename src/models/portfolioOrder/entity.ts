@@ -1,9 +1,11 @@
+'use strict'
+
 import { DateTime } from 'luxon'
 import { generateId, generateNonce } from '../../util/idGenerator'
 import { ValidationError } from '../../errors'
 import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
-import { TOrderEvent, TOrder, TNewOrderProps } from '.'
+import { TPortfolioOrderEvent, TPortfolioOrder, TNewOrderProps } from '.'
 
 export class PortfolioOrder {
     createdAt: string
@@ -18,7 +20,7 @@ export class PortfolioOrder {
     reason?: string
 
     orderPrice?: number
-    events: TOrderEvent[]
+    events: TPortfolioOrderEvent[]
     tags?: any
     xids?: any
 
@@ -28,7 +30,7 @@ export class PortfolioOrder {
     filledValue?: number
     sizeRemaining?: number
 
-    constructor(props: TOrder) {
+    constructor(props: TPortfolioOrder) {
         this.createdAt = props.createdAt
         this.orderId = props.orderId
         this.assetId = props.assetId
@@ -55,14 +57,14 @@ export class PortfolioOrder {
         const createdAt = DateTime.utc().toString()
 
         // only use fields we want. ignore others.
-        const orderEvent: TOrderEvent = {
+        const orderEvent: TPortfolioOrderEvent = {
             notificationType: 'Created',
             publishedAt: createdAt,
             messageId: orderId,
             nonce: generateNonce(),
         }
 
-        const newOrderProps: TOrder = {
+        const newOrderProps: TPortfolioOrder = {
             orderId: orderId,
             createdAt: createdAt,
             orderType: props.orderType || 'market',

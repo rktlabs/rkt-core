@@ -1,3 +1,5 @@
+'use strict'
+
 import { Schema, Validator } from 'jsonschema'
 
 export const validate = (jsonPayload: any) => {
@@ -11,7 +13,7 @@ const _portfolioSchema: Schema = {
     type: 'object',
     properties: {
         type: {
-            type: ['bank', 'asset', 'user', 'league', 'maker'],
+            type: ['bank', 'asset', 'user', 'league', 'marketMaker'],
         },
         portfolioId: { type: 'string' },
         displayName: { type: 'string' },

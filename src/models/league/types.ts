@@ -1,3 +1,5 @@
+'use strict'
+
 import { TAssetCore } from '..'
 
 export type TNewLeagueConfig = {

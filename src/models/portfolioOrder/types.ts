@@ -1,3 +1,5 @@
+'use strict'
+
 export type TNewOrderProps = {
     orderId?: string
     assetId: string
@@ -11,7 +13,7 @@ export type TNewOrderProps = {
 }
 
 // a data item that is stored on the order in the events[] collection.
-export type TOrderEvent = {
+export type TPortfolioOrderEvent = {
     notificationType: string
     publishedAt: string
     nonce: string
@@ -19,7 +21,7 @@ export type TOrderEvent = {
     messageId?: string
 }
 
-export type TOrder = {
+export type TPortfolioOrder = {
     createdAt: string
     orderId: string
     assetId: string
@@ -32,7 +34,7 @@ export type TOrder = {
     reason?: string
 
     orderPrice?: number
-    events: TOrderEvent[]
+    events: TPortfolioOrderEvent[]
     tags?: any
     xids?: any
     closedAt?: string
@@ -42,9 +44,9 @@ export type TOrder = {
     sizeRemaining?: number
 }
 
-export type TOrderPatch = {
+export type TPortfolioOrderPatch = {
     closedAt?: string
-    events?: TOrderEvent[]
+    events?: TPortfolioOrderEvent[]
     filledPrice?: number
     filledSize?: number
     filledValue?: number

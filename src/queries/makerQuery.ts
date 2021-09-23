@@ -1,20 +1,20 @@
-import { MakerRepository } from '../repositories/maker/makerRepository'
+import { MarketMakerRepository } from '../repositories/marketMaker/marketMakerRepository'
 
 export class MakerQuery {
-    makerRepository: MakerRepository
+    marketMakerRepository: MarketMakerRepository
 
     constructor() {
-        this.makerRepository = new MakerRepository()
+        this.marketMakerRepository = new MarketMakerRepository()
     }
 
     async getListAsync(qs?: any) {
         return {
-            data: await this.makerRepository.getListAsync(qs),
+            data: await this.marketMakerRepository.getListAsync(qs),
         }
     }
 
     async getDetailAsync(id: string) {
-        const makerDetail = await this.makerRepository.getDetailAsync(id)
+        const makerDetail = await this.marketMakerRepository.getDetailAsync(id)
         return makerDetail
     }
 }

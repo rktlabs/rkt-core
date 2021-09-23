@@ -1,3 +1,5 @@
+'use strict'
+
 import { serializeCollection } from './serialize'
 
 export class PortfolioActivity {

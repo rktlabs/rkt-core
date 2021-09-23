@@ -10,7 +10,7 @@
     "clean": "rm -rf ./lib && rm -rf node_modules && rm -rf yarn.lock && yarn install",
     "format": "prettier --write \"src/**/*.ts\"  \"tests/**/*.ts\" ",
     "prelint": "yarn run format",
-    "lint": "eslint  ./src/**/*/*.ts",
+    "lint": "eslint  ./src/**/*/*.ts  ./tests/**/*/*.ts",
     "pull": "yarn upgrade makers",
     "prebuild": "yarn run pull && yarn run lint",
     "build": "rm -rf ./lib && tsc",

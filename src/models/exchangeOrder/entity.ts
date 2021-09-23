@@ -1,3 +1,5 @@
+'use strict'
+
 import { DateTime } from 'luxon'
 import { generateId } from '../../util/idGenerator'
 import { ValidationError } from '../../errors'

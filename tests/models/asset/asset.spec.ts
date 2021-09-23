@@ -2,14 +2,14 @@
 /* eslint-env node, mocha */
 import { expect } from 'chai'
 
-import { Asset, TNewAsset } from '../../../src/models'
+import { Asset, TNewAssetConfig } from '../../../src/models'
 
 describe('Asset', () => {
     const assetId = 'card::the.card'
 
     describe('Create New Asset', () => {
         it('new asset should have no portfolioId', async () => {
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 symbol: assetId,
                 ownerId: 'tester',
                 leagueId: 'theLeagueId',
@@ -20,7 +20,7 @@ describe('Asset', () => {
         })
 
         it('no displayname should default to assetId', async () => {
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 symbol: assetId,
                 ownerId: 'tester',
                 leagueId: 'theLeagueId',
@@ -32,7 +32,7 @@ describe('Asset', () => {
         })
 
         it('no leagueDisplayName should default to contrctId', async () => {
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 symbol: assetId,
                 ownerId: 'tester',
                 leagueId: 'theLeagueId',
@@ -45,7 +45,7 @@ describe('Asset', () => {
         it('use displayName if supplied', async () => {
             const displayName = 'thisisme'
 
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 symbol: assetId,
                 ownerId: 'tester',
                 displayName: 'thisisme',
@@ -57,9 +57,7 @@ describe('Asset', () => {
         })
 
         it('use leagueDisplayName if supplied', async () => {
-            const displayName = 'thisisme'
-
-            const data: TNewAsset = {
+            const data: TNewAssetConfig = {
                 symbol: assetId,
                 ownerId: 'tester',
                 leagueId: 'theLeagueId',

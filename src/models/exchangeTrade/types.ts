@@ -1,4 +1,4 @@
-// import { serialize, serializeCollection } from './exchangeTradeSerializer'
+'use strict'
 
 export type TTakerFill = {
     assetId: string

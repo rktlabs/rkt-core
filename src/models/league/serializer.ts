@@ -1,3 +1,5 @@
+'use strict'
+
 import { HALSerializer } from 'hal-serializer'
 
 export const serialize = (selfUrl: string, baseUrl: string, data: any) => {

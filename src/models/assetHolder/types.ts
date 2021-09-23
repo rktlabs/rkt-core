@@ -1,3 +1,5 @@
+'use strict'
+
 export type TAssetHolder = {
     assetId: string
     portfolioId: string

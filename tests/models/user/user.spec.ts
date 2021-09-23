@@ -2,11 +2,11 @@
 /* eslint-env node, mocha */
 import { expect } from 'chai'
 
-import { User, TNewUser } from '../../../src/models'
+import { User, TNewUserConfig } from '../../../src/models'
 
 describe('User', () => {
     it('new user should have no portfolioId', async () => {
-        const data: TNewUser = {
+        const data: TNewUserConfig = {
             userId: '11111',
             dob: '1/2/2021',
             email: 'bjcleaver@cleaver.com',
@@ -21,7 +21,7 @@ describe('User', () => {
 
     describe('Create New User', () => {
         it('new user should have no portfolioId', async () => {
-            const data: TNewUser = {
+            const data: TNewUserConfig = {
                 dob: '1/2/2021',
                 email: 'bjcleaver@cleaver.com',
                 name: 'Boris Cleaver',
@@ -33,7 +33,7 @@ describe('User', () => {
         })
 
         it('no displayname should default to userId', async () => {
-            const data: TNewUser = {
+            const data: TNewUserConfig = {
                 dob: '1/2/2021',
                 email: 'bjcleaver@cleaver.com',
                 name: 'Boris Cleaver',
@@ -46,9 +46,7 @@ describe('User', () => {
         })
 
         it('use displayName if supplied', async () => {
-            const displayName = 'thisisme'
-
-            const data: TNewUser = {
+            const data: TNewUserConfig = {
                 dob: '1/2/2021',
                 email: 'bjcleaver@cleaver.com',
                 name: 'Boris Cleaver',

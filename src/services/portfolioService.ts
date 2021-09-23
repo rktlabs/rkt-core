@@ -4,7 +4,7 @@ import { AssetHolderService } from '.'
 import {
     PortfolioRepository,
     AssetRepository,
-    MakerRepository,
+    MarketMakerRepository,
     LeagueRepository,
     PortfolioActivityRepository,
     PortfolioDepositRepository,
@@ -69,7 +69,7 @@ export class PortfolioService {
 
     async deletePortfolio(portfolioId: string) {
         const assetRepository = new AssetRepository()
-        const makerRepository = new MakerRepository()
+        const marketMakerRepository = new MarketMakerRepository()
         const leagueRepository = new LeagueRepository()
         const userRepository = new UserRepository()
 
@@ -79,9 +79,9 @@ export class PortfolioService {
             throw new ConflictError(`Cannot Delete Portfolio. Asset Portfolio in use: ${assetIds}`)
         }
 
-        let makerIds = await makerRepository.isPortfolioUsed(portfolioId)
+        let makerIds = await marketMakerRepository.isPortfolioUsed(portfolioId)
         if (makerIds) {
-            throw new ConflictError(`Cannot Delete Portfolio. Maker Portfolio in use: ${makerIds}`)
+            throw new ConflictError(`Cannot Delete Portfolio. MarketMaker Portfolio in use: ${makerIds}`)
         }
 
         let leagueIds = await leagueRepository.isPortfolioUsed(portfolioId)

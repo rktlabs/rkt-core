@@ -1,3 +1,5 @@
+'use strict'
+
 import { Validator } from 'jsonschema'
 
 export const exchangeOrderValidator = (transactionJson: any) => {

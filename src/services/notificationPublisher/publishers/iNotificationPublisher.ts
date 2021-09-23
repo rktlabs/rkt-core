@@ -7,7 +7,7 @@ export interface INotificationPublisher {
     publishNotification(payload: any): Promise<void>
 
     // ////////////////////////////////////////////////////////
-    // // Exchange Order Messages
+    // // ExchangeOrder Messages
     // ////////////////////////////////////////////////////////
 
     publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrderConfig, source?: string): Promise<void>
@@ -38,7 +38,7 @@ export interface INotificationPublisher {
     ): Promise<void>
 
     ////////////////////////////////////////////////////////
-    // Order Events
+    // PortfolioOrder Events
     ////////////////////////////////////////////////////////
 
     publishOrderEventFailedAsync(portfolioId: string, orderId: string, reason: string, source?: string): Promise<void>

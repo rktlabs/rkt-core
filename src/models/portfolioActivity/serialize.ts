@@ -1,3 +1,5 @@
+'use strict'
+
 import { HALSerializer } from 'hal-serializer'
 
 export const serializeCollection = (selfUrl: string, portfolioId: string, baseUrl: string, qs: any, data: any) => {

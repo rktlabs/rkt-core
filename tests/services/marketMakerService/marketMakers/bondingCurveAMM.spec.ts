@@ -1,0 +1,283 @@
+'use strict'
+/* eslint-env node, mocha */
+
+import { expect } from 'chai'
+import {
+    AssetService,
+    BondingCurveAMM,
+    BootstrapService,
+    IMarketMaker,
+    MarketMakerRepository,
+    MarketMakerService,
+    TNewMarketMakerConfig,
+} from '../../../../src'
+
+describe('BondingCurveAMM', function () {
+    describe('bonding curve', function () {
+        let makerConfig = {
+            createdAt: '2021-05-07',
+            portfolioId: 'asset::card::testehed',
+            type: 'bondingCurveAMM',
+            ownerId: 'test',
+            assetId: 'card::testehed',
+            params: {},
+        }
+
+        beforeEach(() => {
+            makerConfig.params = {}
+        })
+
+        it('simple amm initial current price should be 1', () => {
+            makerConfig.params = {
+                e: 1,
+                m: 1,
+                madeUnits: 0,
+                cumulativeValue: 0,
+                y0: 1,
+            }
+
+            const maker = new BondingCurveAMM(makerConfig)
+            const currentPrice = maker.spot_price()
+            expect(currentPrice).to.eq(1)
+        })
+
+        it('simple amm with 4 units current price should be 5', () => {
+            makerConfig.params = {
+                e: 1,
+                m: 1,
+                madeUnits: 4,
+                cumulativeValue: 0,
+                y0: 1,
+            }
+
+            const maker = new BondingCurveAMM(makerConfig)
+            const currentPrice = maker.spot_price()
+            expect(currentPrice).to.eq(5)
+        })
+
+        it('simple amm should support buy 4 units', () => {
+            makerConfig.params = {
+                e: 1,
+                m: 1,
+                madeUnits: 0,
+                cumulativeValue: 0,
+                y0: 1,
+            }
+
+            const maker = new BondingCurveAMM(makerConfig)
+            const cost = maker.compute_price(4)
+            expect(cost).to.eq(12)
+        })
+
+        it('simple amm should with initial units should support buy at higher price', () => {
+            makerConfig.params = {
+                e: 1,
+                m: 1,
+                madeUnits: 4,
+                cumulativeValue: 0,
+                y0: 1,
+            }
+
+            const maker = new BondingCurveAMM(makerConfig)
+            const cost = maker.compute_price(4)
+            expect(cost).to.eq(28)
+        })
+
+        it('simple amm should have symmetric price/value', () => {
+            makerConfig.params = {
+                e: 1,
+                m: 1,
+                madeUnits: 4,
+                cumulativeValue: 0,
+                y0: 1,
+            }
+
+            const maker = new BondingCurveAMM(makerConfig)
+            const cost = maker.compute_value(4)
+            expect(cost).to.eq(12)
+
+            const cost2 = maker.compute_price(-4)
+            expect(cost2).to.eq(-12)
+        })
+    })
+
+    describe('market maker process order', function () {
+        let makerConfig = {
+            createdAt: '2021-05-07',
+            portfolioId: 'asset::card::testehed',
+            type: 'bondingCurveAMM',
+            ownerId: 'test',
+            assetId: 'card::testehed',
+            params: {},
+        }
+
+        beforeEach(() => {
+            makerConfig.params = {}
+        })
+
+        it('buy', () => {
+            makerConfig.params = {
+                e: 1,
+                m: 1,
+                madeUnits: 0,
+                cumulativeValue: 0,
+                y0: 1,
+            }
+
+            const maker = new BondingCurveAMM(makerConfig)
+            const result = maker.processAMMOrderImpl(4)
+            expect(result.makerDeltaUnits).eq(-4)
+            expect(result.makerDeltaValue).eq(12)
+            expect(result.quote.last.side).eq('bid')
+            expect(result.quote.last.units).eq(4)
+            expect(result.quote.last.value).eq(12)
+            expect(result.quote.last.unitValue).eq(3)
+
+            expect(maker.params.madeUnits).eq(4)
+            expect(maker.params.cumulativeValue).eq(12)
+
+            const result2 = maker.processAMMOrderImpl(10)
+
+            // verify that ask quote matches price paid for that purchase
+            expect(result2.quote.last.unitValue).eq(result.quote.bid10)
+        })
+    })
+
+    describe('persist market maker', function () {
+        this.timeout(10000)
+
+        let bootstrapper: BootstrapService
+        let assetService: AssetService
+        let marketMakerService: MarketMakerService
+        let marketMakerRepository: MarketMakerRepository
+
+        const assetId = 'card::testehed'
+        let marketMaker: IMarketMaker
+
+        before(async () => {
+            bootstrapper = new BootstrapService()
+            assetService = new AssetService()
+            marketMakerService = new MarketMakerService()
+            marketMakerRepository = new MarketMakerRepository()
+            await bootstrapper.bootstrap()
+
+            await assetService.scrubAsset(assetId)
+
+            const assetConfig = {
+                ownerId: 'test',
+                symbol: assetId,
+                displayName: assetId,
+                tags: {
+                    test: true,
+                },
+            }
+
+            await assetService.createAsset(assetConfig)
+        })
+
+        describe('persist market maker', function () {
+            beforeEach(async () => {
+                await marketMakerService.scrubMarketMaker(assetId)
+                const makerConfig: TNewMarketMakerConfig = {
+                    type: 'bondingCurveAMM',
+                    ownerId: 'test',
+                    assetId: assetId,
+                    tags: {
+                        test: true,
+                    },
+                    settings: {
+                        initialUnits: 0,
+                        initialValue: 0,
+                        initialPrice: 1,
+                        e: 1,
+                        m: 1,
+                    },
+                }
+
+                marketMaker = await marketMakerService.createMarketMaker(makerConfig, false)
+                expect(marketMaker).to.exist
+            })
+
+            describe('Create Basic MarketMaker', () => {
+                it('should create', async () => {
+                    await marketMaker.processOrderImpl('bid', 4)
+
+                    const readBack = await marketMakerRepository.getDetailAsync(assetId)
+                    if (readBack) {
+                        expect(readBack?.quote?.last?.side).eq('bid')
+                        expect(readBack?.quote?.last?.units).eq(4)
+                        expect(readBack?.quote?.last?.value).eq(12)
+                        expect(readBack?.quote?.last?.unitValue).eq(3)
+
+                        expect(readBack.params.madeUnits).eq(4)
+                        expect(readBack.params.cumulativeValue).eq(12)
+                    } else {
+                        expect.fail('nothing read back')
+                    }
+                })
+            })
+
+            describe('Create Basic MarketMaker', () => {
+                it('should create', async () => {
+                    await marketMaker.processOrderImpl('bid', 2)
+
+                    const readBack = await marketMakerRepository.getDetailAsync(assetId)
+                    if (readBack) {
+                        expect(readBack?.quote?.last?.side).eq('bid')
+                        expect(readBack?.quote?.last?.units).eq(2)
+                        expect(readBack?.quote?.last?.value).eq(4)
+                        expect(readBack?.quote?.last?.unitValue).eq(2)
+
+                        expect(readBack.params.madeUnits).eq(2)
+                        expect(readBack.params.cumulativeValue).eq(4)
+                    } else {
+                        expect.fail('nothing read back')
+                    }
+                })
+            })
+        })
+
+        describe('persist market maker with units', function () {
+            beforeEach(async () => {
+                await marketMakerService.scrubMarketMaker(assetId)
+                const makerConfig: TNewMarketMakerConfig = {
+                    type: 'bondingCurveAMM',
+                    ownerId: 'test',
+                    assetId: assetId,
+                    tags: {
+                        test: true,
+                    },
+                    settings: {
+                        initialUnits: 4,
+                        initialValue: 12,
+                        initialPrice: 1,
+                        e: 1,
+                        m: 1,
+                    },
+                }
+
+                marketMaker = await marketMakerService.createMarketMaker(makerConfig, false)
+                expect(marketMaker).to.exist
+            })
+
+            describe('Create Basic MarketMaker', () => {
+                it('should create', async () => {
+                    await marketMaker.processOrderImpl('ask', 2)
+
+                    const readBack = await marketMakerRepository.getDetailAsync(assetId)
+                    if (readBack) {
+                        expect(readBack?.quote?.last?.side).eq('ask')
+                        expect(readBack?.quote?.last?.units).eq(2)
+                        expect(readBack?.quote?.last?.value).eq(8)
+                        expect(readBack?.quote?.last?.unitValue).eq(4)
+
+                        expect(readBack.params.madeUnits).eq(2)
+                        expect(readBack.params.cumulativeValue).eq(4)
+                    } else {
+                        expect.fail('nothing read back')
+                    }
+                })
+            })
+        })
+    })
+})

@@ -1,9 +1,12 @@
-import { DateTime } from 'luxon'
-import { generateId } from '../..'
-import { ValidationError, TypeError, NameError } from '../../errors'
-import { serialize, serializeCollection } from './serializer'
-import { TUser, TNewUserConfig } from './types'
+'use strict'
+
 import { validate } from './validator'
+import { DateTime } from 'luxon'
+import { TUser, TNewUserConfig } from '.'
+import { serialize, serializeCollection } from './serializer'
+
+import { NameError, ValidationError } from '../../errors'
+import { generateId } from '../../util/idGenerator'
 
 // User holds value (coin) and shares to be sold.
 export class User {

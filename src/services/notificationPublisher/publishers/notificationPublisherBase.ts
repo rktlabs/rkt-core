@@ -10,7 +10,7 @@ export abstract class NotificationPublisherBase implements INotificationPublishe
     abstract publishNotification(payload: any): Promise<void>
 
     ////////////////////////////////////////////////////////
-    // Exchange Order Notifications
+    // ExchangeOrder Notifications
     ////////////////////////////////////////////////////////
 
     async publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrderConfig, source: string) {
@@ -74,7 +74,7 @@ export abstract class NotificationPublisherBase implements INotificationPublishe
     }
 
     ////////////////////////////////////////////////////////
-    // Order Notifications
+    // PortfolioOrder Notifications
     ////////////////////////////////////////////////////////
 
     async publishOrderEventFailedAsync(portfolioId: string, orderId: string, reason: string, source: string) {

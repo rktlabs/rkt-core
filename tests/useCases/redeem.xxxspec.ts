@@ -74,7 +74,7 @@
 //                 portfolioAssetService.getPortfolioAssetBalance('league::test', 'coin::fantx'),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, 'coin::fantx'),
 //             ])
-//             console.log(
+//             cxonsole.log(
 //                 `init: asset units: ${assetUnitBalance}, portfolio units: ${userUnitBalance} contratCoins: ${leagueCoins} userCoints: ${userCoins}`,
 //             )
 
@@ -87,7 +87,7 @@
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, 'coin::fantx'),
 //             ])
 
-//             console.log(
+//             cxonsole.log(
 //                 `after: asset units: ${newAssetUnitBalance}, portfolio units: ${newUserUnitBalance} contratCoins: ${newLeagueCoins} userCoints: ${newUserCoins}`,
 //             )
 //         })
@@ -109,7 +109,7 @@
 //                 portfolioAssetService.getPortfolioAssetBalance('league::test', 'coin::fantx'),
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, 'coin::fantx'),
 //             ])
-//             console.log(
+//             cxonsole.log(
 //                 `init: asset units: ${assetUnitBalance}, portfolio units: ${userUnitBalance} leagueCoins: ${leagueCoins} userCoints: ${userCoins}`,
 //             )
 
@@ -122,7 +122,7 @@
 //                 portfolioAssetService.getPortfolioAssetBalance(userPortfolio, 'coin::fantx'),
 //             ])
 
-//             console.log(
+//             cxonsole.log(
 //                 `after: asset units: ${newAssetUnitBalance}, portfolio units: ${newUserUnitBalance} leagueCoins: ${newLeagueCoins} userCoints: ${newUserCoins}`,
 //             )
 //         })

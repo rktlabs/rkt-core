@@ -2,7 +2,7 @@
 /* eslint-env node, mocha */
 
 import { expect } from 'chai'
-import { User, TNewUser } from '../../src/models'
+import { User, TNewUserConfig } from '../../src/models'
 import { UserRepository } from '../../src/repositories'
 
 describe('User Repository', () => {
@@ -14,7 +14,7 @@ describe('User Repository', () => {
 
     describe('Create Basic User', () => {
         it('should create', async () => {
-            const data: TNewUser = {
+            const data: TNewUserConfig = {
                 dob: '1/2/2021',
                 email: 'bjcleaver@cleaver.com',
                 name: 'Boris Cleaver',
@@ -36,7 +36,7 @@ describe('User Repository', () => {
 
     describe('Create Full User', () => {
         it('should create', async () => {
-            const data: TNewUser = {
+            const data: TNewUserConfig = {
                 dob: '1/2/2021',
                 email: 'bjcleaver@cleaver.com',
                 name: 'Boris Cleaver',

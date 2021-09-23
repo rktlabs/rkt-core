@@ -1,5 +1,5 @@
 'use strict'
-import { TOrder, TOrderPatch } from '../../models/portfolioOrder'
+import { TPortfolioOrder, TPortfolioOrderPatch } from '../../models/portfolioOrder'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
@@ -26,7 +26,7 @@ export class PortfolioOrderRepository extends RepositoryBase {
         const entityCollectionRefs = await entityRefCollection.get()
 
         const entityList = entityCollectionRefs.docs.map((entityDoc) => {
-            const entity = entityDoc.data() as TOrder
+            const entity = entityDoc.data() as TPortfolioOrder
             return entity
         })
         return entityList
@@ -42,11 +42,11 @@ export class PortfolioOrderRepository extends RepositoryBase {
         if (!entityDoc.exists) {
             return null
         }
-        const entity = entityDoc.data() as TOrder
+        const entity = entityDoc.data() as TPortfolioOrder
         return entity
     }
 
-    async storeAsync(portfolioId: string, entity: TOrder) {
+    async storeAsync(portfolioId: string, entity: TPortfolioOrder) {
         const entityJson = JSON.parse(JSON.stringify(entity))
         const entityRef = await this.db
             .collection(COLLECTION_NAME)
@@ -57,7 +57,7 @@ export class PortfolioOrderRepository extends RepositoryBase {
         await entityRef.set(entityJson)
     }
 
-    async updateAsync(portfolioId: string, orderId: string, entityJson: TOrderPatch) {
+    async updateAsync(portfolioId: string, orderId: string, entityJson: TPortfolioOrderPatch) {
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)
@@ -66,7 +66,11 @@ export class PortfolioOrderRepository extends RepositoryBase {
         await entityRef.update(entityJson)
     }
 
-    async atomicUpdateAsync(portfolioId: string, orderId: string, func: (order: TOrder) => TOrder | undefined) {
+    async atomicUpdateAsync(
+        portfolioId: string,
+        orderId: string,
+        func: (order: TPortfolioOrder) => TPortfolioOrder | undefined,
+    ) {
         // needs to perform 1 or 2 updates and perform them in a transaction
         try {
             const entityRef = this.db
@@ -76,7 +80,7 @@ export class PortfolioOrderRepository extends RepositoryBase {
                 .doc(orderId)
             await this.db.runTransaction(async (t) => {
                 const entityDoc = await t.get(entityRef)
-                const entity = entityDoc.data() as TOrder
+                const entity = entityDoc.data() as TPortfolioOrder
                 if (entity) {
                     const changes = func(entity)
                     if (changes) {

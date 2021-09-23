@@ -1,5 +1,5 @@
 export * from './user'
-export * from './maker'
+export * from './marketMaker'
 export * from './league'
 export * from './transaction'
 export * from './asset'

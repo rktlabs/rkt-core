@@ -1,3 +1,5 @@
+'use strict'
+
 export type TNewAssetConfig = {
     ownerId: string
     symbol: string

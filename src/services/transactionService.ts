@@ -1,6 +1,7 @@
 'use strict'
 
 import { DateTime } from 'luxon'
+import * as log4js from 'log4js'
 import { INotificationPublisher, AssetHolderService, NullNotificationPublisher } from '.'
 import {
     PortfolioRepository,
@@ -18,6 +19,7 @@ import {
     TransactionLeg,
     generateId,
 } from '..'
+const logger = log4js.getLogger()
 
 export class TransactionService {
     private eventPublisher: INotificationPublisher
@@ -86,7 +88,6 @@ export class TransactionService {
         return this.executeTransactionAsync(transaction)
     }
 
-    // EJH: used by treasury service and mint services to move funds from one portfolio to another
     // a transfer is a transaction with one input, out output, and one asset
     async executeTransferAsync(transferData: TTransfer) {
         //logger.debug(`Handle Transfer: ${JSON.stringify(transferData)}`)
@@ -119,9 +120,8 @@ export class TransactionService {
         return this.executeTransactionAsync(transaction)
     }
 
-    // EJH: used by exchangeService xact()
     async executeTransactionAsync(transactionData: TTransactionNew) {
-        //logger.debug(`Handle Create Transaction: ${JSON.stringify(transactionData)}`)
+        logger.debug(`Handle Create Transaction: ${JSON.stringify(transactionData)}`)
 
         const transaction = Transaction.newTransaction(transactionData)
         const transactionId = transaction.transactionId

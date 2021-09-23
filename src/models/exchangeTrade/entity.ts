@@ -1,3 +1,5 @@
+'use strict'
+
 import { serialize, serializeCollection } from './serializer'
 
 export class ExchangeTrade {

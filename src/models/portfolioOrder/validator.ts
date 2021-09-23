@@ -1,3 +1,5 @@
+'use strict'
+
 // import { ValidationError }  from 'jsonschema'
 
 import { Schema, Validator } from 'jsonschema'

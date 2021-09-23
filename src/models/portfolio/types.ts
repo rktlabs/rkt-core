@@ -1,3 +1,5 @@
+'use strict'
+
 export type TPortfolio = {
     portfolioId: string
     createdAt: string

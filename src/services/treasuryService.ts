@@ -127,7 +127,7 @@ export class TreasuryService {
             assetId: 'currency::usd',
             units: units,
         }
-        return this.portfolioService.recordPortfolioDeposit(deposit)
+        return await this.portfolioService.recordPortfolioDeposit(deposit)
     }
 
     async withdrawCoins(userId: string, units: number, coinId = COIN) {

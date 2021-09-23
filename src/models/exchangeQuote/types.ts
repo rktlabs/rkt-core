@@ -1,3 +1,5 @@
+'use strict'
+
 export type TExchangeQuote = {
     assetId: string
     bid: number

@@ -13,7 +13,7 @@ describe('Asset Service', function () {
     let portfolioRepository: PortfolioRepository
     let assetService: AssetService
     let bootstrapper: BootstrapService
-    let assetId: string = 'card::test1'
+    const assetId = 'card::test1'
 
     before(async () => {
         assetRepository = new AssetRepository()

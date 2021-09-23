@@ -1,10 +1,12 @@
+'use strict'
+
 import { HALSerializer } from 'hal-serializer'
 
 export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('exchangeQuote', {
-        whitelist: ['quoteAt', 'lastPrice', 'lastTrade'],
+        whitelist: ['quoteAt', 'lastTrade'],
         links: (record: any) => {
             return {
                 asset: {

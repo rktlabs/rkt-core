@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import * as log4js from 'log4js'
 import { TNotification } from '.'
-import { PortfolioOrderRepository, TOrder, TOrderEvent } from '..'
+import { PortfolioOrderRepository, TPortfolioOrder, TPortfolioOrderEvent } from '..'
 
 const logger = log4js.getLogger()
 
@@ -19,19 +19,23 @@ export class PortfolioOrderEventService {
         const portfolioId = payload.attributes.portfolioId
 
         // NOTE: payload is captured in closure?
-        await this.orderRepository.atomicUpdateAsync(portfolioId, orderId, (order: TOrder): TOrder | undefined => {
-            return this.processOrderEvent(order, payload)
-        })
+        await this.orderRepository.atomicUpdateAsync(
+            portfolioId,
+            orderId,
+            (order: TPortfolioOrder): TPortfolioOrder | undefined => {
+                return this.processOrderEvent(order, payload)
+            },
+        )
     }
 
     ////////////////////////////////////////////////////////
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private processOrderEvent = (order: TOrder, payload: TNotification): TOrder | undefined => {
+    private processOrderEvent = (order: TPortfolioOrder, payload: TNotification): TPortfolioOrder | undefined => {
         // verify that the message is not a duplicate (using messageId)
         // if it's a dup, don't process.
-        const existingEvent = order.events.filter((event: TOrderEvent) => {
+        const existingEvent = order.events.filter((event: TPortfolioOrderEvent) => {
             return event.messageId && event.messageId === payload.messageId
         })
 
@@ -56,9 +60,9 @@ export class PortfolioOrderEventService {
         }
     }
 
-    private appendOrderEvent = (order: TOrder, payload: TNotification) => {
+    private appendOrderEvent = (order: TPortfolioOrder, payload: TNotification) => {
         const events = order.events || []
-        const orderEvent: TOrderEvent = {
+        const orderEvent: TPortfolioOrderEvent = {
             notificationType: payload.notificationType,
             publishedAt: payload.publishedAt,
             messageId: payload.messageId,
@@ -66,19 +70,19 @@ export class PortfolioOrderEventService {
             attributes: payload.attributes,
         }
         events.push(orderEvent)
-        order.events = events.sort((a: TOrderEvent, b: TOrderEvent) =>
+        order.events = events.sort((a: TPortfolioOrderEvent, b: TPortfolioOrderEvent) =>
             (a.publishedAt || '').localeCompare(b.publishedAt || ''),
         )
         return order
     }
 
-    private close = (order: TOrder) => {
+    private close = (order: TPortfolioOrder) => {
         order.state = 'closed'
         order.closedAt = DateTime.utc().toString()
         return order
     }
 
-    private updateStatus = (order: TOrder, newStatus: string, reason?: string) => {
+    private updateStatus = (order: TPortfolioOrder, newStatus: string, reason?: string) => {
         order.status = newStatus
         if (reason) {
             order.reason = reason
@@ -86,7 +90,7 @@ export class PortfolioOrderEventService {
         return order
     }
 
-    private processFillEvent = (order: TOrder, payload: TNotification) => {
+    private processFillEvent = (order: TPortfolioOrder, payload: TNotification) => {
         // can fill whenever. don't ignore (if comes out of order)
         order.filledSize = payload.attributes.filledSize
         order.filledValue = payload.attributes.filledValue
@@ -96,7 +100,7 @@ export class PortfolioOrderEventService {
         return order
     }
 
-    private processFailedEvent = (order: TOrder, payload: TNotification) => {
+    private processFailedEvent = (order: TPortfolioOrder, payload: TNotification) => {
         switch (order.status) {
             case 'received':
                 order = this.updateStatus(order, 'failed', payload.attributes.reason)
@@ -117,7 +121,7 @@ export class PortfolioOrderEventService {
         return order
     }
 
-    private processCompleteEvent = (order: TOrder, payload: TNotification) => {
+    private processCompleteEvent = (order: TPortfolioOrder, payload: TNotification) => {
         switch (order.status) {
             case 'received':
                 order = this.updateStatus(order, 'filled')

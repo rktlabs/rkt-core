@@ -1,3 +1,5 @@
+'use strict'
+
 export type TNewUserConfig = {
     userId?: string
     dob: string
@@ -28,6 +30,3 @@ export type TUser = {
     isNew?: boolean
     referrerId?: string
 }
-
-// export type TUserUpdate = {
-// }

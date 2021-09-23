@@ -1,7 +1,6 @@
 'use strict'
 
-import { DateTime } from 'luxon'
-import { INotificationPublisher, NullNotificationPublisher, PortfolioService, TransactionService } from '.'
+import { PortfolioService } from '.'
 import { UserRepository, PortfolioRepository, TNewUserConfig, DuplicateError, ConflictError, User } from '..'
 
 const BANK_PORTFOLIO = 'bank::treasury'
@@ -53,7 +52,7 @@ export class UserService {
             const treasuryPortfolioId = BANK_PORTFOLIO
             const treasuryPortfolio = await this.portfolioRepository.getDetailAsync(treasuryPortfolioId)
             if (!treasuryPortfolio) {
-                const msg = `Maker Creation Failed - treasury portfolioId: ${treasuryPortfolioId} does not exist`
+                const msg = `MarketMaker Creation Failed - treasury portfolioId: ${treasuryPortfolioId} does not exist`
                 throw new ConflictError(msg, { portfolioId: treasuryPortfolioId })
             }
         }

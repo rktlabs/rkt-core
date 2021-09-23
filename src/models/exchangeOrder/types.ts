@@ -1,3 +1,5 @@
+'use strict'
+
 export type TNewExchangeOrderConfig = {
     operation: string // one of order, cancel
     orderType: string // market or limit

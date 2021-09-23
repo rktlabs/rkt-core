@@ -4,13 +4,7 @@
 import { expect } from 'chai'
 
 import * as sinon from 'sinon'
-import {
-    LeagueRepository,
-    AssetRepository,
-    PortfolioRepository,
-    LeagueService,
-    PortfolioHoldingService,
-} from '../../src'
+import { LeagueRepository, AssetRepository, PortfolioRepository, LeagueService, AssetHolderService } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe('League Service', function () {
@@ -19,8 +13,7 @@ describe('League Service', function () {
     let leagueRepository: LeagueRepository
     let assetRepository: AssetRepository
     let profileRepository: PortfolioRepository
-
-    let portfolioHoldingService: PortfolioHoldingService
+    let assetHolderService: AssetHolderService
     let leagueService: LeagueService
     let boostrapService: BootstrapService
 
@@ -31,7 +24,7 @@ describe('League Service', function () {
         profileRepository = new PortfolioRepository()
         assetRepository = new AssetRepository()
 
-        portfolioHoldingService = new PortfolioHoldingService()
+        assetHolderService = new AssetHolderService()
         leagueService = new LeagueService()
         boostrapService = new BootstrapService()
     })

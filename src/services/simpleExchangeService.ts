@@ -6,7 +6,7 @@ import {
     InsufficientBalance,
     TransactionService,
     PortfolioRepository,
-    MakerService,
+    MarketMakerService,
     ExchangeQuoteRepository,
     INotificationPublisher,
     AssetHolderRepository,
@@ -21,7 +21,7 @@ export class SimpleExchangeService {
     private assetHolderRepository: AssetHolderRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
     private transactionService: TransactionService
-    private makerService: MakerService
+    private marketMakerService: MarketMakerService
 
     constructor(eventPublisher?: INotificationPublisher) {
         this.assetHolderRepository = new AssetHolderRepository()
@@ -31,7 +31,7 @@ export class SimpleExchangeService {
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
         this.transactionService = new TransactionService(eventPublisher)
-        this.makerService = new MakerService()
+        this.marketMakerService = new MarketMakerService()
     }
 
     async buy(userId: string, assetId: string, orderSize: number) {
@@ -74,7 +74,7 @@ export class SimpleExchangeService {
             throw new ConflictError(msg)
         }
 
-        const maker = await this.makerService.getMakerAsync(assetId)
+        const maker = await this.marketMakerService.getMakerAsync(assetId)
         if (!maker) {
             const msg = `Order Failed - marketMaker not found (${assetId})`
             throw new ConflictError(msg)
@@ -82,14 +82,14 @@ export class SimpleExchangeService {
 
         const tradeUnits = await maker.processOrderImpl(orderSide, orderSize)
         if (tradeUnits) {
-            const { makerDeltaUnits, makerDeltaCoins } = tradeUnits
+            const { makerDeltaUnits, makerDeltaValue } = tradeUnits
 
             if (makerDeltaUnits) {
                 const orderId = '--NA--'
                 const tradeId = '--NA--'
                 const takerPortfolioId = portfolioId
                 const takerDeltaUnits = makerDeltaUnits * -1
-                const takerDeltaValue = makerDeltaCoins * -1
+                const takerDeltaValue = makerDeltaValue * -1
                 const makerPortfolioId = assetPortfolioId
 
                 await this.process_transaction(
