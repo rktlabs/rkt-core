@@ -1,5 +1,5 @@
 import { MarketMakerRepository } from '../repositories/marketMaker/marketMakerRepository';
-export declare class MakerQuery {
+export declare class MarketMakerQuery {
     marketMakerRepository: MarketMakerRepository;
     constructor(marketMakerRepository: MarketMakerRepository);
     getListAsync(qs?: any): Promise<{

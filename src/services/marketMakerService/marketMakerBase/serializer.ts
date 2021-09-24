@@ -57,21 +57,21 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
 
     if (page > 1 || hasMore) {
         collectionLinks.first = {
-            href: `${baseUrl}/makers?${linkQS}page=1&pageSize=${pageSize}`,
+            href: `${baseUrl}/marketMakers?${linkQS}page=1&pageSize=${pageSize}`,
         }
         if (page > 1) {
             collectionLinks.prev = {
-                href: `${baseUrl}/makers?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/marketMakers?${linkQS}page=${page - 1}&pageSize=${pageSize}`,
             }
         }
         if (hasMore) {
             collectionLinks.next = {
-                href: `${baseUrl}/makers?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
+                href: `${baseUrl}/marketMakers?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
         // if (page <= pages) {
         //     collectionLinks.last = {
-        //         href: `${baseUrl}/makers?${linkQS}page=${pages}`,
+        //         href: `${baseUrl}/marketMakers?${linkQS}page=${pages}`,
         //     }
         // }
     }
@@ -82,7 +82,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/makers/${record.assetId}`,
+                    href: `${baseUrl}/marketMakers/${record.assetId}`,
                     rel: 'marketMaker',
                 },
             }

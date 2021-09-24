@@ -1,5 +1,5 @@
 export * from '../queries/assetQuery'
-export * from '../queries/makerQuery'
+export * from '../queries/marketMakerQuery'
 export * from '../queries/portfolioQuery'
 export * from '../queries/transactionQuery'
 export * from '../queries/userQuery'

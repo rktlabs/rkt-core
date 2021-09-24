@@ -25,7 +25,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                     id: data.portfolioId,
                 },
                 marketMaker: {
-                    href: `${baseUrl}/makers/${data.assetId}`,
+                    href: `${baseUrl}/marketMakers/${data.assetId}`,
                     rel: 'marketMaker',
                     id: data.assetId,
                 },

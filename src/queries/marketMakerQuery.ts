@@ -1,6 +1,6 @@
 import { MarketMakerRepository } from '../repositories/marketMaker/marketMakerRepository'
 
-export class MakerQuery {
+export class MarketMakerQuery {
     marketMakerRepository: MarketMakerRepository
 
     constructor(marketMakerRepository: MarketMakerRepository) {
