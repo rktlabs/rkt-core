@@ -1,24 +1,24 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
-import { INotificationPublisher, AssetHolderService, NullNotificationPublisher } from '.'
+import { AssetHolderService, INotificationPublisher, NullNotificationPublisher } from '.'
 import {
-    PortfolioRepository,
-    AssetRepository,
     AssetHolderRepository,
-    TransactionRepository,
-    TPurchase,
-    TTransactionNew,
-    TTransfer,
-    Transaction,
-    ValidationError,
+    AssetRepository,
+    ConflictError,
+    generateId,
     InsufficientBalance,
     InvalidTransaction,
-    ConflictError,
+    PortfolioRepository,
+    TPurchase,
+    Transaction,
     TransactionLeg,
-    generateId,
+    TransactionRepository,
+    TTransactionNew,
+    TTransfer,
+    ValidationError,
 } from '..'
-import * as log4js from 'log4js'
 const logger = log4js.getLogger('transactionService')
 
 export class TransactionService {
@@ -33,14 +33,14 @@ export class TransactionService {
     constructor(
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
         eventPublisher?: INotificationPublisher,
     ) {
         this.eventPublisher = eventPublisher || new NullNotificationPublisher()
         this.portfolioRepository = portfolioRepository
         this.assetRepository = assetRepository
         this.assetHolderRepository = new AssetHolderRepository()
-        this.transactionRepository = new TransactionRepository()
-        //this.assetHolderService = new AssetHolderService()
+        this.transactionRepository = transactionRepository
         this.assetHolderService = new AssetHolderService(this.assetRepository)
     }
 

@@ -8,6 +8,8 @@ import {
     TNewMarketMakerConfig,
     AssetRepository,
     PortfolioRepository,
+    TransactionRepository,
+    UserRepository,
 } from '..'
 
 export class BootstrapService {
@@ -17,12 +19,17 @@ export class BootstrapService {
     private leagueService: LeagueService
     private marketMakerService: MarketMakerService
 
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
-        this.userService = new UserService(portfolioRepository)
-        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
-        this.assetService = new AssetService(assetRepository, portfolioRepository)
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
+        userRepository: UserRepository,
+    ) {
+        this.userService = new UserService(portfolioRepository, userRepository)
+        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
+        this.assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
         this.portfolioService = new PortfolioService(portfolioRepository)
-        this.leagueService = new LeagueService(assetRepository, portfolioRepository)
+        this.leagueService = new LeagueService(assetRepository, portfolioRepository, transactionRepository)
     }
 
     async bootRkt() {

@@ -1,11 +1,11 @@
 'use strict'
 
-import { deleteDocument } from '../../util/deleters'
+import * as log4js from 'log4js'
 import { TAssetHolder } from '../../models/assetHolder'
+import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-import * as log4js from 'log4js'
 const logger = log4js.getLogger('assetHolderRepository')
 
 const COLLECTION_NAME = 'assets'

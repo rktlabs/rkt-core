@@ -11,6 +11,8 @@ import {
     MarketMakerService,
     PortfolioRepository,
     TNewMarketMakerConfig,
+    TransactionRepository,
+    UserRepository,
 } from '../../../src'
 
 describe('MarketMakerService', () => {
@@ -19,19 +21,28 @@ describe('MarketMakerService', () => {
 
         let bootstrapper: BootstrapService
         let assetRepository: AssetRepository
+        let transactionRepository: TransactionRepository
         let portfolioRepository: PortfolioRepository
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let marketMakerRepository: MarketMakerRepository
+        let userRepository: UserRepository
 
         const assetId = 'card::testehed'
         let marketMaker: IMarketMaker
 
         before(async () => {
             assetRepository = new AssetRepository()
-            bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
-            assetService = new AssetService(assetRepository, portfolioRepository)
-            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
+            userRepository = new UserRepository()
+            transactionRepository = new TransactionRepository()
+            bootstrapper = new BootstrapService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                userRepository,
+            )
+            assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
+            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
             marketMakerRepository = new MarketMakerRepository()
             await bootstrapper.bootstrap()
 

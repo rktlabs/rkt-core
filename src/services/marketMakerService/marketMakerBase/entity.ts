@@ -1,19 +1,27 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import { TOrder, Trade } from '../..'
-import { Asset, AssetRepository, MarketMakerRepository, NotFoundError, PortfolioRepository } from '../../..'
+import {
+    Asset,
+    AssetRepository,
+    MarketMakerRepository,
+    NotFoundError,
+    PortfolioRepository,
+    TransactionRepository,
+} from '../../..'
 import { IMarketMaker } from './interfaces'
 import { serialize, serializeCollection } from './serializer'
-import { TMarketMaker, TMakerResult } from './types'
+import { TMakerResult, TMarketMaker } from './types'
 
-import * as log4js from 'log4js'
 const logger = log4js.getLogger()
 
 // MarketMaker holds value and shares to be sold.
 export abstract class MarketMakerBase implements IMarketMaker {
     assetRepository: AssetRepository
-    marketMakerRepository: MarketMakerRepository
     portfolioRepository: PortfolioRepository
+    transactionRepository: TransactionRepository
+    marketMakerRepository: MarketMakerRepository
 
     createdAt: string
     type: string
@@ -24,9 +32,12 @@ export abstract class MarketMakerBase implements IMarketMaker {
     params?: any
     quote?: any
 
-    // currentPrice?: number
-
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, props: TMarketMaker) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
+        props: TMarketMaker,
+    ) {
         this.createdAt = props.createdAt
         this.type = props.type
         this.assetId = props.assetId
@@ -36,11 +47,10 @@ export abstract class MarketMakerBase implements IMarketMaker {
         this.params = props.params
         this.quote = props.quote
 
-        // this.currentPrice = props.currentPrice
-
         this.assetRepository = assetRepository
-        this.marketMakerRepository = new MarketMakerRepository()
         this.portfolioRepository = portfolioRepository
+        this.transactionRepository = transactionRepository
+        this.marketMakerRepository = new MarketMakerRepository()
     }
 
     flattenMaker() {
@@ -52,8 +62,6 @@ export abstract class MarketMakerBase implements IMarketMaker {
             tags: this.tags,
             params: this.params,
             quote: this.quote,
-
-            // currentPrice: this.currentPrice,
         }
         if (this.portfolioId) {
             makerData.portfolioId = this.portfolioId

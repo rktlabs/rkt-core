@@ -1,5 +1,5 @@
 import { RepositoryBase } from './repositoryBase';
-export declare class CachingRepository extends RepositoryBase {
+export declare class CacheableRepository extends RepositoryBase {
     entityCache: any;
     constructor();
     cacheLookup(entityId: string): any;

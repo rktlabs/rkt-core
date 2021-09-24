@@ -1,15 +1,15 @@
 'use strict'
+import * as log4js from 'log4js'
 import { TPortfolio, TPortfolioUpdate as TPortfolioUpdate } from '../..'
 import { deleteDocument } from '../../util/deleters'
+import { CacheableRepository } from '../cacheableRepository'
 import { getConnectionProps } from '../getConnectionProps'
 
-import * as log4js from 'log4js'
-import { CachingRepository } from '../cachingRepository'
 const logger = log4js.getLogger('portfolioRepository')
 
 const COLLECTION_NAME = 'portfolios'
 
-export class PortfolioRepository extends CachingRepository {
+export class PortfolioRepository extends CacheableRepository {
     db: FirebaseFirestore.Firestore
     constructor() {
         super()
@@ -39,7 +39,6 @@ export class PortfolioRepository extends CachingRepository {
     async getDetailAsync(entityId: string) {
         const cachedItem = this.cacheLookup(entityId)
         if (cachedItem) {
-            logger.trace(`cachedItem: ${entityId}`)
             return cachedItem
         }
 

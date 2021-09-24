@@ -1,31 +1,31 @@
 'use strict'
 
-import { DateTime } from 'luxon'
 import * as log4js from 'log4js'
-const logger = log4js.getLogger()
-
+import { DateTime } from 'luxon'
 import {
-    ExchangeOrderRepository,
-    ExchangeTradeRepository,
-    TNewExchangeOrderConfig,
-    ExchangeOrder,
-    round4,
-    ConflictError,
-    InsufficientBalance,
-    TransactionService,
-    PortfolioRepository,
-    MarketMakerService,
-    ExchangeQuoteRepository,
-    NullNotificationPublisher,
-    INotificationPublisher,
     AssetHolderRepository,
     AssetRepository,
-    Trade,
-    TTaker,
-    OrderSide,
+    ConflictError,
+    ExchangeOrder,
+    ExchangeOrderRepository,
+    ExchangeQuoteRepository,
+    ExchangeTradeRepository,
     IMarketMaker,
-    TAssetUpdate,
+    INotificationPublisher,
+    InsufficientBalance,
+    MarketMakerService,
+    NullNotificationPublisher,
+    OrderSide,
+    PortfolioRepository,
+    round4,
+    TExchangeQuote,
+    TNewExchangeOrderConfig,
+    Trade,
+    TransactionRepository,
+    TransactionService,
+    TTaker,
 } from '..'
+const logger = log4js.getLogger()
 
 ///////////////////////////////////////////////////
 // Exchnage Service
@@ -50,6 +50,7 @@ export class ExchangeService {
     constructor(
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
         eventPublisher?: INotificationPublisher,
     ) {
         this.orderNotificationPublisher = eventPublisher || new NullNotificationPublisher()
@@ -62,8 +63,8 @@ export class ExchangeService {
         this.exchangeTradeRepository = new ExchangeTradeRepository()
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
-        this.transactionService = new TransactionService(assetRepository, portfolioRepository)
-        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
+        this.transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
+        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
     }
 
     ////////////////////////////////////////////////////
@@ -98,7 +99,7 @@ export class ExchangeService {
                     // get bid price and verify funds
                     ////////////////////////////
                     const currentPrice = marketMaker?.quote?.bid1 || 1
-                    await this.verifyFundsAsync(portfolioId, assetId, orderSide, orderSize, currentPrice)
+                    await this.verifyFundsAsync(portfolioId, orderSide, orderSize, currentPrice)
                 }
 
                 ////////////////////////////////////
@@ -233,10 +234,14 @@ export class ExchangeService {
     ////////////////////////////////////////////////////
     private onUpdateQuote = async (marketMaker: IMarketMaker) => {
         const assetId = marketMaker.assetId
-        const quote = marketMaker.quote
+        const marketMakerQuote = marketMaker.quote
+        const exchangeQuote: any = {
+            assetId: marketMaker.assetId,
+            ...marketMakerQuote,
+        } as TExchangeQuote
 
-        const updateProps: TAssetUpdate = { quote: quote }
-        await this.assetRepository.updateAsync(assetId, updateProps)
+        // const updateProps: TAssetUpdate = { quote: marketMakerQuote }
+        await this.exchangeQuoteRepository.storeAsync(assetId, exchangeQuote)
     }
 
     ////////////////////////////////////////////////////
@@ -355,7 +360,6 @@ export class ExchangeService {
 
     private async verifyFundsAsync(
         portfolioId: string,
-        assetId: string,
         orderSide: string,
         orderSize: number,
         currentPrice: number = 0,

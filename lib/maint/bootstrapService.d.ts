@@ -1,11 +1,11 @@
-import { AssetRepository, PortfolioRepository } from '..';
+import { AssetRepository, PortfolioRepository, TransactionRepository, UserRepository } from '..';
 export declare class BootstrapService {
     private userService;
     private assetService;
     private portfolioService;
     private leagueService;
     private marketMakerService;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository);
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, userRepository: UserRepository);
     bootRkt(): Promise<void>;
     bootBank(): Promise<void>;
     bootLeague(): Promise<void>;

@@ -1,11 +1,11 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import { TTransaction, TTransactionPatch } from '../../models/transaction'
 import { deleteCollection } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-import * as log4js from 'log4js'
 const logger = log4js.getLogger('transactionRepository')
 
 const COLLECTION_NAME = 'transactions'

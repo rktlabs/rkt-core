@@ -1,6 +1,6 @@
-import { RepositoryBase } from '../repositoryBase';
-import { TLeague, TLeagueUpdate } from '../../models/league';
 import { TAssetCore } from '../..';
+import { TLeague, TLeagueUpdate } from '../../models/league';
+import { RepositoryBase } from '../repositoryBase';
 export declare class LeagueRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore;
     constructor();

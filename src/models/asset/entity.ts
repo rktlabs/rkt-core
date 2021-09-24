@@ -52,9 +52,6 @@ export class Asset {
         this.xids = props.xids
         this.tags = props.tags
 
-        // this.bid = props.bid
-        // this.ask = props.ask
-        // this.last = props.last
         this.quote = props.quote
     }
 

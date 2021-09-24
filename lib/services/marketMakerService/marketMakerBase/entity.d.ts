@@ -1,11 +1,12 @@
 import { TOrder, Trade } from '../..';
-import { Asset, AssetRepository, MarketMakerRepository, PortfolioRepository } from '../../..';
+import { Asset, AssetRepository, MarketMakerRepository, PortfolioRepository, TransactionRepository } from '../../..';
 import { IMarketMaker } from './interfaces';
-import { TMarketMaker, TMakerResult } from './types';
+import { TMakerResult, TMarketMaker } from './types';
 export declare abstract class MarketMakerBase implements IMarketMaker {
     assetRepository: AssetRepository;
-    marketMakerRepository: MarketMakerRepository;
     portfolioRepository: PortfolioRepository;
+    transactionRepository: TransactionRepository;
+    marketMakerRepository: MarketMakerRepository;
     createdAt: string;
     type: string;
     ownerId: string;
@@ -14,7 +15,7 @@ export declare abstract class MarketMakerBase implements IMarketMaker {
     tags?: any;
     params?: any;
     quote?: any;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, props: TMarketMaker);
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, props: TMarketMaker);
     flattenMaker(): TMarketMaker;
     resolveAssetSpec(assetSpec: string | Asset): Promise<any>;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;

@@ -3,8 +3,8 @@ import { UserRepository } from '../repositories/user/userRepository'
 export class UserQuery {
     userRepository: UserRepository
 
-    constructor() {
-        this.userRepository = new UserRepository()
+    constructor(userRepository: UserRepository) {
+        this.userRepository = userRepository
     }
 
     async getListAsync(qs?: any) {

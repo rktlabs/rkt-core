@@ -1,7 +1,7 @@
 import { UserRepository } from '../repositories/user/userRepository';
 export declare class UserQuery {
     userRepository: UserRepository;
-    constructor();
+    constructor(userRepository: UserRepository);
     getListAsync(qs?: any): Promise<{
         data: import("..").TUser[];
     }>;

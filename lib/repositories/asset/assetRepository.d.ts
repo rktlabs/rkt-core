@@ -1,6 +1,6 @@
 import { TAsset, TAssetCore, TAssetUpdate } from '../../models/asset';
-import { CachingRepository } from '../cachingRepository';
-export declare class AssetRepository extends CachingRepository {
+import { CacheableRepository } from '../cacheableRepository';
+export declare class AssetRepository extends CacheableRepository {
     db: FirebaseFirestore.Firestore;
     constructor();
     filterMap: any;

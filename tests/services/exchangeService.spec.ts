@@ -15,6 +15,8 @@ import {
     MintService,
     AssetRepository,
     PortfolioRepository,
+    TransactionRepository,
+    UserRepository,
 } from '../../src'
 
 describe('ExchangerService', function () {
@@ -24,6 +26,8 @@ describe('ExchangerService', function () {
         let bootstrapper: BootstrapService
         let portfolioRepository: PortfolioRepository
         let assetRepository: AssetRepository
+        let userRepository: UserRepository
+        let transactionRepository: TransactionRepository
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let exchangeService: ExchangeService
@@ -35,14 +39,26 @@ describe('ExchangerService', function () {
         let marketMaker: IMarketMaker
 
         before(async () => {
+            userRepository = new UserRepository()
             assetRepository = new AssetRepository()
             portfolioRepository = new PortfolioRepository()
-            bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
-            assetService = new AssetService(assetRepository, portfolioRepository)
-            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
-            exchangeService = new ExchangeService(assetRepository, portfolioRepository)
-            treasuryService = new TreasuryService(assetRepository, portfolioRepository)
-            mintService = new MintService(assetRepository, portfolioRepository)
+            transactionRepository = new TransactionRepository()
+            bootstrapper = new BootstrapService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                userRepository,
+            )
+            assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
+            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
+            exchangeService = new ExchangeService(assetRepository, portfolioRepository, transactionRepository)
+            treasuryService = new TreasuryService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                userRepository,
+            )
+            mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
             marketMakerRepository = new MarketMakerRepository()
             await bootstrapper.bootstrap()
 

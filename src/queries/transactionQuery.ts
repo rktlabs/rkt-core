@@ -3,8 +3,8 @@ import { TransactionRepository } from '../repositories/transaction/transactionRe
 export class TransactionQuery {
     transactionRepository: TransactionRepository
 
-    constructor() {
-        this.transactionRepository = new TransactionRepository()
+    constructor(transactionRepository: TransactionRepository) {
+        this.transactionRepository = transactionRepository
     }
 
     async getListAsync(qs?: any) {

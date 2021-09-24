@@ -1,10 +1,10 @@
 'use strict'
+import * as log4js from 'log4js'
 import { TPortfolioHolding } from '../..'
 import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-import * as log4js from 'log4js'
 const logger = log4js.getLogger('portfolioHoldingRepository')
 
 const COLLECTION_NAME = 'portfolios'
@@ -17,10 +17,10 @@ export class PortfolioHoldingRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    filterMap: any = {
-        leagueId: 'leagueId',
-        type: 'type',
-    }
+    // filterMap: any = {
+    //     leagueId: 'leagueId',
+    //     type: 'type',
+    // }
 
     async getListAsync(portfolioId: string, qs?: any) {
         logger.trace(`getList ${portfolioId}`)
@@ -29,7 +29,7 @@ export class PortfolioHoldingRepository extends RepositoryBase {
             .doc(portfolioId)
             .collection(SUB_COLLECTION_NAME)
 
-        entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
+        // entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
         entityRefCollection = this.generatePagingProperties(qs, entityRefCollection)
         const entityCollectionRefs = await entityRefCollection.get()
 

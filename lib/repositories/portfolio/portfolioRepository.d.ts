@@ -1,6 +1,6 @@
 import { TPortfolio, TPortfolioUpdate as TPortfolioUpdate } from '../..';
-import { CachingRepository } from '../cachingRepository';
-export declare class PortfolioRepository extends CachingRepository {
+import { CacheableRepository } from '../cacheableRepository';
+export declare class PortfolioRepository extends CacheableRepository {
     db: FirebaseFirestore.Firestore;
     constructor();
     filterMap: any;

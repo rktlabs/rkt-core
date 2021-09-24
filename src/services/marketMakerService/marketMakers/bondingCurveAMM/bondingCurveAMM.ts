@@ -1,15 +1,16 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { MarketMakerBase, TNewMarketMakerConfig, TMarketMaker, TMakerResult, TMarketMakerQuote } from '../..'
+import { MarketMakerBase, TMakerResult, TMarketMaker, TMarketMakerQuote, TNewMarketMakerConfig } from '../..'
 import { MintService } from '../../..'
 import {
     AssetHolderRepository,
-    NotFoundError,
-    round4,
-    ConflictError,
     AssetRepository,
+    ConflictError,
+    NotFoundError,
     PortfolioRepository,
+    round4,
+    TransactionRepository,
 } from '../../../..'
 import admin = require('firebase-admin')
 const FieldValue = admin.firestore.FieldValue
@@ -29,6 +30,7 @@ export class BondingCurveAMM extends MarketMakerBase {
     static newMaker(
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
         props: TNewMarketMakerConfig,
     ) {
         const createdAt = DateTime.utc().toString()
@@ -43,7 +45,7 @@ export class BondingCurveAMM extends MarketMakerBase {
             tags: props.tags,
         }
 
-        const newEntity = new BondingCurveAMM(assetRepository, portfolioRepository, makerProps)
+        const newEntity = new BondingCurveAMM(assetRepository, portfolioRepository, transactionRepository, makerProps)
         newEntity.params = newEntity.computeInitialState(props.settings)
 
         /////////////////////////////////////////////////////////
@@ -71,10 +73,15 @@ export class BondingCurveAMM extends MarketMakerBase {
         return makerState
     }
 
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, props: TMarketMaker) {
-        super(assetRepository, portfolioRepository, props)
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
+        props: TMarketMaker,
+    ) {
+        super(assetRepository, portfolioRepository, transactionRepository, props)
         this.assetHolderRepository = new AssetHolderRepository()
-        this.mintService = new MintService(assetRepository, portfolioRepository)
+        this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
     }
 
     async processOrderImpl(orderSide: string, orderSize: number) {

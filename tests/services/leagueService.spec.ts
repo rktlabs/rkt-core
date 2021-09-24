@@ -2,9 +2,16 @@
 /* eslint-env node, mocha */
 
 import { expect } from 'chai'
-
 import * as sinon from 'sinon'
-import { LeagueRepository, AssetRepository, PortfolioRepository, LeagueService, AssetHolderService } from '../../src'
+import {
+    AssetHolderService,
+    AssetRepository,
+    LeagueRepository,
+    LeagueService,
+    PortfolioRepository,
+    TransactionRepository,
+    UserRepository,
+} from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe('League Service', function () {
@@ -17,6 +24,8 @@ describe('League Service', function () {
     let assetHolderService: AssetHolderService
     let leagueService: LeagueService
     let boostrapService: BootstrapService
+    let transactionRepository: TransactionRepository
+    let userRepository: UserRepository
 
     let leagueId: string = 'testleague1'
 
@@ -24,10 +33,17 @@ describe('League Service', function () {
         leagueRepository = new LeagueRepository()
         profileRepository = new PortfolioRepository()
         assetRepository = new AssetRepository()
+        transactionRepository = new TransactionRepository()
+        userRepository = new UserRepository()
 
         assetHolderService = new AssetHolderService(assetRepository)
-        leagueService = new LeagueService(assetRepository, portfolioRepository)
-        boostrapService = new BootstrapService(assetRepository, portfolioRepository)
+        leagueService = new LeagueService(assetRepository, portfolioRepository, transactionRepository)
+        boostrapService = new BootstrapService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            userRepository,
+        )
     })
 
     beforeEach(async () => {

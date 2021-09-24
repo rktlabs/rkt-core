@@ -12,11 +12,14 @@ import {
     MarketMakerService,
     PortfolioRepository,
     TNewMarketMakerConfig,
+    TransactionRepository,
+    UserRepository,
 } from '../../../../src'
 
 describe('BondingCurveAMM', function () {
     const assetRepository = new AssetRepository()
     const portfolioRepository = new PortfolioRepository()
+    const transactionRepository = new TransactionRepository()
 
     describe('bonding curve', function () {
         let makerConfig = {
@@ -41,7 +44,12 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const marketMaker = new BondingCurveAMM(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                makerConfig,
+            )
             const currentPrice = marketMaker.spot_price()
             expect(currentPrice).to.eq(1)
         })
@@ -55,7 +63,12 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const marketMaker = new BondingCurveAMM(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                makerConfig,
+            )
             const currentPrice = marketMaker.spot_price()
             expect(currentPrice).to.eq(5)
         })
@@ -69,7 +82,12 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const marketMaker = new BondingCurveAMM(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                makerConfig,
+            )
             const cost = marketMaker.compute_price(4)
             expect(cost).to.eq(12)
         })
@@ -83,7 +101,12 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const marketMaker = new BondingCurveAMM(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                makerConfig,
+            )
             const cost = marketMaker.compute_price(4)
             expect(cost).to.eq(28)
         })
@@ -97,7 +120,12 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const marketMaker = new BondingCurveAMM(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                makerConfig,
+            )
             const cost = marketMaker.compute_value(4)
             expect(cost).to.eq(12)
 
@@ -129,7 +157,12 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const marketMaker = new BondingCurveAMM(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                makerConfig,
+            )
             const result = marketMaker.processAMMOrderImpl(4)
             expect(result.makerDeltaUnits).eq(-4)
             expect(result.makerDeltaValue).eq(12)
@@ -156,15 +189,22 @@ describe('BondingCurveAMM', function () {
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let marketMakerRepository: MarketMakerRepository
+        let userRepository: UserRepository
 
         const assetId = 'card::testehed'
         let marketMaker: IMarketMaker
 
         before(async () => {
             assetRepository = new AssetRepository()
-            bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
-            assetService = new AssetService(assetRepository, portfolioRepository)
-            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
+            userRepository = new UserRepository()
+            bootstrapper = new BootstrapService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                userRepository,
+            )
+            assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
+            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
             marketMakerRepository = new MarketMakerRepository()
             await bootstrapper.bootstrap()
 

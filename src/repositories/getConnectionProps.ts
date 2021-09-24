@@ -1,3 +1,5 @@
+'use strict'
+
 import * as firebase from 'firebase-admin'
 
 export const getConnectionProps = () => {

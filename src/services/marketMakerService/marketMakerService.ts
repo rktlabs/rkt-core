@@ -1,28 +1,34 @@
 'use strict'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger()
-
-import { IMarketMaker, BondingCurveAMM, TNewMarketMakerConfig, MarketMakerBase, TOrder, TOrderConfig } from '.'
+import { BondingCurveAMM, IMarketMaker, MarketMakerBase, TNewMarketMakerConfig, TOrder, TOrderConfig } from '.'
 import { PortfolioService } from '..'
 import {
+    AssetRepository,
+    ConflictError,
+    DuplicateError,
     MarketMakerRepository,
     PortfolioRepository,
-    DuplicateError,
-    ConflictError,
     TNewPortfolioConfig,
-    AssetRepository,
+    TransactionRepository,
 } from '../..'
+const logger = log4js.getLogger()
 
 export class MarketMakerService {
     private marketMakerRepository: MarketMakerRepository
     private portfolioRepository: PortfolioRepository
+    private transactionRepository: TransactionRepository
     private portfolioService: PortfolioService
     private assetRepository: AssetRepository
 
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
+    ) {
         this.marketMakerRepository = new MarketMakerRepository()
         this.portfolioRepository = portfolioRepository
+        this.transactionRepository = transactionRepository
         this.portfolioService = new PortfolioService(portfolioRepository)
         this.assetRepository = assetRepository
     }
@@ -51,7 +57,12 @@ export class MarketMakerService {
 
             default:
             case 'bondingCurveAMM':
-                marketMaker = new BondingCurveAMM(this.assetRepository, this.portfolioRepository, makerDef)
+                marketMaker = new BondingCurveAMM(
+                    this.assetRepository,
+                    this.portfolioRepository,
+                    this.transactionRepository,
+                    makerDef,
+                )
                 break
         }
         return marketMaker
@@ -121,14 +132,6 @@ export class MarketMakerService {
     private async createMarketMakerImpl(config: TNewMarketMakerConfig, shouldCreatePortfolio: boolean) {
         let marketMaker: MarketMakerBase
         switch (config.type) {
-            // case 'bondingmaker2':
-            //     marketMaker = Bonding2Maker.newMaker(config)
-            //     break
-
-            // case 'logisticmaker1':
-            //     marketMaker = LogarithmicMaker.newMaker(config)
-            //     break
-
             // case 'constantk':
             // default:
             //     marketMaker = KMaker.newMaker(config)
@@ -136,7 +139,12 @@ export class MarketMakerService {
 
             default:
             case 'bondingCurveAMM':
-                marketMaker = BondingCurveAMM.newMaker(this.assetRepository, this.portfolioRepository, config)
+                marketMaker = BondingCurveAMM.newMaker(
+                    this.assetRepository,
+                    this.portfolioRepository,
+                    this.transactionRepository,
+                    config,
+                )
                 break
         }
 

@@ -1,13 +1,13 @@
 'use strict'
 
 import {
-    AssetRepository,
-    PortfolioHoldingRepository,
-    PortfolioActivityRepository,
     AssetHolderRepository,
+    AssetRepository,
+    PortfolioActivityRepository,
+    PortfolioHoldingRepository,
+    TAssetHolder,
     TAssetHolderUpdateItem,
     TTransaction,
-    TAssetHolder,
 } from '..'
 
 /////////////////////////////
@@ -22,8 +22,8 @@ export class AssetHolderService {
 
     constructor(assetRepository: AssetRepository) {
         this.assetRepository = assetRepository
-        this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.assetHolderRepository = new AssetHolderRepository()
+        this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.portfolioActivityRepository = new PortfolioActivityRepository()
     }
 

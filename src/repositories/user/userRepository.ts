@@ -1,15 +1,16 @@
 'use strict'
-import { TUser } from '../..'
-import { deleteDocument } from '../../util/deleters'
-import { getConnectionProps } from '../getConnectionProps'
-import { RepositoryBase } from '../repositoryBase'
 
 import * as log4js from 'log4js'
+import { TUser } from '../..'
+import { deleteDocument } from '../../util/deleters'
+import { CacheableRepository } from '../cacheableRepository'
+import { getConnectionProps } from '../getConnectionProps'
+
 const logger = log4js.getLogger('userRepository')
 
 const COLLECTION_NAME = 'users'
 
-export class UserRepository extends RepositoryBase {
+export class UserRepository extends CacheableRepository {
     db: FirebaseFirestore.Firestore
     constructor() {
         super()

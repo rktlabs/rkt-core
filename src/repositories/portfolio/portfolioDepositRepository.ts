@@ -1,6 +1,6 @@
 'use strict'
 
-import { TPortfolioDeposit, deleteCollection } from '../..'
+import { deleteCollection, TPortfolioDeposit } from '../..'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 

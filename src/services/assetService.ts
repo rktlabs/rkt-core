@@ -1,7 +1,15 @@
 'use strict'
 
 import { PortfolioService, AssetHolderService, MarketMakerService } from '.'
-import { PortfolioRepository, AssetRepository, TNewAssetConfig, DuplicateError, ConflictError, Asset } from '..'
+import {
+    PortfolioRepository,
+    AssetRepository,
+    TNewAssetConfig,
+    DuplicateError,
+    ConflictError,
+    Asset,
+    TransactionRepository,
+} from '..'
 
 import * as log4js from 'log4js'
 const logger = log4js.getLogger()
@@ -14,13 +22,17 @@ export class AssetService {
     private marketMakerService: MarketMakerService
     private assetHolderService: AssetHolderService
 
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
+    ) {
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
 
         this.assetHolderService = new AssetHolderService(this.assetRepository)
         this.portfolioService = new PortfolioService(portfolioRepository)
-        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
+        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
     }
 
     async createAsset(payload: TNewAssetConfig, shouldCreatePortfolio: boolean = true) {

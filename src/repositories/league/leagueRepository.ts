@@ -1,10 +1,9 @@
 'use strict'
+import { TAssetCore } from '../..'
+import { TLeague, TLeagueUpdate } from '../../models/league'
 import { deleteDocument } from '../../util/deleters'
-
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
-import { TLeague, TLeagueUpdate } from '../../models/league'
-import { TAssetCore } from '../..'
 
 const COLLECTION_NAME = 'leagues'
 

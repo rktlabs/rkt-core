@@ -9,6 +9,7 @@ import {
     AssetHolderService,
     TNewUserConfig,
     AssetRepository,
+    TransactionRepository,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -29,7 +30,7 @@ describe.skip('User Service', function () {
     before(async () => {
         userRepository = new UserRepository()
         portfolioRepository = new PortfolioRepository()
-        userService = new UserService(portfolioRepository)
+        userService = new UserService(portfolioRepository, userRepository)
     })
 
     describe('User Service Simple', () => {
@@ -140,13 +141,22 @@ describe.skip('User Service', function () {
         let bootstrapper: BootstrapService
         let assetRepository: AssetRepository
         let assetHolderService: AssetHolderService
+        let transactionRepository: TransactionRepository
+        let userRepository: UserRepository
 
         let userId: string
 
         before(async () => {
             assetRepository = new AssetRepository()
+            userRepository = new UserRepository()
+            transactionRepository = new TransactionRepository()
             assetHolderService = new AssetHolderService(assetRepository)
-            bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
+            bootstrapper = new BootstrapService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                userRepository,
+            )
         })
 
         beforeEach(async () => {

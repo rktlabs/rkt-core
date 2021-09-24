@@ -1,9 +1,9 @@
+import * as admin from 'firebase-admin'
 import { TAssetHolderUpdateItem, TTransaction } from '../../models'
 import { deleteCollection } from '../../util/deleters'
-
-import * as admin from 'firebase-admin'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
+
 const FieldValue = admin.firestore.FieldValue
 
 const COLLECTION_NAME = 'portfolios'

@@ -17,15 +17,11 @@ export type TMarketMaker = {
     assetId: string
     tags?: any
     params?: any
-
-    // currentPrice?: number
     quote?: TMarketMakerQuote
 }
 
 export type TMarketMakerPatch = {
     params?: any
-
-    // currentPrice?: number
 }
 
 export type TMarketMakerQuote = {

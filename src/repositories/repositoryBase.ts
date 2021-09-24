@@ -1,3 +1,5 @@
+'use strict'
+
 export class RepositoryBase {
     generatePagingProperties(
         qs: any,

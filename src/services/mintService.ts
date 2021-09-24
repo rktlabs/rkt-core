@@ -6,6 +6,7 @@ import {
     PortfolioRepository,
     NotFoundError,
     TTransfer,
+    TransactionRepository,
     //Principal
 } from '..'
 
@@ -21,6 +22,7 @@ export class MintService {
     constructor(
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
         eventPublisher?: INotificationPublisher,
     ) {
         //this.me = me
@@ -28,7 +30,12 @@ export class MintService {
 
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
-        this.transactionService = new TransactionService(assetRepository, portfolioRepository, this.eventPublisher)
+        this.transactionService = new TransactionService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            this.eventPublisher,
+        )
     }
 
     async mintUnits(assetId: string, units: number) {

@@ -12,6 +12,7 @@ import {
     TLeagueAssetDef,
     TNewAssetConfig,
     TAssetCore,
+    TransactionRepository,
 } from '..'
 
 export class LeagueService {
@@ -22,13 +23,17 @@ export class LeagueService {
     private portfolioService: PortfolioService
     private assetService: AssetService
 
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
+    ) {
         this.assetRepository = assetRepository
         this.leagueRepository = new LeagueRepository()
         this.portfolioRepository = portfolioRepository
 
         this.portfolioService = new PortfolioService(portfolioRepository)
-        this.assetService = new AssetService(assetRepository, portfolioRepository)
+        this.assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
     }
 
     async createLeague(payload: TNewLeagueConfig) {

@@ -2,7 +2,7 @@
 
 import { RepositoryBase } from './repositoryBase'
 
-export class CachingRepository extends RepositoryBase {
+export class CacheableRepository extends RepositoryBase {
     entityCache: any
 
     constructor() {

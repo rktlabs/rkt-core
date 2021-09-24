@@ -13,8 +13,8 @@ export class UserService {
     private portfolioRepository: PortfolioRepository
     private portfolioService: PortfolioService
 
-    constructor(portfolioRepository: PortfolioRepository) {
-        this.userRepository = new UserRepository()
+    constructor(portfolioRepository: PortfolioRepository, userRepository: UserRepository) {
+        this.userRepository = userRepository
         this.portfolioRepository = portfolioRepository
         this.portfolioService = new PortfolioService(portfolioRepository)
     }

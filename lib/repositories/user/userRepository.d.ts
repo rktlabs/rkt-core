@@ -1,6 +1,6 @@
 import { TUser } from '../..';
-import { RepositoryBase } from '../repositoryBase';
-export declare class UserRepository extends RepositoryBase {
+import { CacheableRepository } from '../cacheableRepository';
+export declare class UserRepository extends CacheableRepository {
     db: FirebaseFirestore.Firestore;
     constructor();
     filterMap: any;

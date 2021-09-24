@@ -1,12 +1,11 @@
 'use strict'
+import * as log4js from 'log4js'
 import { MarketMakerBase } from '../../services/marketMakerService/marketMakerBase/entity'
 import { TMarketMaker, TMarketMakerPatch } from '../../services/marketMakerService/marketMakerBase/types'
 import { deleteDocument } from '../../util/deleters'
-
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-import * as log4js from 'log4js'
 const logger = log4js.getLogger('marketMakerRepository')
 
 const COLLECTION_NAME = 'makers'

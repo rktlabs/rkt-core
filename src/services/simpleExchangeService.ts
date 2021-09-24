@@ -1,17 +1,17 @@
 'use strict'
 
 import {
-    round4,
-    ConflictError,
-    InsufficientBalance,
-    TransactionService,
-    PortfolioRepository,
-    MarketMakerService,
-    ExchangeQuoteRepository,
-    INotificationPublisher,
     AssetHolderRepository,
-    UserRepository,
     AssetRepository,
+    ConflictError,
+    INotificationPublisher,
+    InsufficientBalance,
+    MarketMakerService,
+    PortfolioRepository,
+    round4,
+    TransactionRepository,
+    TransactionService,
+    UserRepository,
 } from '..'
 
 export class SimpleExchangeService {
@@ -19,23 +19,28 @@ export class SimpleExchangeService {
     private assetRepository: AssetRepository
     private portfolioRepository: PortfolioRepository
     private assetHolderRepository: AssetHolderRepository
-    private exchangeQuoteRepository: ExchangeQuoteRepository
     private transactionService: TransactionService
     private marketMakerService: MarketMakerService
 
     constructor(
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
+        userRepository: UserRepository,
         eventPublisher?: INotificationPublisher,
     ) {
         this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioRepository = portfolioRepository
-        this.userRepository = new UserRepository()
+        this.userRepository = userRepository
         this.assetRepository = assetRepository
-        this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
-        this.transactionService = new TransactionService(assetRepository, portfolioRepository, eventPublisher)
-        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
+        this.transactionService = new TransactionService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            eventPublisher,
+        )
+        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
     }
 
     async buy(userId: string, assetId: string, orderSize: number) {
@@ -61,10 +66,17 @@ export class SimpleExchangeService {
     }
 
     async portfolio_transact(portfolioId: string, assetId: string, orderSide: string, orderSize: number) {
+        const marketMaker = await this.marketMakerService.getMarketMakerAsync(assetId)
+        if (!marketMaker) {
+            const msg = `Order Failed - marketMaker not found (${assetId})`
+            throw new ConflictError(msg)
+        }
+
         if (orderSide === 'bid') {
             await this.verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
         } else if (orderSide === 'ask') {
-            await this.verifyFundsAsync(portfolioId, assetId, orderSide, orderSize)
+            const currentPrice = marketMaker?.quote?.bid1 || 1
+            await this.verifyFundsAsync(portfolioId, orderSide, orderSize, currentPrice)
         }
 
         const asset = await this.assetRepository.getDetailAsync(assetId)
@@ -75,12 +87,6 @@ export class SimpleExchangeService {
         const assetPortfolioId = asset.portfolioId
         if (!assetPortfolioId) {
             const msg = `Order Failed - asset portfolio not defined (${assetId})`
-            throw new ConflictError(msg)
-        }
-
-        const marketMaker = await this.marketMakerService.getMarketMakerAsync(assetId)
-        if (!marketMaker) {
-            const msg = `Order Failed - marketMaker not found (${assetId})`
             throw new ConflictError(msg)
         }
 
@@ -227,7 +233,12 @@ export class SimpleExchangeService {
         }
     }
 
-    private async verifyFundsAsync(portfolioId: string, assetId: string, orderSide: string, orderSize: number) {
+    private async verifyFundsAsync(
+        portfolioId: string,
+        orderSide: string,
+        orderSize: number,
+        currentPrice: number = 0,
+    ) {
         // verify that portfolio exists.
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
@@ -238,12 +249,10 @@ export class SimpleExchangeService {
         ////////////////////////////
         // get bid price and verify funds
         ////////////////////////////
-        const quote = await this.exchangeQuoteRepository.getDetailAsync(assetId)
-        const price = quote?.bid || 1
 
         const COIN_BUFFER_FACTOR = 1.05
         const paymentAssetId = 'coin::rkt'
-        const coinsRequired = orderSide === 'bid' ? round4(orderSize * price) * COIN_BUFFER_FACTOR : 0
+        const coinsRequired = orderSide === 'bid' ? round4(orderSize * currentPrice) * COIN_BUFFER_FACTOR : 0
 
         if (coinsRequired > 0) {
             const coinsHeld = await this.assetHolderRepository.getDetailAsync(paymentAssetId, portfolioId)

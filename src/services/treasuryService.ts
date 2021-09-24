@@ -10,6 +10,7 @@ import {
     TTransfer,
     AssetHolderService,
     AssetRepository,
+    TransactionRepository,
     //Principal,
 } from '..'
 
@@ -30,18 +31,25 @@ export class TreasuryService {
     constructor(
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
+        transactionRepository: TransactionRepository,
+        userRepository: UserRepository,
         eventPublisher?: INotificationPublisher,
     ) {
         //this.me = me
         this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
-        this.userRepository = new UserRepository()
+        this.userRepository = userRepository
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
         this.portfolioService = new PortfolioService(portfolioRepository)
         this.assetHolderService = new AssetHolderService(assetRepository)
-        this.transactionService = new TransactionService(assetRepository, portfolioRepository, this.eventPublisher)
-        this.mintService = new MintService(assetRepository, portfolioRepository)
+        this.transactionService = new TransactionService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            this.eventPublisher,
+        )
+        this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
     }
 
     async mintUnits(units: number) {

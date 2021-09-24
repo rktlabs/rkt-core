@@ -1,19 +1,18 @@
 'use strict'
-import { deleteDocument } from '../../util/deleters'
-
-import { getConnectionProps } from '../getConnectionProps'
-import { TAsset, TAssetCore, TAssetUpdate } from '../../models/asset'
-
+import * as admin from 'firebase-admin'
 import * as log4js from 'log4js'
+import { TAsset, TAssetCore, TAssetUpdate } from '../../models/asset'
+import { deleteDocument } from '../../util/deleters'
+import { CacheableRepository } from '../cacheableRepository'
+import { getConnectionProps } from '../getConnectionProps'
+
 const logger = log4js.getLogger('assetRepository')
 
-import * as admin from 'firebase-admin'
-import { CachingRepository } from '../cachingRepository'
 const FieldValue = admin.firestore.FieldValue
 
 const COLLECTION_NAME = 'assets'
 
-export class AssetRepository extends CachingRepository {
+export class AssetRepository extends CacheableRepository {
     db: FirebaseFirestore.Firestore
 
     constructor() {
@@ -49,7 +48,6 @@ export class AssetRepository extends CachingRepository {
     async getDetailAsync(entityId: string) {
         const cachedItem = this.cacheLookup(entityId)
         if (cachedItem) {
-            logger.trace(`cachedItem: ${entityId}`)
             return cachedItem
         }
 

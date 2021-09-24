@@ -3,7 +3,14 @@
 
 import { assert, expect } from 'chai'
 import * as sinon from 'sinon'
-import { AssetRepository, PortfolioRepository, AssetService, TNewAssetConfig } from '../../src'
+import {
+    AssetRepository,
+    PortfolioRepository,
+    AssetService,
+    TNewAssetConfig,
+    TransactionRepository,
+    UserRepository,
+} from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe('Asset Service', function () {
@@ -12,16 +19,20 @@ describe('Asset Service', function () {
     let assetRepository: AssetRepository
     let portfolioRepository: PortfolioRepository
     let assetService: AssetService
+    let transactionRepository: TransactionRepository
+    let userRepository: UserRepository
     let bootstrapper: BootstrapService
     const assetId = 'card::test1'
 
     before(async () => {
         assetRepository = new AssetRepository()
         portfolioRepository = new PortfolioRepository()
+        transactionRepository = new TransactionRepository()
+        userRepository = new UserRepository()
 
-        assetService = new AssetService(assetRepository, portfolioRepository)
+        assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
 
-        bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
+        bootstrapper = new BootstrapService(assetRepository, portfolioRepository, transactionRepository, userRepository)
         //await bootstrapper.clearDb()
         await bootstrapper.bootstrap()
     })

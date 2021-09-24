@@ -12,6 +12,7 @@ import {
     NullNotificationPublisher,
     AssetRepository,
     PortfolioRepository,
+    UserRepository,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -26,6 +27,7 @@ describe('Transaction Service', function () {
     let assetRepository: AssetRepository
     let assetService: AssetService
     let transactionService: TransactionService
+    let userRepository: UserRepository
 
     let eventPublisher: sinon.SinonStubbedInstance<NullNotificationPublisher>
 
@@ -37,14 +39,16 @@ describe('Transaction Service', function () {
         portfolioRepository = new PortfolioRepository()
         portfolioService = new PortfolioService(portfolioRepository)
         assetRepository = new AssetRepository()
+        userRepository = new UserRepository()
         assetHolderService = new AssetHolderService(assetRepository)
-        assetService = new AssetService(assetRepository, portfolioRepository)
+        assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
         transactionService = new TransactionService(
             assetRepository,
             portfolioRepository,
+            transactionRepository,
             eventPublisher as any as NullNotificationPublisher,
         )
-        bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
+        bootstrapper = new BootstrapService(assetRepository, portfolioRepository, transactionRepository, userRepository)
 
         //await bootstrapper.clearDb()
         await bootstrapper.fullBoot()
