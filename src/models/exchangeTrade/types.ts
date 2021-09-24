@@ -6,8 +6,8 @@ export type TTakerFill = {
     filledSize: number
     filledValue: number
     isClosed: boolean
-    isLiquidityStarved: boolean
-    isPartial: boolean
+    // isLiquidityStarved: boolean
+    // isPartial: boolean
     orderSide: string
     orderSize: number
     portfolioId: string
@@ -24,7 +24,7 @@ export type TMakerFill = {
     filledSize: number
     filledValue: number
     isClosed: boolean
-    isPartial: boolean
+    // isPartial: boolean
     orderSide: string
     orderSize: number
     portfolioId: string

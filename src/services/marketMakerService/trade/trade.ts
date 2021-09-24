@@ -50,7 +50,7 @@ export class Trade {
             filledSize: 0,
             filledValue: 0,
             filledPrice: 0,
-            isPartial: false,
+            // isPartial: false,
             isClosed: false,
         }
 
@@ -83,7 +83,7 @@ export class Trade {
         taker.sizeRemaining -= actualReduction
 
         taker.isClosed = taker.sizeRemaining === 0
-        taker.isPartial = Math.abs(taker.filledSize) < taker.orderSize
+        // taker.isPartial = Math.abs(taker.filledSize) < taker.orderSize
     }
 
     private updateMakerFill(maker: TMaker, size: number, value: number): void {
@@ -100,7 +100,7 @@ export class Trade {
         maker.sizeRemaining -= actualReduction
 
         maker.isClosed = maker.sizeRemaining === 0
-        maker.isPartial = Math.abs(maker.filledSize) < maker.orderSize
+        // maker.isPartial = Math.abs(maker.filledSize) < maker.orderSize
     }
 
     private generateTaker(opts: {
@@ -125,9 +125,9 @@ export class Trade {
             filledSize: 0,
             filledValue: 0,
             filledPrice: 0,
-            isPartial: false,
+            // isPartial: false,
             isClosed: false,
-            isLiquidityStarved: false,
+            // isLiquidityStarved: false,
         }
 
         return taker

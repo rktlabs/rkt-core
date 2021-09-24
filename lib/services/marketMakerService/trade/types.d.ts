@@ -36,9 +36,7 @@ export declare type TTaker = {
     filledSize: number;
     filledValue: number;
     filledPrice: number;
-    isPartial: boolean;
     isClosed: boolean;
-    isLiquidityStarved: boolean;
 };
 export declare type TMaker = {
     assetId: string;
@@ -49,6 +47,5 @@ export declare type TMaker = {
     filledSize: number;
     filledValue: number;
     filledPrice: number;
-    isPartial: boolean;
     isClosed: boolean;
 };

@@ -44,9 +44,9 @@ export type TTaker = {
     filledSize: number
     filledValue: number
     filledPrice: number
-    isPartial: boolean
+    // isPartial: boolean
     isClosed: boolean
-    isLiquidityStarved: boolean
+    // isLiquidityStarved: boolean
 }
 
 export type TMaker = {
@@ -58,6 +58,6 @@ export type TMaker = {
     filledSize: number
     filledValue: number
     filledPrice: number
-    isPartial: boolean
+    // isPartial: boolean
     isClosed: boolean
 }
