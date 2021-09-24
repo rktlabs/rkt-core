@@ -8,7 +8,7 @@ import { RepositoryBase } from '../repositoryBase'
 
 const logger = log4js.getLogger('marketMakerRepository')
 
-const COLLECTION_NAME = 'makers'
+const COLLECTION_NAME = 'marketMakers'
 
 export class MarketMakerRepository extends RepositoryBase {
     db: FirebaseFirestore.Firestore
