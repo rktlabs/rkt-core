@@ -1,3 +1,5 @@
+'use strict'
+
 import { MarketMakerRepository } from '../repositories/marketMaker/marketMakerRepository'
 
 export class MarketMakerQuery {

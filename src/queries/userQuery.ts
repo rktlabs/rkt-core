@@ -1,3 +1,5 @@
+'use strict'
+
 import { UserRepository } from '../repositories/user/userRepository'
 
 export class UserQuery {

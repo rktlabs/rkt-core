@@ -1,3 +1,5 @@
+'use strict'
+
 import { ExchangeQuoteRepository, ExchangeTradeRepository, ExchangeOrderRepository } from '..'
 
 export class ExchangeQuery {

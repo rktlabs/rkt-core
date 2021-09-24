@@ -1,3 +1,5 @@
+'use strict'
+
 import { TransactionRepository } from '../repositories/transaction/transactionRepository'
 
 export class TransactionQuery {

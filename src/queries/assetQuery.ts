@@ -1,3 +1,5 @@
+'use strict'
+
 import { AssetHolderRepository } from '../repositories/asset/assetHolderRepository'
 import { AssetRepository } from '../repositories/asset/assetRepository'
 

@@ -1,3 +1,5 @@
+'use strict'
+
 import { LeagueRepository } from '../repositories/league/leagueRepository'
 
 export class LeagueQuery {
