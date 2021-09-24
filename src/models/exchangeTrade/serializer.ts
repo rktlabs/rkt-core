@@ -33,7 +33,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                 type: 'taker',
             },
             makers: {
-                makers: 'maker',
+                type: 'maker',
             },
         },
     })
