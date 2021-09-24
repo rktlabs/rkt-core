@@ -4,6 +4,8 @@ export declare type TTakerFill = {
     filledSize: number;
     filledValue: number;
     isClosed: boolean;
+    isLiquidityStarved: boolean;
+    isPartial: boolean;
     orderSide: string;
     orderSize: number;
     portfolioId: string;
@@ -18,6 +20,7 @@ export declare type TMakerFill = {
     filledSize: number;
     filledValue: number;
     isClosed: boolean;
+    isPartial: boolean;
     orderSide: string;
     orderSize: number;
     portfolioId: string;
