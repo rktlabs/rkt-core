@@ -5,6 +5,10 @@ import { HALSerializer } from 'hal-serializer'
 export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
+    serializer.register('taker', {
+        whitelist: ['assetId'],
+    })
+
     serializer.register('exchangeTrade', {
         whitelist: ['makers', 'taker'],
         links: (record: any) => {

@@ -13,7 +13,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
             'createdAt',
             'type',
             'orderSide',
-            'size',
+            'orderSize',
             'state',
             'status',
             'executedAt',
@@ -95,7 +95,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         whitelist: [
             'type',
             'orderSide',
-            'size',
+            'orderSize',
             'assetId',
             'portfolioId',
             'orderId',
