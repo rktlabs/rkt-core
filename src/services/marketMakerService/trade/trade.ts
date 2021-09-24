@@ -33,6 +33,7 @@ export class Trade {
     }
 
     supplyMakerSide(opts: {
+        orderId: string
         assetId: string
         orderSide: OrderSide
         orderSize: number
@@ -42,6 +43,7 @@ export class Trade {
         makerDeltaValue: number
     }) {
         const maker: TMaker = {
+            orderId: opts.orderSide,
             assetId: opts.assetId,
             orderSide: opts.orderSide,
             orderSize: Math.max(opts.orderSize, 0),

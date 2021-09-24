@@ -25,10 +25,10 @@ export declare type TOrder = {
     orderState: OrderState;
 };
 export declare type TTaker = {
+    orderId: string;
     assetId: string;
     orderSide: OrderSide;
     orderSize: number;
-    orderId: string;
     portfolioId: string;
     orderType?: OrderType;
     tags?: any;
@@ -41,6 +41,7 @@ export declare type TTaker = {
     isLiquidityStarved: boolean;
 };
 export declare type TMaker = {
+    orderId?: string;
     assetId: string;
     orderSide: OrderSide;
     orderSize: number;

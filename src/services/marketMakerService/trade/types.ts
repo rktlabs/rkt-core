@@ -33,10 +33,10 @@ export type TOrder = {
 }
 
 export type TTaker = {
+    orderId: string
     assetId: string
     orderSide: OrderSide
     orderSize: number
-    orderId: string
     portfolioId: string
     orderType?: OrderType
     tags?: any
@@ -50,6 +50,7 @@ export type TTaker = {
 }
 
 export type TMaker = {
+    orderId?: string
     assetId: string
     orderSide: OrderSide
     orderSize: number

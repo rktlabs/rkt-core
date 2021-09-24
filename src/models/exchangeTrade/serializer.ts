@@ -7,11 +7,11 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
 
     serializer.register('maker', {
         whitelist: [
+            'orderId',
             'assetId',
             'orderSide',
             'orderSize',
             'portfolioId',
-            'sizeRemaining',
             'filledSize',
             'filledValue',
             'filledPrice',
@@ -21,14 +21,11 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
 
     serializer.register('taker', {
         whitelist: [
+            'orderId',
             'assetId',
             'orderSide',
             'orderSize',
-            'orderId',
             'portfolioId',
-            'orderType',
-            'tags',
-            'sizeRemaining',
             'filledSize',
             'filledValue',
             'filledPrice',

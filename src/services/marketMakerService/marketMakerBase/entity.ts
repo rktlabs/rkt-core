@@ -119,10 +119,11 @@ export abstract class MarketMakerBase implements IMarketMaker {
         ////////////////////////////////////////////////////////
         const processMakerTrade = await this.processOrderImpl(orderSide, orderSize)
         if (processMakerTrade) {
-            let { makerDeltaUnits, makerDeltaValue } = processMakerTrade
+            let { orderId, makerDeltaUnits, makerDeltaValue } = processMakerTrade
 
             const trade = new Trade(order)
             trade.supplyMakerSide({
+                orderId: orderId,
                 assetId: assetId,
                 portfolioId: assetPortfolioId,
                 orderSide: orderSide === 'bid' ? 'ask' : 'bid', // flip side from taker

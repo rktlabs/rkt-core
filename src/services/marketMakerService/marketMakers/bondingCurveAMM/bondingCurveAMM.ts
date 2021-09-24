@@ -204,6 +204,7 @@ export class BondingCurveAMM extends MarketMakerBase {
         }
 
         const result: TMakerResult = {
+            orderId: '--mm--',
             makerDeltaUnits: makerDeltaUnits,
             makerDeltaValue: makerDeltaValue,
             stateUpdate: stateUpdate,
