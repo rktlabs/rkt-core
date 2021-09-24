@@ -27,9 +27,6 @@ export class Asset {
     tags?: any
     xids?: any
 
-    // bid?: number
-    // ask?: number
-    // last?: number
     quote?: any
 
     constructor(props: TAsset) {

@@ -6,18 +6,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('asset', {
-        whitelist: [
-            'createdAt',
-            'type',
-            'assetId',
-            'symbol',
-            'ownerId',
-            'displayName',
-            'subject',
-            'bid',
-            'ask',
-            'last',
-        ],
+        whitelist: ['createdAt', 'type', 'assetId', 'symbol', 'ownerId', 'displayName', 'subject'],
         links: () => {
             return {
                 self: {
@@ -38,6 +27,11 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
                 marketMaker: {
                     href: `${baseUrl}/makers/${data.assetId}`,
                     rel: 'marketMaker',
+                    id: data.assetId,
+                },
+                exchangeQuote: {
+                    href: `${baseUrl}/exchange/quotes/${data.assetId}`,
+                    rel: 'exchangeQuote',
                     id: data.assetId,
                 },
             }
@@ -99,7 +93,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const serializer = new HALSerializer()
 
     serializer.register('assets', {
-        whitelist: ['type', 'assetId', 'symbol', 'displayName', 'bid', 'ask', 'last'],
+        whitelist: ['type', 'assetId', 'symbol', 'displayName'],
         links: (record: any) => {
             return {
                 self: {

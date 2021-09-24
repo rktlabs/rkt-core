@@ -33,9 +33,6 @@ export type TAsset = {
     tags?: any
     xids?: any
 
-    // bid?: number
-    // ask?: number
-    // last?: number
     quote?: any
 }
 
@@ -45,9 +42,6 @@ export type TAssetCore = {
 }
 
 export type TAssetUpdate = {
-    // bid?: number
-    // ask?: number
-    // last?: number
     quote?: any
 }
 

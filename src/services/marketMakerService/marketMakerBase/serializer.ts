@@ -6,7 +6,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
     serializer.register('marketMaker', {
-        //whitelist: ['bid', 'ask', 'last', 'params'],
+        whitelist: ['quote', 'params'],
         links: (record: any) => {
             return {
                 self: {
