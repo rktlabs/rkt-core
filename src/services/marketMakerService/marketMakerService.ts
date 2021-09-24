@@ -25,8 +25,9 @@ export class MarketMakerService {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
+        marketMakerRepository: MarketMakerRepository,
     ) {
-        this.marketMakerRepository = new MarketMakerRepository()
+        this.marketMakerRepository = marketMakerRepository
         this.portfolioRepository = portfolioRepository
         this.transactionRepository = transactionRepository
         this.portfolioService = new PortfolioService(portfolioRepository)
@@ -61,6 +62,7 @@ export class MarketMakerService {
                     this.assetRepository,
                     this.portfolioRepository,
                     this.transactionRepository,
+                    this.marketMakerRepository,
                     makerDef,
                 )
                 break
@@ -143,6 +145,7 @@ export class MarketMakerService {
                     this.assetRepository,
                     this.portfolioRepository,
                     this.transactionRepository,
+                    this.marketMakerRepository,
                     config,
                 )
                 break

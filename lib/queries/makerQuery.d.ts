@@ -1,7 +1,7 @@
 import { MarketMakerRepository } from '../repositories/marketMaker/marketMakerRepository';
 export declare class MakerQuery {
     marketMakerRepository: MarketMakerRepository;
-    constructor();
+    constructor(marketMakerRepository: MarketMakerRepository);
     getListAsync(qs?: any): Promise<{
         data: import("..").TMarketMaker[];
     }>;

@@ -17,6 +17,7 @@ import {
     PortfolioRepository,
     TransactionRepository,
     UserRepository,
+    LeagueRepository,
 } from '../../src'
 
 describe('ExchangerService', function () {
@@ -27,6 +28,7 @@ describe('ExchangerService', function () {
         let portfolioRepository: PortfolioRepository
         let assetRepository: AssetRepository
         let userRepository: UserRepository
+        let leagueRepository: LeagueRepository
         let transactionRepository: TransactionRepository
         let assetService: AssetService
         let marketMakerService: MarketMakerService
@@ -41,17 +43,37 @@ describe('ExchangerService', function () {
         before(async () => {
             userRepository = new UserRepository()
             assetRepository = new AssetRepository()
+            marketMakerRepository = new MarketMakerRepository()
+            leagueRepository = new LeagueRepository()
             portfolioRepository = new PortfolioRepository()
             transactionRepository = new TransactionRepository()
+
             bootstrapper = new BootstrapService(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
                 userRepository,
+                marketMakerRepository,
+                leagueRepository,
             )
-            assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
-            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
-            exchangeService = new ExchangeService(assetRepository, portfolioRepository, transactionRepository)
+            assetService = new AssetService(
+                assetRepository,
+                portfolioRepository,
+                marketMakerRepository,
+                transactionRepository,
+            )
+            marketMakerService = new MarketMakerService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                marketMakerRepository,
+            )
+            exchangeService = new ExchangeService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                marketMakerRepository,
+            )
             treasuryService = new TreasuryService(
                 assetRepository,
                 portfolioRepository,
@@ -59,7 +81,6 @@ describe('ExchangerService', function () {
                 userRepository,
             )
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
-            marketMakerRepository = new MarketMakerRepository()
             await bootstrapper.bootstrap()
 
             await bootstrapper.bootUser()

@@ -3,8 +3,8 @@ import { LeagueRepository } from '../repositories/league/leagueRepository'
 export class LeagueQuery {
     leagueRepository: LeagueRepository
 
-    constructor() {
-        this.leagueRepository = new LeagueRepository()
+    constructor(leagueRepository: LeagueRepository) {
+        this.leagueRepository = leagueRepository
     }
 
     async getListAsync(qs?: any) {

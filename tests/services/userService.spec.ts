@@ -10,6 +10,8 @@ import {
     TNewUserConfig,
     AssetRepository,
     TransactionRepository,
+    LeagueRepository,
+    MarketMakerRepository,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -143,25 +145,28 @@ describe.skip('User Service', function () {
         let assetHolderService: AssetHolderService
         let transactionRepository: TransactionRepository
         let userRepository: UserRepository
-
-        let userId: string
+        let marketMakerRepository: MarketMakerRepository
+        let leagueRepository: LeagueRepository
 
         before(async () => {
             assetRepository = new AssetRepository()
             userRepository = new UserRepository()
             transactionRepository = new TransactionRepository()
+            marketMakerRepository = new MarketMakerRepository()
+            leagueRepository = new LeagueRepository()
             assetHolderService = new AssetHolderService(assetRepository)
             bootstrapper = new BootstrapService(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
                 userRepository,
+                marketMakerRepository,
+                leagueRepository,
             )
         })
 
         beforeEach(async () => {
             //await userService.deleteUser(userId)
-            //await bootstrapper.clearDb()
             await bootstrapper.bootstrap()
             //await bootstrapper.setupTreasury()
         })

@@ -3,8 +3,8 @@ import { MarketMakerRepository } from '../repositories/marketMaker/marketMakerRe
 export class MakerQuery {
     marketMakerRepository: MarketMakerRepository
 
-    constructor() {
-        this.marketMakerRepository = new MarketMakerRepository()
+    constructor(marketMakerRepository: MarketMakerRepository) {
+        this.marketMakerRepository = marketMakerRepository
     }
 
     async getListAsync(qs?: any) {

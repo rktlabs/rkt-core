@@ -7,6 +7,7 @@ import {
     AssetService,
     BootstrapService,
     IMarketMaker,
+    LeagueRepository,
     MarketMakerRepository,
     MarketMakerService,
     PortfolioRepository,
@@ -23,6 +24,7 @@ describe('MarketMakerService', () => {
         let assetRepository: AssetRepository
         let transactionRepository: TransactionRepository
         let portfolioRepository: PortfolioRepository
+        let leagueRepository: LeagueRepository
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let marketMakerRepository: MarketMakerRepository
@@ -34,16 +36,30 @@ describe('MarketMakerService', () => {
         before(async () => {
             assetRepository = new AssetRepository()
             userRepository = new UserRepository()
+            marketMakerRepository = new MarketMakerRepository()
+            leagueRepository = new LeagueRepository()
             transactionRepository = new TransactionRepository()
+
             bootstrapper = new BootstrapService(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
                 userRepository,
+                marketMakerRepository,
+                leagueRepository,
             )
-            assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
-            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
-            marketMakerRepository = new MarketMakerRepository()
+            assetService = new AssetService(
+                assetRepository,
+                portfolioRepository,
+                marketMakerRepository,
+                transactionRepository,
+            )
+            marketMakerService = new MarketMakerService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                marketMakerRepository,
+            )
             await bootstrapper.bootstrap()
 
             await assetService.scrubAsset(assetId)

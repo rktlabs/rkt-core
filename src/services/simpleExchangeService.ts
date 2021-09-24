@@ -6,6 +6,7 @@ import {
     ConflictError,
     INotificationPublisher,
     InsufficientBalance,
+    MarketMakerRepository,
     MarketMakerService,
     PortfolioRepository,
     round4,
@@ -27,6 +28,7 @@ export class SimpleExchangeService {
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
         userRepository: UserRepository,
+        marketMakerRepository: MarketMakerRepository,
         eventPublisher?: INotificationPublisher,
     ) {
         this.assetHolderRepository = new AssetHolderRepository()
@@ -40,7 +42,12 @@ export class SimpleExchangeService {
             transactionRepository,
             eventPublisher,
         )
-        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
+        this.marketMakerService = new MarketMakerService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            marketMakerRepository,
+        )
     }
 
     async buy(userId: string, assetId: string, orderSize: number) {

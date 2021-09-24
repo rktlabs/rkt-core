@@ -9,6 +9,10 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         whitelist: ['quoteAt', 'lastTrade'],
         links: (record: any) => {
             return {
+                self: {
+                    href: `${selfUrl}`,
+                    rel: 'exchangeQuote',
+                },
                 asset: {
                     href: `${baseUrl}/assets/${record.assetId}`,
                     rel: 'asset',
@@ -71,7 +75,7 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         // whitelist: ['type', 'exchangeQuoteId', 'portfolioId', 'displayName'],
         links: (record: any) => {
             return {
-                self: `${baseUrl}/assets/${record.assetId}`,
+                self: `${baseUrl}/exchange/quotes/${record.assetId}`,
             }
         },
         topLevelLinks: collectionLinks,

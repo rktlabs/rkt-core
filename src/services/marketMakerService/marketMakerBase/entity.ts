@@ -36,6 +36,7 @@ export abstract class MarketMakerBase implements IMarketMaker {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
+        marketMakerRepository: MarketMakerRepository,
         props: TMarketMaker,
     ) {
         this.createdAt = props.createdAt
@@ -50,7 +51,7 @@ export abstract class MarketMakerBase implements IMarketMaker {
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
         this.transactionRepository = transactionRepository
-        this.marketMakerRepository = new MarketMakerRepository()
+        this.marketMakerRepository = marketMakerRepository
     }
 
     flattenMaker() {

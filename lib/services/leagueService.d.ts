@@ -1,11 +1,11 @@
-import { AssetRepository, PortfolioRepository, TNewLeagueConfig, League, TLeagueAssetDef, TAssetCore, TransactionRepository } from '..';
+import { AssetRepository, LeagueRepository, PortfolioRepository, TNewLeagueConfig, League, TLeagueAssetDef, TAssetCore, TransactionRepository, MarketMakerRepository } from '..';
 export declare class LeagueService {
     private assetRepository;
     private leagueRepository;
     private portfolioRepository;
     private portfolioService;
     private assetService;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository);
+    constructor(leagueRepository: LeagueRepository, assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, marketMakerRepository: MarketMakerRepository, transactionRepository: TransactionRepository);
     createLeague(payload: TNewLeagueConfig): Promise<League>;
     deleteLeague(leagueId: string): Promise<void>;
     scrubLeague(leagueId: string): Promise<void>;

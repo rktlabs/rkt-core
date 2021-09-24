@@ -26,10 +26,6 @@
 //         bootstrapService = new BootstrapService()
 //     })
 
-//     beforeEach(async () => {
-//         // await bootstrapService.clearDb()
-//     })
-
 //     describe('Create System League', () => {
 //         it('should create league and coin', async () => {
 //             await bootstrapService.bootstrap()

@@ -1,4 +1,4 @@
-import { AssetRepository, ExchangeOrder, INotificationPublisher, PortfolioRepository, TNewExchangeOrderConfig, TransactionRepository } from '..';
+import { AssetRepository, ExchangeOrder, INotificationPublisher, MarketMakerRepository, PortfolioRepository, TNewExchangeOrderConfig, TransactionRepository } from '..';
 export declare class ExchangeService {
     private orderNotificationPublisher;
     private portfolioRepository;
@@ -9,7 +9,7 @@ export declare class ExchangeService {
     private exchangeQuoteRepository;
     private transactionService;
     private marketMakerService;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, eventPublisher?: INotificationPublisher);
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository, eventPublisher?: INotificationPublisher);
     processNewExchangeOrderAsync(orderPayload: TNewExchangeOrderConfig): Promise<ExchangeOrder | undefined>;
     private onFill;
     private onTrade;

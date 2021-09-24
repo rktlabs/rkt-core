@@ -9,6 +9,7 @@ import {
     ConflictError,
     Asset,
     TransactionRepository,
+    MarketMakerRepository,
 } from '..'
 
 import * as log4js from 'log4js'
@@ -25,6 +26,7 @@ export class AssetService {
     constructor(
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
+        marketMakerRepository: MarketMakerRepository,
         transactionRepository: TransactionRepository,
     ) {
         this.assetRepository = assetRepository
@@ -32,7 +34,12 @@ export class AssetService {
 
         this.assetHolderService = new AssetHolderService(this.assetRepository)
         this.portfolioService = new PortfolioService(portfolioRepository)
-        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
+        this.marketMakerService = new MarketMakerService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            marketMakerRepository,
+        )
     }
 
     async createAsset(payload: TNewAssetConfig, shouldCreatePortfolio: boolean = true) {

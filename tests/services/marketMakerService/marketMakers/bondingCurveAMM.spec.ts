@@ -8,6 +8,7 @@ import {
     BondingCurveAMM,
     BootstrapService,
     IMarketMaker,
+    LeagueRepository,
     MarketMakerRepository,
     MarketMakerService,
     PortfolioRepository,
@@ -20,6 +21,7 @@ describe('BondingCurveAMM', function () {
     const assetRepository = new AssetRepository()
     const portfolioRepository = new PortfolioRepository()
     const transactionRepository = new TransactionRepository()
+    const marketMakerRepository = new MarketMakerRepository()
 
     describe('bonding curve', function () {
         let makerConfig = {
@@ -48,6 +50,7 @@ describe('BondingCurveAMM', function () {
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
+                marketMakerRepository,
                 makerConfig,
             )
             const currentPrice = marketMaker.spot_price()
@@ -67,6 +70,7 @@ describe('BondingCurveAMM', function () {
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
+                marketMakerRepository,
                 makerConfig,
             )
             const currentPrice = marketMaker.spot_price()
@@ -86,6 +90,7 @@ describe('BondingCurveAMM', function () {
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
+                marketMakerRepository,
                 makerConfig,
             )
             const cost = marketMaker.compute_price(4)
@@ -105,6 +110,7 @@ describe('BondingCurveAMM', function () {
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
+                marketMakerRepository,
                 makerConfig,
             )
             const cost = marketMaker.compute_price(4)
@@ -124,6 +130,7 @@ describe('BondingCurveAMM', function () {
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
+                marketMakerRepository,
                 makerConfig,
             )
             const cost = marketMaker.compute_value(4)
@@ -161,6 +168,7 @@ describe('BondingCurveAMM', function () {
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
+                marketMakerRepository,
                 makerConfig,
             )
             const result = marketMaker.processAMMOrderImpl(4)
@@ -186,6 +194,7 @@ describe('BondingCurveAMM', function () {
 
         let bootstrapper: BootstrapService
         let assetRepository: AssetRepository
+        let leagueRepository: LeagueRepository
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let marketMakerRepository: MarketMakerRepository
@@ -197,15 +206,28 @@ describe('BondingCurveAMM', function () {
         before(async () => {
             assetRepository = new AssetRepository()
             userRepository = new UserRepository()
+            marketMakerRepository = new MarketMakerRepository()
+
             bootstrapper = new BootstrapService(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
                 userRepository,
+                marketMakerRepository,
+                leagueRepository,
             )
-            assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
-            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
-            marketMakerRepository = new MarketMakerRepository()
+            assetService = new AssetService(
+                assetRepository,
+                portfolioRepository,
+                marketMakerRepository,
+                transactionRepository,
+            )
+            marketMakerService = new MarketMakerService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                marketMakerRepository,
+            )
             await bootstrapper.bootstrap()
 
             await assetService.scrubAsset(assetId)

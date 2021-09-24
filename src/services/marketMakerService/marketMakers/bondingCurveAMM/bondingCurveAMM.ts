@@ -7,6 +7,7 @@ import {
     AssetHolderRepository,
     AssetRepository,
     ConflictError,
+    MarketMakerRepository,
     NotFoundError,
     PortfolioRepository,
     round4,
@@ -31,6 +32,7 @@ export class BondingCurveAMM extends MarketMakerBase {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
+        marketMakerRepository: MarketMakerRepository,
         props: TNewMarketMakerConfig,
     ) {
         const createdAt = DateTime.utc().toString()
@@ -45,7 +47,13 @@ export class BondingCurveAMM extends MarketMakerBase {
             tags: props.tags,
         }
 
-        const newEntity = new BondingCurveAMM(assetRepository, portfolioRepository, transactionRepository, makerProps)
+        const newEntity = new BondingCurveAMM(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            marketMakerRepository,
+            makerProps,
+        )
         newEntity.params = newEntity.computeInitialState(props.settings)
 
         /////////////////////////////////////////////////////////
@@ -77,9 +85,10 @@ export class BondingCurveAMM extends MarketMakerBase {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
+        marketMakerRepository: MarketMakerRepository,
         props: TMarketMaker,
     ) {
-        super(assetRepository, portfolioRepository, transactionRepository, props)
+        super(assetRepository, portfolioRepository, transactionRepository, marketMakerRepository, props)
         this.assetHolderRepository = new AssetHolderRepository()
         this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
     }

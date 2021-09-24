@@ -38,7 +38,6 @@
 //     })
 
 //     beforeEach(async () => {
-//         await bootstrapService.clearDb()
 //         await bootstrapService.bootstrap()
 
 //         // setup new user portfolio: user:hedbot

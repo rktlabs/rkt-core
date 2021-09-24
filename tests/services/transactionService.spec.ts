@@ -13,6 +13,8 @@ import {
     AssetRepository,
     PortfolioRepository,
     UserRepository,
+    LeagueRepository,
+    MarketMakerRepository,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -22,6 +24,8 @@ describe('Transaction Service', function () {
     let transactionRepository: TransactionRepository
     let bootstrapper: BootstrapService
     let portfolioRepository: PortfolioRepository
+    let leagueRepository: LeagueRepository
+    let marketMakerRepository: MarketMakerRepository
     let portfolioService: PortfolioService
     let assetHolderService: AssetHolderService
     let assetRepository: AssetRepository
@@ -37,20 +41,33 @@ describe('Transaction Service', function () {
         transactionRepository = new TransactionRepository()
 
         portfolioRepository = new PortfolioRepository()
+        leagueRepository = new LeagueRepository()
         portfolioService = new PortfolioService(portfolioRepository)
         assetRepository = new AssetRepository()
+        marketMakerRepository = new MarketMakerRepository()
         userRepository = new UserRepository()
         assetHolderService = new AssetHolderService(assetRepository)
-        assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
+        assetService = new AssetService(
+            assetRepository,
+            portfolioRepository,
+            marketMakerRepository,
+            transactionRepository,
+        )
         transactionService = new TransactionService(
             assetRepository,
             portfolioRepository,
             transactionRepository,
             eventPublisher as any as NullNotificationPublisher,
         )
-        bootstrapper = new BootstrapService(assetRepository, portfolioRepository, transactionRepository, userRepository)
+        bootstrapper = new BootstrapService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            userRepository,
+            marketMakerRepository,
+            leagueRepository,
+        )
 
-        //await bootstrapper.clearDb()
         await bootstrapper.fullBoot()
     })
 

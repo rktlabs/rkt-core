@@ -15,7 +15,7 @@ export declare abstract class MarketMakerBase implements IMarketMaker {
     tags?: any;
     params?: any;
     quote?: any;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, props: TMarketMaker);
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository, props: TMarketMaker);
     flattenMaker(): TMarketMaker;
     resolveAssetSpec(assetSpec: string | Asset): Promise<any>;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;

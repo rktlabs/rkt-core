@@ -13,6 +13,7 @@ import {
     IMarketMaker,
     INotificationPublisher,
     InsufficientBalance,
+    MarketMakerRepository,
     MarketMakerService,
     NullNotificationPublisher,
     OrderSide,
@@ -51,6 +52,7 @@ export class ExchangeService {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
+        marketMakerRepository: MarketMakerRepository,
         eventPublisher?: INotificationPublisher,
     ) {
         this.orderNotificationPublisher = eventPublisher || new NullNotificationPublisher()
@@ -64,7 +66,12 @@ export class ExchangeService {
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
         this.transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
-        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository, transactionRepository)
+        this.marketMakerService = new MarketMakerService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            marketMakerRepository,
+        )
     }
 
     ////////////////////////////////////////////////////

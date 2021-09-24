@@ -10,6 +10,8 @@ import {
     TNewAssetConfig,
     TransactionRepository,
     UserRepository,
+    LeagueRepository,
+    MarketMakerRepository,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -21,6 +23,8 @@ describe('Asset Service', function () {
     let assetService: AssetService
     let transactionRepository: TransactionRepository
     let userRepository: UserRepository
+    let marketMakerRepository: MarketMakerRepository
+    let leagueRepository: LeagueRepository
     let bootstrapper: BootstrapService
     const assetId = 'card::test1'
 
@@ -29,11 +33,24 @@ describe('Asset Service', function () {
         portfolioRepository = new PortfolioRepository()
         transactionRepository = new TransactionRepository()
         userRepository = new UserRepository()
+        leagueRepository = new LeagueRepository()
+        marketMakerRepository = new MarketMakerRepository()
 
-        assetService = new AssetService(assetRepository, portfolioRepository, transactionRepository)
+        assetService = new AssetService(
+            assetRepository,
+            portfolioRepository,
+            marketMakerRepository,
+            transactionRepository,
+        )
 
-        bootstrapper = new BootstrapService(assetRepository, portfolioRepository, transactionRepository, userRepository)
-        //await bootstrapper.clearDb()
+        bootstrapper = new BootstrapService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            userRepository,
+            marketMakerRepository,
+            leagueRepository,
+        )
         await bootstrapper.bootstrap()
     })
 

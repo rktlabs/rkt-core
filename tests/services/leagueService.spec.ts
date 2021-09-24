@@ -8,6 +8,7 @@ import {
     AssetRepository,
     LeagueRepository,
     LeagueService,
+    MarketMakerRepository,
     PortfolioRepository,
     TransactionRepository,
     UserRepository,
@@ -19,6 +20,7 @@ describe('League Service', function () {
 
     let leagueRepository: LeagueRepository
     let assetRepository: AssetRepository
+    let marketMakerRepository: MarketMakerRepository
     let portfolioRepository: PortfolioRepository
     let profileRepository: PortfolioRepository
     let assetHolderService: AssetHolderService
@@ -37,17 +39,24 @@ describe('League Service', function () {
         userRepository = new UserRepository()
 
         assetHolderService = new AssetHolderService(assetRepository)
-        leagueService = new LeagueService(assetRepository, portfolioRepository, transactionRepository)
+        leagueService = new LeagueService(
+            leagueRepository,
+            assetRepository,
+            portfolioRepository,
+            marketMakerRepository,
+            transactionRepository,
+        )
         boostrapService = new BootstrapService(
             assetRepository,
             portfolioRepository,
             transactionRepository,
             userRepository,
+            marketMakerRepository,
+            leagueRepository,
         )
     })
 
     beforeEach(async () => {
-        //await boostrapService.clearDb()
         sinon.resetHistory()
     })
 

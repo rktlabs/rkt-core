@@ -29,7 +29,6 @@ describe('Order Service', function () {
         // orderRepository = new OrderRepository()
         // orderService = new OrderService(eventPublisher as any as EventPublisher)
         // bootstrapper = new BootstrapService(eventPublisher as any as EventPublisher)
-        // //await bootstrapper.clearDb()
         // await bootstrapper.fullBoot()
     })
 
