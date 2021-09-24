@@ -2,15 +2,20 @@
 import { deleteDocument } from '../../util/deleters'
 
 import { getConnectionProps } from '../getConnectionProps'
-import { RepositoryBase } from '../repositoryBase'
 import { TAsset, TAssetCore, TAssetUpdate } from '../../models/asset'
+
+import * as log4js from 'log4js'
+const logger = log4js.getLogger('assetRepository')
+
 import * as admin from 'firebase-admin'
+import { CachingRepository } from '../cachingRepository'
 const FieldValue = admin.firestore.FieldValue
 
 const COLLECTION_NAME = 'assets'
 
-export class AssetRepository extends RepositoryBase {
+export class AssetRepository extends CachingRepository {
     db: FirebaseFirestore.Firestore
+
     constructor() {
         super()
         this.db = getConnectionProps()
@@ -22,6 +27,7 @@ export class AssetRepository extends RepositoryBase {
     }
 
     async getListAsync(qs?: any) {
+        logger.trace(`getList ${qs}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
 
@@ -40,46 +46,63 @@ export class AssetRepository extends RepositoryBase {
         }
     }
 
-    async getDetailAsync(assetId: string) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
+    async getDetailAsync(entityId: string) {
+        const cachedItem = this.cacheLookup(entityId)
+        if (cachedItem) {
+            logger.trace(`cachedItem: ${entityId}`)
+            return cachedItem
+        }
+
+        logger.trace(`getDetail ${entityId}`)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         const entityDoc = await entityRef.get()
 
         if (!entityDoc.exists) {
             return null
         } else {
             const entity = entityDoc.data() as TAsset
+            this.cacheEntity(entityId, entity)
             return entity
         }
     }
 
     async storeAsync(entity: TAsset) {
+        logger.trace(`store ${entity.assetId}`)
+        this.cacheClear(entity.assetId)
         const entityId = entity.assetId
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.set(entityData)
     }
 
-    async updateAsync(assetId: string, entityData: TAssetUpdate) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
+    async updateAsync(entityId: string, entityData: TAssetUpdate) {
+        logger.trace(`update ${entityId}`)
+        this.cacheClear(entityId)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.update(entityData)
     }
 
-    async addMinted(assetId: string, units: number) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
+    async addMinted(entityId: string, units: number) {
+        logger.trace(`addMinted ${entityId}`)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.update({ issuedUnits: FieldValue.increment(units) })
     }
 
-    async addBurned(assetId: string, units: number) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
+    async addBurned(entityId: string, units: number) {
+        logger.trace(`addBurned ${entityId}`)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.update({ burnedUnits: FieldValue.increment(units) })
     }
 
-    async deleteAsync(assetId: string) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
+    async deleteAsync(entityId: string) {
+        logger.trace(`delete ${entityId}`)
+        this.cacheClear(entityId)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await deleteDocument(entityRef)
     }
 
     async getLeagueAssetsAsync(leagueId: string): Promise<TAssetCore[]> {
+        logger.trace(`getLeagueAssets ${leagueId}`)
         // TODO: renaem leagueId to leagueId
         const entityRefCollection = this.db.collection(COLLECTION_NAME).where('leagueId', '==', leagueId)
         const entityCollectionRefs = await entityRefCollection.get()

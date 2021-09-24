@@ -1,17 +1,13 @@
 'use strict'
 
 import { TOrder, Trade } from '../..'
-import {
-    Asset,
-    AssetRepository,
-    MarketMakerRepository,
-    NotFoundError,
-    PortfolioRepository,
-    TAssetUpdate,
-} from '../../..'
+import { Asset, AssetRepository, MarketMakerRepository, NotFoundError, PortfolioRepository } from '../../..'
 import { IMarketMaker } from './interfaces'
 import { serialize, serializeCollection } from './serializer'
 import { TMarketMaker, TMakerResult } from './types'
+
+import * as log4js from 'log4js'
+const logger = log4js.getLogger()
 
 // MarketMaker holds value and shares to be sold.
 export abstract class MarketMakerBase implements IMarketMaker {
@@ -26,10 +22,11 @@ export abstract class MarketMakerBase implements IMarketMaker {
     portfolioId?: string
     tags?: any
     params?: any
+    quote?: any
 
     // currentPrice?: number
 
-    constructor(props: TMarketMaker) {
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, props: TMarketMaker) {
         this.createdAt = props.createdAt
         this.type = props.type
         this.assetId = props.assetId
@@ -37,12 +34,13 @@ export abstract class MarketMakerBase implements IMarketMaker {
         this.portfolioId = props.portfolioId
         this.tags = props.tags
         this.params = props.params
+        this.quote = props.quote
 
         // this.currentPrice = props.currentPrice
 
-        this.assetRepository = new AssetRepository()
+        this.assetRepository = assetRepository
         this.marketMakerRepository = new MarketMakerRepository()
-        this.portfolioRepository = new PortfolioRepository()
+        this.portfolioRepository = portfolioRepository
     }
 
     flattenMaker() {
@@ -53,6 +51,7 @@ export abstract class MarketMakerBase implements IMarketMaker {
             ownerId: this.ownerId,
             tags: this.tags,
             params: this.params,
+            quote: this.quote,
 
             // currentPrice: this.currentPrice,
         }
@@ -65,7 +64,9 @@ export abstract class MarketMakerBase implements IMarketMaker {
     async resolveAssetSpec(assetSpec: string | Asset) {
         const asset = typeof assetSpec === 'string' ? await this.assetRepository.getDetailAsync(assetSpec) : assetSpec
         if (!asset) {
-            throw new Error(`Asset Not Found: ${assetSpec}`)
+            const msg = `Asset Not Found: ${assetSpec}`
+            logger.error(msg)
+            throw new Error(msg)
         }
         return asset
     }
@@ -79,6 +80,9 @@ export abstract class MarketMakerBase implements IMarketMaker {
     }
 
     async processOrder(order: TOrder) {
+        logger.info(
+            `marketMaker processOrder: ${order.orderId} for portfolio: ${order.portfolioId} asset: ${order.assetId}`,
+        )
         const assetId = order.assetId
         const orderSide = order.orderSide
         const orderSize = order.orderSize
@@ -89,13 +93,15 @@ export abstract class MarketMakerBase implements IMarketMaker {
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             const msg = `Invalid Order: Asset: ${assetId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { assetId })
         }
 
-        // for this maker, the asset portfolio holds the unit stock.
+        // for this marketMaker, the asset portfolio holds the unit stock.
         const assetPortfolioId = asset.portfolioId
         if (!assetPortfolioId) {
             const msg = `Invalid Order: Asset Portfolio: not configured for ${assetId}`
+            logger.error(msg)
             throw new NotFoundError(msg)
         }
 
@@ -115,24 +121,16 @@ export abstract class MarketMakerBase implements IMarketMaker {
                 makerDeltaUnits: makerDeltaUnits,
                 makerDeltaValue: makerDeltaValue,
             })
+            logger.info(
+                `marketMaker trade: order: ${order.orderId} units: ${makerDeltaUnits} value: ${makerDeltaValue}`,
+            )
 
             return trade
         } else {
+            logger.info(`marketMaker processOrder: NO TRADE for order: ${order.orderId}`)
             return null
         }
     }
 
     abstract processOrderImpl(orderSide: string, orderSize: number): Promise<TMakerResult | null>
-
-    ////////////////////////////////////////////////////
-    //  onUpdateQuote
-    //  - store new quoted for the asset indicated
-    ////////////////////////////////////////////////////
-    onUpdateQuote = async (trade: Trade, bid: number, ask: number) => {
-        const assetId = trade.assetId
-        const last = trade.taker.filledPrice
-
-        const updateProps: TAssetUpdate = { bid, ask, last }
-        await this.assetRepository.updateAsync(assetId, updateProps)
-    }
 }

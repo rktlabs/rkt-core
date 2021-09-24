@@ -6,10 +6,10 @@ export declare class MarketMakerRepository extends RepositoryBase {
     constructor();
     filterMap: any;
     getListAsync(qs?: any): Promise<TMarketMaker[]>;
-    getDetailAsync(makerId: string): Promise<TMarketMaker | null>;
+    getDetailAsync(assetId: string): Promise<TMarketMaker | null>;
     storeAsync(entity: MarketMakerBase | TMarketMaker): Promise<void>;
-    updateAsync(makerId: string, entityData: TMarketMakerPatch): Promise<void>;
-    updateMakerStateAsync(makerId: string, stateUpdate: any): Promise<void>;
-    deleteAsync(makerId: string): Promise<void>;
+    updateAsync(assetId: string, entityData: TMarketMakerPatch): Promise<void>;
+    updateMakerStateAsync(assetId: string, stateUpdate: any): Promise<void>;
+    deleteAsync(assetId: string): Promise<void>;
     isPortfolioUsed(portfolioId: string): Promise<string | null>;
 }

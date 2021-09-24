@@ -3,6 +3,9 @@
 import { PortfolioService, AssetHolderService, MarketMakerService } from '.'
 import { PortfolioRepository, AssetRepository, TNewAssetConfig, DuplicateError, ConflictError, Asset } from '..'
 
+import * as log4js from 'log4js'
+const logger = log4js.getLogger()
+
 export class AssetService {
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
@@ -11,13 +14,13 @@ export class AssetService {
     private marketMakerService: MarketMakerService
     private assetHolderService: AssetHolderService
 
-    constructor() {
-        this.assetRepository = new AssetRepository()
-        this.portfolioRepository = new PortfolioRepository()
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
+        this.assetRepository = assetRepository
+        this.portfolioRepository = portfolioRepository
 
-        this.assetHolderService = new AssetHolderService()
-        this.portfolioService = new PortfolioService()
-        this.marketMakerService = new MarketMakerService()
+        this.assetHolderService = new AssetHolderService(this.assetRepository)
+        this.portfolioService = new PortfolioService(portfolioRepository)
+        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
     }
 
     async createAsset(payload: TNewAssetConfig, shouldCreatePortfolio: boolean = true) {
@@ -26,6 +29,7 @@ export class AssetService {
             const asset = await this.assetRepository.getDetailAsync(assetId)
             if (asset) {
                 const msg = `Asset Creation Failed - assetId: ${assetId} already exists`
+                logger.error(msg)
                 throw new DuplicateError(msg, { assetId })
             }
 
@@ -36,6 +40,7 @@ export class AssetService {
                     const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
                     if (portfolio) {
                         const msg = `Asset Creation Failed - portfolioId: ${portfolioId} already exists`
+                        logger.error(msg)
                         throw new ConflictError(msg, { portfolioId })
                     }
                 }
@@ -44,10 +49,13 @@ export class AssetService {
 
         const asset = await this.createAssetImpl(payload, shouldCreatePortfolio)
 
+        logger.info(`created asset: ${asset.assetId}`)
+
         return asset
     }
 
     async deleteAsset(assetId: string) {
+        logger.trace(`delete asset: ${assetId}`)
         await this.scrubAsset(assetId)
     }
 

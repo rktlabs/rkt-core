@@ -23,15 +23,19 @@ export class SimpleExchangeService {
     private transactionService: TransactionService
     private marketMakerService: MarketMakerService
 
-    constructor(eventPublisher?: INotificationPublisher) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        eventPublisher?: INotificationPublisher,
+    ) {
         this.assetHolderRepository = new AssetHolderRepository()
-        this.portfolioRepository = new PortfolioRepository()
+        this.portfolioRepository = portfolioRepository
         this.userRepository = new UserRepository()
-        this.assetRepository = new AssetRepository()
+        this.assetRepository = assetRepository
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
-        this.transactionService = new TransactionService(eventPublisher)
-        this.marketMakerService = new MarketMakerService()
+        this.transactionService = new TransactionService(assetRepository, portfolioRepository, eventPublisher)
+        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
     }
 
     async buy(userId: string, assetId: string, orderSize: number) {
@@ -74,13 +78,13 @@ export class SimpleExchangeService {
             throw new ConflictError(msg)
         }
 
-        const maker = await this.marketMakerService.getMakerAsync(assetId)
-        if (!maker) {
+        const marketMaker = await this.marketMakerService.getMarketMakerAsync(assetId)
+        if (!marketMaker) {
             const msg = `Order Failed - marketMaker not found (${assetId})`
             throw new ConflictError(msg)
         }
 
-        const tradeUnits = await maker.processOrderImpl(orderSide, orderSize)
+        const tradeUnits = await marketMaker.processOrderImpl(orderSide, orderSize)
         if (tradeUnits) {
             const { makerDeltaUnits, makerDeltaValue } = tradeUnits
 

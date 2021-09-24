@@ -13,13 +13,17 @@ import {
     TNewExchangeOrderConfig,
     TreasuryService,
     MintService,
+    AssetRepository,
+    PortfolioRepository,
 } from '../../src'
 
-describe.only('ExchangerService', function () {
-    describe('persist market maker', function () {
+describe('ExchangerService', function () {
+    describe('persist marketMaker', function () {
         this.timeout(20000)
 
         let bootstrapper: BootstrapService
+        let portfolioRepository: PortfolioRepository
+        let assetRepository: AssetRepository
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let exchangeService: ExchangeService
@@ -31,12 +35,14 @@ describe.only('ExchangerService', function () {
         let marketMaker: IMarketMaker
 
         before(async () => {
-            bootstrapper = new BootstrapService()
-            assetService = new AssetService()
-            marketMakerService = new MarketMakerService()
-            exchangeService = new ExchangeService()
-            treasuryService = new TreasuryService()
-            mintService = new MintService()
+            assetRepository = new AssetRepository()
+            portfolioRepository = new PortfolioRepository()
+            bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
+            assetService = new AssetService(assetRepository, portfolioRepository)
+            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
+            exchangeService = new ExchangeService(assetRepository, portfolioRepository)
+            treasuryService = new TreasuryService(assetRepository, portfolioRepository)
+            mintService = new MintService(assetRepository, portfolioRepository)
             marketMakerRepository = new MarketMakerRepository()
             await bootstrapper.bootstrap()
 
@@ -58,7 +64,7 @@ describe.only('ExchangerService', function () {
             await assetService.createAsset(assetConfig)
         })
 
-        describe('buy', function () {
+        describe.only('buy', function () {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
@@ -94,7 +100,9 @@ describe.only('ExchangerService', function () {
                         tags: { test: true },
                     }
 
+                    console.log('do  ----------------------------------')
                     await exchangeService.processNewExchangeOrderAsync(orderPayload)
+                    console.log('done----------------------------------')
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

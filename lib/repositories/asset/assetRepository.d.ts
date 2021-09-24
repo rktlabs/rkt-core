@@ -1,16 +1,16 @@
-import { RepositoryBase } from '../repositoryBase';
 import { TAsset, TAssetCore, TAssetUpdate } from '../../models/asset';
-export declare class AssetRepository extends RepositoryBase {
+import { CachingRepository } from '../cachingRepository';
+export declare class AssetRepository extends CachingRepository {
     db: FirebaseFirestore.Firestore;
     constructor();
     filterMap: any;
     getListAsync(qs?: any): Promise<TAsset[]>;
-    getDetailAsync(assetId: string): Promise<TAsset | null>;
+    getDetailAsync(entityId: string): Promise<any>;
     storeAsync(entity: TAsset): Promise<void>;
-    updateAsync(assetId: string, entityData: TAssetUpdate): Promise<void>;
-    addMinted(assetId: string, units: number): Promise<void>;
-    addBurned(assetId: string, units: number): Promise<void>;
-    deleteAsync(assetId: string): Promise<void>;
+    updateAsync(entityId: string, entityData: TAssetUpdate): Promise<void>;
+    addMinted(entityId: string, units: number): Promise<void>;
+    addBurned(entityId: string, units: number): Promise<void>;
+    deleteAsync(entityId: string): Promise<void>;
     getLeagueAssetsAsync(leagueId: string): Promise<TAssetCore[]>;
     isPortfolioUsed(portfolioId: string): Promise<string | null>;
     isLeagueUsed(leagueId: string): Promise<string | null>;

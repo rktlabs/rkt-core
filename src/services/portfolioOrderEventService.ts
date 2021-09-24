@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
-import * as log4js from 'log4js'
 import { TNotification } from '.'
 import { PortfolioOrderRepository, TPortfolioOrder, TPortfolioOrderEvent } from '..'
 
+import * as log4js from 'log4js'
 const logger = log4js.getLogger()
 
 export class PortfolioOrderEventService {

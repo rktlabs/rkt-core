@@ -1,7 +1,6 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import * as log4js from 'log4js'
 import { INotificationPublisher, AssetHolderService, NullNotificationPublisher } from '.'
 import {
     PortfolioRepository,
@@ -19,7 +18,8 @@ import {
     TransactionLeg,
     generateId,
 } from '..'
-const logger = log4js.getLogger()
+import * as log4js from 'log4js'
+const logger = log4js.getLogger('transactionService')
 
 export class TransactionService {
     private eventPublisher: INotificationPublisher
@@ -30,13 +30,18 @@ export class TransactionService {
     private transactionRepository: TransactionRepository
     private assetHolderService: AssetHolderService
 
-    constructor(eventPublisher?: INotificationPublisher) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        eventPublisher?: INotificationPublisher,
+    ) {
         this.eventPublisher = eventPublisher || new NullNotificationPublisher()
-        this.portfolioRepository = new PortfolioRepository()
-        this.assetRepository = new AssetRepository()
+        this.portfolioRepository = portfolioRepository
+        this.assetRepository = assetRepository
         this.assetHolderRepository = new AssetHolderRepository()
         this.transactionRepository = new TransactionRepository()
-        this.assetHolderService = new AssetHolderService()
+        //this.assetHolderService = new AssetHolderService()
+        this.assetHolderService = new AssetHolderService(this.assetRepository)
     }
 
     /////////////////////////////
@@ -44,6 +49,7 @@ export class TransactionService {
     /////////////////////////////
 
     async executePurchaseAsync(exchangeData: TPurchase) {
+        logger.trace(`executePurchase: ${JSON.stringify(exchangeData)}`)
         // takes simple structure and fills out the rest:
         // eg:
         // const data: TPurchase = {
@@ -90,7 +96,7 @@ export class TransactionService {
 
     // a transfer is a transaction with one input, out output, and one asset
     async executeTransferAsync(transferData: TTransfer) {
-        //logger.debug(`Handle Transfer: ${JSON.stringify(transferData)}`)
+        logger.trace(`executeTransfer: ${JSON.stringify(transferData)}`)
 
         const inputPortfolioId = transferData.inputPortfolioId
         const outputPortfolioId = transferData.outputPortfolioId
@@ -121,7 +127,7 @@ export class TransactionService {
     }
 
     async executeTransactionAsync(transactionData: TTransactionNew) {
-        logger.debug(`Handle Create Transaction: ${JSON.stringify(transactionData)}`)
+        logger.debug(`executeTransaction ${JSON.stringify(transactionData)}`)
 
         const transaction = Transaction.newTransaction(transactionData)
         const transactionId = transaction.transactionId

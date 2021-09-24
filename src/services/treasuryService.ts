@@ -27,17 +27,21 @@ export class TreasuryService {
     private mintService: MintService
     //private me: Principal
 
-    constructor(eventPublisher?: INotificationPublisher) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        eventPublisher?: INotificationPublisher,
+    ) {
         //this.me = me
         this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.userRepository = new UserRepository()
-        this.assetRepository = new AssetRepository()
-        this.portfolioRepository = new PortfolioRepository()
-        this.portfolioService = new PortfolioService()
-        this.assetHolderService = new AssetHolderService()
-        this.transactionService = new TransactionService(this.eventPublisher)
-        this.mintService = new MintService()
+        this.assetRepository = assetRepository
+        this.portfolioRepository = portfolioRepository
+        this.portfolioService = new PortfolioService(portfolioRepository)
+        this.assetHolderService = new AssetHolderService(assetRepository)
+        this.transactionService = new TransactionService(assetRepository, portfolioRepository, this.eventPublisher)
+        this.mintService = new MintService(assetRepository, portfolioRepository)
     }
 
     async mintUnits(units: number) {

@@ -23,18 +23,14 @@ export declare type TAsset = {
     subject?: any;
     tags?: any;
     xids?: any;
-    bid?: number;
-    ask?: number;
-    last?: number;
+    quote?: any;
 };
 export declare type TAssetCore = {
     assetId: string;
     displayName: string;
 };
 export declare type TAssetUpdate = {
-    bid?: number;
-    ask?: number;
-    last?: number;
+    quote?: any;
 };
 export declare type TAssetUpdate2 = {
     issuedUnits?: number;

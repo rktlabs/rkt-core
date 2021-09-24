@@ -17,7 +17,7 @@ describe('Portfolio Service', function () {
 
     before(async () => {
         portfolioRepository = new PortfolioRepository()
-        portfolioService = new PortfolioService()
+        portfolioService = new PortfolioService(portfolioRepository)
     })
 
     beforeEach(async () => {

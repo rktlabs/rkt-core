@@ -11,8 +11,8 @@ export class PortfolioQuery {
     portfolioHoldingRepository: PortfolioHoldingRepository
     portfolioOrderRepository: PortfolioOrderRepository
 
-    constructor() {
-        this.portfolioRepository = new PortfolioRepository()
+    constructor(portfolioRepository: PortfolioRepository) {
+        this.portfolioRepository = portfolioRepository
         this.portfolioActivityRepository = new PortfolioActivityRepository()
         this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.portfolioOrderRepository = new PortfolioOrderRepository()

@@ -1,7 +1,7 @@
 'use strict'
 
-import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
+import * as log4js from 'log4js'
 const logger = log4js.getLogger()
 
 import {
@@ -19,9 +19,12 @@ import {
     NullNotificationPublisher,
     INotificationPublisher,
     AssetHolderRepository,
+    AssetRepository,
     Trade,
     TTaker,
     OrderSide,
+    IMarketMaker,
+    TAssetUpdate,
 } from '..'
 
 ///////////////////////////////////////////////////
@@ -30,31 +33,37 @@ import {
 // - resolves markerMakr for asset in order
 // - applies order to markerMaker
 // - emits order events as order is processecd
-// - applies transaction returned from market maker?
+// - applies transaction returned from marketMaker?
 
 export class ExchangeService {
     private orderNotificationPublisher: INotificationPublisher
 
     private portfolioRepository: PortfolioRepository
     private assetHolderRepository: AssetHolderRepository
+    private assetRepository: AssetRepository
     private exchangeOrderRepository: ExchangeOrderRepository
     private exchangeTradeRepository: ExchangeTradeRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
     private transactionService: TransactionService
     private marketMakerService: MarketMakerService
 
-    constructor(eventPublisher?: INotificationPublisher) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        eventPublisher?: INotificationPublisher,
+    ) {
         this.orderNotificationPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.assetHolderRepository = new AssetHolderRepository()
-        this.portfolioRepository = new PortfolioRepository()
+        this.assetRepository = assetRepository
+        this.portfolioRepository = portfolioRepository
 
         this.exchangeOrderRepository = new ExchangeOrderRepository()
         this.exchangeTradeRepository = new ExchangeTradeRepository()
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
-        this.transactionService = new TransactionService()
-        this.marketMakerService = new MarketMakerService()
+        this.transactionService = new TransactionService(assetRepository, portfolioRepository)
+        this.marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
     }
 
     ////////////////////////////////////////////////////
@@ -62,7 +71,7 @@ export class ExchangeService {
     //  - new order handler - accepts raw json as input
     ////////////////////////////////////////////////////
     async processNewExchangeOrderAsync(orderPayload: TNewExchangeOrderConfig) {
-        logger.debug(`Handle Exchange Order: ${JSON.stringify(orderPayload)}`)
+        logger.debug(`processNewExchangeOrderAsync: ${JSON.stringify(orderPayload)}`)
 
         let exchangeOrder: ExchangeOrder | undefined
         try {
@@ -74,43 +83,49 @@ export class ExchangeService {
             const orderSide = orderPayload.orderSide
             const orderSize = orderPayload.orderSize
 
-            if (orderSide === 'bid') {
-                await this.verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
-            } else if (orderSide === 'ask') {
-                await this.verifyFundsAsync(portfolioId, assetId, orderSide, orderSize)
-            }
-
-            ////////////////////////////////////
-            // order is reasonably complete so mark it as received
-            // and STORE it
-            ////////////////////////////////////
-            exchangeOrder = ExchangeOrder.newExchangeOrder(orderPayload)
-            exchangeOrder.status = 'received'
-            await this.exchangeOrderRepository.storeAsync(exchangeOrder)
-
-            // verify that maker exists.
-            const orderId = exchangeOrder.orderId
-
-            const order = MarketMakerService.generateOrder({
-                assetId: assetId,
-                orderId: orderId,
-                portfolioId: portfolioId,
-                orderSide: orderSide as OrderSide,
-                orderSize: orderSize,
-            })
-
+            // TODO TODO - get quoted from marketMaker. get marketMaker first here. will
+            // eliminate redundant read
             ////////////////////////////////////////////////////////
             // Process the order
             ////////////////////////////////////////////////////////
 
-            const maker = await this.marketMakerService.getMakerAsync(assetId)
-            if (maker) {
-                const trade = await maker.processOrder(order)
+            const marketMaker = await this.marketMakerService.getMarketMakerAsync(assetId)
+            if (marketMaker) {
+                if (orderSide === 'bid') {
+                    await this.verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
+                } else if (orderSide === 'ask') {
+                    ////////////////////////////
+                    // get bid price and verify funds
+                    ////////////////////////////
+                    const currentPrice = marketMaker?.quote?.bid1 || 1
+                    await this.verifyFundsAsync(portfolioId, assetId, orderSide, orderSize, currentPrice)
+                }
+
+                ////////////////////////////////////
+                // order is reasonably complete so mark it as received
+                // and STORE it
+                ////////////////////////////////////
+                exchangeOrder = ExchangeOrder.newExchangeOrder(orderPayload)
+                exchangeOrder.status = 'received'
+                await this.exchangeOrderRepository.storeAsync(exchangeOrder)
+
+                const orderId = exchangeOrder.orderId
+
+                const order = MarketMakerService.generateOrder({
+                    assetId: assetId,
+                    orderId: orderId,
+                    portfolioId: portfolioId,
+                    orderSide: orderSide as OrderSide,
+                    orderSize: orderSize,
+                })
+
+                const trade = await marketMaker.processOrder(order)
 
                 if (trade) {
                     if (trade.taker.filledSize) {
                         await this.onFill(trade.taker)
                         await this.onTrade(trade)
+                        await this.onUpdateQuote(marketMaker)
 
                         const takerPortfolioId = trade.taker.portfolioId
                         const takerDeltaUnits = trade.taker.filledSize
@@ -210,6 +225,18 @@ export class ExchangeService {
             trade.tradeId,
             'marketMaker',
         ) // async - don't wait to finish
+    }
+
+    ////////////////////////////////////////////////////
+    //  onUpdateQuote
+    //  - store new quoted for the asset indicated
+    ////////////////////////////////////////////////////
+    private onUpdateQuote = async (marketMaker: IMarketMaker) => {
+        const assetId = marketMaker.assetId
+        const quote = marketMaker.quote
+
+        const updateProps: TAssetUpdate = { quote: quote }
+        await this.assetRepository.updateAsync(assetId, updateProps)
     }
 
     ////////////////////////////////////////////////////
@@ -326,7 +353,13 @@ export class ExchangeService {
         }
     }
 
-    private async verifyFundsAsync(portfolioId: string, assetId: string, orderSide: string, orderSize: number) {
+    private async verifyFundsAsync(
+        portfolioId: string,
+        assetId: string,
+        orderSide: string,
+        orderSize: number,
+        currentPrice: number = 0,
+    ) {
         // verify that portfolio exists.
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
@@ -334,15 +367,9 @@ export class ExchangeService {
             throw new ConflictError(msg)
         }
 
-        ////////////////////////////
-        // get bid price and verify funds
-        ////////////////////////////
-        const quote = await this.exchangeQuoteRepository.getDetailAsync(assetId)
-        const price = quote?.bid || 1
-
         const COIN_BUFFER_FACTOR = 1.05
         const paymentAssetId = 'coin::rkt'
-        const coinsRequired = orderSide === 'bid' ? round4(orderSize * price) * COIN_BUFFER_FACTOR : 0
+        const coinsRequired = orderSide === 'bid' ? round4(orderSize * currentPrice) * COIN_BUFFER_FACTOR : 0
 
         if (coinsRequired > 0) {
             const coinsHeld = await this.assetHolderRepository.getDetailAsync(paymentAssetId, portfolioId)

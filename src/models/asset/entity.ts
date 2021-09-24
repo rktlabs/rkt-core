@@ -27,9 +27,10 @@ export class Asset {
     tags?: any
     xids?: any
 
-    bid?: number
-    ask?: number
-    last?: number
+    // bid?: number
+    // ask?: number
+    // last?: number
+    quote?: any
 
     constructor(props: TAsset) {
         this.createdAt = props.createdAt
@@ -51,9 +52,10 @@ export class Asset {
         this.xids = props.xids
         this.tags = props.tags
 
-        this.bid = props.bid
-        this.ask = props.ask
-        this.last = props.last
+        // this.bid = props.bid
+        // this.ask = props.ask
+        // this.last = props.last
+        this.quote = props.quote
     }
 
     toString() {

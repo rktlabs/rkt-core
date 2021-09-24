@@ -2,7 +2,14 @@
 /* eslint-env node, mocha */
 
 import { assert, expect } from 'chai'
-import { UserRepository, PortfolioRepository, UserService, AssetHolderService, TNewUserConfig } from '../../src'
+import {
+    UserRepository,
+    PortfolioRepository,
+    UserService,
+    AssetHolderService,
+    TNewUserConfig,
+    AssetRepository,
+} from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe.skip('User Service', function () {
@@ -22,7 +29,7 @@ describe.skip('User Service', function () {
     before(async () => {
         userRepository = new UserRepository()
         portfolioRepository = new PortfolioRepository()
-        userService = new UserService()
+        userService = new UserService(portfolioRepository)
     })
 
     describe('User Service Simple', () => {
@@ -131,13 +138,15 @@ describe.skip('User Service', function () {
 
     describe('User Service Boot', () => {
         let bootstrapper: BootstrapService
+        let assetRepository: AssetRepository
         let assetHolderService: AssetHolderService
 
         let userId: string
 
         before(async () => {
-            assetHolderService = new AssetHolderService()
-            bootstrapper = new BootstrapService()
+            assetRepository = new AssetRepository()
+            assetHolderService = new AssetHolderService(assetRepository)
+            bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
         })
 
         beforeEach(async () => {

@@ -3,19 +3,23 @@
 
 import { expect } from 'chai'
 import {
+    AssetRepository,
     AssetService,
     BootstrapService,
     IMarketMaker,
     MarketMakerRepository,
     MarketMakerService,
+    PortfolioRepository,
     TNewMarketMakerConfig,
 } from '../../../src'
 
 describe('MarketMakerService', () => {
-    describe('persist market maker', function () {
+    describe('persist marketMaker', function () {
         this.timeout(10000)
 
         let bootstrapper: BootstrapService
+        let assetRepository: AssetRepository
+        let portfolioRepository: PortfolioRepository
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let marketMakerRepository: MarketMakerRepository
@@ -24,9 +28,10 @@ describe('MarketMakerService', () => {
         let marketMaker: IMarketMaker
 
         before(async () => {
-            bootstrapper = new BootstrapService()
-            assetService = new AssetService()
-            marketMakerService = new MarketMakerService()
+            assetRepository = new AssetRepository()
+            bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
+            assetService = new AssetService(assetRepository, portfolioRepository)
+            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
             marketMakerRepository = new MarketMakerRepository()
             await bootstrapper.bootstrap()
 

@@ -4,6 +4,9 @@ import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
+import * as log4js from 'log4js'
+const logger = log4js.getLogger('userRepository')
+
 const COLLECTION_NAME = 'users'
 
 export class UserRepository extends RepositoryBase {
@@ -19,6 +22,7 @@ export class UserRepository extends RepositoryBase {
     }
 
     async getListAsync(qs?: any) {
+        logger.trace(`getList ${qs}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
 
@@ -40,6 +44,7 @@ export class UserRepository extends RepositoryBase {
     }
 
     async getDetailAsync(userId: string) {
+        logger.trace(`getDetail ${userId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(userId)
         const entityDoc = await entityRef.get()
 
@@ -54,6 +59,7 @@ export class UserRepository extends RepositoryBase {
     }
 
     async lookupUserByUserNameAsync(username: string) {
+        logger.trace(`lookupUserByUserName ${username}`)
         const entityRefCollection = this.db.collection(COLLECTION_NAME).where('username', '==', username)
         const entityCollectionRefs = await entityRefCollection.get()
         if (!entityCollectionRefs.empty) {
@@ -70,6 +76,7 @@ export class UserRepository extends RepositoryBase {
     }
 
     async lookupUserByEmailAsync(email: string) {
+        logger.trace(`lookupUserByEmail ${email}`)
         const entityRefCollection = this.db.collection(COLLECTION_NAME).where('email', '==', email)
         const entityCollectionRefs = await entityRefCollection.get()
         if (!entityCollectionRefs.empty) {
@@ -86,6 +93,7 @@ export class UserRepository extends RepositoryBase {
     }
 
     async storeAsync(entity: TUser) {
+        logger.trace(`store ${entity.userId}`)
         const entityId = entity.userId
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
@@ -93,6 +101,7 @@ export class UserRepository extends RepositoryBase {
     }
 
     async deleteAsync(userId: string) {
+        logger.trace(`delete ${userId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(userId)
         await deleteDocument(entityRef)
     }

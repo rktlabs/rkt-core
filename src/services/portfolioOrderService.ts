@@ -13,10 +13,10 @@ export class PortfolioOrderService {
     private assetRepository: AssetRepository
     private portfolioRepository: PortfolioRepository
 
-    constructor() {
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
         this.orderRepository = new PortfolioOrderRepository()
-        this.assetRepository = new AssetRepository()
-        this.portfolioRepository = new PortfolioRepository()
+        this.assetRepository = assetRepository
+        this.portfolioRepository = portfolioRepository
     }
 
     async createOrder(orderPayload: TNewOrderProps) {

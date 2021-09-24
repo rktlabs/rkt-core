@@ -14,9 +14,7 @@ export declare class Asset {
     subject?: string;
     tags?: any;
     xids?: any;
-    bid?: number;
-    ask?: number;
-    last?: number;
+    quote?: any;
     constructor(props: TAsset);
     toString(): string;
     static newAsset(props: TNewAssetConfig): Asset;

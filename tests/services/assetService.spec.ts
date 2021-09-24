@@ -19,9 +19,9 @@ describe('Asset Service', function () {
         assetRepository = new AssetRepository()
         portfolioRepository = new PortfolioRepository()
 
-        assetService = new AssetService()
+        assetService = new AssetService(assetRepository, portfolioRepository)
 
-        bootstrapper = new BootstrapService()
+        bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
         //await bootstrapper.clearDb()
         await bootstrapper.bootstrap()
     })

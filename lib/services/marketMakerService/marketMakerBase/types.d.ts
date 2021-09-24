@@ -20,7 +20,7 @@ export declare type TMarketMakerPatch = {
     params?: any;
 };
 export declare type TMarketMakerQuote = {
-    last: {
+    last?: {
         side: string;
         units: number;
         value: number;

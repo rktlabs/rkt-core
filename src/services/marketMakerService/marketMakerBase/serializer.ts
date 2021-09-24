@@ -5,13 +5,13 @@ import { HALSerializer } from 'hal-serializer'
 export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     const serializer = new HALSerializer()
 
-    serializer.register('maker', {
+    serializer.register('marketMaker', {
         //whitelist: ['bid', 'ask', 'last', 'params'],
         links: (record: any) => {
             return {
                 self: {
                     href: `${selfUrl}`,
-                    rel: 'maker',
+                    rel: 'marketMaker',
                 },
                 asset: {
                     href: `${baseUrl}/assets/${record.assetId}`,
@@ -27,7 +27,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
         },
     })
 
-    const serialized = serializer.serialize('maker', data)
+    const serialized = serializer.serialize('marketMaker', data)
     return serialized
 }
 
@@ -82,8 +82,8 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         links: (record: any) => {
             return {
                 self: {
-                    href: `${baseUrl}/makers/${record.makerId}`,
-                    rel: 'maker',
+                    href: `${baseUrl}/makers/${record.assetId}`,
+                    rel: 'marketMaker',
                 },
             }
         },

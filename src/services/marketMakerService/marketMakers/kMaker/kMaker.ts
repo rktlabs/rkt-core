@@ -103,10 +103,10 @@
 //         }
 //     }
 
-//     private computePropsUpdate(maker: TKMakerParams, orderSize: number) {
-//         const initialPoolUnits = maker.poolUnits
-//         const initialPoolCoins = maker.poolCoins
-//         const k = maker.k
+//     private computePropsUpdate(marketMaker: TKMakerParams, orderSize: number) {
+//         const initialPoolUnits = marketMaker.poolUnits
+//         const initialPoolCoins = marketMaker.poolCoins
+//         const k = marketMaker.k
 
 //         let makerPoolUnitDelta = orderSize
 //         if (makerPoolUnitDelta < 0) {

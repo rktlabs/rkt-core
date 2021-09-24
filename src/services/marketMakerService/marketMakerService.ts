@@ -1,31 +1,33 @@
 'use strict'
 
-import {
-    IMarketMaker,
-    BondingCurveAMM,
-    // KMaker,
-    // Bonding2Maker,
-    // LogarithmicMaker,
-    TNewMarketMakerConfig,
-    MarketMakerBase,
-    TOrder,
-    TOrderConfig,
-} from '.'
+import * as log4js from 'log4js'
+const logger = log4js.getLogger()
+
+import { IMarketMaker, BondingCurveAMM, TNewMarketMakerConfig, MarketMakerBase, TOrder, TOrderConfig } from '.'
 import { PortfolioService } from '..'
-import { MarketMakerRepository, PortfolioRepository, DuplicateError, ConflictError, TNewPortfolioConfig } from '../..'
+import {
+    MarketMakerRepository,
+    PortfolioRepository,
+    DuplicateError,
+    ConflictError,
+    TNewPortfolioConfig,
+    AssetRepository,
+} from '../..'
 
 export class MarketMakerService {
     private marketMakerRepository: MarketMakerRepository
     private portfolioRepository: PortfolioRepository
     private portfolioService: PortfolioService
+    private assetRepository: AssetRepository
 
-    constructor() {
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
         this.marketMakerRepository = new MarketMakerRepository()
-        this.portfolioRepository = new PortfolioRepository()
-        this.portfolioService = new PortfolioService()
+        this.portfolioRepository = portfolioRepository
+        this.portfolioService = new PortfolioService(portfolioRepository)
+        this.assetRepository = assetRepository
     }
 
-    async getMakerAsync(assetId: string): Promise<IMarketMaker | null> {
+    async getMarketMakerAsync(assetId: string): Promise<IMarketMaker | null> {
         const makerDef = await this.marketMakerRepository.getDetailAsync(assetId)
         if (makerDef == null) {
             return null
@@ -33,52 +35,56 @@ export class MarketMakerService {
 
         const makerType = makerDef.type
 
-        let maker: IMarketMaker | null = null
+        let marketMaker: IMarketMaker | null = null
         switch (makerType) {
             // case 'constantk':
-            //     maker = new KMaker(makerDef)
+            //     marketMaker = new KMaker(makerDef)
             //     break
 
             // case 'bondingmaker2':
-            //     maker = new Bonding2Maker(makerDef)
+            //     marketMaker = new Bonding2Maker(makerDef)
             //     break
 
             // case 'logisticmaker1':
-            //     maker = new LogarithmicMaker(makerDef)
+            //     marketMaker = new LogarithmicMaker(makerDef)
             //     break
 
             default:
             case 'bondingCurveAMM':
-                maker = new BondingCurveAMM(makerDef)
+                marketMaker = new BondingCurveAMM(this.assetRepository, this.portfolioRepository, makerDef)
                 break
         }
-        return maker
+        return marketMaker
     }
 
     async createMarketMaker(payload: TNewMarketMakerConfig, shouldCreatePortfolio = true) {
         const assetId = payload.assetId
 
         if (assetId) {
-            const maker = await this.marketMakerRepository.getDetailAsync(assetId)
-            if (maker) {
+            const marketMaker = await this.marketMakerRepository.getDetailAsync(assetId)
+            if (marketMaker) {
                 const msg = `MarketMaker Creation Failed - assetId: ${assetId} already exists`
+                logger.error(msg)
                 throw new DuplicateError(msg, { assetId })
             }
 
-            // check for existence of maker portfolio (shouldn't exist if maker doesn't exist)
+            // check for existence of marketMaker portfolio (shouldn't exist if marketMaker doesn't exist)
             if (shouldCreatePortfolio) {
                 const portfolioId = `maker::${assetId}`
                 const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
                 if (portfolio) {
                     const msg = `MarketMaker Creation Failed - portfolioId: ${portfolioId} already exists`
+                    logger.error(msg)
                     throw new ConflictError(msg, { portfolioId })
                 }
             }
         }
 
-        const maker = await this.createMarketMakerImpl(payload, shouldCreatePortfolio)
+        const marketMaker = await this.createMarketMakerImpl(payload, shouldCreatePortfolio)
 
-        return maker
+        logger.info(`created marketMaker: ${marketMaker.assetId}`)
+
+        return marketMaker
     }
 
     async deleteMaker(assetId: string) {
@@ -113,42 +119,42 @@ export class MarketMakerService {
     ////////////////////////////////////////////////////////
 
     private async createMarketMakerImpl(config: TNewMarketMakerConfig, shouldCreatePortfolio: boolean) {
-        let maker: MarketMakerBase
+        let marketMaker: MarketMakerBase
         switch (config.type) {
             // case 'bondingmaker2':
-            //     maker = Bonding2Maker.newMaker(config)
+            //     marketMaker = Bonding2Maker.newMaker(config)
             //     break
 
             // case 'logisticmaker1':
-            //     maker = LogarithmicMaker.newMaker(config)
+            //     marketMaker = LogarithmicMaker.newMaker(config)
             //     break
 
             // case 'constantk':
             // default:
-            //     maker = KMaker.newMaker(config)
+            //     marketMaker = KMaker.newMaker(config)
             //     break
 
             default:
             case 'bondingCurveAMM':
-                maker = BondingCurveAMM.newMaker(config)
+                marketMaker = BondingCurveAMM.newMaker(this.assetRepository, this.portfolioRepository, config)
                 break
         }
 
         if (shouldCreatePortfolio) {
-            const portfolioId = await this.createMarketMakerPortfolioImpl(maker)
-            maker.portfolioId = portfolioId
+            const portfolioId = await this.createMarketMakerPortfolioImpl(marketMaker)
+            marketMaker.portfolioId = portfolioId
         }
 
-        await this.marketMakerRepository.storeAsync(maker)
-        return maker
+        await this.marketMakerRepository.storeAsync(marketMaker)
+        return marketMaker
     }
 
-    private async createMarketMakerPortfolioImpl(maker: MarketMakerBase) {
+    private async createMarketMakerPortfolioImpl(marketMaker: MarketMakerBase) {
         const makerPortfolioDef: TNewPortfolioConfig = {
             type: 'maker',
-            portfolioId: `maker::${maker.assetId}`,
-            ownerId: maker.ownerId,
-            displayName: maker.assetId,
+            portfolioId: `maker::${marketMaker.assetId}`,
+            ownerId: marketMaker.ownerId,
+            displayName: marketMaker.assetId,
         }
 
         const portfolio = await this.portfolioService.createPortfolio(makerPortfolioDef)

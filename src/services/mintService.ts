@@ -18,13 +18,17 @@ export class MintService {
     private transactionService: TransactionService
     //private me: Principal
 
-    constructor(eventPublisher?: INotificationPublisher) {
+    constructor(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        eventPublisher?: INotificationPublisher,
+    ) {
         //this.me = me
         this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
-        this.assetRepository = new AssetRepository()
-        this.portfolioRepository = new PortfolioRepository()
-        this.transactionService = new TransactionService(this.eventPublisher)
+        this.assetRepository = assetRepository
+        this.portfolioRepository = portfolioRepository
+        this.transactionService = new TransactionService(assetRepository, portfolioRepository, this.eventPublisher)
     }
 
     async mintUnits(assetId: string, units: number) {

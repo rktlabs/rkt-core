@@ -3,7 +3,14 @@
 import { DateTime } from 'luxon'
 import { MarketMakerBase, TNewMarketMakerConfig, TMarketMaker, TMakerResult, TMarketMakerQuote } from '../..'
 import { MintService } from '../../..'
-import { AssetHolderRepository, NotFoundError, round4, ConflictError } from '../../../..'
+import {
+    AssetHolderRepository,
+    NotFoundError,
+    round4,
+    ConflictError,
+    AssetRepository,
+    PortfolioRepository,
+} from '../../../..'
 import admin = require('firebase-admin')
 const FieldValue = admin.firestore.FieldValue
 
@@ -19,7 +26,11 @@ export class BondingCurveAMM extends MarketMakerBase {
     private assetHolderRepository: AssetHolderRepository
     private mintService: MintService
 
-    static newMaker(props: TNewMarketMakerConfig) {
+    static newMaker(
+        assetRepository: AssetRepository,
+        portfolioRepository: PortfolioRepository,
+        props: TNewMarketMakerConfig,
+    ) {
         const createdAt = DateTime.utc().toString()
         const type = props.type
         const assetId = props.assetId
@@ -32,9 +43,19 @@ export class BondingCurveAMM extends MarketMakerBase {
             tags: props.tags,
         }
 
-        const newEntity = new BondingCurveAMM(makerProps)
+        const newEntity = new BondingCurveAMM(assetRepository, portfolioRepository, makerProps)
         newEntity.params = newEntity.computeInitialState(props.settings)
-        // newEntity.currentPrice = newEntity.current_price()
+
+        /////////////////////////////////////////////////////////
+        // compute the quote(s)
+        /////////////////////////////////////////////////////////
+        const quote: TMarketMakerQuote = {
+            current: newEntity.spot_price(),
+            bid1: newEntity.compute_price(),
+            ask1: newEntity.compute_value(),
+            bid10: newEntity.compute_price(10) / 10,
+            ask10: newEntity.params.madeUnits >= 10 ? newEntity.compute_value(10) / 10 : NaN,
+        }
 
         return newEntity
     }
@@ -50,10 +71,10 @@ export class BondingCurveAMM extends MarketMakerBase {
         return makerState
     }
 
-    constructor(props: TMarketMaker) {
-        super(props)
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, props: TMarketMaker) {
+        super(assetRepository, portfolioRepository, props)
         this.assetHolderRepository = new AssetHolderRepository()
-        this.mintService = new MintService()
+        this.mintService = new MintService(assetRepository, portfolioRepository)
     }
 
     async processOrderImpl(orderSide: string, orderSize: number) {
@@ -62,7 +83,7 @@ export class BondingCurveAMM extends MarketMakerBase {
         ////////////////////////////
         const asset = await this.resolveAssetSpec(this.assetId)
 
-        // this maker pulls asset units from asset portfolio directly
+        // this marketMaker pulls asset units from asset portfolio directly
         const assetPortfolioId = asset.portfolioId
         if (!assetPortfolioId) {
             const msg = `Invalid Order: Asset Portfolio: not configured`
@@ -107,12 +128,12 @@ export class BondingCurveAMM extends MarketMakerBase {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    // positive order size - buy from maker
-    // negative order size - sel to maker
+    // positive order size - buy from marketMaker
+    // negative order size - sel to marketMaker
     processAMMOrderImpl(signedTakerOrderSize: number) {
         const makerParams = this.params as BondingCurveAMMParams
         if (!makerParams) {
-            const msg = `Error: Market Maker Parms not available: ${this.assetId}`
+            const msg = `Error: MarketMaker Parms not available: ${this.assetId}`
             throw new ConflictError(msg)
         }
 
@@ -120,8 +141,8 @@ export class BondingCurveAMM extends MarketMakerBase {
         let makerDeltaValue = 0
 
         if (signedTakerOrderSize >= 0) {
-            // this is a buy so makerDeltaUnits should be negative - units leaving maker
-            // and makerDeltaValue should be positive - value added to maker
+            // this is a buy so makerDeltaUnits should be negative - units leaving marketMaker
+            // and makerDeltaValue should be positive - value added to marketMaker
             makerDeltaUnits = signedTakerOrderSize * -1
             makerDeltaValue = this.compute_price(signedTakerOrderSize)
         } else {
@@ -132,7 +153,7 @@ export class BondingCurveAMM extends MarketMakerBase {
         }
 
         /////////////////////////////////////////////////////////
-        // compute maker update(s)
+        // compute marketMaker update(s)
         /////////////////////////////////////////////////////////
         this.params.madeUnits += makerDeltaUnits * -1
         this.params.cumulativeValue += makerDeltaValue
@@ -156,8 +177,10 @@ export class BondingCurveAMM extends MarketMakerBase {
             ask10: this.params.madeUnits >= 10 ? this.compute_value(10) / 10 : NaN,
         }
 
+        this.quote = quote
+
         // NOTE: made units is inverse of "delta Units". It counts up for each buy
-        // NOTE: Each maker type has it's own way to "update" the persistent maker state
+        // NOTE: Each marketMaker type has it's own way to "update" the persistent marketMaker state
         // so construct that here (the FieldValue does an atomic add to value.)
         const stateUpdate = {
             ['params.madeUnits']: FieldValue.increment(makerDeltaUnits * -1),

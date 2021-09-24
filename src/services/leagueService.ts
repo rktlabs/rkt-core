@@ -22,13 +22,13 @@ export class LeagueService {
     private portfolioService: PortfolioService
     private assetService: AssetService
 
-    constructor() {
-        this.assetRepository = new AssetRepository()
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
+        this.assetRepository = assetRepository
         this.leagueRepository = new LeagueRepository()
-        this.portfolioRepository = new PortfolioRepository()
+        this.portfolioRepository = portfolioRepository
 
-        this.portfolioService = new PortfolioService()
-        this.assetService = new AssetService()
+        this.portfolioService = new PortfolioService(portfolioRepository)
+        this.assetService = new AssetService(assetRepository, portfolioRepository)
     }
 
     async createLeague(payload: TNewLeagueConfig) {

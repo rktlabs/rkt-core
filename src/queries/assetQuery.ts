@@ -5,8 +5,8 @@ export class AssetQuery {
     assetRepository: AssetRepository
     assetHolderRepository: AssetHolderRepository
 
-    constructor() {
-        this.assetRepository = new AssetRepository()
+    constructor(assetRepository: AssetRepository) {
+        this.assetRepository = assetRepository
         this.assetHolderRepository = new AssetHolderRepository()
     }
 

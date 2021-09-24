@@ -11,7 +11,7 @@ describe('Asset Repository', () => {
 
     before(async () => {
         assetRepository = new AssetRepository()
-        assetQuery = new AssetQuery()
+        assetQuery = new AssetQuery(assetRepository)
     })
 
     describe('Create Full Asset', () => {

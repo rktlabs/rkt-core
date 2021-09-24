@@ -3,16 +3,21 @@
 
 import { expect } from 'chai'
 import {
+    AssetRepository,
     AssetService,
     BondingCurveAMM,
     BootstrapService,
     IMarketMaker,
     MarketMakerRepository,
     MarketMakerService,
+    PortfolioRepository,
     TNewMarketMakerConfig,
 } from '../../../../src'
 
 describe('BondingCurveAMM', function () {
+    const assetRepository = new AssetRepository()
+    const portfolioRepository = new PortfolioRepository()
+
     describe('bonding curve', function () {
         let makerConfig = {
             createdAt: '2021-05-07',
@@ -36,8 +41,8 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const maker = new BondingCurveAMM(makerConfig)
-            const currentPrice = maker.spot_price()
+            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const currentPrice = marketMaker.spot_price()
             expect(currentPrice).to.eq(1)
         })
 
@@ -50,8 +55,8 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const maker = new BondingCurveAMM(makerConfig)
-            const currentPrice = maker.spot_price()
+            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const currentPrice = marketMaker.spot_price()
             expect(currentPrice).to.eq(5)
         })
 
@@ -64,8 +69,8 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const maker = new BondingCurveAMM(makerConfig)
-            const cost = maker.compute_price(4)
+            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const cost = marketMaker.compute_price(4)
             expect(cost).to.eq(12)
         })
 
@@ -78,8 +83,8 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const maker = new BondingCurveAMM(makerConfig)
-            const cost = maker.compute_price(4)
+            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const cost = marketMaker.compute_price(4)
             expect(cost).to.eq(28)
         })
 
@@ -92,16 +97,16 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const maker = new BondingCurveAMM(makerConfig)
-            const cost = maker.compute_value(4)
+            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const cost = marketMaker.compute_value(4)
             expect(cost).to.eq(12)
 
-            const cost2 = maker.compute_price(-4)
+            const cost2 = marketMaker.compute_price(-4)
             expect(cost2).to.eq(-12)
         })
     })
 
-    describe('market maker process order', function () {
+    describe('marketMaker process order', function () {
         let makerConfig = {
             createdAt: '2021-05-07',
             portfolioId: 'asset::card::testehed',
@@ -124,29 +129,30 @@ describe('BondingCurveAMM', function () {
                 y0: 1,
             }
 
-            const maker = new BondingCurveAMM(makerConfig)
-            const result = maker.processAMMOrderImpl(4)
+            const marketMaker = new BondingCurveAMM(assetRepository, portfolioRepository, makerConfig)
+            const result = marketMaker.processAMMOrderImpl(4)
             expect(result.makerDeltaUnits).eq(-4)
             expect(result.makerDeltaValue).eq(12)
-            expect(result.quote.last.side).eq('bid')
-            expect(result.quote.last.units).eq(4)
-            expect(result.quote.last.value).eq(12)
-            expect(result.quote.last.unitValue).eq(3)
+            expect(result.quote?.last?.side).eq('bid')
+            expect(result.quote?.last?.units).eq(4)
+            expect(result.quote?.last?.value).eq(12)
+            expect(result.quote?.last?.unitValue).eq(3)
 
-            expect(maker.params.madeUnits).eq(4)
-            expect(maker.params.cumulativeValue).eq(12)
+            expect(marketMaker.params.madeUnits).eq(4)
+            expect(marketMaker.params.cumulativeValue).eq(12)
 
-            const result2 = maker.processAMMOrderImpl(10)
+            const result2 = marketMaker.processAMMOrderImpl(10)
 
             // verify that ask quote matches price paid for that purchase
-            expect(result2.quote.last.unitValue).eq(result.quote.bid10)
+            expect(result2.quote.last?.unitValue).eq(result.quote.bid10)
         })
     })
 
-    describe('persist market maker', function () {
+    describe('persist marketMaker', function () {
         this.timeout(10000)
 
         let bootstrapper: BootstrapService
+        let assetRepository: AssetRepository
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let marketMakerRepository: MarketMakerRepository
@@ -155,9 +161,10 @@ describe('BondingCurveAMM', function () {
         let marketMaker: IMarketMaker
 
         before(async () => {
-            bootstrapper = new BootstrapService()
-            assetService = new AssetService()
-            marketMakerService = new MarketMakerService()
+            assetRepository = new AssetRepository()
+            bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
+            assetService = new AssetService(assetRepository, portfolioRepository)
+            marketMakerService = new MarketMakerService(assetRepository, portfolioRepository)
             marketMakerRepository = new MarketMakerRepository()
             await bootstrapper.bootstrap()
 
@@ -175,7 +182,7 @@ describe('BondingCurveAMM', function () {
             await assetService.createAsset(assetConfig)
         })
 
-        describe('persist market maker', function () {
+        describe('persist marketMaker', function () {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
@@ -237,7 +244,7 @@ describe('BondingCurveAMM', function () {
             })
         })
 
-        describe('persist market maker with units', function () {
+        describe('persist marketMaker with units', function () {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {

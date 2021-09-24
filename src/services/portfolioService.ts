@@ -17,12 +17,15 @@ import {
     UserRepository,
 } from '..'
 
+import * as log4js from 'log4js'
+const logger = log4js.getLogger()
+
 export class PortfolioService {
     private portfolioRepository: PortfolioRepository
     private portfolioDepositRepository: PortfolioDepositRepository
 
-    constructor() {
-        this.portfolioRepository = new PortfolioRepository()
+    constructor(portfolioRepository: PortfolioRepository) {
+        this.portfolioRepository = portfolioRepository
         this.portfolioDepositRepository = new PortfolioDepositRepository()
     }
 
@@ -33,12 +36,14 @@ export class PortfolioService {
             const existing = await this.portfolioRepository.getDetailAsync(portfolioId)
             if (existing) {
                 const msg = `Portfolio Creation Failed - portfolioId: ${portfolioId} already exists`
+                logger.error(msg)
                 throw new DuplicateError(msg, { portfolioId: portfolioId })
             }
         }
 
-        const portfolio = Portfolio.newPortfolio(payload)
-        await this.portfolioRepository.storeAsync(portfolio)
+        const portfolio = await this.createUserImpl(payload)
+
+        logger.info(`created portfolio: ${portfolio.portfolioId}`)
 
         return portfolio
     }
@@ -48,26 +53,29 @@ export class PortfolioService {
     // (used by bootstrapper)
     async createOrKeepPortfolio(payload: TNewPortfolioConfig) {
         if (!payload || !payload.portfolioId) {
-            throw new Error('Portfolio Creation Failed - no portfolioId')
+            const msg = 'Portfolio Creation Failed - no portfolioId'
+            logger.error(msg)
+            throw new Error(msg)
         }
-
-        const promises: any[] = []
 
         const portfolioId = payload.portfolioId
-        const existing = await this.portfolioRepository.getDetailAsync(portfolioId)
-        if (!existing) {
-            const portfolio = Portfolio.newPortfolio(payload)
-            promises.push(this.portfolioRepository.storeAsync(portfolio))
+        let portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
+        if (!portfolio) {
+            portfolio = await this.createUserImpl(payload)
+
+            logger.info(`created portfolio: ${portfolio.portfolioId}`)
         }
 
-        return Promise.all(promises)
+        return portfolio
     }
 
     async updatePortfolio(portfolioId: string, payload: TPortfolioUpdate) {
+        logger.trace(`update portfolio: ${portfolioId}`)
         return await this.portfolioRepository.updateAsync(portfolioId, payload)
     }
 
     async deletePortfolio(portfolioId: string) {
+        logger.trace(`delete portfolio: ${portfolioId}`)
         const assetRepository = new AssetRepository()
         const marketMakerRepository = new MarketMakerRepository()
         const leagueRepository = new LeagueRepository()
@@ -76,22 +84,30 @@ export class PortfolioService {
         // check for linked assets
         let assetIds = await assetRepository.isPortfolioUsed(portfolioId)
         if (assetIds) {
-            throw new ConflictError(`Cannot Delete Portfolio. Asset Portfolio in use: ${assetIds}`)
+            const msg = `Cannot Delete Portfolio. Asset Portfolio in use: ${assetIds}`
+            logger.error(msg)
+            throw new ConflictError(msg)
         }
 
-        let makerIds = await marketMakerRepository.isPortfolioUsed(portfolioId)
-        if (makerIds) {
-            throw new ConflictError(`Cannot Delete Portfolio. MarketMaker Portfolio in use: ${makerIds}`)
+        let marketMakerIds = await marketMakerRepository.isPortfolioUsed(portfolioId)
+        if (marketMakerIds) {
+            const msg = `Cannot Delete Portfolio. MarketMaker Portfolio in use: ${marketMakerIds}`
+            logger.error(msg)
+            throw new ConflictError(msg)
         }
 
         let leagueIds = await leagueRepository.isPortfolioUsed(portfolioId)
         if (leagueIds) {
-            throw new ConflictError(`Cannot Delete Portfolio. Portfolio linked to league: ${leagueIds}`)
+            const msg = `Cannot Delete Portfolio. Portfolio linked to league: ${leagueIds}`
+            logger.error(msg)
+            throw new ConflictError(msg)
         }
 
         let userIds = await userRepository.isPortfolioUsed(portfolioId)
         if (userIds) {
-            throw new ConflictError(`Cannot Delete Portfolio. Portfolio linked to user: ${userIds}`)
+            const msg = `Cannot Delete Portfolio. Portfolio linked to user: ${userIds}`
+            logger.error(msg)
+            throw new ConflictError(msg)
         }
 
         await this.scrubPortfolio(portfolioId)
@@ -99,7 +115,8 @@ export class PortfolioService {
 
     async scrubPortfolio(portfolioId: string) {
         const portfolioActivityRepository = new PortfolioActivityRepository()
-        const assetHolderService = new AssetHolderService()
+        const assetRepository = new AssetRepository()
+        const assetHolderService = new AssetHolderService(assetRepository)
 
         await assetHolderService.scrubPortfolioHoldings(portfolioId)
 
@@ -111,6 +128,7 @@ export class PortfolioService {
     }
 
     async recordPortfolioDeposit(deposit: TPortfolioDeposit) {
+        logger.trace(`recordPortfolioDeposit: ${deposit.portfolioId}`)
         const portfolioId = deposit.portfolioId
 
         await this.portfolioDepositRepository.storePortfolioDeposit(portfolioId, deposit)
@@ -121,10 +139,21 @@ export class PortfolioService {
     }
 
     async computePortfolioNetDeposits(portfolioId: string) {
+        logger.trace(`computePortfolioNetDeposits: ${portfolioId}`)
         const deposits = await this.portfolioDepositRepository.getPortfolioDeposits(portfolioId)
         const total = deposits.reduce((acc: number, deposit: TPortfolioDeposit) => {
             return acc + deposit.units
         }, 0)
         return total
+    }
+
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
+
+    private async createUserImpl(payload: TNewPortfolioConfig) {
+        const portfolio = Portfolio.newPortfolio(payload)
+        await this.portfolioRepository.storeAsync(portfolio)
+        return portfolio
     }
 }

@@ -29,7 +29,7 @@ export type TMarketMakerPatch = {
 }
 
 export type TMarketMakerQuote = {
-    last: {
+    last?: {
         side: string
         units: number
         value: number

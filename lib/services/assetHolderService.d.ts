@@ -1,15 +1,15 @@
-import { TAssetHolderUpdateItem, TTransaction } from '..';
+import { AssetRepository, TAssetHolderUpdateItem, TTransaction } from '..';
 export declare class AssetHolderService {
     private assetRepository;
     private portfolioHoldingRepository;
     private portfolioActivityRepository;
     private assetHolderRepository;
-    constructor();
+    constructor(assetRepository: AssetRepository);
     addAssetHolder(assetId: string, portfolioId: string): Promise<{
         portfolioId: string;
         assetId: string;
         units: number;
-        displayName: string;
+        displayName: any;
     } | null>;
     proessTransaction(transactionId: string, updateSet: TAssetHolderUpdateItem[], transaction: TTransaction): Promise<void>;
     scrubPortfolioHoldings(portfolioId: string): Promise<void[]>;

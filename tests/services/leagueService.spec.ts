@@ -12,6 +12,7 @@ describe('League Service', function () {
 
     let leagueRepository: LeagueRepository
     let assetRepository: AssetRepository
+    let portfolioRepository: PortfolioRepository
     let profileRepository: PortfolioRepository
     let assetHolderService: AssetHolderService
     let leagueService: LeagueService
@@ -24,9 +25,9 @@ describe('League Service', function () {
         profileRepository = new PortfolioRepository()
         assetRepository = new AssetRepository()
 
-        assetHolderService = new AssetHolderService()
-        leagueService = new LeagueService()
-        boostrapService = new BootstrapService()
+        assetHolderService = new AssetHolderService(assetRepository)
+        leagueService = new LeagueService(assetRepository, portfolioRepository)
+        boostrapService = new BootstrapService(assetRepository, portfolioRepository)
     })
 
     beforeEach(async () => {

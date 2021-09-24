@@ -10,6 +10,8 @@ import {
     TransactionService,
     AssetHolderService,
     NullNotificationPublisher,
+    AssetRepository,
+    PortfolioRepository,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
 
@@ -18,8 +20,10 @@ describe('Transaction Service', function () {
 
     let transactionRepository: TransactionRepository
     let bootstrapper: BootstrapService
+    let portfolioRepository: PortfolioRepository
     let portfolioService: PortfolioService
     let assetHolderService: AssetHolderService
+    let assetRepository: AssetRepository
     let assetService: AssetService
     let transactionService: TransactionService
 
@@ -30,11 +34,17 @@ describe('Transaction Service', function () {
 
         transactionRepository = new TransactionRepository()
 
-        portfolioService = new PortfolioService()
-        assetHolderService = new AssetHolderService()
-        assetService = new AssetService()
-        transactionService = new TransactionService(eventPublisher as any as NullNotificationPublisher)
-        bootstrapper = new BootstrapService()
+        portfolioRepository = new PortfolioRepository()
+        portfolioService = new PortfolioService(portfolioRepository)
+        assetRepository = new AssetRepository()
+        assetHolderService = new AssetHolderService(assetRepository)
+        assetService = new AssetService(assetRepository, portfolioRepository)
+        transactionService = new TransactionService(
+            assetRepository,
+            portfolioRepository,
+            eventPublisher as any as NullNotificationPublisher,
+        )
+        bootstrapper = new BootstrapService(assetRepository, portfolioRepository)
 
         //await bootstrapper.clearDb()
         await bootstrapper.fullBoot()

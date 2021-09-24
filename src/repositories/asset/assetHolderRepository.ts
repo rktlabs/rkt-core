@@ -5,6 +5,9 @@ import { TAssetHolder } from '../../models/assetHolder'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
+import * as log4js from 'log4js'
+const logger = log4js.getLogger('assetHolderRepository')
+
 const COLLECTION_NAME = 'assets'
 const SUB_COLLECTION_NAME = 'holders'
 
@@ -18,6 +21,7 @@ export class AssetHolderRepository extends RepositoryBase {
     // TODO: updateAssetHolder??? - need to update units for asset holder quantity
 
     async getListAsync(assetId: string) {
+        logger.trace(`getList ${assetId}`)
         const entityRefCollection = this.db.collection(COLLECTION_NAME).doc(assetId).collection(SUB_COLLECTION_NAME)
 
         const entityCollectionRefs = await entityRefCollection.get()
@@ -33,6 +37,7 @@ export class AssetHolderRepository extends RepositoryBase {
     }
 
     async getDetailAsync(assetId: string, portfolioId: string) {
+        logger.trace(`getDetail ${assetId}/ ${portfolioId}`)
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(assetId)
@@ -47,6 +52,7 @@ export class AssetHolderRepository extends RepositoryBase {
     }
 
     async storeAsync(assetId: string, portfolioId: string, entity: TAssetHolder) {
+        logger.trace(`store ${assetId}/ ${portfolioId}`)
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db
             .collection(COLLECTION_NAME)
@@ -57,6 +63,7 @@ export class AssetHolderRepository extends RepositoryBase {
     }
 
     async deleteAsync(assetId: string, portfolioId: string) {
+        logger.trace(`delete ${assetId}/ ${portfolioId}`)
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(assetId)

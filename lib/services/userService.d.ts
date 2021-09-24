@@ -1,9 +1,9 @@
-import { TNewUserConfig, User } from '..';
+import { PortfolioRepository, TNewUserConfig, User } from '..';
 export declare class UserService {
     private userRepository;
     private portfolioRepository;
     private portfolioService;
-    constructor();
+    constructor(portfolioRepository: PortfolioRepository);
     createUser(payload: TNewUserConfig): Promise<User>;
     deleteUser(userId: string): Promise<void>;
     scrubUser(userId: string): Promise<void>;

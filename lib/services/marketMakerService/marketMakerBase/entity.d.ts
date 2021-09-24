@@ -13,12 +13,12 @@ export declare abstract class MarketMakerBase implements IMarketMaker {
     portfolioId?: string;
     tags?: any;
     params?: any;
-    constructor(props: TMarketMaker);
+    quote?: any;
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, props: TMarketMaker);
     flattenMaker(): TMarketMaker;
-    resolveAssetSpec(assetSpec: string | Asset): Promise<import("../../..").TAsset>;
+    resolveAssetSpec(assetSpec: string | Asset): Promise<any>;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
     processOrder(order: TOrder): Promise<Trade | null>;
     abstract processOrderImpl(orderSide: string, orderSize: number): Promise<TMakerResult | null>;
-    onUpdateQuote: (trade: Trade, bid: number, ask: number) => Promise<void>;
 }

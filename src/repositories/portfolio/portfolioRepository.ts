@@ -2,11 +2,14 @@
 import { TPortfolio, TPortfolioUpdate as TPortfolioUpdate } from '../..'
 import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
-import { RepositoryBase } from '../repositoryBase'
+
+import * as log4js from 'log4js'
+import { CachingRepository } from '../cachingRepository'
+const logger = log4js.getLogger('portfolioRepository')
 
 const COLLECTION_NAME = 'portfolios'
 
-export class PortfolioRepository extends RepositoryBase {
+export class PortfolioRepository extends CachingRepository {
     db: FirebaseFirestore.Firestore
     constructor() {
         super()
@@ -18,6 +21,7 @@ export class PortfolioRepository extends RepositoryBase {
     }
 
     async getListAsync(qs?: any) {
+        logger.trace(`getList ${qs}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
 
@@ -33,6 +37,13 @@ export class PortfolioRepository extends RepositoryBase {
     }
 
     async getDetailAsync(entityId: string) {
+        const cachedItem = this.cacheLookup(entityId)
+        if (cachedItem) {
+            logger.trace(`cachedItem: ${entityId}`)
+            return cachedItem
+        }
+
+        logger.trace(`getDetail ${entityId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         const entityDoc = await entityRef.get()
         if (!entityDoc.exists) {
@@ -40,10 +51,13 @@ export class PortfolioRepository extends RepositoryBase {
         }
 
         const entity = (await entityDoc.data()) as TPortfolio
+        this.cacheEntity(entityId, entity)
         return entity
     }
 
     async storeAsync(entity: TPortfolio) {
+        logger.trace(`store ${entity.portfolioId}`)
+        this.cacheClear(entity.portfolioId)
         const entityId = entity.portfolioId
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
@@ -51,11 +65,15 @@ export class PortfolioRepository extends RepositoryBase {
     }
 
     async updateAsync(entityId: string, entityData: TPortfolioUpdate) {
+        logger.trace(`update ${entityId}`)
+        this.cacheClear(entityId)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.update(entityData)
     }
 
     async deleteAsync(entityId: string) {
+        logger.trace(`delete ${entityId}`)
+        this.cacheClear(entityId)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await deleteDocument(entityRef)
     }

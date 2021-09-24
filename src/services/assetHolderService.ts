@@ -20,8 +20,8 @@ export class AssetHolderService {
     private portfolioActivityRepository: PortfolioActivityRepository
     private assetHolderRepository: AssetHolderRepository
 
-    constructor() {
-        this.assetRepository = new AssetRepository()
+    constructor(assetRepository: AssetRepository) {
+        this.assetRepository = assetRepository
         this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioActivityRepository = new PortfolioActivityRepository()

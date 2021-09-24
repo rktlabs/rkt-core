@@ -3,20 +3,20 @@
 import { PortfolioService } from '.'
 import { UserRepository, PortfolioRepository, TNewUserConfig, DuplicateError, ConflictError, User } from '..'
 
-const BANK_PORTFOLIO = 'bank::treasury'
-const COIN = 'coin::rkt'
+import * as log4js from 'log4js'
+const logger = log4js.getLogger()
 
-const logger = require('log4js').getLogger('transactionHandler')
+const TREASURY_PORTFOLIO = 'bank::treasury'
 
 export class UserService {
     private userRepository: UserRepository
     private portfolioRepository: PortfolioRepository
     private portfolioService: PortfolioService
 
-    constructor() {
+    constructor(portfolioRepository: PortfolioRepository) {
         this.userRepository = new UserRepository()
-        this.portfolioRepository = new PortfolioRepository()
-        this.portfolioService = new PortfolioService()
+        this.portfolioRepository = portfolioRepository
+        this.portfolioService = new PortfolioService(portfolioRepository)
     }
 
     async createUser(payload: TNewUserConfig) {
@@ -25,6 +25,7 @@ export class UserService {
             const existing = await this.userRepository.getDetailAsync(userId)
             if (existing) {
                 const msg = `Portfolio Creation Failed - userId: ${userId} already exists`
+                logger.error(msg)
                 throw new DuplicateError(msg, { userId: userId })
             }
         }
@@ -34,6 +35,7 @@ export class UserService {
             const existingUser = await this.userRepository.lookupUserByUserNameAsync(username)
             if (existingUser) {
                 const msg = `User Creation Failed - username: ${username} already exists`
+                logger.error(msg)
                 throw new DuplicateError(msg, { username })
             }
         }
@@ -43,26 +45,31 @@ export class UserService {
             const existingUser = await this.userRepository.lookupUserByEmailAsync(email)
             if (existingUser) {
                 const msg = `User Creation Failed - email: ${email} already exists`
+                logger.error(msg)
                 throw new DuplicateError(msg, { email })
             }
         }
 
         if (payload.initialCoins) {
             // check for existence of registry
-            const treasuryPortfolioId = BANK_PORTFOLIO
+            const treasuryPortfolioId = TREASURY_PORTFOLIO
             const treasuryPortfolio = await this.portfolioRepository.getDetailAsync(treasuryPortfolioId)
             if (!treasuryPortfolio) {
                 const msg = `MarketMaker Creation Failed - treasury portfolioId: ${treasuryPortfolioId} does not exist`
+                logger.error(msg)
                 throw new ConflictError(msg, { portfolioId: treasuryPortfolioId })
             }
         }
 
         const user = await this.createUserImpl(payload)
 
+        logger.info(`created user: ${user.userId}`)
+
         return user
     }
 
     async deleteUser(userId: string) {
+        logger.trace(`deleteUser: ${userId}`)
         this.scrubUser(userId)
     }
 

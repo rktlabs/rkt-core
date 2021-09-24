@@ -6,6 +6,9 @@ import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
+import * as log4js from 'log4js'
+const logger = log4js.getLogger('marketMakerRepository')
+
 const COLLECTION_NAME = 'makers'
 
 export class MarketMakerRepository extends RepositoryBase {
@@ -18,11 +21,12 @@ export class MarketMakerRepository extends RepositoryBase {
     filterMap: any = {}
 
     async getListAsync(qs?: any) {
+        logger.trace(`getList ${qs}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
 
         entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
-        entityRefCollection = this.generatePagingProperties(qs, entityRefCollection, 'makerId')
+        entityRefCollection = this.generatePagingProperties(qs, entityRefCollection, 'assetId')
         const entityCollectionRefs = await entityRefCollection.get()
         if (!entityCollectionRefs.empty) {
             const makerList = entityCollectionRefs.docs.map((entityDoc) => {
@@ -35,8 +39,9 @@ export class MarketMakerRepository extends RepositoryBase {
         }
     }
 
-    async getDetailAsync(makerId: string) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(makerId)
+    async getDetailAsync(assetId: string) {
+        logger.trace(`getDetail ${assetId}`)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         const entityDoc = await entityRef.get()
 
         if (!entityDoc.exists) {
@@ -48,6 +53,7 @@ export class MarketMakerRepository extends RepositoryBase {
     }
 
     async storeAsync(entity: MarketMakerBase | TMarketMaker) {
+        logger.trace(`store ${entity.assetId}`)
         let theEntity: TMarketMaker
         if (entity instanceof MarketMakerBase) {
             theEntity = (entity as MarketMakerBase).flattenMaker()
@@ -61,18 +67,21 @@ export class MarketMakerRepository extends RepositoryBase {
         await entityRef.set(entityData)
     }
 
-    async updateAsync(makerId: string, entityData: TMarketMakerPatch) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(makerId)
+    async updateAsync(assetId: string, entityData: TMarketMakerPatch) {
+        logger.trace(`update ${assetId}`)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await entityRef.update(entityData)
     }
 
-    async updateMakerStateAsync(makerId: string, stateUpdate: any) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(makerId)
+    async updateMakerStateAsync(assetId: string, stateUpdate: any) {
+        logger.trace(`updateMakerState ${assetId}`)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await entityRef.update(stateUpdate)
     }
 
-    async deleteAsync(makerId: string) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(makerId)
+    async deleteAsync(assetId: string) {
+        logger.trace(`delete ${assetId}`)
+        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         await deleteDocument(entityRef)
     }
 
