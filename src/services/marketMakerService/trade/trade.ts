@@ -33,7 +33,7 @@ export class Trade {
     }
 
     supplyMakerSide(opts: {
-        orderId: string
+        orderId?: string
         assetId: string
         orderSide: OrderSide
         orderSize: number

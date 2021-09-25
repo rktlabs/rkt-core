@@ -7,7 +7,7 @@ export declare class Trade {
     makers: TMaker[];
     constructor(order: TOrder);
     supplyMakerSide(opts: {
-        orderId: string;
+        orderId?: string;
         assetId: string;
         orderSide: OrderSide;
         orderSize: number;

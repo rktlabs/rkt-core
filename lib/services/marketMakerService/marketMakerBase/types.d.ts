@@ -33,7 +33,7 @@ export declare type TMarketMakerQuote = {
     ask10: number;
 };
 export declare type TMakerResult = {
-    orderId: string;
+    orderId?: string;
     makerDeltaUnits: number;
     makerDeltaValue: number;
     stateUpdate: any;
