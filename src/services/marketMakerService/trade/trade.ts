@@ -43,7 +43,7 @@ export class Trade {
         makerDeltaValue: number
     }) {
         const maker: TMaker = {
-            orderId: opts.orderSide,
+            orderId: opts.orderId,
             assetId: opts.assetId,
             orderSide: opts.orderSide,
             orderSize: Math.max(opts.orderSize, 0),

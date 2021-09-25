@@ -34,7 +34,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     })
 
     serializer.register('exchangeTrade', {
-        whitelist: ['makers', 'taker'],
+        whitelist: ['tradeId', 'assetId', 'executedAt', 'taker', 'makers'],
         links: (record: any) => {
             return {
                 self: {
@@ -107,12 +107,31 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
 
     const serializer = new HALSerializer()
 
+    serializer.register('taker', {
+        whitelist: [
+            'orderId',
+            'assetId',
+            'orderSide',
+            'orderSize',
+            'portfolioId',
+            'filledSize',
+            'filledValue',
+            'filledPrice',
+            'isClosed',
+        ],
+    })
+
     serializer.register('exchangeTrades', {
-        // whitelist: ['type', 'exchangeTradeId', 'portfolioId', 'displayName'],
+        whitelist: ['tradeId', 'assetId', 'executedAt', 'taker'],
         links: (record: any) => {
             return {
                 self: `${baseUrl}/exchange/trades/${record.tradeId}`,
             }
+        },
+        embedded: {
+            taker: {
+                type: 'taker',
+            },
         },
         topLevelLinks: collectionLinks,
         topLevelMeta: (extraOptions: any) => {
