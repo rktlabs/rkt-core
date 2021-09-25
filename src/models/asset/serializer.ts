@@ -83,11 +83,6 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
                 href: `${baseUrl}/assets?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
-        // if (page <= pages) {
-        //     collectionLinks.last = {
-        //         href: `${baseUrl}/assets?${linkQS}page=${pages}`,
-        //     }
-        // }
     }
 
     const serializer = new HALSerializer()
@@ -108,8 +103,6 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
                 page: extraOptions.page,
                 pageSize: extraOptions.pageSize,
                 count: extraOptions.count,
-                // pages: extraOptions.pages,
-                // total: extraOptions.total,
             }
         },
     })
@@ -118,8 +111,6 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
         page,
         pageSize,
         count: displayCount,
-        // pages: pages,
-        // total: rowcount,
     })
     return serialized
 }

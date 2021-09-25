@@ -171,8 +171,6 @@ export class TransactionService {
                         portfolioId: commitState.portfolioId,
                         assetId: commitState.assetId,
                         deltaUnits: commitState.units,
-                        // deltaNet: commitState.deltaNet,
-                        // deltaCost: commitState.deltaCost,
                     }
                 })
 
@@ -461,8 +459,6 @@ export class TransactionService {
             portfolioId: leg.portfolioId,
             assetId: leg.assetId,
             units: leg.units,
-            // deltaNet: leg._deltaNet || 0,
-            // deltaCost: leg._deltaCost || 0,
             timestamp: timeAtNow,
         }
 

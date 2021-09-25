@@ -17,11 +17,6 @@ export class PortfolioHoldingRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    // filterMap: any = {
-    //     leagueId: 'leagueId',
-    //     type: 'type',
-    // }
-
     async getListAsync(portfolioId: string, qs?: any) {
         logger.trace(`getList ${portfolioId}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
@@ -29,7 +24,6 @@ export class PortfolioHoldingRepository extends RepositoryBase {
             .doc(portfolioId)
             .collection(SUB_COLLECTION_NAME)
 
-        // entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
         entityRefCollection = this.generatePagingProperties(qs, entityRefCollection)
         const entityCollectionRefs = await entityRefCollection.get()
 

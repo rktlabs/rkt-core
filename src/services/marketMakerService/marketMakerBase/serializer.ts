@@ -69,16 +69,11 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
                 href: `${baseUrl}/marketMakers?${linkQS}page=${page + 1}&pageSize=${pageSize}`,
             }
         }
-        // if (page <= pages) {
-        //     collectionLinks.last = {
-        //         href: `${baseUrl}/marketMakers?${linkQS}page=${pages}`,
-        //     }
-        // }
     }
     const serializer = new HALSerializer()
 
     serializer.register('makers', {
-        //whitelist: ['bid', 'ask', 'last', 'params'],
+        whitelist: ['assetId', 'type', 'params'],
         links: (record: any) => {
             return {
                 self: {

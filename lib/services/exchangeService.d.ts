@@ -3,7 +3,6 @@ export declare class ExchangeService {
     private orderNotificationPublisher;
     private portfolioRepository;
     private assetHolderRepository;
-    private assetRepository;
     private exchangeOrderRepository;
     private exchangeTradeRepository;
     private exchangeQuoteRepository;

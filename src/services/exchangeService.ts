@@ -41,7 +41,6 @@ export class ExchangeService {
 
     private portfolioRepository: PortfolioRepository
     private assetHolderRepository: AssetHolderRepository
-    private assetRepository: AssetRepository
     private exchangeOrderRepository: ExchangeOrderRepository
     private exchangeTradeRepository: ExchangeTradeRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
@@ -58,7 +57,6 @@ export class ExchangeService {
         this.orderNotificationPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.assetHolderRepository = new AssetHolderRepository()
-        this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
 
         this.exchangeOrderRepository = new ExchangeOrderRepository()
@@ -165,12 +163,12 @@ export class ExchangeService {
                     reason,
                 })
 
-                this.orderNotificationPublisher.publishOrderEventFailedAsync(
-                    exchangeOrder.portfolioId,
-                    exchangeOrder.orderId,
-                    reason,
-                    'marketMaker',
-                ) // async - don't wait to finish
+                // this.orderNotificationPublisher.publishOrderEventFailedAsync(
+                //     exchangeOrder.portfolioId,
+                //     exchangeOrder.orderId,
+                //     reason,
+                //     'marketMaker',
+                // ) // async - don't wait to finish
             }
 
             throw error
@@ -195,15 +193,15 @@ export class ExchangeService {
         const filledPrice = taker.filledPrice
         const makerRemaining = taker.sizeRemaining
 
-        this.orderNotificationPublisher.publishOrderEventFillAsync(
-            portfolioId,
-            orderId,
-            filledSize,
-            filledValue,
-            filledPrice,
-            makerRemaining,
-            'marketMaker',
-        ) // async - don't wait to finish
+        // this.orderNotificationPublisher.publishOrderEventFillAsync(
+        //     portfolioId,
+        //     orderId,
+        //     filledSize,
+        //     filledValue,
+        //     filledPrice,
+        //     makerRemaining,
+        //     'marketMaker',
+        // ) // async - don't wait to finish
 
         const newMakerStatus = taker.isClosed ? 'filled' : 'partial'
         const newMakerState = !taker.isClosed && taker.sizeRemaining > 0 ? 'open' : 'closed'
@@ -227,12 +225,12 @@ export class ExchangeService {
     private onTrade = async (trade: Trade) => {
         await this.exchangeTradeRepository.storeAsync(trade) // async - don't wait to finish
 
-        this.orderNotificationPublisher.publishOrderEventCompleteAsync(
-            trade.taker.portfolioId,
-            trade.taker.orderId,
-            trade.tradeId,
-            'marketMaker',
-        ) // async - don't wait to finish
+        // this.orderNotificationPublisher.publishOrderEventCompleteAsync(
+        //     trade.taker.portfolioId,
+        //     trade.taker.orderId,
+        //     trade.tradeId,
+        //     'marketMaker',
+        // ) // async - don't wait to finish
     }
 
     ////////////////////////////////////////////////////
@@ -247,7 +245,6 @@ export class ExchangeService {
             ...marketMakerQuote,
         } as TExchangeQuote
 
-        // const updateProps: TAssetUpdate = { quote: marketMakerQuote }
         await this.exchangeQuoteRepository.storeAsync(assetId, exchangeQuote)
     }
 
