@@ -19,9 +19,11 @@ import {
     UserRepository,
     LeagueRepository,
     PortfolioOrderRepository,
+    PortfolioOrderService,
+    TNewPortfolioOrderProps,
 } from '../../src'
 
-describe('ExchangerService', function () {
+describe('PortfolioOrderService', function () {
     describe('persist marketMaker', function () {
         this.timeout(20000)
 
@@ -35,6 +37,7 @@ describe('ExchangerService', function () {
         let assetService: AssetService
         let marketMakerService: MarketMakerService
         let exchangeService: ExchangeService
+        let portfolioOrderService: PortfolioOrderService
         let marketMakerRepository: MarketMakerRepository
         let treasuryService: TreasuryService
         let mintService: MintService
@@ -84,6 +87,13 @@ describe('ExchangerService', function () {
                 transactionRepository,
                 userRepository,
             )
+            portfolioOrderService = new PortfolioOrderService(
+                assetRepository,
+                portfolioRepository,
+                transactionRepository,
+                marketMakerRepository,
+                //portfolioOrderRepository
+            )
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
             await bootstrapper.bootstrap()
 
@@ -105,7 +115,7 @@ describe('ExchangerService', function () {
             await assetService.createAsset(assetConfig)
         })
 
-        describe('buy', function () {
+        describe.only('buy', function () {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
@@ -130,18 +140,17 @@ describe('ExchangerService', function () {
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const orderPayload: TNewExchangeOrderConfig = {
-                        operation: 'order',
+                    const orderPayload: TNewPortfolioOrderProps = {
                         orderType: 'market',
                         orderSide: 'bid',
                         assetId: assetId,
                         portfolioId: `user::testbot`,
                         orderSize: 4,
-                        orderId: 'order1',
+                        //orderId: 'order1',
                         tags: { test: true },
                     }
 
-                    await exchangeService.submitNewExchangeOrderAsync(orderPayload)
+                    await portfolioOrderService.submitNewPortfolioOrderAsync(orderPayload)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

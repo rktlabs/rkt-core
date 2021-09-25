@@ -8,6 +8,7 @@ import {
     InsufficientBalance,
     MarketMakerRepository,
     MarketMakerService,
+    OrderSide,
     PortfolioRepository,
     round4,
     TransactionRepository,
@@ -58,7 +59,7 @@ export class SimpleExchangeService {
         return this.user_transact(userId, assetId, 'ask', orderSize)
     }
 
-    async user_transact(userId: string, assetId: string, orderSide: string, orderSize: number) {
+    async user_transact(userId: string, assetId: string, orderSide: OrderSide, orderSize: number) {
         const user = await this.userRepository.getDetailAsync(userId)
         if (!user) {
             const msg = `Order Failed - user not found (${userId})`
@@ -72,7 +73,7 @@ export class SimpleExchangeService {
         return this.portfolio_transact(portfolioId, assetId, orderSide, orderSize)
     }
 
-    async portfolio_transact(portfolioId: string, assetId: string, orderSide: string, orderSize: number) {
+    async portfolio_transact(portfolioId: string, assetId: string, orderSide: OrderSide, orderSize: number) {
         const marketMaker = await this.marketMakerService.getMarketMakerAsync(assetId)
         if (!marketMaker) {
             const msg = `Order Failed - marketMaker not found (${assetId})`
@@ -219,7 +220,7 @@ export class SimpleExchangeService {
         return this.transactionService.executeTransactionAsync(newTransactionData)
     }
 
-    private async verifyAssetsAsync(portfolioId: string, assetId: string, orderSide: string, orderSize: number) {
+    private async verifyAssetsAsync(portfolioId: string, assetId: string, orderSide: OrderSide, orderSize: number) {
         // verify that portfolio exists.
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
@@ -242,7 +243,7 @@ export class SimpleExchangeService {
 
     private async verifyFundsAsync(
         portfolioId: string,
-        orderSide: string,
+        orderSide: OrderSide,
         orderSize: number,
         currentPrice: number = 0,
     ) {

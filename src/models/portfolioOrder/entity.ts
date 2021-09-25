@@ -1,26 +1,27 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { generateId, generateNonce } from '../../util/idGenerator'
+import { generateId } from '../../util/idGenerator'
 import { ValidationError } from '../../errors'
 import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
-import { TPortfolioOrderEvent, TPortfolioOrder, TNewOrderProps } from '.'
+import { TPortfolioOrder, TNewPortfolioOrderProps } from '.'
+import { OrderSide, OrderType } from '../..'
 
 export class PortfolioOrder {
     createdAt: string
     orderId: string
     assetId: string
     portfolioId: string
-    orderSide: string
+    orderSide: OrderSide
     orderSize: number
     status: string
     state: string
-    orderType: string
+    orderType: OrderType
     reason?: string
 
     orderPrice?: number
-    events: TPortfolioOrderEvent[]
+    events: any[]
     tags?: any
     xids?: any
 
@@ -52,17 +53,17 @@ export class PortfolioOrder {
         this.reason = props.reason
     }
 
-    static newOrder(props: TNewOrderProps) {
+    static newOrder(props: TNewPortfolioOrderProps) {
         const orderId: string = props.orderId || `ORDER::${generateId()}`
         const createdAt = DateTime.utc().toString()
 
         // only use fields we want. ignore others.
-        const orderEvent: TPortfolioOrderEvent = {
-            notificationType: 'Created',
-            publishedAt: createdAt,
-            messageId: orderId,
-            nonce: generateNonce(),
-        }
+        // const orderEvent: TNewPortfolioOrderEvent = {
+        //     eventType: 'Created',
+        //     publishedAt: createdAt,
+        //     messageId: orderId,
+        //     nonce: generateNonce(),
+        // }
 
         const newOrderProps: TPortfolioOrder = {
             orderId: orderId,
@@ -74,7 +75,7 @@ export class PortfolioOrder {
             orderSize: props.orderSize, // required
             status: 'received', // received | filled | failed
             state: 'open', // open | closed
-            events: [orderEvent],
+            events: [],
         }
 
         // limit order requires orderPrice

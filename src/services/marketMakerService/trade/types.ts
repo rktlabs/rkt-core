@@ -1,8 +1,10 @@
 'use strict'
 
+export type OperationType = 'order' | 'cancel'
+
 export type OrderSide = 'bid' | 'ask'
 
-export type OrderType = 'market'
+export type OrderType = 'market' | 'limit'
 
 export type OrderStatus = 'new' | 'partial' | 'filled' | 'liquidityStarved'
 

@@ -1,6 +1,5 @@
 'use strict'
 
-import { PortfolioService, AssetService } from '.'
 import {
     AssetRepository,
     LeagueRepository,
@@ -14,6 +13,8 @@ import {
     TAssetCore,
     TransactionRepository,
     MarketMakerRepository,
+    AssetService,
+    PortfolioService,
 } from '..'
 
 export class LeagueService {

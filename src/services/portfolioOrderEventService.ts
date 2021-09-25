@@ -1,142 +1,139 @@
-// import { DateTime } from 'luxon'
-// import { TNotification } from '.'
-// import { PortfolioOrderRepository, TPortfolioOrder, TPortfolioOrderEvent } from '..'
+'use strict'
 
-// import * as log4js from 'log4js'
-// const logger = log4js.getLogger()
+import * as log4js from 'log4js'
+import { DateTime } from 'luxon'
+import {
+    PortfolioOrderRepository,
+    TPortfolioOrder,
+    TPortfolioOrderFill,
+    TPortfolioOrderComplete,
+    TPortfolioOrderFailed,
+    TPortfolioOrderPatch,
+    round4,
+} from '..'
 
-// export class PortfolioOrderEventService {
-//     private orderRepository: PortfolioOrderRepository
+const logger = log4js.getLogger()
 
-//     constructor(db: FirebaseFirestore.Firestore) {
-//         this.orderRepository = new PortfolioOrderRepository()
-//     }
+export class PortfolioOrderEventService {
+    private portfolioOrderRepository: PortfolioOrderRepository
 
-//     handleOrderEventAsync = async (payload: TNotification) => {
-//         //logger.debug(`Handle Order TEvent: ${JSON.stringify(payload)}`)
+    constructor(portfolioOrderRepository: PortfolioOrderRepository) {
+        this.portfolioOrderRepository = portfolioOrderRepository
+    }
 
-//         const orderId = payload.attributes.orderId
-//         const portfolioId = payload.attributes.portfolioId
+    processFillEvent = async (payload: TPortfolioOrderFill) => {
+        const orderId = payload.orderId
+        const portfolioId = payload.portfolioId
+        let portfolioOrder = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
+        if (!portfolioOrder) {
+            return
+        }
+        portfolioOrder.filledSize = (portfolioOrder.filledSize || 0) + payload.filledSize
+        portfolioOrder.filledValue = (portfolioOrder.filledValue || 0) + payload.filledValue
+        portfolioOrder.filledPrice =
+            portfolioOrder.filledSize === 0
+                ? 0
+                : Math.abs(round4(portfolioOrder.filledValue / portfolioOrder.filledSize))
+        portfolioOrder.sizeRemaining = payload.sizeRemaining
 
-//         // NOTE: payload is captured in closure?
-//         await this.orderRepository.atomicUpdateAsync(
-//             portfolioId,
-//             orderId,
-//             (order: TPortfolioOrder): TPortfolioOrder | undefined => {
-//                 return this.processOrderEvent(order, payload)
-//             },
-//         )
-//     }
+        this.portfolioOrderRepository.appendOrderEvent(portfolioId, orderId, payload)
 
-//     ////////////////////////////////////////////////////////
-//     // PRIVATE
-//     ////////////////////////////////////////////////////////
+        const orderUpdate: TPortfolioOrderPatch = {
+            filledSize: portfolioOrder.filledSize,
+            filledValue: portfolioOrder.filledValue,
+            filledPrice: portfolioOrder.filledPrice,
+            sizeRemaining: portfolioOrder.sizeRemaining,
+        }
 
-//     private processOrderEvent = (order: TPortfolioOrder, payload: TNotification): TPortfolioOrder | undefined => {
-//         // verify that the message is not a duplicate (using messageId)
-//         // if it's a dup, don't process.
-//         const existingEvent = order.events.filter((event: TPortfolioOrderEvent) => {
-//             return event.messageId && event.messageId === payload.messageId
-//         })
+        await this.portfolioOrderRepository.updateAsync(portfolioId, orderId, orderUpdate)
 
-//         if (existingEvent.length === 0) {
-//             const notificationType = payload.notificationType
-//             switch (notificationType) {
-//                 case 'OrderFill':
-//                     order = this.processFillEvent(order, payload)
-//                     break
+        return portfolioOrder
+    }
 
-//                 case 'OrderComplete':
-//                     order = this.processCompleteEvent(order, payload)
-//                     break
+    processComplete = async (payload: TPortfolioOrderComplete) => {
+        const orderId = payload.orderId
+        const portfolioId = payload.portfolioId
+        let portfolioOrder = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
+        if (!portfolioOrder) {
+            return
+        }
 
-//                 case 'OrderFailed':
-//                     order = this.processFailedEvent(order, payload)
-//                     break
-//             }
-//             return order
-//         } else {
-//             return undefined
-//         }
-//     }
+        switch (portfolioOrder.status) {
+            case 'received':
+                portfolioOrder = this.updateStatus(portfolioOrder, 'filled')
+                portfolioOrder = this.close(portfolioOrder)
+                break
 
-//     private appendOrderEvent = (order: TPortfolioOrder, payload: TNotification) => {
-//         const events = order.events || []
-//         const orderEvent: TPortfolioOrderEvent = {
-//             notificationType: payload.notificationType,
-//             publishedAt: payload.publishedAt,
-//             messageId: payload.messageId,
-//             nonce: payload.nonce,
-//             attributes: payload.attributes,
-//         }
-//         events.push(orderEvent)
-//         order.events = events.sort((a: TPortfolioOrderEvent, b: TPortfolioOrderEvent) =>
-//             (a.publishedAt || '').localeCompare(b.publishedAt || ''),
-//         )
-//         return order
-//     }
+            case 'filled':
+            case 'failed':
+            default:
+                logger.warn(`handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) IGNORED`)
+                //payload.attributes.error = `order status: ${order.status} received event: ${payload.attributes.notificationType}`
+                break
+        }
 
-//     private close = (order: TPortfolioOrder) => {
-//         order.state = 'closed'
-//         order.closedAt = DateTime.utc().toString()
-//         return order
-//     }
+        this.portfolioOrderRepository.appendOrderEvent(portfolioId, orderId, payload)
 
-//     private updateStatus = (order: TPortfolioOrder, newStatus: string, reason?: string) => {
-//         order.status = newStatus
-//         if (reason) {
-//             order.reason = reason
-//         }
-//         return order
-//     }
+        const orderUpdate: TPortfolioOrderPatch = {
+            status: portfolioOrder.status,
+            reason: portfolioOrder.reason,
+        }
 
-//     private processFillEvent = (order: TPortfolioOrder, payload: TNotification) => {
-//         // can fill whenever. don't ignore (if comes out of order)
-//         order.filledSize = payload.attributes.filledSize
-//         order.filledValue = payload.attributes.filledValue
-//         order.filledPrice = payload.attributes.filledPrice
-//         order.sizeRemaining = payload.attributes.sizeRemaining
-//         order = this.appendOrderEvent(order, payload)
-//         return order
-//     }
+        this.portfolioOrderRepository.updateAsync(portfolioId, orderId, orderUpdate)
 
-//     private processFailedEvent = (order: TPortfolioOrder, payload: TNotification) => {
-//         switch (order.status) {
-//             case 'received':
-//                 order = this.updateStatus(order, 'failed', payload.attributes.reason)
-//                 order = this.close(order)
-//                 break
+        return portfolioOrder
+    }
 
-//             case 'filled':
-//             case 'failed':
-//             default:
-//                 logger.warn(
-//                     `handleOrderEvent: handleFailedEvent(${order.orderId}) status: ${order.status} - ${payload} - IGNORED`,
-//                 )
-//                 payload.attributes.error = `order status: ${order.status} received event: ${payload.attributes.notificationType}`
-//                 break
-//         }
-//         order = this.appendOrderEvent(order, payload)
+    processFailEvent = async (payload: TPortfolioOrderFailed) => {
+        const orderId = payload.orderId
+        const portfolioId = payload.portfolioId
+        let portfolioOrder = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
+        if (!portfolioOrder) {
+            return
+        }
 
-//         return order
-//     }
+        switch (portfolioOrder.status) {
+            case 'received':
+                portfolioOrder = this.updateStatus(portfolioOrder, 'failed', payload.reason)
+                portfolioOrder = this.close(portfolioOrder)
+                break
 
-//     private processCompleteEvent = (order: TPortfolioOrder, payload: TNotification) => {
-//         switch (order.status) {
-//             case 'received':
-//                 order = this.updateStatus(order, 'filled')
-//                 order = this.close(order)
-//                 break
+            case 'filled':
+            case 'failed':
+            default:
+                logger.warn(
+                    `handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) status: ${portfolioOrder.status} - ${payload} - IGNORED`,
+                )
+                //payload.error = `order status: ${order.status} received event: ${payload.attributes.notificationType}`
+                break
+        }
 
-//             case 'filled':
-//             case 'failed':
-//             default:
-//                 logger.warn(`handleOrderEvent: handleFailedEvent(${order.orderId}) IGNORED`)
-//                 payload.attributes.error = `order status: ${order.status} received event: ${payload.attributes.notificationType}`
-//                 break
-//         }
-//         order = this.appendOrderEvent(order, payload)
+        this.portfolioOrderRepository.appendOrderEvent(portfolioId, orderId, payload)
 
-//         return order
-//     }
-// }
+        const orderUpdate: TPortfolioOrderPatch = {
+            status: portfolioOrder.status,
+            reason: portfolioOrder.reason,
+            closedAt: portfolioOrder.closedAt,
+        }
+
+        this.portfolioOrderRepository.updateAsync(portfolioId, orderId, orderUpdate)
+        return portfolioOrder
+    }
+
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
+    private close = (portfolioOrder: TPortfolioOrder) => {
+        portfolioOrder.state = 'closed'
+        portfolioOrder.closedAt = DateTime.utc().toString()
+        return portfolioOrder
+    }
+
+    private updateStatus = (portfolioOrder: TPortfolioOrder, newStatus: string, reason?: string) => {
+        portfolioOrder.status = newStatus
+        if (reason) {
+            portfolioOrder.reason = reason
+        }
+        return portfolioOrder
+    }
+}

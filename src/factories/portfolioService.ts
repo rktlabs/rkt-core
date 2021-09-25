@@ -1,6 +1,5 @@
 'use strict'
 
-import { AssetHolderService } from '.'
 import {
     PortfolioRepository,
     AssetRepository,
@@ -15,6 +14,7 @@ import {
     ConflictError,
     TPortfolioDeposit,
     UserRepository,
+    AssetHolderService,
 } from '..'
 
 import * as log4js from 'log4js'

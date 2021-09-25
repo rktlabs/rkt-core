@@ -115,11 +115,6 @@ export class BootstrapService {
         })
     }
 
-    async bootAssets() {
-        this.bootAsset('card::jbone')
-        this.bootAsset('card::mhed')
-    }
-
     async bootAsset(assetId: string) {
         const leagueId = 'test'
 
@@ -154,11 +149,12 @@ export class BootstrapService {
         await this.marketMakerService.createMarketMaker(makerConfig, false)
     }
 
-    async bootstrap() {
-        await Promise.all([this.bootRkt(), this.bootBank(), this.bootUser(), this.bootLeague()])
+    async bootAssets() {
+        this.bootAsset('card::testehed')
+        this.bootAsset('card::testjhed')
     }
 
-    async fullBoot() {
-        await this.bootstrap()
+    async bootstrap() {
+        await Promise.all([this.bootRkt(), this.bootBank(), this.bootUser(), this.bootLeague(), this.bootAssets()])
     }
 }

@@ -1,7 +1,10 @@
 'use strict'
+
+import * as admin from 'firebase-admin'
 import { TPortfolioOrder, TPortfolioOrderPatch } from '../../models/portfolioOrder'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
+const FieldValue = admin.firestore.FieldValue
 
 const COLLECTION_NAME = 'portfolios'
 const SUB_COLLECTION_NAME = 'orders'
@@ -66,30 +69,17 @@ export class PortfolioOrderRepository extends RepositoryBase {
         await entityRef.update(entityJson)
     }
 
-    async atomicUpdateAsync(
-        portfolioId: string,
-        orderId: string,
-        func: (order: TPortfolioOrder) => TPortfolioOrder | undefined,
-    ) {
-        // needs to perform 1 or 2 updates and perform them in a transaction
-        try {
-            const entityRef = this.db
-                .collection(COLLECTION_NAME)
-                .doc(portfolioId)
-                .collection(SUB_COLLECTION_NAME)
-                .doc(orderId)
-            await this.db.runTransaction(async (t) => {
-                const entityDoc = await t.get(entityRef)
-                const entity = entityDoc.data() as TPortfolioOrder
-                if (entity) {
-                    const changes = func(entity)
-                    if (changes) {
-                        t.update(entityRef, changes)
-                    }
-                }
-            })
-        } catch (e) {
-            throw e
-        }
+    async appendOrderEvent(portfolioId: string, orderId: string, payload: any) {
+        const eventPayload = { ...payload }
+        delete eventPayload[portfolioId]
+        delete eventPayload[orderId]
+
+        const entityRef = this.db
+            .collection(COLLECTION_NAME)
+            .doc(portfolioId)
+            .collection(SUB_COLLECTION_NAME)
+            .doc(orderId)
+
+        await entityRef.update({ events: FieldValue.arrayUnion(eventPayload) })
     }
 }

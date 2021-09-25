@@ -1,7 +1,7 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { MarketMakerBase, TMakerResult, TMarketMaker, TMarketMakerQuote, TNewMarketMakerConfig } from '../..'
+import { MarketMakerBase, OrderSide, TMakerResult, TMarketMaker, TMarketMakerQuote, TNewMarketMakerConfig } from '../..'
 import { MintService } from '../../..'
 import {
     AssetHolderRepository,
@@ -93,7 +93,7 @@ export class BondingCurveAMM extends MarketMakerBase {
         this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
     }
 
-    async processOrderImpl(orderSide: string, orderSize: number) {
+    async processOrderImpl(orderSide: OrderSide, orderSize: number) {
         ////////////////////////////
         // verify that asset exists
         ////////////////////////////

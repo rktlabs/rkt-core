@@ -1,9 +1,11 @@
 'use strict'
 
+import { OrderType, OrderSide, OperationType } from '../..'
+
 export type TNewExchangeOrderConfig = {
-    operation: string // one of order, cancel
-    orderType: string // market or limit
-    orderSide: string
+    operation: OperationType // one of order, cancel
+    orderType: OrderType // market or limit
+    orderSide: OrderSide
     assetId: string
     portfolioId: string
     orderPrice?: number
@@ -14,7 +16,7 @@ export type TNewExchangeOrderConfig = {
 }
 
 export type TExchangeCancelOrder = {
-    operation: string
+    operation: OperationType
     assetId: string
     portfolioId: string
     orderId: string
@@ -22,9 +24,9 @@ export type TExchangeCancelOrder = {
 }
 
 export type TExchangeOrder = {
-    operation: string // one of order, cancel
-    orderType: string
-    orderSide: string
+    operation: OperationType // one of order, cancel
+    orderType: OrderType
+    orderSide: OrderSide
     assetId: string
     portfolioId: string
     orderPrice?: number
@@ -36,17 +38,15 @@ export type TExchangeOrder = {
     status: string
     state: string
     sizeRemaining?: number
-    //canceledAt?: string
-    //canceledBy?: string
     refOrderId?: string
     closedAt?: string
-    error?: string
+    reason?: string
 
-    // reason?: string
-    // executedAt?: string
-    // filledPrice?: number
-    // filledSize?: number
-    // filledValue?: number
+    filledPrice?: number
+    filledSize?: number
+    filledValue?: number
+
+    executedAt?: string
 }
 
 export type TExchangeOrderPatch = {

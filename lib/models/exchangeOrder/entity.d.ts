@@ -1,8 +1,9 @@
 import { TExchangeOrder, TNewExchangeOrderConfig } from '.';
+import { OperationType, OrderSide, OrderType } from '../..';
 export declare class ExchangeOrder {
-    operation: string;
-    orderType: string;
-    orderSide: string;
+    operation: OperationType;
+    orderType: OrderType;
+    orderSide: OrderSide;
     assetId: string;
     portfolioId: string;
     orderPrice?: number;
@@ -15,7 +16,10 @@ export declare class ExchangeOrder {
     sizeRemaining?: number;
     closedAt?: string;
     refOrderId?: string;
-    error?: string;
+    reason?: string;
+    filledPrice?: number;
+    filledSize?: number;
+    filledValue?: number;
     constructor(props: TExchangeOrder);
     static newExchangeOrder(props: TNewExchangeOrderConfig): ExchangeOrder;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;

@@ -1,3 +1,4 @@
+import { OrderSide, OrderType } from '../..';
 export declare type TTakerFill = {
     assetId: string;
     filledPrice: number;
@@ -6,12 +7,12 @@ export declare type TTakerFill = {
     isClosed: boolean;
     isLiquidityStarved: boolean;
     isPartial: boolean;
-    orderSide: string;
+    orderSide: OrderSide;
     orderSize: number;
     portfolioId: string;
     sizeRemaining: number;
     orderId: string;
-    orderType?: string;
+    orderType?: OrderType;
     tags?: any;
 };
 export declare type TMakerFill = {
@@ -21,7 +22,7 @@ export declare type TMakerFill = {
     filledValue: number;
     isClosed: boolean;
     isPartial: boolean;
-    orderSide: string;
+    orderSide: OrderSide;
     orderSize: number;
     portfolioId: string;
     sizeRemaining: number;

@@ -1,5 +1,7 @@
 'use strict'
 
+import { OrderSide, OrderType } from '../..'
+
 export type TTakerFill = {
     assetId: string
     filledPrice: number
@@ -8,13 +10,13 @@ export type TTakerFill = {
     isClosed: boolean
     isLiquidityStarved: boolean
     isPartial: boolean
-    orderSide: string
+    orderSide: OrderSide
     orderSize: number
     portfolioId: string
     sizeRemaining: number
 
     orderId: string
-    orderType?: string
+    orderType?: OrderType
     tags?: any
 }
 
@@ -25,7 +27,7 @@ export type TMakerFill = {
     filledValue: number
     isClosed: boolean
     isPartial: boolean
-    orderSide: string
+    orderSide: OrderSide
     orderSize: number
     portfolioId: string
     sizeRemaining: number

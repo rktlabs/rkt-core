@@ -6,11 +6,12 @@ import { ValidationError } from '../../errors'
 import { serialize, serializeCollection } from './serializer'
 import { exchangeOrderValidator as validate } from './validator'
 import { TExchangeOrder, TNewExchangeOrderConfig } from '.'
+import { OperationType, OrderSide, OrderType } from '../..'
 
 export class ExchangeOrder {
-    operation: string // one of order, cancel
-    orderType: string
-    orderSide: string
+    operation: OperationType // one of order, cancel
+    orderType: OrderType
+    orderSide: OrderSide
     assetId: string
     portfolioId: string
     orderPrice?: number
@@ -22,11 +23,12 @@ export class ExchangeOrder {
     status: string
     state: string
     sizeRemaining?: number
-    //canceledAt?: string
-    //canceledBy?: string
     closedAt?: string
     refOrderId?: string
-    error?: string
+    reason?: string
+    filledPrice?: number
+    filledSize?: number
+    filledValue?: number
 
     constructor(props: TExchangeOrder) {
         this.operation = props.operation
@@ -45,10 +47,12 @@ export class ExchangeOrder {
         this.orderId = props.orderId
         this.sizeRemaining = props.sizeRemaining
 
-        this.error = props.error
+        this.reason = props.reason
 
-        //this.canceledAt = props.canceledAt
-        //this.canceledBy = props.canceledBy
+        this.filledPrice = props.filledPrice
+        this.filledSize = props.filledSize
+        this.filledValue = props.filledValue
+
         this.closedAt = props.closedAt
     }
 

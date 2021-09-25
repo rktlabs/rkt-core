@@ -1,6 +1,6 @@
 'use strict'
 
-import { PortfolioService, AssetHolderService, MarketMakerService } from '.'
+import { AssetHolderService, MarketMakerService } from '../services'
 import {
     PortfolioRepository,
     AssetRepository,
@@ -10,6 +10,7 @@ import {
     Asset,
     TransactionRepository,
     MarketMakerRepository,
+    PortfolioService,
 } from '..'
 
 import * as log4js from 'log4js'

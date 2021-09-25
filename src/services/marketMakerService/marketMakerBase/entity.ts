@@ -1,7 +1,7 @@
 'use strict'
 
 import * as log4js from 'log4js'
-import { TOrder, Trade } from '../..'
+import { OrderSide, TOrder, Trade } from '../..'
 import {
     Asset,
     AssetRepository,
@@ -142,5 +142,5 @@ export abstract class MarketMakerBase implements IMarketMaker {
         }
     }
 
-    abstract processOrderImpl(orderSide: string, orderSize: number): Promise<TMakerResult | null>
+    abstract processOrderImpl(orderSide: OrderSide, orderSize: number): Promise<TMakerResult | null>
 }

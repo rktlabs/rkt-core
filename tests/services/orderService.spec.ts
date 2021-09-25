@@ -14,7 +14,7 @@ chai.use(chaiSubset)
 describe('Order Service', function () {
     this.timeout(5000)
 
-    // let orderRepository: OrderRepository
+    // let portfolioOrderRepository: OrderRepository
     // let orderService: OrderService
     // let bootstrapper: BootstrapService
 
@@ -26,7 +26,7 @@ describe('Order Service', function () {
         // const publisher = new Publisher({ logger: logger })
         // eventPublisher = new EventPublisher({ publisher: publisher })
         // publisherStub = sinon.stub(publisher, 'publishMessageToTopicAsync')
-        // orderRepository = new OrderRepository()
+        // portfolioOrderRepository = new OrderRepository()
         // orderService = new OrderService(eventPublisher as any as EventPublisher)
         // bootstrapper = new BootstrapService(eventPublisher as any as EventPublisher)
         // await bootstrapper.fullBoot()
@@ -58,7 +58,7 @@ describe('Order Service', function () {
 
     //         const order = await orderService.createOrder(data)
 
-    //         const readBack = await orderRepository.getPortfolioOrder(portfolioId, order.orderId)
+    //         const readBack = await portfolioOrderRepository.getPortfolioOrder(portfolioId, order.orderId)
     //         expect(readBack).to.exist
 
     //         expect(publisherStub.callCount).to.eq(1)

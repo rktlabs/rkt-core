@@ -10,8 +10,7 @@ export declare class BootstrapService {
     bootBank(): Promise<void>;
     bootLeague(): Promise<void>;
     bootUser(): Promise<void>;
-    bootAssets(): Promise<void>;
     bootAsset(assetId: string): Promise<void>;
+    bootAssets(): Promise<void>;
     bootstrap(): Promise<void>;
-    fullBoot(): Promise<void>;
 }

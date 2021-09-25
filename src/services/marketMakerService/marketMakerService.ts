@@ -2,13 +2,13 @@
 
 import * as log4js from 'log4js'
 import { BondingCurveAMM, IMarketMaker, MarketMakerBase, TNewMarketMakerConfig, TOrder, TOrderConfig } from '.'
-import { PortfolioService } from '..'
 import {
     AssetRepository,
     ConflictError,
     DuplicateError,
     MarketMakerRepository,
     PortfolioRepository,
+    PortfolioService,
     TNewPortfolioConfig,
     TransactionRepository,
 } from '../..'

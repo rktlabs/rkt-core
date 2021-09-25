@@ -1,7 +1,14 @@
 'use strict'
 
-import { PortfolioService } from '.'
-import { UserRepository, PortfolioRepository, TNewUserConfig, DuplicateError, ConflictError, User } from '..'
+import {
+    UserRepository,
+    PortfolioRepository,
+    TNewUserConfig,
+    DuplicateError,
+    ConflictError,
+    User,
+    PortfolioService,
+} from '..'
 
 import * as log4js from 'log4js'
 const logger = log4js.getLogger()

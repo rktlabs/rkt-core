@@ -68,7 +68,7 @@ describe('Transaction Service', function () {
             leagueRepository,
         )
 
-        await bootstrapper.fullBoot()
+        await bootstrapper.bootstrap()
     })
 
     beforeEach(async () => {

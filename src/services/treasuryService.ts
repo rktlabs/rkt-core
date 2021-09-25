@@ -1,7 +1,7 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { INotificationPublisher, MintService, NullNotificationPublisher, PortfolioService, TransactionService } from '.'
+import { INotificationPublisher, MintService, NullNotificationPublisher, TransactionService } from '.'
 import {
     UserRepository,
     PortfolioRepository,
@@ -11,6 +11,7 @@ import {
     AssetHolderService,
     AssetRepository,
     TransactionRepository,
+    PortfolioService,
     //Principal,
 } from '..'
 

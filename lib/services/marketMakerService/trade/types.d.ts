@@ -1,5 +1,6 @@
+export declare type OperationType = 'order' | 'cancel';
 export declare type OrderSide = 'bid' | 'ask';
-export declare type OrderType = 'market';
+export declare type OrderType = 'market' | 'limit';
 export declare type OrderStatus = 'new' | 'partial' | 'filled' | 'liquidityStarved';
 export declare type OrderState = 'open' | 'closed';
 export declare type TOrderConfig = {

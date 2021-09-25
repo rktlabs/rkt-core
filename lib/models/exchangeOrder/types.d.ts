@@ -1,7 +1,8 @@
+import { OrderType, OrderSide, OperationType } from '../..';
 export declare type TNewExchangeOrderConfig = {
-    operation: string;
-    orderType: string;
-    orderSide: string;
+    operation: OperationType;
+    orderType: OrderType;
+    orderSide: OrderSide;
     assetId: string;
     portfolioId: string;
     orderPrice?: number;
@@ -10,16 +11,16 @@ export declare type TNewExchangeOrderConfig = {
     tags?: any;
 };
 export declare type TExchangeCancelOrder = {
-    operation: string;
+    operation: OperationType;
     assetId: string;
     portfolioId: string;
     orderId: string;
     refOrderId: string;
 };
 export declare type TExchangeOrder = {
-    operation: string;
-    orderType: string;
-    orderSide: string;
+    operation: OperationType;
+    orderType: OrderType;
+    orderSide: OrderSide;
     assetId: string;
     portfolioId: string;
     orderPrice?: number;
@@ -32,7 +33,11 @@ export declare type TExchangeOrder = {
     sizeRemaining?: number;
     refOrderId?: string;
     closedAt?: string;
-    error?: string;
+    reason?: string;
+    filledPrice?: number;
+    filledSize?: number;
+    filledValue?: number;
+    executedAt?: string;
 };
 export declare type TExchangeOrderPatch = {
     status?: string;

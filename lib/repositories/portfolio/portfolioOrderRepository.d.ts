@@ -8,5 +8,5 @@ export declare class PortfolioOrderRepository extends RepositoryBase {
     getDetailAsync(portfolioId: string, orderId: string): Promise<TPortfolioOrder | null>;
     storeAsync(portfolioId: string, entity: TPortfolioOrder): Promise<void>;
     updateAsync(portfolioId: string, orderId: string, entityJson: TPortfolioOrderPatch): Promise<void>;
-    atomicUpdateAsync(portfolioId: string, orderId: string, func: (order: TPortfolioOrder) => TPortfolioOrder | undefined): Promise<void>;
+    appendOrderEvent(portfolioId: string, orderId: string, payload: any): Promise<void>;
 }

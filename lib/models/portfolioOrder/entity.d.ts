@@ -1,17 +1,18 @@
-import { TPortfolioOrderEvent, TPortfolioOrder, TNewOrderProps } from '.';
+import { TPortfolioOrder, TNewPortfolioOrderProps } from '.';
+import { OrderSide, OrderType } from '../..';
 export declare class PortfolioOrder {
     createdAt: string;
     orderId: string;
     assetId: string;
     portfolioId: string;
-    orderSide: string;
+    orderSide: OrderSide;
     orderSize: number;
     status: string;
     state: string;
-    orderType: string;
+    orderType: OrderType;
     reason?: string;
     orderPrice?: number;
-    events: TPortfolioOrderEvent[];
+    events: any[];
     tags?: any;
     xids?: any;
     closedAt?: string;
@@ -20,7 +21,7 @@ export declare class PortfolioOrder {
     filledValue?: number;
     sizeRemaining?: number;
     constructor(props: TPortfolioOrder);
-    static newOrder(props: TNewOrderProps): PortfolioOrder;
+    static newOrder(props: TNewPortfolioOrderProps): PortfolioOrder;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
     static serialize(selfUrl: string, portfolioId: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, portfolioId: string, baseUrl: string, qs: any, data: any): any;

@@ -1,24 +1,17 @@
 'use strict'
 
-export type TNewOrderProps = {
+import { OrderSide, OrderType } from '../..'
+
+export type TNewPortfolioOrderProps = {
     orderId?: string
     assetId: string
     portfolioId: string
-    orderSide: string
+    orderSide: OrderSide
     orderSize: number
-    orderType: string // market or limit
+    orderType: OrderType // market or limit
     orderPrice?: number
     tags?: any
     xids?: any
-}
-
-// a data item that is stored on the order in the events[] collection.
-export type TPortfolioOrderEvent = {
-    notificationType: string
-    publishedAt: string
-    nonce: string
-    attributes?: any
-    messageId?: string
 }
 
 export type TPortfolioOrder = {
@@ -26,15 +19,15 @@ export type TPortfolioOrder = {
     orderId: string
     assetId: string
     portfolioId: string
-    orderSide: string
+    orderSide: OrderSide
     orderSize: number
     status: string
     state: string
-    orderType: string
+    orderType: OrderType
     reason?: string
 
     orderPrice?: number
-    events: TPortfolioOrderEvent[]
+    events: any[]
     tags?: any
     xids?: any
     closedAt?: string
@@ -46,10 +39,34 @@ export type TPortfolioOrder = {
 
 export type TPortfolioOrderPatch = {
     closedAt?: string
-    events?: TPortfolioOrderEvent[]
     filledPrice?: number
     filledSize?: number
     filledValue?: number
+    sizeRemaining?: number
     status?: string
     state?: string
+    reason?: string
+}
+
+export type TPortfolioOrderEvent = {
+    orderId: string
+    portfolioId: string
+    eventType: string
+    publishedAt: string
+}
+
+export type TPortfolioOrderFill = TPortfolioOrderEvent & {
+    filledSize: number
+    filledValue: number
+    filledPrice: number
+    sizeRemaining: number
+    tradeId: string
+}
+
+export type TPortfolioOrderComplete = TPortfolioOrderEvent & {
+    tradeId: string
+}
+
+export type TPortfolioOrderFailed = TPortfolioOrderEvent & {
+    reason: string
 }

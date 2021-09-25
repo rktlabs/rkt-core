@@ -1,4 +1,4 @@
-import { TOrder, Trade } from '../..';
+import { OrderSide, TOrder, Trade } from '../..';
 import { Asset, AssetRepository, MarketMakerRepository, PortfolioRepository, TransactionRepository } from '../../..';
 import { IMarketMaker } from './interfaces';
 import { TMakerResult, TMarketMaker } from './types';
@@ -21,5 +21,5 @@ export declare abstract class MarketMakerBase implements IMarketMaker {
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
     processOrder(order: TOrder): Promise<Trade | null>;
-    abstract processOrderImpl(orderSide: string, orderSize: number): Promise<TMakerResult | null>;
+    abstract processOrderImpl(orderSide: OrderSide, orderSize: number): Promise<TMakerResult | null>;
 }
