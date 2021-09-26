@@ -12,7 +12,7 @@ export class PortfolioOrder {
     createdAt: string
     orderId: string
     assetId: string
-    portfolioId: string
+    //portfolioId: string
     orderSide: OrderSide
     orderSize: number
     status: string
@@ -40,7 +40,7 @@ export class PortfolioOrder {
         this.filledSize = props.filledSize
         this.filledValue = props.filledValue
         this.sizeRemaining = props.sizeRemaining
-        this.portfolioId = props.portfolioId
+        //this.portfolioId = props.portfolioId
         this.orderSide = props.orderSide
         this.orderSize = props.orderSize
         this.status = props.status
@@ -54,7 +54,8 @@ export class PortfolioOrder {
     }
 
     static newOrder(props: TNewPortfolioOrderProps) {
-        const orderId: string = props.orderId || `ORDER::${generateId()}`
+        //const orderId: string = props.orderId || `ORDER::${generateId()}`
+        const orderId = `ORDER::${generateId()}`
         const createdAt = DateTime.utc().toString()
 
         // only use fields we want. ignore others.
@@ -70,7 +71,7 @@ export class PortfolioOrder {
             createdAt: createdAt,
             orderType: props.orderType || 'market',
             assetId: props.assetId, // required
-            portfolioId: props.portfolioId, // required
+            //portfolioId: props.portfolioId, // required
             orderSide: props.orderSide, // required
             orderSize: props.orderSize, // required
             status: 'received', // received | filled | failed

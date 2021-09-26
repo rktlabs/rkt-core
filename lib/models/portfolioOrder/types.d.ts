@@ -1,8 +1,6 @@
 import { OrderSide, OrderType } from '../..';
 export declare type TNewPortfolioOrderProps = {
-    orderId?: string;
     assetId: string;
-    portfolioId: string;
     orderSide: OrderSide;
     orderSize: number;
     orderType: OrderType;
@@ -14,7 +12,6 @@ export declare type TPortfolioOrder = {
     createdAt: string;
     orderId: string;
     assetId: string;
-    portfolioId: string;
     orderSide: OrderSide;
     orderSize: number;
     status: string;

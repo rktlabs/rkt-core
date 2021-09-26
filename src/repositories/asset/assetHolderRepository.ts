@@ -18,8 +18,6 @@ export class AssetHolderRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    // TODO: updateAssetHolder??? - need to update units for asset holder quantity
-
     async getListAsync(assetId: string) {
         logger.trace(`getList ${assetId}`)
         const entityRefCollection = this.db.collection(COLLECTION_NAME).doc(assetId).collection(SUB_COLLECTION_NAME)

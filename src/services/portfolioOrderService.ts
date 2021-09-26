@@ -13,7 +13,6 @@ import {
     PortfolioOrder,
     TNewExchangeOrderConfig,
     TExchangeCancelOrder,
-    TPortfolioOrderPatch,
     TPortfolioOrder,
 } from '..'
 
@@ -43,7 +42,7 @@ export class PortfolioOrderService {
         )
     }
 
-    async submitNewPortfolioOrderAsync(orderPayload: TNewPortfolioOrderProps) {
+    async submitNewPortfolioOrderAsync(portfolioId: string, orderPayload: TNewPortfolioOrderProps) {
         // verify that asset exists.
         const orderAssetId = orderPayload.assetId
         const orderAsset = await this.assetRepository.getDetailAsync(orderAssetId)
@@ -53,7 +52,7 @@ export class PortfolioOrderService {
         }
 
         // verify that portfolio exists.
-        const portfolioId = orderPayload.portfolioId
+        //const portfolioId = orderPayload.portfolioId
         const orderPortfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!orderPortfolio) {
             const msg = `Order Failed - input portfolioId not registered (${portfolioId})`
@@ -66,7 +65,7 @@ export class PortfolioOrderService {
         const newPortfolioOrder = PortfolioOrder.newOrder(orderPayload)
         await this.portfolioOrderRepository.storeAsync(portfolioId, newPortfolioOrder)
 
-        const exchangeOrder: TNewExchangeOrderConfig = this._generateExchangeOrder(newPortfolioOrder)
+        const exchangeOrder: TNewExchangeOrderConfig = this._generateExchangeOrder(portfolioId, newPortfolioOrder)
         // if (this.eventPublisher) {
         //     await this.eventPublisher.publishExchangeOrderCreateAsync(exchangeOrder, 'orderHandler')
         // }
@@ -87,12 +86,12 @@ export class PortfolioOrderService {
         /////////////////////////////////////////////////////////
         const orderPayload: TNewPortfolioOrderProps = {
             assetId: order.assetId,
-            portfolioId: order.portfolioId,
+            //portfolioId: order.portfolioId,
             orderSide: order.orderSide === 'bid' ? 'ask' : 'bid',
             orderSize: order.orderSize,
             orderType: 'market',
             xids: {
-                refOrderId: orderId,
+                //refOrderId: orderId,
                 portfolioId: portfolioId,
             },
         }
@@ -100,7 +99,7 @@ export class PortfolioOrderService {
         const newOrder = PortfolioOrder.newOrder(orderPayload)
         await this.portfolioOrderRepository.storeAsync(portfolioId, newOrder)
 
-        const exchangeOrder: TNewExchangeOrderConfig = this._generateExchangeOrder(newOrder)
+        const exchangeOrder: TNewExchangeOrderConfig = this._generateExchangeOrder(portfolioId, newOrder)
         // if (this.eventPublisher) {
         //     await this.eventPublisher.publishExchangeOrderCreateAsync(exchangeOrder, 'orderHandler')
         // }
@@ -128,12 +127,12 @@ export class PortfolioOrderService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private _generateExchangeOrder = (order: TPortfolioOrder) => {
+    private _generateExchangeOrder = (portfolioId: string, order: TPortfolioOrder) => {
         const exchangeOrder: TNewExchangeOrderConfig = {
             operation: 'order',
             orderType: order.orderType,
             orderId: order.orderId,
-            portfolioId: order.portfolioId,
+            portfolioId: portfolioId,
             assetId: order.assetId,
             orderSide: order.orderSide,
             orderSize: order.orderSize,
@@ -146,13 +145,13 @@ export class PortfolioOrderService {
         return exchangeOrder
     }
 
-    private _generateCancelExchangeOrder(order: TPortfolioOrder) {
+    private _generateCancelExchangeOrder(portfolioId: string, order: TPortfolioOrder) {
         const exchangeOrder: TExchangeCancelOrder = {
             operation: 'cancel',
-            assetId: order.assetId,
-            portfolioId: order.portfolioId,
+            //assetId: order.assetId,
+            portfolioId: portfolioId,
             orderId: order.orderId,
-            refOrderId: order.orderId,
+            //refOrderId: order.orderId,
         }
         return exchangeOrder
     }

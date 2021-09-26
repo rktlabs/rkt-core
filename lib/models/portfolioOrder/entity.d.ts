@@ -4,7 +4,6 @@ export declare class PortfolioOrder {
     createdAt: string;
     orderId: string;
     assetId: string;
-    portfolioId: string;
     orderSide: OrderSide;
     orderSize: number;
     status: string;

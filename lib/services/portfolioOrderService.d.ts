@@ -5,7 +5,7 @@ export declare class PortfolioOrderService {
     private portfolioRepository;
     private exchangeService;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository);
-    submitNewPortfolioOrderAsync(orderPayload: TNewPortfolioOrderProps): Promise<PortfolioOrder>;
+    submitNewPortfolioOrderAsync(portfolioId: string, orderPayload: TNewPortfolioOrderProps): Promise<PortfolioOrder>;
     unwindOrder(portfolioId: string, orderId: string): Promise<PortfolioOrder>;
     cancelOrder(portfolioId: string, orderId: string): Promise<TPortfolioOrder | null>;
     private _generateExchangeOrder;

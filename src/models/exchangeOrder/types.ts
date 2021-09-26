@@ -17,10 +17,10 @@ export type TNewExchangeOrderConfig = {
 
 export type TExchangeCancelOrder = {
     operation: OperationType
-    assetId: string
+    //assetId: string
     portfolioId: string
     orderId: string
-    refOrderId: string
+    //refOrderId: string
 }
 
 export type TExchangeOrder = {
@@ -38,7 +38,7 @@ export type TExchangeOrder = {
     status: string
     state: string
     sizeRemaining?: number
-    refOrderId?: string
+    //refOrderId?: string
     closedAt?: string
     reason?: string
 

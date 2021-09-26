@@ -12,10 +12,8 @@ export declare type TNewExchangeOrderConfig = {
 };
 export declare type TExchangeCancelOrder = {
     operation: OperationType;
-    assetId: string;
     portfolioId: string;
     orderId: string;
-    refOrderId: string;
 };
 export declare type TExchangeOrder = {
     operation: OperationType;
@@ -31,7 +29,6 @@ export declare type TExchangeOrder = {
     status: string;
     state: string;
     sizeRemaining?: number;
-    refOrderId?: string;
     closedAt?: string;
     reason?: string;
     filledPrice?: number;

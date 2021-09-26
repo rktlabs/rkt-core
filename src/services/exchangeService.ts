@@ -95,8 +95,6 @@ export class ExchangeService {
             const orderSide = orderPayload.orderSide
             const orderSize = orderPayload.orderSize
 
-            // TODO TODO - get quoted from marketMaker. get marketMaker first here. will
-            // eliminate redundant read
             ////////////////////////////////////////////////////////
             // Process the order
             ////////////////////////////////////////////////////////

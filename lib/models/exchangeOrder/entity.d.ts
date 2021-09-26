@@ -15,7 +15,6 @@ export declare class ExchangeOrder {
     state: string;
     sizeRemaining?: number;
     closedAt?: string;
-    refOrderId?: string;
     reason?: string;
     filledPrice?: number;
     filledSize?: number;

@@ -144,13 +144,13 @@ describe('PortfolioOrderService', function () {
                         orderType: 'market',
                         orderSide: 'bid',
                         assetId: assetId,
-                        portfolioId: `user::testbot`,
+                        //portfolioId: `user::testbot`,
                         orderSize: 4,
                         //orderId: 'order1',
                         tags: { test: true },
                     }
 
-                    await portfolioOrderService.submitNewPortfolioOrderAsync(orderPayload)
+                    await portfolioOrderService.submitNewPortfolioOrderAsync(`user::testbot`, orderPayload)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

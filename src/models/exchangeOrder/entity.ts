@@ -24,7 +24,7 @@ export class ExchangeOrder {
     state: string
     sizeRemaining?: number
     closedAt?: string
-    refOrderId?: string
+    //refOrderId?: string
     reason?: string
     filledPrice?: number
     filledSize?: number
@@ -39,7 +39,7 @@ export class ExchangeOrder {
         this.orderPrice = props.orderPrice
         this.orderSize = props.orderSize
         this.tags = props.tags
-        this.refOrderId = props.refOrderId
+        //this.refOrderId = props.refOrderId
 
         this.createdAt = props.createdAt
         this.status = props.status

@@ -3,9 +3,9 @@
 import { OrderSide, OrderType } from '../..'
 
 export type TNewPortfolioOrderProps = {
-    orderId?: string
+    //orderId?: string
+    //portfolioId: string
     assetId: string
-    portfolioId: string
     orderSide: OrderSide
     orderSize: number
     orderType: OrderType // market or limit
@@ -17,8 +17,8 @@ export type TNewPortfolioOrderProps = {
 export type TPortfolioOrder = {
     createdAt: string
     orderId: string
+    //portfolioId: string
     assetId: string
-    portfolioId: string
     orderSide: OrderSide
     orderSize: number
     status: string

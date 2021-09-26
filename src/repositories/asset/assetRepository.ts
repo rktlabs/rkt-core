@@ -101,7 +101,6 @@ export class AssetRepository extends CacheableRepository {
 
     async getLeagueAssetsAsync(leagueId: string): Promise<TAssetCore[]> {
         logger.trace(`getLeagueAssets ${leagueId}`)
-        // TODO: renaem leagueId to leagueId
         const entityRefCollection = this.db.collection(COLLECTION_NAME).where('leagueId', '==', leagueId)
         const entityCollectionRefs = await entityRefCollection.get()
         if (!entityCollectionRefs.empty) {
