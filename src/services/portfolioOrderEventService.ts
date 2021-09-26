@@ -109,9 +109,9 @@ export class PortfolioOrderEventService {
         const orderUpdate: TPortfolioOrderPatch = {
             state: portfolioOrder.state,
             status: portfolioOrder.status,
-            reason: portfolioOrder.reason,
             closedAt: portfolioOrder.closedAt,
         }
+        if (portfolioOrder.reason) orderUpdate.reason = portfolioOrder.reason
 
         this.portfolioOrderRepository.updateAsync(portfolioId, orderId, orderUpdate)
         return portfolioOrder
