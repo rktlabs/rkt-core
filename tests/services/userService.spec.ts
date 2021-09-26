@@ -163,13 +163,10 @@ describe.skip('User Service', function () {
                 marketMakerRepository,
                 leagueRepository,
             )
+            await bootstrapper.bootstrap()
         })
 
-        beforeEach(async () => {
-            //await userService.deleteUser(userId)
-            await bootstrapper.bootstrap()
-            //await bootstrapper.setupTreasury()
-        })
+        beforeEach(async () => {})
 
         afterEach(async () => {
             //await userService.deleteUser(userId)

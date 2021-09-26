@@ -86,23 +86,8 @@ describe('ExchangerService', function () {
             )
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
             await bootstrapper.bootstrap()
-
-            await bootstrapper.bootUser()
             await treasuryService.depositCoins('testbot', 100)
             await mintService.mintUnits(assetId, 100)
-
-            await assetService.scrubAsset(assetId)
-
-            const assetConfig = {
-                ownerId: 'test',
-                symbol: assetId,
-                displayName: assetId,
-                tags: {
-                    test: true,
-                },
-            }
-
-            await assetService.createAsset(assetConfig)
         })
 
         describe('buy', function () {

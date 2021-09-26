@@ -6,6 +6,7 @@ export type TPurchase = {
     assetId: string
     units: number
     coins: number
+    tags?: any
 }
 
 export type TTransfer = {
@@ -23,7 +24,6 @@ export type TNewTransactionLeg = {
 }
 
 export type TTransactionNew = {
-    transactionId?: string
     inputs: TNewTransactionLeg[]
     outputs?: TNewTransactionLeg[]
     tags?: any

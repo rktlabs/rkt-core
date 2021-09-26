@@ -70,7 +70,7 @@ export class UserService {
 
         const user = await this._createUserImpl(payload)
 
-        logger.info(`created user: ${user.userId}`)
+        logger.trace(`created user: ${user.userId}`)
 
         return user
     }

@@ -49,7 +49,8 @@ export class TransactionService {
     /////////////////////////////
 
     async executePurchaseAsync(exchangeData: TPurchase) {
-        logger.trace(`executePurchase: ${JSON.stringify(exchangeData)}`)
+        //logger.trace(`executePurchase: ${JSON.stringify(exchangeData)}`)
+        logger.trace(`executePurchase`, exchangeData)
         // takes simple structure and fills out the rest:
         // eg:
         // const data: TPurchase = {
@@ -90,13 +91,17 @@ export class TransactionService {
                 },
             ],
         }
+        if (exchangeData.tags) {
+            transaction.tags = exchangeData.tags
+        }
 
         return this.executeTransactionAsync(transaction)
     }
 
     // a transfer is a transaction with one input, out output, and one asset
     async executeTransferAsync(transferData: TTransfer) {
-        logger.trace(`executeTransfer: ${JSON.stringify(transferData)}`)
+        // logger.trace(`executeTransfer: ${JSON.stringify(transferData)}`)
+        logger.trace(`executeTransfer`, transferData)
 
         const inputPortfolioId = transferData.inputPortfolioId
         const outputPortfolioId = transferData.outputPortfolioId
@@ -127,7 +132,8 @@ export class TransactionService {
     }
 
     async executeTransactionAsync(transactionData: TTransactionNew) {
-        logger.debug(`executeTransaction ${JSON.stringify(transactionData)}`)
+        //logger.debug(`executeTransaction ${JSON.stringify(transactionData)}`)
+        logger.trace(`executeTransactionAsync`, transactionData)
 
         const transaction = Transaction.newTransaction(transactionData)
         const transactionId = transaction.transactionId
@@ -174,7 +180,7 @@ export class TransactionService {
                     }
                 })
 
-                await this.assetHolderService.proessTransaction(transactionId, updates, transaction)
+                await this.assetHolderService.proessTransaction(updates, transaction)
             }
 
             transaction.status = 'success'

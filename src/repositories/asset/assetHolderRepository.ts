@@ -19,7 +19,7 @@ export class AssetHolderRepository extends RepositoryBase {
     }
 
     async getListAsync(assetId: string) {
-        logger.trace(`getList ${assetId}`)
+        //logger.trace(`getList ${assetId}`)
         const entityRefCollection = this.db.collection(COLLECTION_NAME).doc(assetId).collection(SUB_COLLECTION_NAME)
 
         const entityCollectionRefs = await entityRefCollection.get()
@@ -35,7 +35,7 @@ export class AssetHolderRepository extends RepositoryBase {
     }
 
     async getDetailAsync(assetId: string, portfolioId: string) {
-        logger.trace(`getDetail ${assetId}/ ${portfolioId}`)
+        //logger.trace(`getDetail ${assetId}/ ${portfolioId}`)
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(assetId)
@@ -50,7 +50,7 @@ export class AssetHolderRepository extends RepositoryBase {
     }
 
     async storeAsync(assetId: string, portfolioId: string, entity: TAssetHolder) {
-        logger.trace(`store ${assetId}/ ${portfolioId}`)
+        logger.trace(`store ${COLLECTION_NAME}/${assetId}/${SUB_COLLECTION_NAME}/${portfolioId}`, entity)
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db
             .collection(COLLECTION_NAME)

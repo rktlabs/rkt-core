@@ -18,7 +18,7 @@ export class PortfolioHoldingRepository extends RepositoryBase {
     }
 
     async getListAsync(portfolioId: string, qs?: any) {
-        logger.trace(`getList ${portfolioId}`)
+        //logger.trace(`getList ${portfolioId}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)
@@ -36,7 +36,7 @@ export class PortfolioHoldingRepository extends RepositoryBase {
     }
 
     async getDetailAsync(portfolioId: string, assetId: string) {
-        logger.trace(`getDetail ${portfolioId}/${assetId}`)
+        //logger.trace(`getDetail ${portfolioId}/${assetId}`)
         const entityRef = this.db
             .collection(COLLECTION_NAME)
             .doc(portfolioId)
@@ -52,7 +52,7 @@ export class PortfolioHoldingRepository extends RepositoryBase {
     }
 
     async storeAsync(portfolioId: string, assetId: string, entity: TPortfolioHolding) {
-        logger.trace(`store ${portfolioId}/${assetId}`)
+        logger.trace(`store ${COLLECTION_NAME}/${portfolioId}/${SUB_COLLECTION_NAME}/${assetId}`, entity)
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db
             .collection(COLLECTION_NAME)

@@ -20,7 +20,7 @@ export class MarketMakerRepository extends RepositoryBase {
     filterMap: any = {}
 
     async getListAsync(qs?: any) {
-        logger.trace(`getList ${qs}`)
+        //logger.trace(`getList ${qs}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
 
@@ -39,7 +39,7 @@ export class MarketMakerRepository extends RepositoryBase {
     }
 
     async getDetailAsync(assetId: string) {
-        logger.trace(`getDetail ${assetId}`)
+        //logger.trace(`getDetail ${assetId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
         const entityDoc = await entityRef.get()
 

@@ -33,7 +33,7 @@ export class Transaction {
 
     // Member Properties for new model
     static newTransaction(props: TTransactionNew) {
-        const transactionId = props.transactionId || `TRX::${generateId()}`
+        const transactionId = `TRX::${generateId()}`
         const createdAt = DateTime.utc().toString()
 
         const newTransactionProps: TTransaction = {

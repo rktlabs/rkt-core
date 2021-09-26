@@ -11,7 +11,7 @@ export declare class AssetHolderService {
         units: number;
         displayName: any;
     } | null>;
-    proessTransaction(transactionId: string, updateSet: TAssetHolderUpdateItem[], transaction: TTransaction): Promise<void>;
+    proessTransaction(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction): Promise<void>;
     scrubPortfolioHoldings(portfolioId: string): Promise<void[]>;
     scrubAssetHolders(assetId: string): Promise<void[]>;
     deleteAssetHolder(assetId: string, portfolioId: string): Promise<void[]>;

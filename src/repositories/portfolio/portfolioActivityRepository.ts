@@ -1,12 +1,15 @@
 import * as admin from 'firebase-admin'
-import { TAssetHolderUpdateItem, TTransaction } from '../../models'
+import * as log4js from 'log4js'
+import { TAssetHolderUpdateItem, TPortfolioActivity, TTransaction } from '../../models'
 import { deleteCollection } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
+const logger = log4js.getLogger('portfolioRepository')
+
 const FieldValue = admin.firestore.FieldValue
 
-const COLLECTION_NAME = 'portfolios'
+const PORTFOLIO_COLLECTION_NAME = 'portfolios'
 const HOLDINGS_COLLECTION_NAME = 'holdings'
 const ACTIVITY_COLLECTION_NAME = 'activity'
 
@@ -27,7 +30,7 @@ export class PortfolioActivityRepository extends RepositoryBase {
 
     async getListAsync(portfolioId: string, qs?: any) {
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
-            .collection(COLLECTION_NAME)
+            .collection(PORTFOLIO_COLLECTION_NAME)
             .doc(portfolioId)
             .collection(ACTIVITY_COLLECTION_NAME)
 
@@ -44,52 +47,57 @@ export class PortfolioActivityRepository extends RepositoryBase {
     }
 
     async scrubCollectionAsync(portfolioId: string) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(portfolioId).collection(ACTIVITY_COLLECTION_NAME)
+        const entityRef = this.db
+            .collection(PORTFOLIO_COLLECTION_NAME)
+            .doc(portfolioId)
+            .collection(ACTIVITY_COLLECTION_NAME)
         await deleteCollection(entityRef)
     }
 
-    async atomicUpdateTransactionAsync(
-        transactionId: string,
-        updateSet: TAssetHolderUpdateItem[],
-        transaction: TTransaction,
-    ) {
+    async atomicUpdateTransactionAsync(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
+        logger.trace(`update holdings`, updateSet)
         // compile the refs and increments (outside of batch)
+
         const updates = updateSet.map((updateItem: TAssetHolderUpdateItem) => {
+            const deltaUnits = FieldValue.increment(updateItem.deltaUnits)
+            const assetId = updateItem.assetId
+            const portfolioId = updateItem.portfolioId
+            const units = updateItem.deltaUnits
+
+            const transactionId = transaction.transactionId
+            const createdAt = transaction.createdAt
+            const orderId = transaction.xids?.orderId
+
             const portfolioHoldingRef = this.db
-                .collection(COLLECTION_NAME)
-                .doc(updateItem.portfolioId)
+                .collection(PORTFOLIO_COLLECTION_NAME)
+                .doc(portfolioId)
                 .collection(HOLDINGS_COLLECTION_NAME)
-                .doc(updateItem.assetId)
+                .doc(assetId)
 
             const assetHolderRef = this.db
                 .collection(ASSET_COLLECTION_NAME)
-                .doc(updateItem.assetId)
+                .doc(assetId)
                 .collection(HOLDERS_COLLECTION_NAME)
-                .doc(updateItem.portfolioId)
+                .doc(portfolioId)
 
-            const deltaUnits = FieldValue.increment(updateItem.deltaUnits)
+            const portfolioActivityRef = this.db
+                .collection(PORTFOLIO_COLLECTION_NAME)
+                .doc(portfolioId)
+                .collection(ACTIVITY_COLLECTION_NAME)
+                .doc(transactionId)
+
             return {
                 portfolioHoldingRef: portfolioHoldingRef,
                 assetHolderRef: assetHolderRef,
+                portfolioActivityRef: portfolioActivityRef,
+                assetId,
                 deltaUnits,
+                units,
+                transactionId,
+                createdAt,
+                orderId,
             }
         })
-
-        const activityMap = new Map()
-
-        updateSet.forEach((updateItem: TAssetHolderUpdateItem) => {
-            const portfolioId = updateItem.portfolioId
-            if (!activityMap.get(portfolioId)) {
-                const entityRef = this.db
-                    .collection(COLLECTION_NAME)
-                    .doc(updateItem.portfolioId)
-                    .collection(ACTIVITY_COLLECTION_NAME)
-                    .doc(transactionId)
-                activityMap.set(portfolioId, { portfolioActivityRef: entityRef, transaction })
-            }
-        })
-
-        const activity = Array.from(activityMap.values())
 
         // execute the batch of writes as an atomic set.
         const batch = this.db.batch()
@@ -99,11 +107,17 @@ export class PortfolioActivityRepository extends RepositoryBase {
 
             // update assets.holders
             batch.update(item.assetHolderRef, { units: item.deltaUnits })
-        })
 
-        activity.forEach((item) => {
-            const jsonData = JSON.parse(JSON.stringify(item.transaction))
-            batch.set(item.portfolioActivityRef, jsonData)
+            const activityItem: TPortfolioActivity = {
+                createdAt: item.createdAt,
+                assetId: item.assetId,
+                units: item.units,
+                transactionId: item.transactionId,
+            }
+            if (item.orderId) activityItem.orderId = item.orderId
+
+            // update assets.holders
+            batch.set(item.portfolioActivityRef, activityItem)
         })
 
         await batch.commit()

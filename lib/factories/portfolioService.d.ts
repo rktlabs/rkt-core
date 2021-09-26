@@ -10,5 +10,5 @@ export declare class PortfolioService {
     scrubPortfolio(portfolioId: string): Promise<void>;
     recordPortfolioDeposit(deposit: TPortfolioDeposit): Promise<void>;
     computePortfolioNetDeposits(portfolioId: string): Promise<number>;
-    private _createUserImpl;
+    private _createPortfolioImpl;
 }

@@ -27,6 +27,7 @@ import {
     Trade,
     TransactionRepository,
     TransactionService,
+    TTransactionNew,
 } from '..'
 const logger = log4js.getLogger()
 
@@ -83,7 +84,7 @@ export class ExchangeService {
     //  - new order handler - accepts raw json as input
     ////////////////////////////////////////////////////
     async processNewExchangeOrderEvent(orderPayload: TNewExchangeOrderConfig) {
-        logger.debug(`processNewExchangeOrderAsync: ${JSON.stringify(orderPayload)}`)
+        //logger.trace(`processNewExchangeOrderAsync: ${JSON.stringify(orderPayload)}`)
 
         let exchangeOrder: ExchangeOrder | undefined
         try {
@@ -304,7 +305,7 @@ export class ExchangeService {
         takerDeltaValue: number,
         makerPortfolioId: string,
     ) {
-        let newTransactionData: any
+        let newTransactionData: TTransactionNew
 
         if (takerDeltaUnits > 0) {
             // deltaUnits > 0 means adding to taker portfolio from asset
@@ -380,6 +381,9 @@ export class ExchangeService {
                 },
             }
         }
+
+        // set the orderId
+        newTransactionData.xids = { orderId: orderId }
 
         return this.transactionService.executeTransactionAsync(newTransactionData)
     }

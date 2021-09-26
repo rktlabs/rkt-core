@@ -13,6 +13,7 @@ import {
     round4,
     TransactionRepository,
     TransactionService,
+    TTransactionNew,
     UserRepository,
 } from '..'
 
@@ -140,7 +141,7 @@ export class SimpleExchangeService {
         takerDeltaValue: number,
         makerPortfolioId: string,
     ) {
-        let newTransactionData: any
+        let newTransactionData: TTransactionNew
 
         if (takerDeltaUnits > 0) {
             // deltaUnits > 0 means adding to taker portfolio from asset
@@ -216,6 +217,9 @@ export class SimpleExchangeService {
                 },
             }
         }
+
+        // set the orderId
+        newTransactionData.xids = { orderId: orderId }
 
         return this.transactionService.executeTransactionAsync(newTransactionData)
     }

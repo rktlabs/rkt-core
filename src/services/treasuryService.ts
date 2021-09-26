@@ -92,7 +92,7 @@ export class TreasuryService {
             assetId: assetId,
             units: units,
             tags: {
-                source: 'Mint',
+                source: 'TreasuryDeposit',
             },
         }
         await this.transactionService.executeTransferAsync(data)
@@ -136,7 +136,7 @@ export class TreasuryService {
             assetId: assetId,
             units: units,
             tags: {
-                source: 'Deposit',
+                source: 'UserDeposit',
             },
         }
         await this.transactionService.executeTransferAsync(data)
@@ -187,7 +187,7 @@ export class TreasuryService {
             assetId: coinId,
             units: units,
             tags: {
-                source: 'Withdraw',
+                source: 'UserWithdraw',
             },
         }
         await this.transactionService.executeTransferAsync(data)

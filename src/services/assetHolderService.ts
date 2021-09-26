@@ -1,5 +1,6 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import {
     AssetHolderRepository,
     AssetRepository,
@@ -9,6 +10,7 @@ import {
     TAssetHolderUpdateItem,
     TTransaction,
 } from '..'
+const logger = log4js.getLogger('assetHolderService')
 
 /////////////////////////////
 // Public Methods
@@ -28,6 +30,7 @@ export class AssetHolderService {
     }
 
     async addAssetHolder(assetId: string, portfolioId: string) {
+        logger.trace(`addAssetHolder(${assetId}, ${portfolioId})`)
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (asset) {
             const assetDisplayName = asset.displayName || assetId
@@ -57,8 +60,8 @@ export class AssetHolderService {
         }
     }
 
-    async proessTransaction(transactionId: string, updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
-        return this.portfolioActivityRepository.atomicUpdateTransactionAsync(transactionId, updateSet, transaction)
+    async proessTransaction(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
+        return this.portfolioActivityRepository.atomicUpdateTransactionAsync(updateSet, transaction)
     }
 
     async scrubPortfolioHoldings(portfolioId: string) {

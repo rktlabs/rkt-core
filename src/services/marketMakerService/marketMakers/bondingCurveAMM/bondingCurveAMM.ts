@@ -115,8 +115,8 @@ export class BondingCurveAMM extends MarketMakerBase {
         if (orderSide == 'bid' && orderSize > 0) {
             // test that asset has enough units to transact
             const assetPortfolioHoldings = await this.assetHolderRepository.getDetailAsync(
-                this.assetId,
-                assetPortfolioId,
+                asset.assetId,
+                asset.portfolioId,
             )
             const portfolioHoldingUnits = round4(assetPortfolioHoldings?.units || 0)
             if (portfolioHoldingUnits < orderSize) {

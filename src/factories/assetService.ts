@@ -14,7 +14,7 @@ import {
 } from '..'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger()
+const logger = log4js.getLogger('assetService')
 
 export class AssetService {
     private portfolioRepository: PortfolioRepository
@@ -44,6 +44,7 @@ export class AssetService {
     }
 
     async createAsset(payload: TNewAssetConfig, shouldCreatePortfolio: boolean = true) {
+        //logger.trace("start createAsset", payload)
         const assetId = payload.symbol
         if (assetId) {
             const asset = await this.assetRepository.getDetailAsync(assetId)
@@ -69,7 +70,7 @@ export class AssetService {
 
         const asset = await this._createAssetImpl(payload, shouldCreatePortfolio)
 
-        logger.info(`created asset: ${asset.assetId}`)
+        logger.trace(`created asset: ${asset.assetId}`)
 
         return asset
     }
@@ -80,13 +81,19 @@ export class AssetService {
     }
 
     async scrubAsset(assetId: string) {
+        //logger.trace(`***scrubbing assetHolders ${assetId}`)
         await this.assetHolderService.scrubAssetHolders(assetId)
 
+        //logger.trace(`***scrubbing asset portfolio asset::${assetId}`)
         await this.portfolioService.scrubPortfolio(`asset::${assetId}`)
 
+        //logger.trace(`***scrubbing marketMaker ${assetId}`)
         await this.marketMakerService.scrubMarketMaker(assetId)
 
+        //logger.trace(`***scrubbing asset ${assetId}`)
         await this.assetRepository.deleteAsync(assetId)
+
+        //logger.trace(`***done scrubbing asset`)
     }
 
     ////////////////////////////////////////////////////////

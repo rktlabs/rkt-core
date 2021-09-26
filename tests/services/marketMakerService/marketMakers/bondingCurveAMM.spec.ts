@@ -229,19 +229,6 @@ describe('BondingCurveAMM', function () {
                 marketMakerRepository,
             )
             await bootstrapper.bootstrap()
-
-            await assetService.scrubAsset(assetId)
-
-            const assetConfig = {
-                ownerId: 'test',
-                symbol: assetId,
-                displayName: assetId,
-                tags: {
-                    test: true,
-                },
-            }
-
-            await assetService.createAsset(assetConfig)
         })
 
         describe('persist marketMaker', function () {

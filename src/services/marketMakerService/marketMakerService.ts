@@ -87,7 +87,7 @@ export class MarketMakerService {
 
         const marketMaker = await this._createMarketMakerImpl(payload, shouldCreatePortfolio)
 
-        logger.info(`created marketMaker: ${marketMaker.assetId}`)
+        logger.trace(`created marketMaker: ${marketMaker.assetId}`)
 
         return marketMaker
     }

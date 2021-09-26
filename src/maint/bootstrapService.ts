@@ -1,5 +1,6 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import {
     PortfolioService,
     LeagueService,
@@ -14,6 +15,7 @@ import {
     MarketMakerRepository,
     LeagueRepository,
 } from '..'
+const logger = log4js.getLogger('bootstrapper')
 
 export class BootstrapService {
     private userService: UserService
@@ -150,8 +152,8 @@ export class BootstrapService {
     }
 
     async bootAssets() {
-        this.bootAsset('card::testehed')
-        this.bootAsset('card::testjhed')
+        await this.bootAsset('card::testehed')
+        await this.bootAsset('card::testjhed')
     }
 
     async bootstrap() {

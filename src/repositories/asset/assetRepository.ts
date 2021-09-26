@@ -26,7 +26,7 @@ export class AssetRepository extends CacheableRepository {
     }
 
     async getListAsync(qs?: any) {
-        logger.trace(`getList ${qs}`)
+        //logger.trace(`getList ${qs}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
 
@@ -51,7 +51,7 @@ export class AssetRepository extends CacheableRepository {
             return cachedItem
         }
 
-        logger.trace(`getDetail ${entityId}`)
+        //logger.trace(`getDetail ${entityId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         const entityDoc = await entityRef.get()
 
@@ -100,7 +100,7 @@ export class AssetRepository extends CacheableRepository {
     }
 
     async getLeagueAssetsAsync(leagueId: string): Promise<TAssetCore[]> {
-        logger.trace(`getLeagueAssets ${leagueId}`)
+        //logger.trace(`getLeagueAssets ${leagueId}`)
         const entityRefCollection = this.db.collection(COLLECTION_NAME).where('leagueId', '==', leagueId)
         const entityCollectionRefs = await entityRefCollection.get()
         if (!entityCollectionRefs.empty) {

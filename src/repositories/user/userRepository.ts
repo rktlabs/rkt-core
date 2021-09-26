@@ -23,7 +23,7 @@ export class UserRepository extends CacheableRepository {
     }
 
     async getListAsync(qs?: any) {
-        logger.trace(`getList ${qs}`)
+        //logger.trace(`getList ${qs}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
 
@@ -43,7 +43,7 @@ export class UserRepository extends CacheableRepository {
     }
 
     async getDetailAsync(userId: string) {
-        logger.trace(`getDetail ${userId}`)
+        //logger.trace(`getDetail ${userId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(userId)
         const entityDoc = await entityRef.get()
 

@@ -20,7 +20,7 @@ export class TransactionRepository extends RepositoryBase {
     filterMap: any = {}
 
     async getListAsync(qs?: any) {
-        logger.trace(`getList ${qs}`)
+        //logger.trace(`getList ${qs}`)
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
             this.db.collection(COLLECTION_NAME)
 
@@ -42,7 +42,7 @@ export class TransactionRepository extends RepositoryBase {
     }
 
     async getDetailAsync(transactionId: string) {
-        logger.trace(`getDetail ${transactionId}`)
+        //logger.trace(`getDetail ${transactionId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(transactionId)
         const entityDoc = await entityRef.get()
 

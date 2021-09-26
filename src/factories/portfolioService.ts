@@ -18,7 +18,7 @@ import {
 } from '..'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger()
+const logger = log4js.getLogger('portfolioService')
 
 export class PortfolioService {
     private portfolioRepository: PortfolioRepository
@@ -31,6 +31,7 @@ export class PortfolioService {
 
     // create new portfolio. Fail if it already exists.
     async createPortfolio(payload: TNewPortfolioConfig) {
+        //logger.trace('*****start create portfolio', payload)
         const portfolioId = payload.portfolioId
         if (portfolioId) {
             const existing = await this.portfolioRepository.getDetailAsync(portfolioId)
@@ -41,9 +42,9 @@ export class PortfolioService {
             }
         }
 
-        const portfolio = await this._createUserImpl(payload)
+        const portfolio = await this._createPortfolioImpl(payload)
 
-        logger.info(`created portfolio: ${portfolio.portfolioId}`)
+        logger.trace(`created portfolio: ${portfolio.portfolioId}`)
 
         return portfolio
     }
@@ -52,6 +53,7 @@ export class PortfolioService {
     // leave in place anything already there.
     // (used by bootstrapper)
     async createOrKeepPortfolio(payload: TNewPortfolioConfig) {
+        //logger.trace("**** screateOrKeepPortfolio", payload)
         if (!payload || !payload.portfolioId) {
             const msg = 'Portfolio Creation Failed - no portfolioId'
             logger.error(msg)
@@ -61,9 +63,9 @@ export class PortfolioService {
         const portfolioId = payload.portfolioId
         let portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
-            portfolio = await this._createUserImpl(payload)
+            portfolio = await this._createPortfolioImpl(payload)
 
-            logger.info(`created portfolio: ${portfolio.portfolioId}`)
+            logger.trace(`created portfolio: ${portfolio.portfolioId}`)
         }
 
         return portfolio
@@ -151,7 +153,7 @@ export class PortfolioService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private async _createUserImpl(payload: TNewPortfolioConfig) {
+    private async _createPortfolioImpl(payload: TNewPortfolioConfig) {
         const portfolio = Portfolio.newPortfolio(payload)
         await this.portfolioRepository.storeAsync(portfolio)
         return portfolio

@@ -4,6 +4,7 @@ export declare type TPurchase = {
     assetId: string;
     units: number;
     coins: number;
+    tags?: any;
 };
 export declare type TTransfer = {
     inputPortfolioId: string;
@@ -18,7 +19,6 @@ export declare type TNewTransactionLeg = {
     units: number;
 };
 export declare type TTransactionNew = {
-    transactionId?: string;
     inputs: TNewTransactionLeg[];
     outputs?: TNewTransactionLeg[];
     tags?: any;

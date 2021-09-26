@@ -17,6 +17,9 @@ import {
     PortfolioService,
 } from '..'
 
+import * as log4js from 'log4js'
+const logger = log4js.getLogger('leagueService')
+
 export class LeagueService {
     private assetRepository: AssetRepository
     private leagueRepository: LeagueRepository
@@ -85,6 +88,7 @@ export class LeagueService {
     }
 
     async scrubLeague(leagueId: string) {
+        //logger.trace('*****start scubbing league')
         // scrub all of the owned assets
         const managedAssetIds = await this.assetRepository.getLeagueAssetsAsync(leagueId)
 
@@ -100,13 +104,18 @@ export class LeagueService {
         await Promise.all(promises)
 
         await this.leagueRepository.deleteAsync(leagueId)
+        //logger.trace('*****done scubbing league')
     }
 
     async scrubLeagueAsset(leagueId: string, assetId: string) {
+        //logger.trace('*****start scubbing league asset')
         const promises: any[] = []
         promises.push(this.assetService.scrubAsset(assetId))
         promises.push(this.detachAsset(leagueId, assetId))
-        return Promise.all(promises)
+        const xxx = Promise.all(promises)
+        //logger.trace('*****done scubbing league asset')
+
+        return xxx
     }
 
     async createAsset(leagueSpec: string | League, assetDef: TLeagueAssetDef) {

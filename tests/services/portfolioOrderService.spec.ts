@@ -1,6 +1,7 @@
 'use strict'
 /* eslint-env node, mocha */
 
+import * as log4js from 'log4js'
 import { expect } from 'chai'
 import {
     AssetService,
@@ -22,6 +23,7 @@ import {
     PortfolioOrderService,
     TNewPortfolioOrderProps,
 } from '../../src'
+const logger = log4js.getLogger('bootstrapper')
 
 describe('PortfolioOrderService', function () {
     describe('persist marketMaker', function () {
@@ -46,6 +48,9 @@ describe('PortfolioOrderService', function () {
         let marketMaker: IMarketMaker
 
         before(async () => {
+            const saveLoggerLevel = log4js.getLogger().level
+            log4js.getLogger().level = 'error'
+
             userRepository = new UserRepository()
             assetRepository = new AssetRepository()
             marketMakerRepository = new MarketMakerRepository()
@@ -92,27 +97,16 @@ describe('PortfolioOrderService', function () {
                 portfolioRepository,
                 transactionRepository,
                 marketMakerRepository,
-                //portfolioOrderRepository
             )
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
+
+            logger.trace('-----bootstrap start----------')
             await bootstrapper.bootstrap()
-
-            await bootstrapper.bootUser()
-            await treasuryService.depositCoins('testbot', 100)
-            await mintService.mintUnits(assetId, 100)
-
-            await assetService.scrubAsset(assetId)
-
-            const assetConfig = {
-                ownerId: 'test',
-                symbol: assetId,
-                displayName: assetId,
-                tags: {
-                    test: true,
-                },
-            }
-
-            await assetService.createAsset(assetConfig)
+            await treasuryService.mintUnits(900)
+            await mintService.mintUnits(assetId, 90)
+            await treasuryService.depositCoins('testbot', 80)
+            logger.trace('-----bootstrap finished--------------')
+            log4js.getLogger().level = saveLoggerLevel
         })
 
         describe.only('buy', function () {

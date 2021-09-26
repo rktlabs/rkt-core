@@ -89,7 +89,7 @@ export abstract class MarketMakerBase implements IMarketMaker {
     }
 
     async processOrder(order: TOrder) {
-        logger.info(
+        logger.trace(
             `marketMaker processOrder: ${order.orderId} for portfolio: ${order.portfolioId} asset: ${order.assetId}`,
         )
         const assetId = order.assetId
@@ -131,13 +131,13 @@ export abstract class MarketMakerBase implements IMarketMaker {
                 makerDeltaUnits: makerDeltaUnits,
                 makerDeltaValue: makerDeltaValue,
             })
-            logger.info(
+            logger.trace(
                 `marketMaker trade: order: ${order.orderId} units: ${makerDeltaUnits} value: ${makerDeltaValue}`,
             )
 
             return trade
         } else {
-            logger.info(`marketMaker processOrder: NO TRADE for order: ${order.orderId}`)
+            logger.trace(`marketMaker processOrder: NO TRADE for order: ${order.orderId}`)
             return null
         }
     }
