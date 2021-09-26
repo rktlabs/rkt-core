@@ -7,4 +7,5 @@ export type TPortfolioActivity = {
     transactionId: string
     orderId?: string
     orderPortfolioId?: string
+    source?: string
 }
