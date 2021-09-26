@@ -221,25 +221,25 @@ export class BondingCurveAMM extends MarketMakerBase {
     //////////////////////////////////////////
     // the current price point
     spot_price(): number {
-        return this.__current_price_function(this.params.madeUnits)
+        return this._currentPriceFunction(this.params.madeUnits)
     }
 
     //////////////////////////////////////////
     // the price to purchase units (default to 1)
     compute_price(units: number = 1): number {
-        return this.__delta_value_function(units)
+        return this._deltaValueFunction(units)
     }
 
     //////////////////////////////////////////
     // the value to sell units (default to 1)
     compute_value(units: number = 1): number {
-        return -1.0 * this.__delta_value_function(-1.0 * units)
+        return -1.0 * this._deltaValueFunction(-1.0 * units)
     }
 
     //////////////////////////////////////////
     // the current price point of transaction at 'epsilon'
     // (the bonding curven evaluated at x)
-    private __current_price_function(x: number): number {
+    private _currentPriceFunction(x: number): number {
         x = Math.max(x, 0)
         const val = this.params.m * x ** this.params.e + this.params.y0
         return val
@@ -248,7 +248,7 @@ export class BondingCurveAMM extends MarketMakerBase {
     //////////////////////////////////////////
     // the total value of x units
     // (area under the bonding curve from 0 to x)
-    private __total_value_function(x: number): number {
+    private _totalValueFunction(x: number): number {
         x = Math.max(x, 0)
         const inc = this.params.e + 1.0
         const val = (this.params.m * x ** inc) / inc + this.params.y0 * x
@@ -258,10 +258,10 @@ export class BondingCurveAMM extends MarketMakerBase {
     //////////////////////////////////////////
     // the value of x units if applie right now - x is signed
     // (the area under bonding curve from current x to  +/- some delta)
-    private __delta_value_function(delta_units: number): number {
+    private _deltaValueFunction(delta_units: number): number {
         const cost =
-            this.__total_value_function(this.params.madeUnits + delta_units) -
-            this.__total_value_function(this.params.madeUnits)
+            this._totalValueFunction(this.params.madeUnits + delta_units) -
+            this._totalValueFunction(this.params.madeUnits)
         return cost
     }
 }

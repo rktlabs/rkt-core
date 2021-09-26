@@ -12,6 +12,6 @@ export declare class MarketMakerService {
     deleteMaker(assetId: string): Promise<void>;
     scrubMarketMaker(assetId: string): Promise<void>;
     static generateOrder(opts: TOrderConfig): TOrder;
-    private createMarketMakerImpl;
-    private createMarketMakerPortfolioImpl;
+    private _createMarketMakerImpl;
+    private _createMarketMakerPortfolioImpl;
 }

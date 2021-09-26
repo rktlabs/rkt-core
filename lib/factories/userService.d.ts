@@ -7,6 +7,6 @@ export declare class UserService {
     createUser(payload: TNewUserConfig): Promise<User>;
     deleteUser(userId: string): Promise<void>;
     scrubUser(userId: string): Promise<void>;
-    private createUserImpl;
-    private createUserPortfolioImpl;
+    private _createUserImpl;
+    private _createUserPortfolioImpl;
 }

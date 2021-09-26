@@ -11,8 +11,8 @@ export declare class TransactionService {
     executePurchaseAsync(exchangeData: TPurchase): Promise<any[]>;
     executeTransferAsync(transferData: TTransfer): Promise<any[]>;
     executeTransactionAsync(transactionData: TTransactionNew): Promise<any[]>;
-    private verifyAssetsAsync;
-    private validateLegsAsync;
-    private verifyTransactionBalance;
-    private processLeg;
+    private _verifyAssetsAsync;
+    private _validateLegsAsync;
+    private _verifyTransactionBalance;
+    private _processLeg;
 }

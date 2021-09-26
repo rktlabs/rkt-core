@@ -16,8 +16,8 @@ export declare class Trade {
         makerDeltaUnits: number;
         makerDeltaValue: number;
     }): TMaker;
-    private fillMaker;
-    private updateTakerFill;
-    private updateMakerFill;
-    private generateTaker;
+    private _fillMaker;
+    private _updateTakerFill;
+    private _updateMakerFill;
+    private _generateTaker;
 }

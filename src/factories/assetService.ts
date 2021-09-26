@@ -67,7 +67,7 @@ export class AssetService {
             }
         }
 
-        const asset = await this.createAssetImpl(payload, shouldCreatePortfolio)
+        const asset = await this._createAssetImpl(payload, shouldCreatePortfolio)
 
         logger.info(`created asset: ${asset.assetId}`)
 
@@ -93,7 +93,7 @@ export class AssetService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private async createAssetImpl(payload: TNewAssetConfig, shouldCreatePortfolio: boolean) {
+    private async _createAssetImpl(payload: TNewAssetConfig, shouldCreatePortfolio: boolean) {
         const assetDisplayName = payload.displayName
 
         const asset = Asset.newAsset(payload)

@@ -93,7 +93,7 @@ export class MarketMakerService {
             }
         }
 
-        const marketMaker = await this.createMarketMakerImpl(payload, shouldCreatePortfolio)
+        const marketMaker = await this._createMarketMakerImpl(payload, shouldCreatePortfolio)
 
         logger.info(`created marketMaker: ${marketMaker.assetId}`)
 
@@ -131,7 +131,7 @@ export class MarketMakerService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private async createMarketMakerImpl(config: TNewMarketMakerConfig, shouldCreatePortfolio: boolean) {
+    private async _createMarketMakerImpl(config: TNewMarketMakerConfig, shouldCreatePortfolio: boolean) {
         let marketMaker: MarketMakerBase
         switch (config.type) {
             // case 'constantk':
@@ -152,7 +152,7 @@ export class MarketMakerService {
         }
 
         if (shouldCreatePortfolio) {
-            const portfolioId = await this.createMarketMakerPortfolioImpl(marketMaker)
+            const portfolioId = await this._createMarketMakerPortfolioImpl(marketMaker)
             marketMaker.portfolioId = portfolioId
         }
 
@@ -160,7 +160,7 @@ export class MarketMakerService {
         return marketMaker
     }
 
-    private async createMarketMakerPortfolioImpl(marketMaker: MarketMakerBase) {
+    private async _createMarketMakerPortfolioImpl(marketMaker: MarketMakerBase) {
         const makerPortfolioDef: TNewPortfolioConfig = {
             type: 'maker',
             portfolioId: `maker::${marketMaker.assetId}`,

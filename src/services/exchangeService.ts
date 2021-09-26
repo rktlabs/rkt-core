@@ -24,11 +24,9 @@ import {
     TExchangeOrderPatch,
     TExchangeQuote,
     TNewExchangeOrderConfig,
-    TPortfolioOrderPatch,
     Trade,
     TransactionRepository,
     TransactionService,
-    TTaker,
 } from '..'
 const logger = log4js.getLogger()
 
@@ -84,7 +82,7 @@ export class ExchangeService {
     //  handleNewExchangeOrderAsync
     //  - new order handler - accepts raw json as input
     ////////////////////////////////////////////////////
-    async submitNewExchangeOrderAsync(orderPayload: TNewExchangeOrderConfig) {
+    async processNewExchangeOrderEvent(orderPayload: TNewExchangeOrderConfig) {
         logger.debug(`processNewExchangeOrderAsync: ${JSON.stringify(orderPayload)}`)
 
         let exchangeOrder: ExchangeOrder | undefined
@@ -106,13 +104,13 @@ export class ExchangeService {
             const marketMaker = await this.marketMakerService.getMarketMakerAsync(assetId)
             if (marketMaker) {
                 if (orderSide === 'bid') {
-                    await this.verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
+                    await this._verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
                 } else if (orderSide === 'ask') {
                     ////////////////////////////
                     // get bid price and verify funds
                     ////////////////////////////
                     const currentPrice = marketMaker?.quote?.bid1 || 1
-                    await this.verifyFundsAsync(portfolioId, orderSide, orderSize, currentPrice)
+                    await this._verifyFundsAsync(portfolioId, orderSide, orderSize, currentPrice)
                 }
 
                 ////////////////////////////////////
@@ -137,9 +135,9 @@ export class ExchangeService {
 
                 if (trade) {
                     if (trade.taker.filledSize) {
-                        await this.onFill(trade)
-                        await this.onTrade(trade)
-                        await this.onUpdateQuote(marketMaker)
+                        await this._onFill(trade)
+                        await this._onTrade(trade)
+                        await this._onUpdateQuote(marketMaker)
 
                         const takerPortfolioId = trade.taker.portfolioId
                         const takerDeltaUnits = trade.taker.filledSize
@@ -147,7 +145,7 @@ export class ExchangeService {
 
                         const makerPortfolioId = trade.makers[0].portfolioId
 
-                        await this.processTransaction(
+                        await this._processTransaction(
                             orderId,
                             exchangeOrder.assetId,
                             trade.tradeId,
@@ -189,11 +187,7 @@ export class ExchangeService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////
-    //  onFill
-    //  - handle order fill resulting from trade
-    ////////////////////////////////////////////////////
-    processFillEvent = async (portfolioId: string, orderId: string, payload: TExchangeOrderPatch) => {
+    private _updateExchangeOrder = async (portfolioId: string, orderId: string, payload: TExchangeOrderPatch) => {
         let exchangeOrder = await this.exchangeOrderRepository.getDetailAsync(orderId)
         if (!exchangeOrder) {
             return
@@ -223,7 +217,12 @@ export class ExchangeService {
         return exchangeOrder
     }
 
-    private async onFill(trade: Trade) {
+    ////////////////////////////////////////////////////
+    //  onFill
+    //  - handle order fill resulting from trade
+    ////////////////////////////////////////////////////
+
+    private async _onFill(trade: Trade) {
         const taker = trade.taker
         const orderId = taker.orderId
         const portfolioId = taker.portfolioId
@@ -234,7 +233,7 @@ export class ExchangeService {
         const newMakerStatus = taker.isClosed ? 'filled' : 'partial'
         const newMakerState = !taker.isClosed && taker.sizeRemaining > 0 ? 'open' : 'closed'
 
-        await this.processFillEvent(portfolioId, orderId, {
+        await this._updateExchangeOrder(portfolioId, orderId, {
             status: newMakerStatus,
             state: newMakerState,
             executedAt: DateTime.utc().toString(),
@@ -262,23 +261,22 @@ export class ExchangeService {
     //  - store trade
     //  - publish trade to clearing house
     ////////////////////////////////////////////////////
-    private onTrade = async (trade: Trade) => {
+    private _onTrade = async (trade: Trade) => {
         await this.exchangeTradeRepository.storeAsync(trade) // async - don't wait to finish
 
-        // await this.portfolioOrderEventService.processComplete({
-        //     eventType: 'orderComplete',
-        //     publishedAt: DateTime.utc().toString(),
-        //     orderId: trade.taker.orderId,
-        //     portfolioId: trade.taker.portfolioId,
-        //     tradeId: trade.tradeId,
-        // })
+        await this.portfolioOrderEventService.processCompleteEvent({
+            eventType: 'orderComplete',
+            publishedAt: DateTime.utc().toString(),
+            orderId: trade.taker.orderId,
+            portfolioId: trade.taker.portfolioId,
+        })
     }
 
     ////////////////////////////////////////////////////
     //  onUpdateQuote
     //  - store new quoted for the asset indicated
     ////////////////////////////////////////////////////
-    private onUpdateQuote = async (marketMaker: IMarketMaker) => {
+    private _onUpdateQuote = async (marketMaker: IMarketMaker) => {
         const assetId = marketMaker.assetId
         const marketMakerQuote = marketMaker.quote
         const exchangeQuote: any = {
@@ -293,7 +291,7 @@ export class ExchangeService {
     //  xact
     //  - submit new order (order or cancel) to order book
     ////////////////////////////////////////////////////
-    private async processTransaction(
+    private async _processTransaction(
         orderId: string,
         assetId: string,
         tradeId: string,
@@ -382,7 +380,7 @@ export class ExchangeService {
         return this.transactionService.executeTransactionAsync(newTransactionData)
     }
 
-    private async verifyAssetsAsync(portfolioId: string, assetId: string, orderSide: OrderSide, orderSize: number) {
+    private async _verifyAssetsAsync(portfolioId: string, assetId: string, orderSide: OrderSide, orderSize: number) {
         // verify that portfolio exists.
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
@@ -403,7 +401,7 @@ export class ExchangeService {
         }
     }
 
-    private async verifyFundsAsync(
+    private async _verifyFundsAsync(
         portfolioId: string,
         orderSide: OrderSide,
         orderSize: number,

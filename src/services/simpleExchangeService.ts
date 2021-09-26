@@ -81,10 +81,10 @@ export class SimpleExchangeService {
         }
 
         if (orderSide === 'bid') {
-            await this.verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
+            await this._verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
         } else if (orderSide === 'ask') {
             const currentPrice = marketMaker?.quote?.bid1 || 1
-            await this.verifyFundsAsync(portfolioId, orderSide, orderSize, currentPrice)
+            await this._verifyFundsAsync(portfolioId, orderSide, orderSize, currentPrice)
         }
 
         const asset = await this.assetRepository.getDetailAsync(assetId)
@@ -110,7 +110,7 @@ export class SimpleExchangeService {
                 const takerDeltaValue = makerDeltaValue * -1
                 const makerPortfolioId = assetPortfolioId
 
-                await this.process_transaction(
+                await this._process_transaction(
                     orderId,
                     assetId,
                     tradeId,
@@ -131,7 +131,7 @@ export class SimpleExchangeService {
     //  xact
     //  - submit new order (order or cancel) to order book
     ////////////////////////////////////////////////////
-    private async process_transaction(
+    private async _process_transaction(
         orderId: string,
         assetId: string,
         tradeId: string,
@@ -220,7 +220,7 @@ export class SimpleExchangeService {
         return this.transactionService.executeTransactionAsync(newTransactionData)
     }
 
-    private async verifyAssetsAsync(portfolioId: string, assetId: string, orderSide: OrderSide, orderSize: number) {
+    private async _verifyAssetsAsync(portfolioId: string, assetId: string, orderSide: OrderSide, orderSize: number) {
         // verify that portfolio exists.
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
@@ -241,7 +241,7 @@ export class SimpleExchangeService {
         }
     }
 
-    private async verifyFundsAsync(
+    private async _verifyFundsAsync(
         portfolioId: string,
         orderSide: OrderSide,
         orderSize: number,

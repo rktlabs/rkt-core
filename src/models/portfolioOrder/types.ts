@@ -63,9 +63,7 @@ export type TPortfolioOrderFill = TPortfolioOrderEvent & {
     tradeId: string
 }
 
-export type TPortfolioOrderComplete = TPortfolioOrderEvent & {
-    tradeId: string
-}
+export type TPortfolioOrderComplete = TPortfolioOrderEvent
 
 export type TPortfolioOrderFailed = TPortfolioOrderEvent & {
     reason: string

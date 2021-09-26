@@ -54,9 +54,7 @@ export declare type TPortfolioOrderFill = TPortfolioOrderEvent & {
     sizeRemaining: number;
     tradeId: string;
 };
-export declare type TPortfolioOrderComplete = TPortfolioOrderEvent & {
-    tradeId: string;
-};
+export declare type TPortfolioOrderComplete = TPortfolioOrderEvent;
 export declare type TPortfolioOrderFailed = TPortfolioOrderEvent & {
     reason: string;
 };

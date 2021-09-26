@@ -11,7 +11,7 @@ export declare class SimpleExchangeService {
     sell(userId: string, assetId: string, orderSize: number): Promise<void>;
     user_transact(userId: string, assetId: string, orderSide: OrderSide, orderSize: number): Promise<void>;
     portfolio_transact(portfolioId: string, assetId: string, orderSide: OrderSide, orderSize: number): Promise<void>;
-    private process_transaction;
-    private verifyAssetsAsync;
-    private verifyFundsAsync;
+    private _process_transaction;
+    private _verifyAssetsAsync;
+    private _verifyFundsAsync;
 }

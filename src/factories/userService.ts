@@ -68,7 +68,7 @@ export class UserService {
             }
         }
 
-        const user = await this.createUserImpl(payload)
+        const user = await this._createUserImpl(payload)
 
         logger.info(`created user: ${user.userId}`)
 
@@ -90,9 +90,9 @@ export class UserService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private async createUserImpl(payload: TNewUserConfig) {
+    private async _createUserImpl(payload: TNewUserConfig) {
         const user = User.newUser(payload)
-        const portfolioId = await this.createUserPortfolioImpl(user)
+        const portfolioId = await this._createUserPortfolioImpl(user)
         user.portfolioId = portfolioId
 
         await this.userRepository.storeAsync(user)
@@ -100,7 +100,7 @@ export class UserService {
         return user
     }
 
-    private async createUserPortfolioImpl(user: User) {
+    private async _createUserPortfolioImpl(user: User) {
         const userPortfolioDef = {
             type: 'user',
             portfolioId: `user::${user.userId}`,

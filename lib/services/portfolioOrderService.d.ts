@@ -8,6 +8,6 @@ export declare class PortfolioOrderService {
     submitNewPortfolioOrderAsync(orderPayload: TNewPortfolioOrderProps): Promise<PortfolioOrder>;
     unwindOrder(portfolioId: string, orderId: string): Promise<PortfolioOrder>;
     cancelOrder(portfolioId: string, orderId: string): Promise<void>;
-    private generateExchangeOrder;
-    private generateCancelExchangeOrder;
+    private _generateExchangeOrder;
+    private _generateCancelExchangeOrder;
 }

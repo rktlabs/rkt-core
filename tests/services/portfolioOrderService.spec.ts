@@ -203,7 +203,7 @@ describe('PortfolioOrderService', function () {
                         tags: { test: true },
                     }
 
-                    await exchangeService.submitNewExchangeOrderAsync(orderPayload)
+                    await exchangeService.processNewExchangeOrderEvent(orderPayload)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

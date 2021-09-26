@@ -18,7 +18,7 @@ export class Trade {
         this.makers = []
 
         // construct Taker from Order
-        const taker = this.generateTaker({
+        const taker = this._generateTaker({
             assetId: order.assetId,
             orderId: order.orderId,
             portfolioId: order.portfolioId,
@@ -56,7 +56,7 @@ export class Trade {
             isClosed: false,
         }
 
-        this.fillMaker(maker, opts.makerDeltaUnits, opts.makerDeltaValue)
+        this._fillMaker(maker, opts.makerDeltaUnits, opts.makerDeltaValue)
 
         return maker
     }
@@ -65,13 +65,13 @@ export class Trade {
     // PRIVATE
     //////////////////////////////////////////////
 
-    private fillMaker(maker: TMaker, makerUnitDelta: number, makerCoinDelta: number): void {
-        this.updateTakerFill(this.taker, -1 * makerUnitDelta, -1 * makerCoinDelta) // taker gets flip side of maker
-        this.updateMakerFill(maker, makerUnitDelta, makerCoinDelta)
+    private _fillMaker(maker: TMaker, makerUnitDelta: number, makerCoinDelta: number): void {
+        this._updateTakerFill(this.taker, -1 * makerUnitDelta, -1 * makerCoinDelta) // taker gets flip side of maker
+        this._updateMakerFill(maker, makerUnitDelta, makerCoinDelta)
         this.makers.push(maker)
     }
 
-    private updateTakerFill(taker: TTaker, size: number, value: number): void {
+    private _updateTakerFill(taker: TTaker, size: number, value: number): void {
         // filledSize should reflect signed size ( - for reduction)
         taker.filledSize += size
 
@@ -88,7 +88,7 @@ export class Trade {
         taker.isPartial = Math.abs(taker.filledSize) < taker.orderSize
     }
 
-    private updateMakerFill(maker: TMaker, size: number, value: number): void {
+    private _updateMakerFill(maker: TMaker, size: number, value: number): void {
         // filledSize should reflect signed size ( - for reduction)
         maker.filledSize += size
 
@@ -105,7 +105,7 @@ export class Trade {
         maker.isPartial = Math.abs(maker.filledSize) < maker.orderSize
     }
 
-    private generateTaker(opts: {
+    private _generateTaker(opts: {
         assetId: string
         orderSide: OrderSide
         orderSize: number

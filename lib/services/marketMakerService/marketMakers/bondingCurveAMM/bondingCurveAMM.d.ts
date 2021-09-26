@@ -11,7 +11,7 @@ export declare class BondingCurveAMM extends MarketMakerBase {
     spot_price(): number;
     compute_price(units?: number): number;
     compute_value(units?: number): number;
-    private __current_price_function;
-    private __total_value_function;
-    private __delta_value_function;
+    private _currentPriceFunction;
+    private _totalValueFunction;
+    private _deltaValueFunction;
 }

@@ -66,12 +66,12 @@ export class PortfolioOrderService {
         const newPortfolioOrder = PortfolioOrder.newOrder(orderPayload)
         await this.portfolioOrderRepository.storeAsync(portfolioId, newPortfolioOrder)
 
-        const exchangeOrder: TNewExchangeOrderConfig = this.generateExchangeOrder(newPortfolioOrder)
+        const exchangeOrder: TNewExchangeOrderConfig = this._generateExchangeOrder(newPortfolioOrder)
         // if (this.eventPublisher) {
         //     await this.eventPublisher.publishExchangeOrderCreateAsync(exchangeOrder, 'orderHandler')
         // }
 
-        await this.exchangeService.submitNewExchangeOrderAsync(exchangeOrder)
+        await this.exchangeService.processNewExchangeOrderEvent(exchangeOrder)
 
         return newPortfolioOrder
     }
@@ -100,7 +100,7 @@ export class PortfolioOrderService {
         const newOrder = PortfolioOrder.newOrder(orderPayload)
         await this.portfolioOrderRepository.storeAsync(portfolioId, newOrder)
 
-        const exchangeOrder: TNewExchangeOrderConfig = this.generateExchangeOrder(newOrder)
+        const exchangeOrder: TNewExchangeOrderConfig = this._generateExchangeOrder(newOrder)
         // if (this.eventPublisher) {
         //     await this.eventPublisher.publishExchangeOrderCreateAsync(exchangeOrder, 'orderHandler')
         // }
@@ -111,7 +111,7 @@ export class PortfolioOrderService {
     async cancelOrder(portfolioId: string, orderId: string) {
         const order = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
         if (order) {
-            const exchangeOrder: TExchangeCancelOrder = this.generateCancelExchangeOrder(order)
+            const exchangeOrder: TExchangeCancelOrder = this._generateCancelExchangeOrder(order)
 
             // update state to 'cancelPending'
             const patch: TPortfolioOrderPatch = { status: 'cancelPending' }
@@ -127,7 +127,7 @@ export class PortfolioOrderService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private generateExchangeOrder = (order: TPortfolioOrder) => {
+    private _generateExchangeOrder = (order: TPortfolioOrder) => {
         const exchangeOrder: TNewExchangeOrderConfig = {
             operation: 'order',
             orderType: order.orderType,
@@ -145,7 +145,7 @@ export class PortfolioOrderService {
         return exchangeOrder
     }
 
-    private generateCancelExchangeOrder(order: TPortfolioOrder) {
+    private _generateCancelExchangeOrder(order: TPortfolioOrder) {
         const exchangeOrder: TExchangeCancelOrder = {
             operation: 'cancel',
             assetId: order.assetId,

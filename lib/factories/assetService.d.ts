@@ -9,6 +9,6 @@ export declare class AssetService {
     createAsset(payload: TNewAssetConfig, shouldCreatePortfolio?: boolean): Promise<Asset>;
     deleteAsset(assetId: string): Promise<void>;
     scrubAsset(assetId: string): Promise<void>;
-    private createAssetImpl;
+    private _createAssetImpl;
     private createAssetPortfolioImpl;
 }

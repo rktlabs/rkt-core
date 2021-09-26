@@ -13,7 +13,7 @@ export declare class LeagueService {
     createAsset(leagueSpec: string | League, assetDef: TLeagueAssetDef): Promise<void>;
     attachAsset(leagueSpec: string | League, asset: TAssetCore): Promise<void>;
     detachAsset(leagueSpec: string | League, assetId: string): Promise<void>;
-    private createLeagueImpl;
+    private _createLeagueImpl;
     private attachAssetToLeague;
     private detachAssetFromLeague;
     private createLeaguePortfolioImpl;

@@ -50,7 +50,7 @@ export class PortfolioOrderEventService {
         return portfolioOrder
     }
 
-    processComplete = async (payload: TPortfolioOrderComplete) => {
+    processCompleteEvent = async (payload: TPortfolioOrderComplete) => {
         const orderId = payload.orderId
         const portfolioId = payload.portfolioId
         let portfolioOrder = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
@@ -60,21 +60,20 @@ export class PortfolioOrderEventService {
 
         switch (portfolioOrder.status) {
             case 'received':
-                portfolioOrder = this.updateStatus(portfolioOrder, 'filled')
-                portfolioOrder = this.close(portfolioOrder)
+                portfolioOrder = this._updateStatus(portfolioOrder, 'filled')
+                portfolioOrder = this._close(portfolioOrder)
                 break
 
             case 'filled':
             case 'failed':
             default:
                 logger.warn(`handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) IGNORED`)
-                //payload.attributes.error = `order status: ${order.status} received event: ${payload.attributes.notificationType}`
+                //payload.reason = `order status: ${portfolioOrder.status} received event: ${payload.notificationType}`
                 break
         }
 
-        this.portfolioOrderRepository.appendOrderEvent(portfolioId, orderId, payload)
-
         const orderUpdate: TPortfolioOrderPatch = {
+            state: portfolioOrder.state,
             status: portfolioOrder.status,
             reason: portfolioOrder.reason,
         }
@@ -94,8 +93,8 @@ export class PortfolioOrderEventService {
 
         switch (portfolioOrder.status) {
             case 'received':
-                portfolioOrder = this.updateStatus(portfolioOrder, 'failed', payload.reason)
-                portfolioOrder = this.close(portfolioOrder)
+                portfolioOrder = this._updateStatus(portfolioOrder, 'failed', payload.reason)
+                portfolioOrder = this._close(portfolioOrder)
                 break
 
             case 'filled':
@@ -123,13 +122,13 @@ export class PortfolioOrderEventService {
     ////////////////////////////////////////////////////////
     // PRIVATE
     ////////////////////////////////////////////////////////
-    private close = (portfolioOrder: TPortfolioOrder) => {
+    private _close = (portfolioOrder: TPortfolioOrder) => {
         portfolioOrder.state = 'closed'
         portfolioOrder.closedAt = DateTime.utc().toString()
         return portfolioOrder
     }
 
-    private updateStatus = (portfolioOrder: TPortfolioOrder, newStatus: string, reason?: string) => {
+    private _updateStatus = (portfolioOrder: TPortfolioOrder, newStatus: string, reason?: string) => {
         portfolioOrder.status = newStatus
         if (reason) {
             portfolioOrder.reason = reason

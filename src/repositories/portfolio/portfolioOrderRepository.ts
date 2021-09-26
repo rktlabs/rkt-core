@@ -71,8 +71,9 @@ export class PortfolioOrderRepository extends RepositoryBase {
 
     async appendOrderEvent(portfolioId: string, orderId: string, payload: any) {
         const eventPayload = { ...payload }
-        delete eventPayload[portfolioId]
-        delete eventPayload[orderId]
+        delete eventPayload.portfolioId
+        delete eventPayload.orderId
+        delete eventPayload.sizeRemaining
 
         const entityRef = this.db
             .collection(COLLECTION_NAME)

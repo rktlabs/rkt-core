@@ -135,9 +135,9 @@ export class TransactionService {
         try {
             await this.transactionRepository.storeAsync(transaction)
 
-            await this.validateLegsAsync(transaction)
+            await this._validateLegsAsync(transaction)
 
-            await this.verifyAssetsAsync(transaction)
+            await this._verifyAssetsAsync(transaction)
 
             let commitStates = []
 
@@ -147,7 +147,7 @@ export class TransactionService {
                 const inputLegs = transaction.inputs
                 for (let i = 0; i < inputLegs.length; ++i) {
                     const inputLeg = inputLegs[i]
-                    const commitState = this.processLeg(transactionId, inputLeg, transaction.xids)
+                    const commitState = this._processLeg(transactionId, inputLeg, transaction.xids)
                     commitStates.push(commitState)
                 }
             }
@@ -158,7 +158,7 @@ export class TransactionService {
                 const outputLegs = transaction.outputs
                 for (let i = 0; i < outputLegs.length; ++i) {
                     const outputLeg = outputLegs[i]
-                    const commitState = this.processLeg(transactionId, outputLeg, transaction.xids)
+                    const commitState = this._processLeg(transactionId, outputLeg, transaction.xids)
                     commitStates.push(commitState)
                 }
             }
@@ -267,7 +267,7 @@ export class TransactionService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private async verifyAssetsAsync(transaction: Transaction) {
+    private async _verifyAssetsAsync(transaction: Transaction) {
         //////////////////////////
         // process input legs first - want to fail if input is missing.
 
@@ -337,7 +337,7 @@ export class TransactionService {
     }
 
     // validate the legs. will throw if anything is wrong.
-    private async validateLegsAsync(transaction: Transaction) {
+    private async _validateLegsAsync(transaction: Transaction) {
         //////////////////////////
         // validate input legs
         if (transaction.inputs) {
@@ -411,7 +411,7 @@ export class TransactionService {
 
         //////////////////////////
         // validate transactions - should balance all inputs and outputs per asset.
-        const imbalance = this.verifyTransactionBalance(transaction)
+        const imbalance = this._verifyTransactionBalance(transaction)
         if (imbalance) {
             // eslint-disable-next-line no-await-in-loop
             const msg = `inputs/outputs not balanced (${imbalance})`
@@ -419,7 +419,7 @@ export class TransactionService {
         }
     }
 
-    private verifyTransactionBalance(transaction: Transaction) {
+    private _verifyTransactionBalance(transaction: Transaction) {
         const assetMap: any = {}
         if (transaction.inputs) {
             for (let i = 0; i < transaction.inputs.length; ++i) {
@@ -451,7 +451,7 @@ export class TransactionService {
         return null
     }
 
-    private processLeg(transactionId: string, leg: TransactionLeg, transactionXids: any) {
+    private _processLeg(transactionId: string, leg: TransactionLeg, transactionXids: any) {
         const timeAtNow = DateTime.utc().toString()
         const commitState: any = {
             id: generateId(),

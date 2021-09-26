@@ -65,7 +65,7 @@ export class LeagueService {
             }
         }
 
-        const league = await this.createLeagueImpl(payload)
+        const league = await this._createLeagueImpl(payload)
 
         return league
     }
@@ -144,7 +144,7 @@ export class LeagueService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private async createLeagueImpl(payload: TNewLeagueConfig) {
+    private async _createLeagueImpl(payload: TNewLeagueConfig) {
         const league = League.newLeague(payload)
         const portfolioId = await this.createLeaguePortfolioImpl(league)
         league.portfolioId = portfolioId
