@@ -74,6 +74,7 @@ export class PortfolioOrderEventService {
         const orderUpdate: TPortfolioOrderPatch = {
             state: portfolioOrder.state,
             status: portfolioOrder.status,
+            closedAt: DateTime.utc().toString(),
         }
 
         this.portfolioOrderRepository.updateAsync(portfolioId, orderId, orderUpdate)
@@ -109,7 +110,7 @@ export class PortfolioOrderEventService {
         const orderUpdate: TPortfolioOrderPatch = {
             state: portfolioOrder.state,
             status: portfolioOrder.status,
-            closedAt: portfolioOrder.closedAt,
+            closedAt: DateTime.utc().toString(),
         }
         if (portfolioOrder.reason) orderUpdate.reason = portfolioOrder.reason
 

@@ -160,12 +160,17 @@ export class ExchangeService {
                 // received and stored
                 const reason = error.message
 
-                await this.exchangeOrderRepository.updateAsync(exchangeOrder.portfolioId, exchangeOrder.orderId, {
+                const updateData: TExchangeOrderPatch = {
                     status: 'error',
                     state: 'closed',
                     closedAt: DateTime.utc().toString(),
-                    reason,
-                })
+                }
+                if (reason) updateData.reason = reason
+                await this.exchangeOrderRepository.updateAsync(
+                    exchangeOrder.portfolioId,
+                    exchangeOrder.orderId,
+                    updateData,
+                )
 
                 this.portfolioOrderEventService.processFailEvent({
                     eventType: 'orderFail',
