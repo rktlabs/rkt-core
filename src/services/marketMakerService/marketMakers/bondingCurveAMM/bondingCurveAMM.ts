@@ -1,5 +1,6 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
 import { MarketMakerBase, OrderSide, TMakerResult, TMarketMaker, TMarketMakerQuote, TNewMarketMakerConfig } from '../..'
 import { MintService } from '../../..'
@@ -15,6 +16,7 @@ import {
 } from '../../../..'
 import admin = require('firebase-admin')
 const FieldValue = admin.firestore.FieldValue
+const logger = log4js.getLogger('portfolioRepository')
 
 type BondingCurveAMMParams = {
     madeUnits: number
@@ -103,6 +105,7 @@ export class BondingCurveAMM extends MarketMakerBase {
         const assetPortfolioId = asset.portfolioId
         if (!assetPortfolioId) {
             const msg = `Invalid Order: Asset Portfolio: not configured`
+            logger.error(msg)
             throw new NotFoundError(msg)
         }
 
@@ -150,6 +153,7 @@ export class BondingCurveAMM extends MarketMakerBase {
         const makerParams = this.params as BondingCurveAMMParams
         if (!makerParams) {
             const msg = `Error: MarketMaker Parms not available: ${this.assetId}`
+            logger.error(msg)
             throw new ConflictError(msg)
         }
 

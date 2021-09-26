@@ -48,6 +48,7 @@ export class PortfolioOrderService {
         const orderAsset = await this.assetRepository.getDetailAsync(orderAssetId)
         if (!orderAsset) {
             const msg = `Order Failed - input assetId not registered (${orderAssetId})`
+            logger.error(msg)
             throw new ConflictError(msg, { payload: orderPayload })
         }
 
@@ -55,6 +56,7 @@ export class PortfolioOrderService {
         const orderPortfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!orderPortfolio) {
             const msg = `Order Failed - input portfolioId not registered (${portfolioId})`
+            logger.error(msg)
             throw new ConflictError(msg, { payload: orderPayload })
         }
 
@@ -78,6 +80,7 @@ export class PortfolioOrderService {
         const order = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
         if (!order) {
             const msg = `Order Failed - could not find order (${portfolioId}/${orderId})`
+            logger.error(msg)
             throw new ConflictError(msg)
         }
 

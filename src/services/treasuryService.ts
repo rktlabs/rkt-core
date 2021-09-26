@@ -1,5 +1,6 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
 import { INotificationPublisher, MintService, NullNotificationPublisher, TransactionService } from '.'
 import {
@@ -14,6 +15,7 @@ import {
     PortfolioService,
     //Principal,
 } from '..'
+const logger = log4js.getLogger()
 
 const BANK_PORTFOLIO = 'bank::treasury'
 const COIN = 'coin::rkt'
@@ -58,12 +60,14 @@ export class TreasuryService {
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             const msg = `Cannot deposit to asset: ${assetId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { assetId: assetId })
         }
 
         const assetPortfolioId = asset.portfolioId
         if (!assetPortfolioId) {
             const msg = `Cannot deposit to asset: ${assetId} portfolio does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { assetId: assetId })
         }
 
@@ -78,6 +82,7 @@ export class TreasuryService {
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
             const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { portfolioId })
         }
 
@@ -97,18 +102,21 @@ export class TreasuryService {
         const user = await this.userRepository.getDetailAsync(userId)
         if (!user) {
             const msg = `Cannot deposit to user: ${userId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { userId })
         }
 
         const portfolioId = user.portfolioId
         if (!portfolioId) {
             const msg = `Cannot deposit to user: no portfolioId`
+            logger.error(msg)
             throw new NotFoundError(msg, { userId })
         }
 
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
             const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { portfolioId })
         }
 
@@ -147,18 +155,21 @@ export class TreasuryService {
         const user = await this.userRepository.getDetailAsync(userId)
         if (!user) {
             const msg = `Cannot deposit to user: ${userId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { userId })
         }
 
         const portfolioId = user.portfolioId
         if (!portfolioId) {
             const msg = `Cannot deposit to user: no portfolioId`
+            logger.error(msg)
             throw new NotFoundError(msg, { userId })
         }
 
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
             const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { portfolioId })
         }
 

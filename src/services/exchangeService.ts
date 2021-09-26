@@ -181,6 +181,7 @@ export class ExchangeService {
                 })
             }
 
+            logger.error(error)
             throw error
         }
         return exchangeOrder
@@ -388,6 +389,7 @@ export class ExchangeService {
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
             const msg = `Order Failed - input portfolioId not registered (${portfolioId})`
+            logger.error(msg)
             throw new ConflictError(msg)
         }
 
@@ -399,6 +401,7 @@ export class ExchangeService {
             if (portfolioHoldingUnits < unitsRequired) {
                 // exception
                 const msg = `Order Failed:  portfolio: [${portfolioId}] holding: [${assetId}] has: [${portfolioHoldingUnits}] of required: [${unitsRequired}] `
+                logger.error(msg)
                 throw new InsufficientBalance(msg)
             }
         }
@@ -414,6 +417,7 @@ export class ExchangeService {
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
             const msg = `Order Failed - input portfolioId not registered (${portfolio})`
+            logger.error(msg)
             throw new ConflictError(msg)
         }
 
@@ -427,6 +431,7 @@ export class ExchangeService {
             if (portfolioHoldingUnits < coinsRequired) {
                 // exception
                 const msg = `Order Failed -  portfolio: [${portfolioId}] holding: [${paymentAssetId}]  has: [${portfolioHoldingUnits}] of required: [${coinsRequired}] `
+                logger.error(msg)
                 throw new InsufficientBalance(msg)
             }
         }

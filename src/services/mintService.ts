@@ -1,5 +1,6 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import { INotificationPublisher, NullNotificationPublisher, TransactionService } from '.'
 import {
     AssetRepository,
@@ -9,6 +10,7 @@ import {
     TransactionRepository,
     //Principal
 } from '..'
+const logger = log4js.getLogger()
 
 const MINT_PORTFOLIO = 'bank::mint'
 
@@ -42,18 +44,21 @@ export class MintService {
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             const msg = `Cannot deposit to asset: ${assetId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { userId: assetId })
         }
 
         const portfolioId = asset.portfolioId
         if (!portfolioId) {
             const msg = `Cannot deposit to asset: no portfolioId`
+            logger.error(msg)
             throw new NotFoundError(msg, { userId: assetId })
         }
 
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
             const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { portfolioId })
         }
 
@@ -78,18 +83,21 @@ export class MintService {
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             const msg = `Cannot deposit to asset: ${assetId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { userId: assetId })
         }
 
         const portfolioId = asset.portfolioId
         if (!portfolioId) {
             const msg = `Cannot deposit to asset: no portfolioId`
+            logger.error(msg)
             throw new NotFoundError(msg, { userId: assetId })
         }
 
         const portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
             const msg = `Cannot deposit to portfolio: ${portfolioId} does not exist`
+            logger.error(msg)
             throw new NotFoundError(msg, { portfolioId })
         }
 
