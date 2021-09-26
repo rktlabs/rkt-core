@@ -47,7 +47,7 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
     const serializer = new HALSerializer()
 
     serializer.register('activity', {
-        whitelist: ['transactionId', 'createdAt', 'assetId', 'units', 'source'],
+        whitelist: ['createdAt', 'assetId', 'units', 'source'],
         links: (record: any) => {
             const links: any = {
                 asset: {

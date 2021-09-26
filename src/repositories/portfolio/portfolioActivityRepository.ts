@@ -35,7 +35,7 @@ export class PortfolioActivityRepository extends RepositoryBase {
             .collection(ACTIVITY_COLLECTION_NAME)
 
         entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
-        entityRefCollection = this.generatePagingProperties(qs, entityRefCollection)
+        entityRefCollection = this.generatePagingProperties(qs, entityRefCollection, 'createdAt')
         const entityCollectionRefs = await entityRefCollection.get()
 
         const entityList = entityCollectionRefs.docs.map((entityDoc) => {
