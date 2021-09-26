@@ -10,7 +10,7 @@
 //     PortfolioFactory,
 //     TransactionService,
 //     PortfolioAssetService,
-//     LeagueService,
+//     LeagueFactory,
 //     EarnerService,
 // } from '../../src/services'
 // import { BootstrapService } from '../../src/services'
@@ -23,7 +23,7 @@
 //     let transactionService: TransactionService
 //     let portfolioAssetService: PortfolioAssetService
 //     let bootstrapService: BootstrapService
-//     let leagueService: LeagueService
+//     let leagueService: LeagueFactory
 
 //     let eventPublisher: sinon.SinonStubbedInstance<EventPublisher>
 
@@ -34,7 +34,7 @@
 //         earnerService = new EarnerService(db, eventPublisher as any as EventPublisher)
 //         portfolioAssetService = new PortfolioAssetService(db, eventPublisher as any as EventPublisher)
 //         portfolioService = new PortfolioFactory(db, eventPublisher as any as EventPublisher)
-//         leagueService = new LeagueService(db, eventPublisher as any as EventPublisher)
+//         leagueService = new LeagueFactory(db, eventPublisher as any as EventPublisher)
 //         transactionService = new TransactionService(db, eventPublisher as any as EventPublisher)
 //         bootstrapService = new BootstrapService(db, eventPublisher as any as EventPublisher)
 //     })

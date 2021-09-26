@@ -6,7 +6,7 @@ import * as sinon from 'sinon'
 import {
     TransactionRepository,
     PortfolioFactory,
-    AssetService,
+    AssetFactory,
     TransactionService,
     AssetHolderService,
     NullNotificationPublisher,
@@ -29,7 +29,7 @@ describe('Transaction Service', function () {
     let portfolioService: PortfolioFactory
     let assetHolderService: AssetHolderService
     let assetRepository: AssetRepository
-    let assetService: AssetService
+    let assetService: AssetFactory
     let transactionService: TransactionService
     let userRepository: UserRepository
 
@@ -47,7 +47,7 @@ describe('Transaction Service', function () {
         marketMakerRepository = new MarketMakerRepository()
         userRepository = new UserRepository()
         assetHolderService = new AssetHolderService(assetRepository)
-        assetService = new AssetService(
+        assetService = new AssetFactory(
             assetRepository,
             portfolioRepository,
             marketMakerRepository,

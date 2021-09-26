@@ -6,4 +6,5 @@ export type TPortfolioActivity = {
     units: number
     transactionId: string
     orderId?: string
+    orderPortfolioId?: string
 }

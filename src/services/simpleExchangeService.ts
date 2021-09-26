@@ -219,7 +219,10 @@ export class SimpleExchangeService {
         }
 
         // set the orderId
-        newTransactionData.xids = { orderId: orderId }
+        newTransactionData.xids = {
+            orderId: orderId,
+            orderPortfolioId: takerPortfolioId,
+        }
 
         return this.transactionService.executeTransactionAsync(newTransactionData)
     }

@@ -7,7 +7,7 @@ import {
     AssetHolderService,
     AssetRepository,
     LeagueRepository,
-    LeagueService,
+    LeagueFactory,
     MarketMakerRepository,
     PortfolioRepository,
     TransactionRepository,
@@ -24,7 +24,7 @@ describe('League Service', function () {
     let portfolioRepository: PortfolioRepository
     let profileRepository: PortfolioRepository
     let assetHolderService: AssetHolderService
-    let leagueService: LeagueService
+    let leagueService: LeagueFactory
     let boostrapService: BootstrapService
     let transactionRepository: TransactionRepository
     let userRepository: UserRepository
@@ -39,7 +39,7 @@ describe('League Service', function () {
         userRepository = new UserRepository()
 
         assetHolderService = new AssetHolderService(assetRepository)
-        leagueService = new LeagueService(
+        leagueService = new LeagueFactory(
             leagueRepository,
             assetRepository,
             portfolioRepository,

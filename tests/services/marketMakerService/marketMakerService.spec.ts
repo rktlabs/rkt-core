@@ -4,19 +4,19 @@
 import { expect } from 'chai'
 import {
     AssetRepository,
-    AssetService,
+    AssetFactory,
     BootstrapService,
     IMarketMaker,
     LeagueRepository,
     MarketMakerRepository,
-    MarketMakerService,
+    MarketMakerFactory,
     PortfolioRepository,
     TNewMarketMakerConfig,
     TransactionRepository,
     UserRepository,
 } from '../../../src'
 
-describe('MarketMakerService', () => {
+describe('MarketMakerFactory', () => {
     describe('persist marketMaker', function () {
         this.timeout(10000)
 
@@ -25,8 +25,8 @@ describe('MarketMakerService', () => {
         let transactionRepository: TransactionRepository
         let portfolioRepository: PortfolioRepository
         let leagueRepository: LeagueRepository
-        let assetService: AssetService
-        let marketMakerService: MarketMakerService
+        let assetService: AssetFactory
+        let marketMakerService: MarketMakerFactory
         let marketMakerRepository: MarketMakerRepository
         let userRepository: UserRepository
 
@@ -48,13 +48,13 @@ describe('MarketMakerService', () => {
                 marketMakerRepository,
                 leagueRepository,
             )
-            assetService = new AssetService(
+            assetService = new AssetFactory(
                 assetRepository,
                 portfolioRepository,
                 marketMakerRepository,
                 transactionRepository,
             )
-            marketMakerService = new MarketMakerService(
+            marketMakerService = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
@@ -88,7 +88,7 @@ describe('MarketMakerService', () => {
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const order = MarketMakerService.generateOrder({
+                    const order = MarketMakerFactory.generateOrder({
                         assetId: assetId,
                         orderId: 'order1',
                         portfolioId: `asset::${assetId}`,
@@ -138,7 +138,7 @@ describe('MarketMakerService', () => {
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const order = MarketMakerService.generateOrder({
+                    const order = MarketMakerFactory.generateOrder({
                         assetId: assetId,
                         orderId: 'order1',
                         portfolioId: `asset::${assetId}`,

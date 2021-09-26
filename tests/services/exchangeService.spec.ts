@@ -3,11 +3,11 @@
 
 import { expect } from 'chai'
 import {
-    AssetService,
+    AssetFactory,
     BootstrapService,
     IMarketMaker,
     MarketMakerRepository,
-    MarketMakerService,
+    MarketMakerFactory,
     ExchangeService,
     TNewMarketMakerConfig,
     TNewExchangeOrderConfig,
@@ -32,8 +32,8 @@ describe('ExchangerService', function () {
         let leagueRepository: LeagueRepository
         let transactionRepository: TransactionRepository
         let portfolioOrderRepository: PortfolioOrderRepository
-        let assetService: AssetService
-        let marketMakerService: MarketMakerService
+        let assetService: AssetFactory
+        let marketMakerService: MarketMakerFactory
         let exchangeService: ExchangeService
         let marketMakerRepository: MarketMakerRepository
         let treasuryService: TreasuryService
@@ -59,13 +59,13 @@ describe('ExchangerService', function () {
                 marketMakerRepository,
                 leagueRepository,
             )
-            assetService = new AssetService(
+            assetService = new AssetFactory(
                 assetRepository,
                 portfolioRepository,
                 marketMakerRepository,
                 transactionRepository,
             )
-            marketMakerService = new MarketMakerService(
+            marketMakerService = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,

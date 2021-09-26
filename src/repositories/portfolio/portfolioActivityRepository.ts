@@ -67,6 +67,7 @@ export class PortfolioActivityRepository extends RepositoryBase {
             const transactionId = transaction.transactionId
             const createdAt = transaction.createdAt
             const orderId = transaction.xids?.orderId
+            const orderPortfolioId = transaction.xids?.orderPortfolioId
 
             const portfolioHoldingRef = this.db
                 .collection(PORTFOLIO_COLLECTION_NAME)
@@ -96,6 +97,7 @@ export class PortfolioActivityRepository extends RepositoryBase {
                 transactionId,
                 createdAt,
                 orderId,
+                orderPortfolioId,
             }
         })
 
@@ -115,6 +117,7 @@ export class PortfolioActivityRepository extends RepositoryBase {
                 transactionId: item.transactionId,
             }
             if (item.orderId) activityItem.orderId = item.orderId
+            if (item.orderPortfolioId) activityItem.orderPortfolioId = item.orderPortfolioId
 
             // update assets.holders
             batch.set(item.portfolioActivityRef, activityItem)

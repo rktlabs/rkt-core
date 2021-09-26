@@ -4,13 +4,13 @@
 import { expect } from 'chai'
 import {
     AssetRepository,
-    AssetService,
+    AssetFactory,
     BondingCurveAMM,
     BootstrapService,
     IMarketMaker,
     LeagueRepository,
     MarketMakerRepository,
-    MarketMakerService,
+    MarketMakerFactory,
     PortfolioRepository,
     TNewMarketMakerConfig,
     TransactionRepository,
@@ -195,8 +195,8 @@ describe('BondingCurveAMM', function () {
         let bootstrapper: BootstrapService
         let assetRepository: AssetRepository
         let leagueRepository: LeagueRepository
-        let assetService: AssetService
-        let marketMakerService: MarketMakerService
+        let assetService: AssetFactory
+        let marketMakerService: MarketMakerFactory
         let marketMakerRepository: MarketMakerRepository
         let userRepository: UserRepository
 
@@ -216,13 +216,13 @@ describe('BondingCurveAMM', function () {
                 marketMakerRepository,
                 leagueRepository,
             )
-            assetService = new AssetService(
+            assetService = new AssetFactory(
                 assetRepository,
                 portfolioRepository,
                 marketMakerRepository,
                 transactionRepository,
             )
-            marketMakerService = new MarketMakerService(
+            marketMakerService = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
