@@ -1,5 +1,5 @@
 import { UserRepository, PortfolioRepository, TNewUserConfig, User } from '..';
-export declare class UserService {
+export declare class UserFactory {
     private userRepository;
     private portfolioRepository;
     private portfolioService;

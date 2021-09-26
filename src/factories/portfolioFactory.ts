@@ -20,7 +20,7 @@ import {
 import * as log4js from 'log4js'
 const logger = log4js.getLogger('portfolioService')
 
-export class PortfolioService {
+export class PortfolioFactory {
     private portfolioRepository: PortfolioRepository
     private portfolioDepositRepository: PortfolioDepositRepository
 

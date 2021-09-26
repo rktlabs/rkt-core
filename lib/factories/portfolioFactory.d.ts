@@ -1,5 +1,5 @@
 import { PortfolioRepository, TNewPortfolioConfig, Portfolio, TPortfolioUpdate, TPortfolioDeposit } from '..';
-export declare class PortfolioService {
+export declare class PortfolioFactory {
     private portfolioRepository;
     private portfolioDepositRepository;
     constructor(portfolioRepository: PortfolioRepository);

@@ -7,7 +7,7 @@ import {
     INotificationPublisher,
     InsufficientBalance,
     MarketMakerRepository,
-    MarketMakerService,
+    MarketMakerFactory,
     OrderSide,
     PortfolioRepository,
     round4,
@@ -23,7 +23,7 @@ export class SimpleExchangeService {
     private portfolioRepository: PortfolioRepository
     private assetHolderRepository: AssetHolderRepository
     private transactionService: TransactionService
-    private marketMakerService: MarketMakerService
+    private marketMakerService: MarketMakerFactory
 
     constructor(
         assetRepository: AssetRepository,
@@ -44,7 +44,7 @@ export class SimpleExchangeService {
             transactionRepository,
             eventPublisher,
         )
-        this.marketMakerService = new MarketMakerService(
+        this.marketMakerService = new MarketMakerFactory(
             assetRepository,
             portfolioRepository,
             transactionRepository,

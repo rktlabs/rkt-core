@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import * as sinon from 'sinon'
 import {
     TransactionRepository,
-    PortfolioService,
+    PortfolioFactory,
     AssetService,
     TransactionService,
     AssetHolderService,
@@ -26,7 +26,7 @@ describe('Transaction Service', function () {
     let portfolioRepository: PortfolioRepository
     let leagueRepository: LeagueRepository
     let marketMakerRepository: MarketMakerRepository
-    let portfolioService: PortfolioService
+    let portfolioService: PortfolioFactory
     let assetHolderService: AssetHolderService
     let assetRepository: AssetRepository
     let assetService: AssetService
@@ -42,7 +42,7 @@ describe('Transaction Service', function () {
 
         portfolioRepository = new PortfolioRepository()
         leagueRepository = new LeagueRepository()
-        portfolioService = new PortfolioService(portfolioRepository)
+        portfolioService = new PortfolioFactory(portfolioRepository)
         assetRepository = new AssetRepository()
         marketMakerRepository = new MarketMakerRepository()
         userRepository = new UserRepository()

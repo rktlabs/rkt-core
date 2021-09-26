@@ -1,6 +1,6 @@
 'use strict'
 
-export * from './assetService'
-export * from './portfolioService'
-export * from './leagueService'
-export * from './userService'
+export * from './assetFactory'
+export * from './portfolioFactory'
+export * from './leagueFactory'
+export * from './userFactory'

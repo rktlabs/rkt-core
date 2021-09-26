@@ -13,20 +13,20 @@ import {
     TAssetCore,
     TransactionRepository,
     MarketMakerRepository,
-    AssetService,
-    PortfolioService,
+    AssetFactory,
+    PortfolioFactory,
 } from '..'
 
 import * as log4js from 'log4js'
 const logger = log4js.getLogger('leagueService')
 
-export class LeagueService {
+export class LeagueFactory {
     private assetRepository: AssetRepository
     private leagueRepository: LeagueRepository
     private portfolioRepository: PortfolioRepository
 
-    private portfolioService: PortfolioService
-    private assetService: AssetService
+    private portfolioService: PortfolioFactory
+    private assetService: AssetFactory
 
     constructor(
         leagueRepository: LeagueRepository,
@@ -39,8 +39,8 @@ export class LeagueService {
         this.leagueRepository = leagueRepository
         this.portfolioRepository = portfolioRepository
 
-        this.portfolioService = new PortfolioService(portfolioRepository)
-        this.assetService = new AssetService(
+        this.portfolioService = new PortfolioFactory(portfolioRepository)
+        this.assetService = new AssetFactory(
             assetRepository,
             portfolioRepository,
             marketMakerRepository,

@@ -14,7 +14,7 @@ import {
     INotificationPublisher,
     InsufficientBalance,
     MarketMakerRepository,
-    MarketMakerService,
+    MarketMakerFactory,
     NullNotificationPublisher,
     OrderSide,
     PortfolioOrderEventService,
@@ -48,7 +48,7 @@ export class ExchangeService {
     private exchangeTradeRepository: ExchangeTradeRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
     private transactionService: TransactionService
-    private marketMakerService: MarketMakerService
+    private marketMakerService: MarketMakerFactory
     private portfolioOrderEventService: PortfolioOrderEventService
 
     constructor(
@@ -69,7 +69,7 @@ export class ExchangeService {
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
         this.transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
-        this.marketMakerService = new MarketMakerService(
+        this.marketMakerService = new MarketMakerFactory(
             assetRepository,
             portfolioRepository,
             transactionRepository,
@@ -122,7 +122,7 @@ export class ExchangeService {
 
                 const orderId = exchangeOrder.orderId
 
-                const order = MarketMakerService.generateOrder({
+                const order = MarketMakerFactory.generateOrder({
                     assetId: assetId,
                     orderId: orderId,
                     portfolioId: portfolioId,

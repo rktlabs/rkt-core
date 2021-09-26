@@ -7,7 +7,7 @@ import {
     DuplicateError,
     ConflictError,
     User,
-    PortfolioService,
+    PortfolioFactory,
 } from '..'
 
 import * as log4js from 'log4js'
@@ -15,15 +15,15 @@ const logger = log4js.getLogger()
 
 const TREASURY_PORTFOLIO = 'bank::treasury'
 
-export class UserService {
+export class UserFactory {
     private userRepository: UserRepository
     private portfolioRepository: PortfolioRepository
-    private portfolioService: PortfolioService
+    private portfolioService: PortfolioFactory
 
     constructor(portfolioRepository: PortfolioRepository, userRepository: UserRepository) {
         this.userRepository = userRepository
         this.portfolioRepository = portfolioRepository
-        this.portfolioService = new PortfolioService(portfolioRepository)
+        this.portfolioService = new PortfolioFactory(portfolioRepository)
     }
 
     async createUser(payload: TNewUserConfig) {

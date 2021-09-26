@@ -7,7 +7,7 @@
 
 // import {
 //     EventPublisher,
-//     PortfolioService,
+//     PortfolioFactory,
 //     TransactionService,
 //     PortfolioAssetService,
 //     LeagueService,
@@ -19,7 +19,7 @@
 //     this.timeout(15000)
 
 //     let earnerService: EarnerService
-//     let portfolioService: PortfolioService
+//     let portfolioService: PortfolioFactory
 //     let transactionService: TransactionService
 //     let portfolioAssetService: PortfolioAssetService
 //     let bootstrapService: BootstrapService
@@ -33,7 +33,7 @@
 
 //         earnerService = new EarnerService(db, eventPublisher as any as EventPublisher)
 //         portfolioAssetService = new PortfolioAssetService(db, eventPublisher as any as EventPublisher)
-//         portfolioService = new PortfolioService(db, eventPublisher as any as EventPublisher)
+//         portfolioService = new PortfolioFactory(db, eventPublisher as any as EventPublisher)
 //         leagueService = new LeagueService(db, eventPublisher as any as EventPublisher)
 //         transactionService = new TransactionService(db, eventPublisher as any as EventPublisher)
 //         bootstrapService = new BootstrapService(db, eventPublisher as any as EventPublisher)

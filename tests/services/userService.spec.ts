@@ -5,7 +5,7 @@ import { assert, expect } from 'chai'
 import {
     UserRepository,
     PortfolioRepository,
-    UserService,
+    UserFactory,
     AssetHolderService,
     TNewUserConfig,
     AssetRepository,
@@ -20,7 +20,7 @@ describe.skip('User Service', function () {
 
     let userRepository: UserRepository
     let portfolioRepository: PortfolioRepository
-    let userService: UserService
+    let userService: UserFactory
 
     const userTemplate = {
         dob: '1/2/2021',
@@ -32,7 +32,7 @@ describe.skip('User Service', function () {
     before(async () => {
         userRepository = new UserRepository()
         portfolioRepository = new PortfolioRepository()
-        userService = new UserService(portfolioRepository, userRepository)
+        userService = new UserFactory(portfolioRepository, userRepository)
     })
 
     describe('User Service Simple', () => {

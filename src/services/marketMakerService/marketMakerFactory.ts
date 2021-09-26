@@ -8,17 +8,17 @@ import {
     DuplicateError,
     MarketMakerRepository,
     PortfolioRepository,
-    PortfolioService,
+    PortfolioFactory,
     TNewPortfolioConfig,
     TransactionRepository,
 } from '../..'
 const logger = log4js.getLogger()
 
-export class MarketMakerService {
+export class MarketMakerFactory {
     private marketMakerRepository: MarketMakerRepository
     private portfolioRepository: PortfolioRepository
     private transactionRepository: TransactionRepository
-    private portfolioService: PortfolioService
+    private portfolioService: PortfolioFactory
     private assetRepository: AssetRepository
 
     constructor(
@@ -30,7 +30,7 @@ export class MarketMakerService {
         this.marketMakerRepository = marketMakerRepository
         this.portfolioRepository = portfolioRepository
         this.transactionRepository = transactionRepository
-        this.portfolioService = new PortfolioService(portfolioRepository)
+        this.portfolioService = new PortfolioFactory(portfolioRepository)
         this.assetRepository = assetRepository
     }
 

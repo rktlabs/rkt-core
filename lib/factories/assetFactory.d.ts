@@ -1,5 +1,5 @@
 import { PortfolioRepository, AssetRepository, TNewAssetConfig, Asset, TransactionRepository, MarketMakerRepository } from '..';
-export declare class AssetService {
+export declare class AssetFactory {
     private portfolioRepository;
     private assetRepository;
     private portfolioService;

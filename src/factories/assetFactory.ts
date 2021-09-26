@@ -1,6 +1,6 @@
 'use strict'
 
-import { AssetHolderService, MarketMakerService } from '../services'
+import { AssetHolderService, MarketMakerFactory } from '../services'
 import {
     PortfolioRepository,
     AssetRepository,
@@ -10,18 +10,18 @@ import {
     Asset,
     TransactionRepository,
     MarketMakerRepository,
-    PortfolioService,
+    PortfolioFactory,
 } from '..'
 
 import * as log4js from 'log4js'
 const logger = log4js.getLogger('assetService')
 
-export class AssetService {
+export class AssetFactory {
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
 
-    private portfolioService: PortfolioService
-    private marketMakerService: MarketMakerService
+    private portfolioService: PortfolioFactory
+    private marketMakerService: MarketMakerFactory
     private assetHolderService: AssetHolderService
 
     constructor(
@@ -34,8 +34,8 @@ export class AssetService {
         this.portfolioRepository = portfolioRepository
 
         this.assetHolderService = new AssetHolderService(this.assetRepository)
-        this.portfolioService = new PortfolioService(portfolioRepository)
-        this.marketMakerService = new MarketMakerService(
+        this.portfolioService = new PortfolioFactory(portfolioRepository)
+        this.marketMakerService = new MarketMakerFactory(
             assetRepository,
             portfolioRepository,
             transactionRepository,

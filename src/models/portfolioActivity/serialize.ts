@@ -47,11 +47,19 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
     const serializer = new HALSerializer()
 
     serializer.register('activity', {
-        whitelist: ['transactionId', 'inputs', 'outputs'],
+        whitelist: ['transactionId', 'createdAt', 'units'],
         links: (record: any) => {
             return {
-                self: {
+                asset: {
+                    href: `${baseUrl}/assets/${record.assetId}`,
+                    rel: 'transaction',
+                },
+                transaction: {
                     href: `${baseUrl}/transactions/${record.transactionId}`,
+                    rel: 'transaction',
+                },
+                order: {
+                    href: `${baseUrl}/portfolios/${portfolioId}/orders/${record.orderId}`,
                     rel: 'transaction',
                 },
             }

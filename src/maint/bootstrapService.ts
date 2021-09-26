@@ -2,11 +2,11 @@
 
 import * as log4js from 'log4js'
 import {
-    PortfolioService,
-    LeagueService,
-    AssetService,
-    MarketMakerService,
-    UserService,
+    PortfolioFactory,
+    LeagueFactory,
+    AssetFactory,
+    MarketMakerFactory,
+    UserFactory,
     TNewMarketMakerConfig,
     AssetRepository,
     PortfolioRepository,
@@ -18,11 +18,11 @@ import {
 const logger = log4js.getLogger('bootstrapper')
 
 export class BootstrapService {
-    private userService: UserService
-    private assetService: AssetService
-    private portfolioService: PortfolioService
-    private leagueService: LeagueService
-    private marketMakerService: MarketMakerService
+    private userService: UserFactory
+    private assetService: AssetFactory
+    private portfolioService: PortfolioFactory
+    private leagueService: LeagueFactory
+    private marketMakerService: MarketMakerFactory
 
     constructor(
         assetRepository: AssetRepository,
@@ -32,21 +32,21 @@ export class BootstrapService {
         marketMakerRepository: MarketMakerRepository,
         leagueRepository: LeagueRepository,
     ) {
-        this.userService = new UserService(portfolioRepository, userRepository)
-        this.marketMakerService = new MarketMakerService(
+        this.userService = new UserFactory(portfolioRepository, userRepository)
+        this.marketMakerService = new MarketMakerFactory(
             assetRepository,
             portfolioRepository,
             transactionRepository,
             marketMakerRepository,
         )
-        this.assetService = new AssetService(
+        this.assetService = new AssetFactory(
             assetRepository,
             portfolioRepository,
             marketMakerRepository,
             transactionRepository,
         )
-        this.portfolioService = new PortfolioService(portfolioRepository)
-        this.leagueService = new LeagueService(
+        this.portfolioService = new PortfolioFactory(portfolioRepository)
+        this.leagueService = new LeagueFactory(
             leagueRepository,
             assetRepository,
             portfolioRepository,

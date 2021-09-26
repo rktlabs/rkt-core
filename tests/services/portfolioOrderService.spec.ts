@@ -4,11 +4,11 @@
 import * as log4js from 'log4js'
 import { expect } from 'chai'
 import {
-    AssetService,
+    AssetFactory,
     BootstrapService,
     IMarketMaker,
     MarketMakerRepository,
-    MarketMakerService,
+    MarketMakerFactory,
     ExchangeService,
     TNewMarketMakerConfig,
     TNewExchangeOrderConfig,
@@ -36,8 +36,8 @@ describe('PortfolioOrderService', function () {
         let leagueRepository: LeagueRepository
         let transactionRepository: TransactionRepository
         let portfolioOrderRepository: PortfolioOrderRepository
-        let assetService: AssetService
-        let marketMakerService: MarketMakerService
+        let assetService: AssetFactory
+        let marketMakerService: MarketMakerFactory
         let exchangeService: ExchangeService
         let portfolioOrderService: PortfolioOrderService
         let marketMakerRepository: MarketMakerRepository
@@ -67,13 +67,13 @@ describe('PortfolioOrderService', function () {
                 marketMakerRepository,
                 leagueRepository,
             )
-            assetService = new AssetService(
+            assetService = new AssetFactory(
                 assetRepository,
                 portfolioRepository,
                 marketMakerRepository,
                 transactionRepository,
             )
-            marketMakerService = new MarketMakerService(
+            marketMakerService = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,

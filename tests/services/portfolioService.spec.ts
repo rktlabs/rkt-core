@@ -6,18 +6,18 @@ import * as chai from 'chai'
 import * as chaiSubset from 'chai-subset'
 chai.use(chaiSubset)
 
-import { PortfolioRepository, PortfolioService } from '../../src'
+import { PortfolioRepository, PortfolioFactory } from '../../src'
 
 describe('Portfolio Service', function () {
     this.timeout(5000)
 
     let portfolioRepository: PortfolioRepository
-    let portfolioService: PortfolioService
+    let portfolioService: PortfolioFactory
     let portfolioId: string = 'aaa::test1'
 
     before(async () => {
         portfolioRepository = new PortfolioRepository()
-        portfolioService = new PortfolioService(portfolioRepository)
+        portfolioService = new PortfolioFactory(portfolioRepository)
     })
 
     beforeEach(async () => {

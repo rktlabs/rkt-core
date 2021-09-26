@@ -12,7 +12,7 @@ import {
     AssetHolderService,
     AssetRepository,
     TransactionRepository,
-    PortfolioService,
+    PortfolioFactory,
     //Principal,
 } from '..'
 const logger = log4js.getLogger()
@@ -26,7 +26,7 @@ export class TreasuryService {
     private assetRepository: AssetRepository
     private assetHolderService: AssetHolderService
     private portfolioRepository: PortfolioRepository
-    private portfolioService: PortfolioService
+    private portfolioService: PortfolioFactory
     private transactionService: TransactionService
     private mintService: MintService
     //private me: Principal
@@ -44,7 +44,7 @@ export class TreasuryService {
         this.userRepository = userRepository
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
-        this.portfolioService = new PortfolioService(portfolioRepository)
+        this.portfolioService = new PortfolioFactory(portfolioRepository)
         this.assetHolderService = new AssetHolderService(assetRepository)
         this.transactionService = new TransactionService(
             assetRepository,

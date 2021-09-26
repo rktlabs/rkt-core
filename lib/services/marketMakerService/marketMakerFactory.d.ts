@@ -1,6 +1,6 @@
 import { IMarketMaker, MarketMakerBase, TNewMarketMakerConfig, TOrder, TOrderConfig } from '.';
 import { AssetRepository, MarketMakerRepository, PortfolioRepository, TransactionRepository } from '../..';
-export declare class MarketMakerService {
+export declare class MarketMakerFactory {
     private marketMakerRepository;
     private portfolioRepository;
     private transactionRepository;
