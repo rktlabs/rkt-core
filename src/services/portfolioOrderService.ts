@@ -108,19 +108,20 @@ export class PortfolioOrderService {
         return newOrder
     }
 
+    // TODO: Rework Cancel Order
     async cancelOrder(portfolioId: string, orderId: string) {
         const order = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
-        if (order) {
-            const exchangeOrder: TExchangeCancelOrder = this._generateCancelExchangeOrder(order)
+        // if (order) {
+        //     const exchangeOrder: TExchangeCancelOrder = this._generateCancelExchangeOrder(order)
 
-            // update state to 'cancelPending'
-            const patch: TPortfolioOrderPatch = { status: 'cancelPending' }
-            const updatedOrder = await this.portfolioOrderRepository.updateAsync(portfolioId, orderId, patch)
+        //     // update state to 'cancelPending'
+        //     const patch: TPortfolioOrderPatch = { status: 'cancelPending' }
+        //     const updatedOrder = await this.portfolioOrderRepository.updateAsync(portfolioId, orderId, patch)
 
-            return updatedOrder
-        } else {
-            return undefined
-        }
+        //     return updatedOrder
+        // } else {
+        return order
+        // }
     }
 
     ////////////////////////////////////////////////////////
