@@ -155,6 +155,7 @@ export class BootstrapService {
     }
 
     async bootstrap() {
-        await Promise.all([this.bootRkt(), this.bootBank(), this.bootUser(), this.bootLeague(), this.bootAssets()])
+        await Promise.all([this.bootRkt(), this.bootBank(), this.bootUser(), this.bootLeague()])
+        await Promise.all([this.bootAssets()])
     }
 }
