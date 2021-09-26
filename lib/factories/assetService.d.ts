@@ -10,5 +10,5 @@ export declare class AssetService {
     deleteAsset(assetId: string): Promise<void>;
     scrubAsset(assetId: string): Promise<void>;
     private _createAssetImpl;
-    private createAssetPortfolioImpl;
+    private _createAssetPortfolioImpl;
 }

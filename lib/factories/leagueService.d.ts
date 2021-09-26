@@ -14,8 +14,8 @@ export declare class LeagueService {
     attachAsset(leagueSpec: string | League, asset: TAssetCore): Promise<void>;
     detachAsset(leagueSpec: string | League, assetId: string): Promise<void>;
     private _createLeagueImpl;
-    private attachAssetToLeague;
-    private detachAssetFromLeague;
-    private createLeaguePortfolioImpl;
-    private createAssetImpl;
+    private _attachAssetToLeague;
+    private _detachAssetFromLeague;
+    private _createLeaguePortfolioImpl;
+    private _createAssetImpl;
 }

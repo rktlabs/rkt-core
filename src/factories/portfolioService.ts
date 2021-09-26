@@ -41,7 +41,7 @@ export class PortfolioService {
             }
         }
 
-        const portfolio = await this.createUserImpl(payload)
+        const portfolio = await this._createUserImpl(payload)
 
         logger.info(`created portfolio: ${portfolio.portfolioId}`)
 
@@ -61,7 +61,7 @@ export class PortfolioService {
         const portfolioId = payload.portfolioId
         let portfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!portfolio) {
-            portfolio = await this.createUserImpl(payload)
+            portfolio = await this._createUserImpl(payload)
 
             logger.info(`created portfolio: ${portfolio.portfolioId}`)
         }
@@ -151,7 +151,7 @@ export class PortfolioService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private async createUserImpl(payload: TNewPortfolioConfig) {
+    private async _createUserImpl(payload: TNewPortfolioConfig) {
         const portfolio = Portfolio.newPortfolio(payload)
         await this.portfolioRepository.storeAsync(portfolio)
         return portfolio

@@ -99,7 +99,7 @@ export class AssetService {
         const asset = Asset.newAsset(payload)
 
         if (shouldCreatePortfolio) {
-            const portfolioId = await this.createAssetPortfolioImpl(asset, `${assetDisplayName} value portfolio`)
+            const portfolioId = await this._createAssetPortfolioImpl(asset, `${assetDisplayName} value portfolio`)
             asset.portfolioId = portfolioId
         }
 
@@ -108,7 +108,7 @@ export class AssetService {
         return asset
     }
 
-    private async createAssetPortfolioImpl(asset: Asset, displayName: string) {
+    private async _createAssetPortfolioImpl(asset: Asset, displayName: string) {
         const assetPortfolioDef = {
             type: 'asset',
             portfolioId: `asset::${asset.assetId}`,
