@@ -172,14 +172,6 @@ export class SimpleExchangeService {
                         units: takerDeltaValue * -1,
                     },
                 ],
-                tags: {
-                    source: 'Simple',
-                },
-                xids: {
-                    portfolioId: takerPortfolioId,
-                    orderId,
-                    tradeId,
-                },
             }
         } else {
             newTransactionData = {
@@ -207,21 +199,17 @@ export class SimpleExchangeService {
                         units: takerDeltaValue,
                     },
                 ],
-                tags: {
-                    source: 'Simple',
-                },
-                xids: {
-                    portfolioId: takerPortfolioId,
-                    orderId,
-                    tradeId,
-                },
             }
         }
 
+        newTransactionData.tags = {
+            source: 'Simple',
+        }
         // set the orderId
         newTransactionData.xids = {
             orderId: orderId,
             orderPortfolioId: takerPortfolioId,
+            tradeId: tradeId,
         }
 
         return this.transactionService.executeTransactionAsync(newTransactionData)

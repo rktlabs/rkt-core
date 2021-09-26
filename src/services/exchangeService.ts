@@ -336,14 +336,6 @@ export class ExchangeService {
                         units: takerDeltaValue * -1,
                     },
                 ],
-                tags: {
-                    source: 'AMM',
-                },
-                xids: {
-                    portfolioId: takerPortfolioId,
-                    orderId,
-                    tradeId,
-                },
             }
         } else {
             newTransactionData = {
@@ -371,21 +363,16 @@ export class ExchangeService {
                         units: takerDeltaValue,
                     },
                 ],
-                tags: {
-                    source: 'AMM',
-                },
-                xids: {
-                    portfolioId: takerPortfolioId,
-                    orderId,
-                    tradeId,
-                },
             }
         }
+
+        newTransactionData.tags = { source: 'MarketMaker' }
 
         // set the orderId
         newTransactionData.xids = {
             orderId: orderId,
             orderPortfolioId: takerPortfolioId,
+            tradeId: tradeId,
         }
 
         return this.transactionService.executeTransactionAsync(newTransactionData)

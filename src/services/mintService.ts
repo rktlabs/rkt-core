@@ -70,7 +70,7 @@ export class MintService {
             assetId: assetId,
             units: units,
             tags: {
-                source: 'Mint',
+                source: 'MintUnits',
             },
         }
 

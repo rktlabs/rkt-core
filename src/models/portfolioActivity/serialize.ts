@@ -47,12 +47,12 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
     const serializer = new HALSerializer()
 
     serializer.register('activity', {
-        whitelist: ['transactionId', 'createdAt', 'assetId', 'units'],
+        whitelist: ['transactionId', 'createdAt', 'assetId', 'units', 'source'],
         links: (record: any) => {
             const links: any = {
                 asset: {
                     href: `${baseUrl}/assets/${record.assetId}`,
-                    rel: 'transaction',
+                    rel: 'asset',
                 },
                 transaction: {
                     href: `${baseUrl}/transactions/${record.transactionId}`,
@@ -62,7 +62,13 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
             if (record.orderId) {
                 links.order = {
                     href: `${baseUrl}/portfolios/${record.orderPortfolioId}/orders/${record.orderId}`,
-                    rel: 'transaction',
+                    rel: 'portfolioOrder',
+                }
+            }
+            if (record.tradeId) {
+                links.order = {
+                    href: `${baseUrl}/exchange/trades/${record.tradeId}`,
+                    rel: 'trade',
                 }
             }
             return links

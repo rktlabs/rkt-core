@@ -8,4 +8,5 @@ export type TPortfolioActivity = {
     orderId?: string
     orderPortfolioId?: string
     source?: string
+    tradeId?: string
 }
