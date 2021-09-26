@@ -3,7 +3,6 @@
 import { OrderSide, OrderType } from '../..'
 
 export type TNewPortfolioOrderProps = {
-    //orderId?: string
     assetId: string
     orderSide: OrderSide
     orderSize: number

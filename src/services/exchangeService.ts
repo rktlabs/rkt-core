@@ -167,11 +167,7 @@ export class ExchangeService {
                     closedAt: DateTime.utc().toString(),
                 }
                 if (reason) updateData.reason = reason
-                await this.exchangeOrderRepository.updateAsync(
-                    exchangeOrder.portfolioId,
-                    exchangeOrder.orderId,
-                    updateData,
-                )
+                await this.exchangeOrderRepository.updateAsync(exchangeOrder.orderId, updateData)
 
                 this.portfolioOrderEventService.processFailEvent({
                     eventType: 'orderFail',
@@ -217,7 +213,7 @@ export class ExchangeService {
             sizeRemaining: exchangeOrder.sizeRemaining,
         }
 
-        await this.exchangeOrderRepository.updateAsync(portfolioId, orderId, orderUpdate)
+        await this.exchangeOrderRepository.updateAsync(orderId, orderUpdate)
 
         return exchangeOrder
     }
@@ -366,7 +362,7 @@ export class ExchangeService {
             }
         }
 
-        newTransactionData.tags = { source: 'MarketMaker' }
+        newTransactionData.tags = { source: 'Trade' }
 
         // set the orderId
         newTransactionData.xids = {

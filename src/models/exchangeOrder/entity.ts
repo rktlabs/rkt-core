@@ -1,7 +1,6 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { generateId } from '../../util/idGenerator'
 import { ValidationError } from '../../errors'
 import { serialize, serializeCollection } from './serializer'
 import { exchangeOrderValidator as validate } from './validator'
@@ -56,7 +55,7 @@ export class ExchangeOrder {
 
     // Member Properties for new model
     static newExchangeOrder(props: TNewExchangeOrderConfig) {
-        const orderId = props.orderId || `EXCG::${generateId()}`
+        const orderId = props.orderId
         const createdAt = DateTime.utc().toString()
 
         const exchangeOrderProps: TExchangeOrder = {

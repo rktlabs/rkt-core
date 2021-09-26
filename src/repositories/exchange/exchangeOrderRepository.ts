@@ -33,7 +33,7 @@ export class ExchangeOrderRepository extends RepositoryBase {
     }
 
     async getDetailAsync(orderId: string) {
-        const entityId = `${orderId}`
+        const entityId = orderId
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         const entityDoc = await entityRef.get()
         if (!entityDoc.exists) {
@@ -44,13 +44,13 @@ export class ExchangeOrderRepository extends RepositoryBase {
     }
 
     async storeAsync(entity: TExchangeOrder) {
-        const entityId = `${entity.portfolioId}#${entity.orderId}`
+        const entityId = entity.orderId
         const entityJson = JSON.parse(JSON.stringify(entity))
         await this.db.collection(COLLECTION_NAME).doc(entityId).set(entityJson)
     }
 
-    async updateAsync(portfolioId: string, orderId: string, entity: TExchangeOrderPatch) {
-        const entityId = `${portfolioId}#${orderId}`
+    async updateAsync(orderId: string, entity: TExchangeOrderPatch) {
+        const entityId = orderId
         const entityJson = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.update(entityJson)

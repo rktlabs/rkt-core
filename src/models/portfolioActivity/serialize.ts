@@ -64,9 +64,13 @@ export const serializeCollection = (selfUrl: string, portfolioId: string, baseUr
                     href: `${baseUrl}/portfolios/${record.orderPortfolioId}/orders/${record.orderId}`,
                     rel: 'portfolioOrder',
                 }
+                links.exchangeOrder = {
+                    href: `${baseUrl}/exchange/orders/${record.orderId}`,
+                    rel: 'exchangeOrder',
+                }
             }
             if (record.tradeId) {
-                links.order = {
+                links.trade = {
                     href: `${baseUrl}/exchange/trades/${record.tradeId}`,
                     rel: 'trade',
                 }

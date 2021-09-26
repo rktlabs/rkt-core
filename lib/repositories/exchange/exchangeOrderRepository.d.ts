@@ -7,6 +7,6 @@ export declare class ExchangeOrderRepository extends RepositoryBase {
     getListAsync(qs?: any): Promise<TExchangeOrder[]>;
     getDetailAsync(orderId: string): Promise<TExchangeOrder | null>;
     storeAsync(entity: TExchangeOrder): Promise<void>;
-    updateAsync(portfolioId: string, orderId: string, entity: TExchangeOrderPatch): Promise<void>;
+    updateAsync(orderId: string, entity: TExchangeOrderPatch): Promise<void>;
     scrubCollectionAsync(): Promise<void>;
 }
