@@ -95,7 +95,7 @@ export class LeagueRepository extends RepositoryBase {
                     const newAssetList = assetList.filter((target: TAssetCore) => {
                         return target.assetId != assetId
                     })
-                    t.update(entityRef, { managedAssets: newAssetList })
+                    await t.update(entityRef, { managedAssets: newAssetList })
                 }
             }
         })
@@ -110,7 +110,7 @@ export class LeagueRepository extends RepositoryBase {
                 if (entity) {
                     const assetList = entity.managedAssets || []
                     const newAssetList = [...assetList, { assetId: asset.assetId, displayName: asset.displayName }]
-                    t.update(entityRef, { managedAssets: newAssetList })
+                    await t.update(entityRef, { managedAssets: newAssetList })
                 }
             }
         })
