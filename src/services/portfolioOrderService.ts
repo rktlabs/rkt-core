@@ -52,7 +52,6 @@ export class PortfolioOrderService {
         }
 
         // verify that portfolio exists.
-        //const portfolioId = orderPayload.portfolioId
         const orderPortfolio = await this.portfolioRepository.getDetailAsync(portfolioId)
         if (!orderPortfolio) {
             const msg = `Order Failed - input portfolioId not registered (${portfolioId})`
@@ -86,12 +85,10 @@ export class PortfolioOrderService {
         /////////////////////////////////////////////////////////
         const orderPayload: TNewPortfolioOrderProps = {
             assetId: order.assetId,
-            //portfolioId: order.portfolioId,
             orderSide: order.orderSide === 'bid' ? 'ask' : 'bid',
             orderSize: order.orderSize,
             orderType: 'market',
             xids: {
-                //refOrderId: orderId,
                 portfolioId: portfolioId,
             },
         }
@@ -110,17 +107,7 @@ export class PortfolioOrderService {
     // TODO: Rework Cancel Order
     async cancelOrder(portfolioId: string, orderId: string) {
         const order = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
-        // if (order) {
-        //     const exchangeOrder: TExchangeCancelOrder = this._generateCancelExchangeOrder(order)
-
-        //     // update state to 'cancelPending'
-        //     const patch: TPortfolioOrderPatch = { status: 'cancelPending' }
-        //     const updatedOrder = await this.portfolioOrderRepository.updateAsync(portfolioId, orderId, patch)
-
-        //     return updatedOrder
-        // } else {
         return order
-        // }
     }
 
     ////////////////////////////////////////////////////////
@@ -148,10 +135,8 @@ export class PortfolioOrderService {
     private _generateCancelExchangeOrder(portfolioId: string, order: TPortfolioOrder) {
         const exchangeOrder: TExchangeCancelOrder = {
             operation: 'cancel',
-            //assetId: order.assetId,
             portfolioId: portfolioId,
             orderId: order.orderId,
-            //refOrderId: order.orderId,
         }
         return exchangeOrder
     }

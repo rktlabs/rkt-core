@@ -68,7 +68,6 @@ export class PortfolioOrderEventService {
             case 'failed':
             default:
                 logger.warn(`handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) IGNORED`)
-                //payload.reason = `order status: ${portfolioOrder.status} received event: ${payload.notificationType}`
                 break
         }
 
@@ -103,7 +102,6 @@ export class PortfolioOrderEventService {
                 logger.warn(
                     `handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) status: ${portfolioOrder.status} - ${payload} - IGNORED`,
                 )
-                //payload.error = `order status: ${order.status} received event: ${payload.attributes.notificationType}`
                 break
         }
 

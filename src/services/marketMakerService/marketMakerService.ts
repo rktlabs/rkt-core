@@ -48,14 +48,6 @@ export class MarketMakerService {
             //     marketMaker = new KMaker(makerDef)
             //     break
 
-            // case 'bondingmaker2':
-            //     marketMaker = new Bonding2Maker(makerDef)
-            //     break
-
-            // case 'logisticmaker1':
-            //     marketMaker = new LogarithmicMaker(makerDef)
-            //     break
-
             default:
             case 'bondingCurveAMM':
                 marketMaker = new BondingCurveAMM(

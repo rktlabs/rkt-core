@@ -34,8 +34,6 @@ export class UserRepository extends CacheableRepository {
         if (!entityCollectionRefs.empty) {
             const userList = entityCollectionRefs.docs.map((entityDoc) => {
                 const entity = entityDoc.data() as TUser
-                const userId = entityDoc.id
-                entity.userId = userId // EJH: if not set in initial set
                 return entity
             })
             return userList
@@ -53,8 +51,6 @@ export class UserRepository extends CacheableRepository {
             return null
         } else {
             const entity = entityDoc.data() as TUser
-            const userId = entityDoc.id
-            entity.userId = userId // EJH: if not set in initial set
             return entity
         }
     }
@@ -66,8 +62,6 @@ export class UserRepository extends CacheableRepository {
         if (!entityCollectionRefs.empty) {
             const userList = entityCollectionRefs.docs.map((entityDoc) => {
                 const entity = entityDoc.data() as TUser
-                const userId = entityDoc.id
-                entity.userId = userId // EJH: not set in initial set
                 return entity
             })
             return userList[0]
@@ -83,8 +77,6 @@ export class UserRepository extends CacheableRepository {
         if (!entityCollectionRefs.empty) {
             const userList = entityCollectionRefs.docs.map((entityDoc) => {
                 const entity = entityDoc.data() as TUser
-                const userId = entityDoc.id
-                entity.userId = userId // EJH: not set in initial set
                 return entity
             })
             return userList[0]

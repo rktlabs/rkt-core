@@ -39,7 +39,6 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
     const pageSize = Math.min(filter.pageSize ? parseInt(filter.pageSize, 10) : 25, 1000)
     delete filter.page // ignore "page" querystring parm
     delete filter.pageSize // ignore "page" querystring parm
-    //const pages = Math.floor((rowcount - 1) / pageSize) + 1
 
     const newFilter = []
     for (const v in filter) {
