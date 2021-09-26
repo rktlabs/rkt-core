@@ -50,7 +50,7 @@ export class AssetHolderRepository extends RepositoryBase {
     }
 
     async storeAsync(assetId: string, portfolioId: string, entity: TAssetHolder) {
-        logger.trace(`store ${COLLECTION_NAME}/${assetId}/${SUB_COLLECTION_NAME}/${portfolioId}`, entity)
+        //logger.trace(`store ${COLLECTION_NAME}/${assetId}/${SUB_COLLECTION_NAME}/${portfolioId}`, entity)
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db
             .collection(COLLECTION_NAME)

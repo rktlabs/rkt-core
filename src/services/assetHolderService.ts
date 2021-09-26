@@ -35,7 +35,7 @@ export class AssetHolderService {
         if (asset) {
             const assetDisplayName = asset.displayName || assetId
 
-            const entity = {
+            const portfolioHolding = {
                 portfolioId: portfolioId,
                 assetId: assetId,
                 units: 0,
@@ -50,11 +50,11 @@ export class AssetHolderService {
             }
 
             await Promise.all([
-                this.portfolioHoldingRepository.storeAsync(portfolioId, assetId, entity),
+                this.portfolioHoldingRepository.storeAsync(portfolioId, assetId, portfolioHolding),
                 this.assetHolderRepository.storeAsync(assetId, portfolioId, assetHolder),
             ])
 
-            return entity
+            return portfolioHolding
         } else {
             return null
         }

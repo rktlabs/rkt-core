@@ -122,12 +122,15 @@ export class PortfolioOrderEventService {
     // PRIVATE
     ////////////////////////////////////////////////////////
     private _close = (portfolioOrder: TPortfolioOrder) => {
+        logger.trace(`update state for order: ${portfolioOrder.orderId} to closed`)
         portfolioOrder.state = 'closed'
         portfolioOrder.closedAt = DateTime.utc().toString()
         return portfolioOrder
     }
 
     private _updateStatus = (portfolioOrder: TPortfolioOrder, newStatus: string, reason?: string) => {
+        const reasonString = reason ? `reason: ${reason}` : ''
+        logger.trace(`update status for order: ${portfolioOrder.orderId} to ${newStatus} ${reasonString}`)
         portfolioOrder.status = newStatus
         if (reason) {
             portfolioOrder.reason = reason
