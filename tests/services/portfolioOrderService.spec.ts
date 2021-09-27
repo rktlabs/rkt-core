@@ -18,7 +18,6 @@ import {
     PortfolioRepository,
     TransactionRepository,
     UserRepository,
-    LeagueRepository,
     PortfolioOrderRepository,
     PortfolioOrderService,
     TNewPortfolioOrderProps,
@@ -29,11 +28,9 @@ describe('PortfolioOrderService', function () {
     describe('persist marketMaker', function () {
         this.timeout(20000)
 
-        let bootstrapper: BootstrapService
         let portfolioRepository: PortfolioRepository
         let assetRepository: AssetRepository
         let userRepository: UserRepository
-        let leagueRepository: LeagueRepository
         let transactionRepository: TransactionRepository
         let portfolioOrderRepository: PortfolioOrderRepository
         let assetService: AssetFactory
@@ -54,19 +51,10 @@ describe('PortfolioOrderService', function () {
             userRepository = new UserRepository()
             assetRepository = new AssetRepository()
             marketMakerRepository = new MarketMakerRepository()
-            leagueRepository = new LeagueRepository()
             portfolioOrderRepository = new PortfolioOrderRepository()
             portfolioRepository = new PortfolioRepository()
             transactionRepository = new TransactionRepository()
 
-            bootstrapper = new BootstrapService(
-                assetRepository,
-                portfolioRepository,
-                transactionRepository,
-                userRepository,
-                marketMakerRepository,
-                leagueRepository,
-            )
             assetService = new AssetFactory(
                 assetRepository,
                 portfolioRepository,
@@ -101,7 +89,7 @@ describe('PortfolioOrderService', function () {
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
 
             logger.trace('-----bootstrap start----------')
-            await bootstrapper.bootstrap()
+            await BootstrapService.boot()
             await treasuryService.mintUnits(900)
             await mintService.mintUnits(assetId, 90)
             await treasuryService.depositCoins('testbot', 80)

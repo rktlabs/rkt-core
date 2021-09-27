@@ -7,28 +7,23 @@ import {
     AssetFactory,
     BootstrapService,
     IMarketMaker,
-    LeagueRepository,
     MarketMakerRepository,
     MarketMakerFactory,
     PortfolioRepository,
     TNewMarketMakerConfig,
     TransactionRepository,
-    UserRepository,
 } from '../../../src'
 
 describe('MarketMakerFactory', () => {
     describe('persist marketMaker', function () {
         this.timeout(10000)
 
-        let bootstrapper: BootstrapService
         let assetRepository: AssetRepository
         let transactionRepository: TransactionRepository
         let portfolioRepository: PortfolioRepository
-        let leagueRepository: LeagueRepository
         let assetService: AssetFactory
         let marketMakerService: MarketMakerFactory
         let marketMakerRepository: MarketMakerRepository
-        let userRepository: UserRepository
 
         const assetId = 'card::testehed'
         let marketMaker: IMarketMaker
@@ -36,19 +31,9 @@ describe('MarketMakerFactory', () => {
         before(async () => {
             assetRepository = new AssetRepository()
             portfolioRepository = new PortfolioRepository()
-            userRepository = new UserRepository()
             marketMakerRepository = new MarketMakerRepository()
-            leagueRepository = new LeagueRepository()
             transactionRepository = new TransactionRepository()
 
-            bootstrapper = new BootstrapService(
-                assetRepository,
-                portfolioRepository,
-                transactionRepository,
-                userRepository,
-                marketMakerRepository,
-                leagueRepository,
-            )
             assetService = new AssetFactory(
                 assetRepository,
                 portfolioRepository,
@@ -61,7 +46,7 @@ describe('MarketMakerFactory', () => {
                 transactionRepository,
                 marketMakerRepository,
             )
-            await bootstrapper.bootstrap()
+            await BootstrapService.boot()
         })
 
         describe('buy', () => {

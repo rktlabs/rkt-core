@@ -1,6 +1,5 @@
 'use strict'
 
-import * as log4js from 'log4js'
 import {
     PortfolioFactory,
     LeagueFactory,
@@ -15,7 +14,6 @@ import {
     MarketMakerRepository,
     LeagueRepository,
 } from '..'
-const logger = log4js.getLogger('bootstrapper')
 
 export class BootstrapService {
     private userService: UserFactory
@@ -23,6 +21,25 @@ export class BootstrapService {
     private portfolioService: PortfolioFactory
     private leagueService: LeagueFactory
     private marketMakerService: MarketMakerFactory
+
+    static async boot() {
+        const assetRepository = new AssetRepository()
+        const portfolioRepository = new PortfolioRepository()
+        const transactionRepository = new TransactionRepository()
+        const userRepository = new UserRepository()
+        const marketMakerRepository = new MarketMakerRepository()
+        const leagueRepository = new LeagueRepository()
+
+        const bootstrapper = new BootstrapService(
+            assetRepository,
+            portfolioRepository,
+            transactionRepository,
+            userRepository,
+            marketMakerRepository,
+            leagueRepository,
+        )
+        await bootstrapper.bootstrap()
+    }
 
     constructor(
         assetRepository: AssetRepository,

@@ -12,8 +12,6 @@ import {
     NullNotificationPublisher,
     AssetRepository,
     PortfolioRepository,
-    UserRepository,
-    LeagueRepository,
     MarketMakerRepository,
 } from '../../src'
 import { BootstrapService } from '../../src/maint/bootstrapService'
@@ -22,16 +20,13 @@ describe('Transaction Service', function () {
     this.timeout(5000)
 
     let transactionRepository: TransactionRepository
-    let bootstrapper: BootstrapService
     let portfolioRepository: PortfolioRepository
-    let leagueRepository: LeagueRepository
     let marketMakerRepository: MarketMakerRepository
     let portfolioService: PortfolioFactory
     let assetHolderService: AssetHolderService
     let assetRepository: AssetRepository
     let assetService: AssetFactory
     let transactionService: TransactionService
-    let userRepository: UserRepository
 
     let eventPublisher: sinon.SinonStubbedInstance<NullNotificationPublisher>
 
@@ -39,13 +34,10 @@ describe('Transaction Service', function () {
         eventPublisher = sinon.createStubInstance(NullNotificationPublisher)
 
         transactionRepository = new TransactionRepository()
-
         portfolioRepository = new PortfolioRepository()
-        leagueRepository = new LeagueRepository()
-        portfolioService = new PortfolioFactory(portfolioRepository)
         assetRepository = new AssetRepository()
         marketMakerRepository = new MarketMakerRepository()
-        userRepository = new UserRepository()
+        portfolioService = new PortfolioFactory(portfolioRepository)
         assetHolderService = new AssetHolderService(assetRepository)
         assetService = new AssetFactory(
             assetRepository,
@@ -59,16 +51,8 @@ describe('Transaction Service', function () {
             transactionRepository,
             eventPublisher as any as NullNotificationPublisher,
         )
-        bootstrapper = new BootstrapService(
-            assetRepository,
-            portfolioRepository,
-            transactionRepository,
-            userRepository,
-            marketMakerRepository,
-            leagueRepository,
-        )
 
-        await bootstrapper.bootstrap()
+        await BootstrapService.boot()
     })
 
     beforeEach(async () => {

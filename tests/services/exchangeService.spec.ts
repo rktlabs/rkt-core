@@ -17,7 +17,6 @@ import {
     PortfolioRepository,
     TransactionRepository,
     UserRepository,
-    LeagueRepository,
     PortfolioOrderRepository,
 } from '../../src'
 
@@ -25,11 +24,9 @@ describe('ExchangerService', function () {
     describe('persist marketMaker', function () {
         this.timeout(20000)
 
-        let bootstrapper: BootstrapService
         let portfolioRepository: PortfolioRepository
         let assetRepository: AssetRepository
         let userRepository: UserRepository
-        let leagueRepository: LeagueRepository
         let transactionRepository: TransactionRepository
         let portfolioOrderRepository: PortfolioOrderRepository
         let assetService: AssetFactory
@@ -43,22 +40,13 @@ describe('ExchangerService', function () {
         let marketMaker: IMarketMaker
 
         before(async () => {
-            userRepository = new UserRepository()
             assetRepository = new AssetRepository()
+            userRepository = new UserRepository()
             marketMakerRepository = new MarketMakerRepository()
-            leagueRepository = new LeagueRepository()
             portfolioOrderRepository = new PortfolioOrderRepository()
             portfolioRepository = new PortfolioRepository()
             transactionRepository = new TransactionRepository()
 
-            bootstrapper = new BootstrapService(
-                assetRepository,
-                portfolioRepository,
-                transactionRepository,
-                userRepository,
-                marketMakerRepository,
-                leagueRepository,
-            )
             assetService = new AssetFactory(
                 assetRepository,
                 portfolioRepository,
@@ -85,7 +73,7 @@ describe('ExchangerService', function () {
                 userRepository,
             )
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
-            await bootstrapper.bootstrap()
+            await BootstrapService.boot()
             await treasuryService.depositCoins('testbot', 100)
             await mintService.mintUnits(assetId, 100)
         })

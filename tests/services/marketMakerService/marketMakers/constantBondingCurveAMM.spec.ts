@@ -7,8 +7,6 @@ import {
     PortfolioRepository,
     TransactionRepository,
     MarketMakerRepository,
-    UserRepository,
-    LeagueRepository,
     ConstantBondingCurveAMM,
 } from '../../../../src'
 

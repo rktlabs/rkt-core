@@ -7,13 +7,11 @@ import {
     AssetFactory,
     BootstrapService,
     IMarketMaker,
-    LeagueRepository,
     MarketMakerRepository,
     MarketMakerFactory,
     PortfolioRepository,
     TNewMarketMakerConfig,
     TransactionRepository,
-    UserRepository,
 } from '../../../../src'
 
 describe('LinearBondingCurveAMM', function () {
@@ -21,13 +19,10 @@ describe('LinearBondingCurveAMM', function () {
     const portfolioRepository = new PortfolioRepository()
     const transactionRepository = new TransactionRepository()
     const marketMakerRepository = new MarketMakerRepository()
-    const userRepository = new UserRepository()
-    const leagueRepository = new LeagueRepository()
 
     describe('persist marketMaker', function () {
         this.timeout(10000)
 
-        let bootstrapper: BootstrapService
         let assetService: AssetFactory
         let marketMakerService: MarketMakerFactory
 
@@ -35,14 +30,6 @@ describe('LinearBondingCurveAMM', function () {
         let marketMaker: IMarketMaker
 
         before(async () => {
-            bootstrapper = new BootstrapService(
-                assetRepository,
-                portfolioRepository,
-                transactionRepository,
-                userRepository,
-                marketMakerRepository,
-                leagueRepository,
-            )
             assetService = new AssetFactory(
                 assetRepository,
                 portfolioRepository,
@@ -55,7 +42,7 @@ describe('LinearBondingCurveAMM', function () {
                 transactionRepository,
                 marketMakerRepository,
             )
-            await bootstrapper.bootstrap()
+            await BootstrapService.boot()
         })
 
         describe('persist marketMaker', function () {
