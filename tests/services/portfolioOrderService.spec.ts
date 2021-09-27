@@ -45,7 +45,6 @@ describe('PortfolioOrderService', function () {
         let marketMaker: IMarketMaker
 
         before(async () => {
-            const saveLoggerLevel = log4js.getLogger().level
             log4js.getLogger().level = 'error'
 
             userRepository = new UserRepository()
@@ -88,13 +87,10 @@ describe('PortfolioOrderService', function () {
             )
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
 
-            logger.trace('-----bootstrap start----------')
             await BootstrapService.boot()
             await treasuryService.mintUnits(900)
             await mintService.mintUnits(assetId, 90)
             await treasuryService.depositCoins('testbot', 80)
-            logger.trace('-----bootstrap finished--------------')
-            log4js.getLogger().level = saveLoggerLevel
         })
 
         describe('buy', function () {

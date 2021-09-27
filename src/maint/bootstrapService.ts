@@ -1,5 +1,6 @@
 'use strict'
 
+import * as log4js from 'log4js'
 import {
     PortfolioFactory,
     LeagueFactory,
@@ -14,6 +15,7 @@ import {
     MarketMakerRepository,
     LeagueRepository,
 } from '..'
+const logger = log4js.getLogger('bootstrapper')
 
 export class BootstrapService {
     private userService: UserFactory
@@ -38,7 +40,12 @@ export class BootstrapService {
             marketMakerRepository,
             leagueRepository,
         )
+        logger.trace('-----bootstrap start----------')
+        const saveLoggerLevel = log4js.getLogger().level
+        log4js.getLogger().level = 'error'
         await bootstrapper.bootstrap()
+        log4js.getLogger().level = saveLoggerLevel
+        logger.trace('-----bootstrap finished--------------')
     }
 
     constructor(
