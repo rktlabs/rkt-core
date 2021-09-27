@@ -126,7 +126,7 @@ export class ExchangeService {
                     assetId: assetId,
                     orderId: orderId,
                     portfolioId: portfolioId,
-                    orderSide: orderSide as OrderSide,
+                    orderSide: orderSide,
                     orderSize: orderSize,
                 })
 

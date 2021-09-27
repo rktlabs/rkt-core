@@ -35,6 +35,7 @@ describe('MarketMakerFactory', () => {
 
         before(async () => {
             assetRepository = new AssetRepository()
+            portfolioRepository = new PortfolioRepository()
             userRepository = new UserRepository()
             marketMakerRepository = new MarketMakerRepository()
             leagueRepository = new LeagueRepository()
@@ -67,7 +68,7 @@ describe('MarketMakerFactory', () => {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
-                    type: 'bondingCurveAMM',
+                    type: 'linearBondingCurveAMM',
                     ownerId: 'test',
                     assetId: assetId,
                     tags: {
@@ -117,7 +118,7 @@ describe('MarketMakerFactory', () => {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
-                    type: 'bondingCurveAMM',
+                    type: 'linearBondingCurveAMM',
                     ownerId: 'test',
                     assetId: assetId,
                     tags: {

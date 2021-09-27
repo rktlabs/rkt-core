@@ -109,11 +109,11 @@ describe('PortfolioOrderService', function () {
             log4js.getLogger().level = saveLoggerLevel
         })
 
-        describe.only('buy', function () {
+        describe('buy', function () {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
-                    type: 'bondingCurveAMM',
+                    type: 'linearBondingCurveAMM',
                     ownerId: 'test',
                     assetId: assetId,
                     tags: {
@@ -165,7 +165,7 @@ describe('PortfolioOrderService', function () {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
-                    type: 'bondingCurveAMM',
+                    type: 'linearBondingCurveAMM',
                     ownerId: 'test',
                     assetId: assetId,
                     tags: {

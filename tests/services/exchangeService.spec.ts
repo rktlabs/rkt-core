@@ -94,7 +94,7 @@ describe('ExchangerService', function () {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
-                    type: 'bondingCurveAMM',
+                    type: 'linearBondingCurveAMM',
                     ownerId: 'test',
                     assetId: assetId,
                     tags: {
@@ -147,7 +147,7 @@ describe('ExchangerService', function () {
             beforeEach(async () => {
                 await marketMakerService.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
-                    type: 'bondingCurveAMM',
+                    type: 'linearBondingCurveAMM',
                     ownerId: 'test',
                     assetId: assetId,
                     tags: {

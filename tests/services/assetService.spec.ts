@@ -2,7 +2,6 @@
 /* eslint-env node, mocha */
 
 import { assert, expect } from 'chai'
-import * as sinon from 'sinon'
 import {
     AssetRepository,
     PortfolioRepository,
@@ -12,11 +11,11 @@ import {
     UserRepository,
     LeagueRepository,
     MarketMakerRepository,
+    BootstrapService,
 } from '../../src'
-import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe('Asset Service', function () {
-    this.timeout(5000)
+    this.timeout(30000)
 
     let assetRepository: AssetRepository
     let portfolioRepository: PortfolioRepository
@@ -56,7 +55,6 @@ describe('Asset Service', function () {
 
     beforeEach(async () => {
         await assetService.scrubAsset(assetId)
-        sinon.resetHistory()
     })
 
     afterEach(async () => {})

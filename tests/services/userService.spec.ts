@@ -12,8 +12,8 @@ import {
     TransactionRepository,
     LeagueRepository,
     MarketMakerRepository,
+    BootstrapService,
 } from '../../src'
-import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe.skip('User Service', function () {
     this.timeout(5000)

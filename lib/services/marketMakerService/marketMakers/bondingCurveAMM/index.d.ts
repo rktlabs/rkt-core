@@ -1,1 +1,2 @@
-export * from './bondingCurveAMM';
+export * from './linearBondingCurveAMM';
+export * from './constantBondingCurveAMM';

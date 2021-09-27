@@ -1,7 +1,15 @@
 'use strict'
 
 import * as log4js from 'log4js'
-import { BondingCurveAMM, IMarketMaker, MarketMakerBase, TNewMarketMakerConfig, TOrder, TOrderConfig } from '.'
+import {
+    LinearBondingCurveAMM,
+    IMarketMaker,
+    MarketMakerBase,
+    TNewMarketMakerConfig,
+    TOrder,
+    TOrderConfig,
+    ConstantBondingCurveAMM,
+} from '.'
 import {
     AssetRepository,
     ConflictError,
@@ -47,10 +55,19 @@ export class MarketMakerFactory {
             // case 'constantk':
             //     marketMaker = new KMaker(makerDef)
             //     break
+            case 'constantBondingCurveAMM':
+                marketMaker = new ConstantBondingCurveAMM(
+                    this.assetRepository,
+                    this.portfolioRepository,
+                    this.transactionRepository,
+                    this.marketMakerRepository,
+                    makerDef,
+                )
+                break
 
             default:
-            case 'bondingCurveAMM':
-                marketMaker = new BondingCurveAMM(
+            case 'linearBondingCurveAMM':
+                marketMaker = new LinearBondingCurveAMM(
                     this.assetRepository,
                     this.portfolioRepository,
                     this.transactionRepository,
@@ -110,7 +127,6 @@ export class MarketMakerFactory {
             portfolioId: opts.portfolioId,
             orderSide: opts.orderSide,
             orderSize: Math.max(opts.orderSize, 0),
-            tags: opts.tags,
             orderType: opts.orderType ? opts.orderType : 'market',
             sizeRemaining: opts.sizeRemaining === undefined ? opts.orderSize : opts.sizeRemaining,
             orderStatus: 'new',
@@ -130,10 +146,19 @@ export class MarketMakerFactory {
             // default:
             //     marketMaker = KMaker.newMaker(config)
             //     break
+            case 'constantBondingCurveAMM':
+                marketMaker = ConstantBondingCurveAMM.newMaker(
+                    this.assetRepository,
+                    this.portfolioRepository,
+                    this.transactionRepository,
+                    this.marketMakerRepository,
+                    config,
+                )
+                break
 
             default:
-            case 'bondingCurveAMM':
-                marketMaker = BondingCurveAMM.newMaker(
+            case 'linearBondingCurveAMM':
+                marketMaker = LinearBondingCurveAMM.newMaker(
                     this.assetRepository,
                     this.portfolioRepository,
                     this.transactionRepository,

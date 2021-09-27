@@ -18,7 +18,13 @@ import admin = require('firebase-admin')
 const FieldValue = admin.firestore.FieldValue
 const logger = log4js.getLogger('portfolioRepository')
 
-type BondingCurveAMMParams = {
+type BondingCurveAMMSettings = {
+    initialUnits?: number
+    initialValue?: number
+    initialPrice?: number
+}
+
+export type BondingCurveAMMParams = {
     madeUnits: number
     cumulativeValue: number
     y0: number
@@ -30,58 +36,55 @@ export class BondingCurveAMM extends MarketMakerBase {
     private assetHolderRepository: AssetHolderRepository
     private mintService: MintService
 
-    static newMaker(
-        assetRepository: AssetRepository,
-        portfolioRepository: PortfolioRepository,
-        transactionRepository: TransactionRepository,
-        marketMakerRepository: MarketMakerRepository,
-        props: TNewMarketMakerConfig,
-    ) {
-        const createdAt = DateTime.utc().toString()
-        const type = props.type
-        const assetId = props.assetId
+    // static newMaker(
+    //     assetRepository: AssetRepository,
+    //     portfolioRepository: PortfolioRepository,
+    //     transactionRepository: TransactionRepository,
+    //     marketMakerRepository: MarketMakerRepository,
+    //     config: TNewMarketMakerConfig,
+    // ) {
 
-        const makerProps: TMarketMaker = {
-            createdAt,
-            type,
-            assetId,
-            ownerId: props.ownerId,
-            tags: props.tags,
-        }
+    //     const makerProps: TMarketMaker = {
+    //         createdAt: DateTime.utc().toString(),
+    //         type: config.type,
+    //         assetId: config.assetId            ,
+    //         ownerId: config.ownerId,
+    //         tags: config.tags,
+    //     }
 
-        const newEntity = new BondingCurveAMM(
-            assetRepository,
-            portfolioRepository,
-            transactionRepository,
-            marketMakerRepository,
-            makerProps,
-        )
-        newEntity.params = newEntity.computeInitialState(props.settings)
+    //     const newEntity = new BondingCurveAMM(
+    //         assetRepository,
+    //         portfolioRepository,
+    //         transactionRepository,
+    //         marketMakerRepository,
+    //         makerProps,
+    //     )
+    //     newEntity.params = newEntity.computeInitialState(config.settings)
 
-        /////////////////////////////////////////////////////////
-        // compute the quote(s)
-        /////////////////////////////////////////////////////////
-        const quote: TMarketMakerQuote = {
-            current: newEntity.spot_price(),
-            bid1: newEntity.compute_price(),
-            ask1: newEntity.compute_value(),
-            bid10: newEntity.compute_price(10) / 10,
-            ask10: newEntity.params.madeUnits >= 10 ? newEntity.compute_value(10) / 10 : NaN,
-        }
+    //     /////////////////////////////////////////////////////////
+    //     // compute the quote(s)
+    //     /////////////////////////////////////////////////////////
+    //     const quote: TMarketMakerQuote = {
+    //         current: newEntity.spot_price(),
+    //         bid1: newEntity.compute_price(),
+    //         ask1: newEntity.compute_value(),
+    //         bid10: newEntity.compute_price(10) / 10,
+    //         ask10: newEntity.params.madeUnits >= 10 ? newEntity.compute_value(10) / 10 : NaN,
+    //     }
 
-        return newEntity
-    }
+    //     return newEntity
+    // }
 
-    private computeInitialState(settings: any): BondingCurveAMMParams {
-        const makerState: BondingCurveAMMParams = {
-            madeUnits: settings?.initialUnits || 0,
-            cumulativeValue: settings?.initialValue || 0,
-            y0: settings?.initialPrice || 1,
-            e: settings?.e || 1,
-            m: settings?.m || 1,
-        }
-        return makerState
-    }
+    // private computeInitialState(settings: BondingCurveAMMSettings): BondingCurveAMMParams {
+    //     const makerState: BondingCurveAMMParams = {
+    //         madeUnits: settings?.initialUnits || 0,
+    //         cumulativeValue: settings?.initialValue || 0,
+    //         y0: settings?.initialPrice || 1,
+    //         e:  1,
+    //         m:  1,
+    //     }
+    //     return makerState
+    // }
 
     constructor(
         assetRepository: AssetRepository,

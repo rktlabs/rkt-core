@@ -136,7 +136,7 @@ export class BootstrapService {
         await this.leagueService.attachAsset(leagueId, { assetId: assetId, displayName: assetId })
 
         const makerConfig: TNewMarketMakerConfig = {
-            type: 'bondingCurveAMM',
+            type: 'linearBondingCurveAMM',
             ownerId: 'test',
             assetId: assetId,
             settings: {

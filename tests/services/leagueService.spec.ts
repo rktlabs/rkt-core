@@ -2,7 +2,6 @@
 /* eslint-env node, mocha */
 
 import { expect } from 'chai'
-import * as sinon from 'sinon'
 import {
     AssetHolderService,
     AssetRepository,
@@ -12,8 +11,8 @@ import {
     PortfolioRepository,
     TransactionRepository,
     UserRepository,
+    BootstrapService,
 } from '../../src'
-import { BootstrapService } from '../../src/maint/bootstrapService'
 
 describe('League Service', function () {
     this.timeout(5000)
@@ -22,7 +21,6 @@ describe('League Service', function () {
     let assetRepository: AssetRepository
     let marketMakerRepository: MarketMakerRepository
     let portfolioRepository: PortfolioRepository
-    let profileRepository: PortfolioRepository
     let assetHolderService: AssetHolderService
     let leagueService: LeagueFactory
     let boostrapService: BootstrapService
@@ -33,10 +31,11 @@ describe('League Service', function () {
 
     before(async () => {
         leagueRepository = new LeagueRepository()
-        profileRepository = new PortfolioRepository()
+        portfolioRepository = new PortfolioRepository()
         assetRepository = new AssetRepository()
         transactionRepository = new TransactionRepository()
         userRepository = new UserRepository()
+        marketMakerRepository = new MarketMakerRepository()
 
         assetHolderService = new AssetHolderService(assetRepository)
         leagueService = new LeagueFactory(
@@ -54,10 +53,6 @@ describe('League Service', function () {
             marketMakerRepository,
             leagueRepository,
         )
-    })
-
-    beforeEach(async () => {
-        sinon.resetHistory()
     })
 
     describe('Create Basic League', () => {
@@ -81,7 +76,7 @@ describe('League Service', function () {
             const portfolioId = `league::${leagueId}`
             expect(league!!.portfolioId).to.be.eq(portfolioId)
 
-            const profile = await profileRepository.getDetailAsync(portfolioId)
+            const profile = await portfolioRepository.getDetailAsync(portfolioId)
             expect(profile).to.exist
             expect(profile!!.portfolioId).to.be.eq(portfolioId)
         })

@@ -1,10 +1,15 @@
-import { MarketMakerBase, OrderSide, TMakerResult, TMarketMaker, TNewMarketMakerConfig } from '../..';
+import { MarketMakerBase, OrderSide, TMakerResult, TMarketMaker } from '../..';
 import { AssetRepository, MarketMakerRepository, PortfolioRepository, TransactionRepository } from '../../../..';
+export declare type BondingCurveAMMParams = {
+    madeUnits: number;
+    cumulativeValue: number;
+    y0: number;
+    e: number;
+    m: number;
+};
 export declare class BondingCurveAMM extends MarketMakerBase {
     private assetHolderRepository;
     private mintService;
-    static newMaker(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository, props: TNewMarketMakerConfig): BondingCurveAMM;
-    private computeInitialState;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository, props: TMarketMaker);
     processOrderImpl(orderSide: OrderSide, orderSize: number): Promise<TMakerResult | null>;
     processAMMOrderImpl(signedTakerOrderSize: number): TMakerResult;

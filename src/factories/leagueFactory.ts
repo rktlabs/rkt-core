@@ -74,7 +74,7 @@ export class LeagueFactory {
     }
 
     async deleteLeague(leagueId: string) {
-        let ids = this.assetRepository.isLeagueUsed(leagueId)
+        let ids = await this.assetRepository.isLeagueUsed(leagueId)
         if (ids) {
             throw new ConflictError(`Cannot Delete Portfolio. Asset Portfolio in use: ${ids}`)
         }
