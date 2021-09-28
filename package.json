@@ -3,7 +3,7 @@
   "author": "Eric J Hedman",
   "description": "Fant X server core",
   "license": "private",
-  "version": "0.1.142",
+  "version": "0.1.143",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
