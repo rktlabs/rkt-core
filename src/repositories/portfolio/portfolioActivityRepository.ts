@@ -23,8 +23,8 @@ export class PortfolioActivityRepository extends RepositoryBase {
     }
 
     filterMap: any = {
-        leagueId: 'leagueId',
-        type: 'type',
+        assetId: 'assetId',
+        source: 'source',
     }
 
     async getListAsync(portfolioId: string, qs?: any) {
