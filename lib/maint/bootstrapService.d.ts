@@ -1,9 +1,9 @@
 import { AssetRepository, PortfolioRepository, TransactionRepository, UserRepository, MarketMakerRepository, LeagueRepository } from '..';
 export declare class BootstrapService {
-    private userService;
-    private assetService;
-    private portfolioService;
-    private leagueService;
+    private userFactory;
+    private assetFactory;
+    private portfolioFactory;
+    private leagueFactory;
     private marketMakerService;
     private scrubber;
     static boot(): Promise<void>;

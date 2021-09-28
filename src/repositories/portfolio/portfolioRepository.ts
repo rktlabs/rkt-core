@@ -5,7 +5,7 @@ import { deleteDocument } from '../../util/deleters'
 import { CacheableRepository } from '../cacheableRepository'
 import { getConnectionProps } from '../getConnectionProps'
 
-const logger = log4js.getLogger('portfolioRepository')
+const logger = log4js.getLogger('PortfolioRepository')
 
 const COLLECTION_NAME = 'portfolios'
 

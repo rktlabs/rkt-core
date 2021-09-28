@@ -5,7 +5,7 @@ import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-const logger = log4js.getLogger('portfolioHoldingRepository')
+const logger = log4js.getLogger('PortfolioHoldingRepository')
 
 const COLLECTION_NAME = 'portfolios'
 const SUB_COLLECTION_NAME = 'holdings'

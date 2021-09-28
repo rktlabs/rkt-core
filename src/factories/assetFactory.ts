@@ -11,17 +11,17 @@ import {
 } from '..'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger('assetFactory')
+const logger = log4js.getLogger('AssetFactory')
 
 export class AssetFactory {
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
-    private portfolioService: PortfolioFactory
+    private portfolioFactory: PortfolioFactory
 
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
-        this.portfolioService = new PortfolioFactory(portfolioRepository)
+        this.portfolioFactory = new PortfolioFactory(portfolioRepository)
     }
 
     async createAsset(payload: TNewAssetConfig, shouldCreatePortfolio: boolean = true) {
@@ -83,7 +83,7 @@ export class AssetFactory {
             displayName: `${displayName}`,
         }
 
-        const portfolio = await this.portfolioService.createPortfolio(assetPortfolioDef)
+        const portfolio = await this.portfolioFactory.createPortfolio(assetPortfolioDef)
         return portfolio.portfolioId
     }
 }

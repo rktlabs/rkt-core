@@ -10,7 +10,7 @@ import {
     TransactionService,
     //Principal
 } from '..'
-const logger = log4js.getLogger('mintService')
+const logger = log4js.getLogger('MintService')
 
 const MINT_PORTFOLIO = 'bank::mint'
 

@@ -4,7 +4,7 @@ export declare class TreasuryService {
     private assetRepository;
     private assetHolderService;
     private portfolioRepository;
-    private portfolioService;
+    private portfolioFactory;
     private transactionService;
     private mintService;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, userRepository: UserRepository);

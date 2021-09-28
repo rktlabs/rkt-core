@@ -4,7 +4,7 @@ export declare class MarketMakerFactory {
     private marketMakerRepository;
     private portfolioRepository;
     private transactionRepository;
-    private portfolioService;
+    private portfolioFactory;
     private assetRepository;
     private exchangeQuoteRepository;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository);

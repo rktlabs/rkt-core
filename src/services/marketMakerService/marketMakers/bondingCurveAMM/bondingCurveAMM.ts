@@ -22,7 +22,7 @@ import {
 } from '../../../..'
 
 const FieldValue = admin.firestore.FieldValue
-const logger = log4js.getLogger('bondingCurveAMM')
+const logger = log4js.getLogger('BondingCurveAMMParams')
 
 export type BondingCurveAMMSettings = {
     initialUnits?: number

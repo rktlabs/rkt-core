@@ -5,7 +5,7 @@ import { TTransaction, TTransactionPatch } from '../../models/transaction'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-const logger = log4js.getLogger('transactionRepository')
+const logger = log4js.getLogger('TransactionRepository')
 
 const COLLECTION_NAME = 'transactions'
 

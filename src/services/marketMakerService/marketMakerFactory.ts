@@ -21,7 +21,7 @@ export class MarketMakerFactory {
     private marketMakerRepository: MarketMakerRepository
     private portfolioRepository: PortfolioRepository
     private transactionRepository: TransactionRepository
-    private portfolioService: PortfolioFactory
+    private portfolioFactory: PortfolioFactory
     private assetRepository: AssetRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
 
@@ -34,7 +34,7 @@ export class MarketMakerFactory {
         this.marketMakerRepository = marketMakerRepository
         this.portfolioRepository = portfolioRepository
         this.transactionRepository = transactionRepository
-        this.portfolioService = new PortfolioFactory(portfolioRepository)
+        this.portfolioFactory = new PortfolioFactory(portfolioRepository)
         this.assetRepository = assetRepository
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
     }
@@ -178,7 +178,7 @@ export class MarketMakerFactory {
             displayName: marketMaker.assetId,
         }
 
-        const portfolio = await this.portfolioService.createPortfolio(makerPortfolioDef)
+        const portfolio = await this.portfolioFactory.createPortfolio(makerPortfolioDef)
         return portfolio.portfolioId
     }
 }

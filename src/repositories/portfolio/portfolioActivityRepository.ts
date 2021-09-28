@@ -4,7 +4,7 @@ import { TAssetHolderUpdateItem, TPortfolioActivity, TTransaction } from '../../
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-const logger = log4js.getLogger('portfolioRepository')
+const logger = log4js.getLogger('PortfolioActivityRepository')
 
 const FieldValue = admin.firestore.FieldValue
 

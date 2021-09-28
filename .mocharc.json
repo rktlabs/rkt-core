@@ -1,0 +1,4 @@
+{
+    "require": ["tests/bootstrap.js", "ts-node/register" ],
+    "spec": "./tests/**/*.spec.ts"
+}

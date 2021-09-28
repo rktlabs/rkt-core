@@ -6,7 +6,7 @@ import { deleteDocument } from '../../util/deleters'
 import { CacheableRepository } from '../cacheableRepository'
 import { getConnectionProps } from '../getConnectionProps'
 
-const logger = log4js.getLogger('assetRepository')
+const logger = log4js.getLogger('AssetRepository')
 
 const FieldValue = admin.firestore.FieldValue
 

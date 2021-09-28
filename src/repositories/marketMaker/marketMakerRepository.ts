@@ -6,7 +6,7 @@ import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
-const logger = log4js.getLogger('marketMakerRepository')
+const logger = log4js.getLogger('MarketMakerRepository')
 
 const COLLECTION_NAME = 'marketMakers'
 

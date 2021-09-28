@@ -10,7 +10,7 @@ import {
     TAssetHolderUpdateItem,
     TTransaction,
 } from '..'
-const logger = log4js.getLogger('assetHolderService')
+const logger = log4js.getLogger('AssetHolderService')
 
 /////////////////////////////
 // Public Methods

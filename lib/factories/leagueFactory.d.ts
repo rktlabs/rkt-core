@@ -3,8 +3,8 @@ export declare class LeagueFactory {
     private assetRepository;
     private leagueRepository;
     private portfolioRepository;
-    private portfolioService;
-    private assetService;
+    private portfolioFactory;
+    private assetFactory;
     constructor(leagueRepository: LeagueRepository, assetRepository: AssetRepository, portfolioRepository: PortfolioRepository);
     createLeague(payload: TNewLeagueConfig): Promise<League>;
     deleteLeague(leagueId: string): Promise<void>;

@@ -29,7 +29,7 @@ import {
     InsufficientBalance,
 } from '..'
 
-const logger = log4js.getLogger('exchangeService')
+const logger = log4js.getLogger('ExchangeService')
 
 ///////////////////////////////////////////////////
 // Exchnage Service

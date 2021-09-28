@@ -11,19 +11,19 @@ import {
 } from '..'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger('userFactory')
+const logger = log4js.getLogger('UserFactory')
 
 const TREASURY_PORTFOLIO = 'bank::treasury'
 
 export class UserFactory {
     private userRepository: UserRepository
     private portfolioRepository: PortfolioRepository
-    private portfolioService: PortfolioFactory
+    private portfolioFactory: PortfolioFactory
 
     constructor(portfolioRepository: PortfolioRepository, userRepository: UserRepository) {
         this.userRepository = userRepository
         this.portfolioRepository = portfolioRepository
-        this.portfolioService = new PortfolioFactory(portfolioRepository)
+        this.portfolioFactory = new PortfolioFactory(portfolioRepository)
     }
 
     async createUser(payload: TNewUserConfig) {
@@ -101,7 +101,7 @@ export class UserFactory {
             ownerId: user.userId,
         }
 
-        const portfolio = await this.portfolioService.createPortfolio(userPortfolioDef)
+        const portfolio = await this.portfolioFactory.createPortfolio(userPortfolioDef)
         return portfolio.portfolioId
     }
 }

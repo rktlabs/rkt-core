@@ -20,7 +20,7 @@ import {
     generateId,
 } from '..'
 
-const logger = log4js.getLogger('transactionService')
+const logger = log4js.getLogger('TransactionService')
 
 export class TransactionService {
     private portfolioRepository: PortfolioRepository

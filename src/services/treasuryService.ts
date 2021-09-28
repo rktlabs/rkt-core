@@ -24,7 +24,7 @@ export class TreasuryService {
     private assetRepository: AssetRepository
     private assetHolderService: AssetHolderService
     private portfolioRepository: PortfolioRepository
-    private portfolioService: PortfolioFactory
+    private portfolioFactory: PortfolioFactory
     private transactionService: TransactionService
     private mintService: MintService
     //private me: Principal
@@ -40,7 +40,7 @@ export class TreasuryService {
         this.userRepository = userRepository
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
-        this.portfolioService = new PortfolioFactory(portfolioRepository)
+        this.portfolioFactory = new PortfolioFactory(portfolioRepository)
         this.assetHolderService = new AssetHolderService(assetRepository)
         this.transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
         this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
@@ -139,7 +139,7 @@ export class TreasuryService {
             assetId: 'currency::usd',
             units: units,
         }
-        return await this.portfolioService.recordPortfolioDeposit(deposit)
+        return await this.portfolioFactory.recordPortfolioDeposit(deposit)
     }
 
     async withdrawCoins(userId: string, units: number, coinId = COIN) {
@@ -190,6 +190,6 @@ export class TreasuryService {
             assetId: 'currency::usd',
             units: -1 * units,
         }
-        return this.portfolioService.recordPortfolioDeposit(deposit)
+        return this.portfolioFactory.recordPortfolioDeposit(deposit)
     }
 }

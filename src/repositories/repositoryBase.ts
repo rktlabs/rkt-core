@@ -1,7 +1,7 @@
 'use strict'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger('leagueFactory')
+const logger = log4js.getLogger('RepositoryBase')
 
 export class RepositoryBase {
     generatePagingProperties(

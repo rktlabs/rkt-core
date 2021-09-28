@@ -14,15 +14,15 @@ import {
     TAssetCore,
     TNewAssetConfig,
 } from '..'
-const logger = log4js.getLogger('leagueFactory')
+const logger = log4js.getLogger('LeagueFactory')
 
 export class LeagueFactory {
     private assetRepository: AssetRepository
     private leagueRepository: LeagueRepository
     private portfolioRepository: PortfolioRepository
 
-    private portfolioService: PortfolioFactory
-    private assetService: AssetFactory
+    private portfolioFactory: PortfolioFactory
+    private assetFactory: AssetFactory
 
     constructor(
         leagueRepository: LeagueRepository,
@@ -33,8 +33,8 @@ export class LeagueFactory {
         this.leagueRepository = leagueRepository
         this.portfolioRepository = portfolioRepository
 
-        this.portfolioService = new PortfolioFactory(portfolioRepository)
-        this.assetService = new AssetFactory(assetRepository, portfolioRepository)
+        this.portfolioFactory = new PortfolioFactory(portfolioRepository)
+        this.assetFactory = new AssetFactory(assetRepository, portfolioRepository)
     }
 
     async createLeague(payload: TNewLeagueConfig) {
@@ -72,7 +72,7 @@ export class LeagueFactory {
         if (league) {
             const portfolioId = league.portfolioId
             await this.leagueRepository.deleteAsync(leagueId)
-            await this.portfolioService.deletePortfolio(portfolioId)
+            await this.portfolioFactory.deletePortfolio(portfolioId)
         }
     }
 
@@ -136,7 +136,7 @@ export class LeagueFactory {
             displayName: displayName,
         }
 
-        const portfolio = await this.portfolioService.createPortfolio(leaguePortfolioDef)
+        const portfolio = await this.portfolioFactory.createPortfolio(leaguePortfolioDef)
         return portfolio.portfolioId
     }
 
@@ -153,7 +153,7 @@ export class LeagueFactory {
         }
 
         try {
-            const asset = await this.assetService.createAsset(assetConfig)
+            const asset = await this.assetFactory.createAsset(assetConfig)
             logger.info(`new asset: ${asset.assetId} `)
             await this._attachAssetToLeague(league, asset)
         } catch (err) {

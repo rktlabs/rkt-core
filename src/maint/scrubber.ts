@@ -14,7 +14,7 @@ import {
     PortfolioActivityRepository,
 } from '..'
 import { getConnectionProps } from '../repositories/getConnectionProps'
-const logger = log4js.getLogger('scrubber')
+const logger = log4js.getLogger('Scrubber')
 
 export class Scrubber {
     db: FirebaseFirestore.Firestore
