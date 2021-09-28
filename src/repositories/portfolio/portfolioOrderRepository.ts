@@ -17,7 +17,10 @@ export class PortfolioOrderRepository extends RepositoryBase {
     }
 
     filterMap: any = {
-        status: 'status',
+        orderState: 'orderState',
+        orderStatus: 'orderStatus',
+        orderType: 'orderType',
+        orderSide: 'orderSide',
     }
 
     async getListAsync(portfolioId: string, qs?: any) {
