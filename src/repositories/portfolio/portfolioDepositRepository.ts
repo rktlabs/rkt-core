@@ -1,6 +1,6 @@
 'use strict'
 
-import { deleteCollection, TPortfolioDeposit } from '../..'
+import { TPortfolioDeposit } from '../..'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
@@ -29,10 +29,5 @@ export class PortfolioDepositRepository extends RepositoryBase {
         const entityData = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(portfolioId).collection(SUB_COLLECTION_NAME)
         await entityRef.add(entityData)
-    }
-
-    async scrubAsync(portfolioId: string) {
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(portfolioId).collection(SUB_COLLECTION_NAME)
-        await deleteCollection(entityRef)
     }
 }

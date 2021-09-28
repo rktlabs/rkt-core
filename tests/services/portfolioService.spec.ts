@@ -6,26 +6,26 @@ import * as chai from 'chai'
 import * as chaiSubset from 'chai-subset'
 chai.use(chaiSubset)
 
-import { PortfolioRepository, PortfolioFactory } from '../../src'
+import { PortfolioRepository, PortfolioFactory, Scrubber } from '../../src'
 
 describe('Portfolio Service', function () {
     this.timeout(5000)
 
-    let portfolioRepository: PortfolioRepository
+    let portfolioRepository = new PortfolioRepository()
     let portfolioService: PortfolioFactory
     let portfolioId: string = 'aaa::test1'
+    const scrubber = new Scrubber({ portfolioRepository })
 
     before(async () => {
-        portfolioRepository = new PortfolioRepository()
         portfolioService = new PortfolioFactory(portfolioRepository)
     })
 
     beforeEach(async () => {
-        await portfolioService.scrubPortfolio(portfolioId)
+        await scrubber.scrubPortfolio(portfolioId)
     })
 
     after(async () => {
-        await portfolioService.scrubPortfolio(portfolioId)
+        await scrubber.scrubPortfolio(portfolioId)
     })
 
     describe('New Portfolio where none exists', () => {

@@ -1,14 +1,10 @@
-import { PortfolioRepository, AssetRepository, TNewAssetConfig, Asset, TransactionRepository, MarketMakerRepository } from '..';
+import { PortfolioRepository, AssetRepository, TNewAssetConfig, Asset } from '..';
 export declare class AssetFactory {
     private portfolioRepository;
     private assetRepository;
     private portfolioService;
-    private marketMakerService;
-    private assetHolderService;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, marketMakerRepository: MarketMakerRepository, transactionRepository: TransactionRepository);
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository);
     createAsset(payload: TNewAssetConfig, shouldCreatePortfolio?: boolean): Promise<Asset>;
-    deleteAsset(assetId: string): Promise<void>;
-    scrubAsset(assetId: string): Promise<void>;
     private _createAssetImpl;
     private _createAssetPortfolioImpl;
 }

@@ -1,15 +1,13 @@
-import { AssetRepository, LeagueRepository, PortfolioRepository, MarketMakerRepository, TransactionRepository, TNewLeagueConfig, League, TLeagueAssetDef, TAssetCore } from '..';
+import { AssetRepository, LeagueRepository, PortfolioRepository, TNewLeagueConfig, League, TLeagueAssetDef, TAssetCore } from '..';
 export declare class LeagueFactory {
     private assetRepository;
     private leagueRepository;
     private portfolioRepository;
     private portfolioService;
     private assetService;
-    constructor(leagueRepository: LeagueRepository, assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, marketMakerRepository: MarketMakerRepository, transactionRepository: TransactionRepository);
+    constructor(leagueRepository: LeagueRepository, assetRepository: AssetRepository, portfolioRepository: PortfolioRepository);
     createLeague(payload: TNewLeagueConfig): Promise<League>;
     deleteLeague(leagueId: string): Promise<void>;
-    scrubLeague(leagueId: string): Promise<void>;
-    scrubLeagueAsset(leagueId: string, assetId: string): Promise<any[]>;
     createAsset(leagueSpec: string | League, assetDef: TLeagueAssetDef): Promise<void>;
     attachAsset(leagueSpec: string | League, asset: TAssetCore): Promise<void>;
     detachAsset(leagueSpec: string | League, assetId: string): Promise<void>;

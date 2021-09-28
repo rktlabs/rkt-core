@@ -1,7 +1,6 @@
 import * as admin from 'firebase-admin'
 import * as log4js from 'log4js'
 import { TAssetHolderUpdateItem, TPortfolioActivity, TTransaction } from '../../models'
-import { deleteCollection } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
@@ -44,14 +43,6 @@ export class PortfolioActivityRepository extends RepositoryBase {
         })
 
         return entityList
-    }
-
-    async scrubCollectionAsync(portfolioId: string) {
-        const entityRef = this.db
-            .collection(PORTFOLIO_COLLECTION_NAME)
-            .doc(portfolioId)
-            .collection(ACTIVITY_COLLECTION_NAME)
-        await deleteCollection(entityRef)
     }
 
     async atomicUpdateTransactionAsync(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {

@@ -2,7 +2,6 @@
 
 import * as log4js from 'log4js'
 import { TTransaction, TTransactionPatch } from '../../models/transaction'
-import { deleteCollection } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
@@ -66,10 +65,5 @@ export class TransactionRepository extends RepositoryBase {
         logger.trace(`update ${transactionId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(transactionId)
         await entityRef.update(entityData)
-    }
-
-    async scrubCollectionAsync() {
-        const entityRef = this.db.collection(COLLECTION_NAME)
-        await deleteCollection(entityRef)
     }
 }

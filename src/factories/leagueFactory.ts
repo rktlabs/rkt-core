@@ -6,8 +6,6 @@ import {
     AssetRepository,
     LeagueRepository,
     PortfolioRepository,
-    MarketMakerRepository,
-    TransactionRepository,
     TNewLeagueConfig,
     DuplicateError,
     ConflictError,
@@ -16,7 +14,7 @@ import {
     TAssetCore,
     TNewAssetConfig,
 } from '..'
-const logger = log4js.getLogger('leagueService')
+const logger = log4js.getLogger('leagueFactory')
 
 export class LeagueFactory {
     private assetRepository: AssetRepository
@@ -30,20 +28,13 @@ export class LeagueFactory {
         leagueRepository: LeagueRepository,
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
-        marketMakerRepository: MarketMakerRepository,
-        transactionRepository: TransactionRepository,
     ) {
         this.assetRepository = assetRepository
         this.leagueRepository = leagueRepository
         this.portfolioRepository = portfolioRepository
 
         this.portfolioService = new PortfolioFactory(portfolioRepository)
-        this.assetService = new AssetFactory(
-            assetRepository,
-            portfolioRepository,
-            marketMakerRepository,
-            transactionRepository,
-        )
+        this.assetService = new AssetFactory(assetRepository, portfolioRepository)
     }
 
     async createLeague(payload: TNewLeagueConfig) {
@@ -83,37 +74,6 @@ export class LeagueFactory {
             await this.leagueRepository.deleteAsync(leagueId)
             await this.portfolioService.deletePortfolio(portfolioId)
         }
-    }
-
-    async scrubLeague(leagueId: string) {
-        //logger.trace('*****start scubbing league')
-        // scrub all of the owned assets
-        const managedAssetIds = await this.assetRepository.getLeagueAssetsAsync(leagueId)
-
-        const promises: any[] = []
-        managedAssetIds.forEach((asset) => {
-            promises.push(this.scrubLeagueAsset(leagueId, asset.assetId))
-        })
-
-        // scrub the associated portfolio
-        const portfolioId = `league::${leagueId}`
-        promises.push(this.portfolioService.scrubPortfolio(portfolioId))
-
-        await Promise.all(promises)
-
-        await this.leagueRepository.deleteAsync(leagueId)
-        //logger.trace('*****done scubbing league')
-    }
-
-    async scrubLeagueAsset(leagueId: string, assetId: string) {
-        //logger.trace('*****start scubbing league asset')
-        const promises: any[] = []
-        promises.push(this.assetService.scrubAsset(assetId))
-        promises.push(this.detachAsset(leagueId, assetId))
-        const xxx = Promise.all(promises)
-        //logger.trace('*****done scubbing league asset')
-
-        return xxx
     }
 
     async createAsset(leagueSpec: string | League, assetDef: TLeagueAssetDef) {
@@ -194,10 +154,10 @@ export class LeagueFactory {
 
         try {
             const asset = await this.assetService.createAsset(assetConfig)
-            console.log(`new asset: ${asset.assetId} `)
+            logger.info(`new asset: ${asset.assetId} `)
             await this._attachAssetToLeague(league, asset)
         } catch (err) {
-            console.log(`create asset error: ${assetConfig.symbol} - ${err}`)
+            logger.error(`create asset error: ${assetConfig.symbol} - ${err}`)
         }
     }
 }

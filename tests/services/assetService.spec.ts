@@ -2,46 +2,25 @@
 /* eslint-env node, mocha */
 
 import { assert, expect } from 'chai'
-import {
-    AssetRepository,
-    PortfolioRepository,
-    AssetFactory,
-    TNewAssetConfig,
-    TransactionRepository,
-    MarketMakerRepository,
-    BootstrapService,
-} from '../../src'
+import { AssetRepository, PortfolioRepository, AssetFactory, TNewAssetConfig, Scrubber } from '../../src'
 
 describe('Asset Service', function () {
     this.timeout(30000)
 
-    let assetRepository: AssetRepository
-    let portfolioRepository: PortfolioRepository
+    let assetRepository: AssetRepository = new AssetRepository()
+    let portfolioRepository: PortfolioRepository = new PortfolioRepository()
     let assetService: AssetFactory
+    const scrubber = new Scrubber({ assetRepository, portfolioRepository })
     const assetId = 'card::test1'
 
     before(async () => {
-        assetRepository = new AssetRepository()
-        portfolioRepository = new PortfolioRepository()
-        const transactionRepository = new TransactionRepository()
-        const marketMakerRepository = new MarketMakerRepository()
+        assetService = new AssetFactory(assetRepository, portfolioRepository)
 
-        assetService = new AssetFactory(
-            assetRepository,
-            portfolioRepository,
-            marketMakerRepository,
-            transactionRepository,
-        )
-
-        await BootstrapService.boot()
+        const readBack = await assetRepository.getDetailAsync(assetId)
     })
 
     beforeEach(async () => {
-        await assetService.scrubAsset(assetId)
-    })
-
-    after(async () => {
-        await Promise.all([assetService.scrubAsset(assetId)])
+        await scrubber.scrubAsset(assetId)
     })
 
     describe('Create Basic Asset - no portfolio', async () => {

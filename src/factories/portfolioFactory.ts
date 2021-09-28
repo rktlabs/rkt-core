@@ -5,7 +5,6 @@ import {
     AssetRepository,
     MarketMakerRepository,
     LeagueRepository,
-    PortfolioActivityRepository,
     PortfolioDepositRepository,
     TNewPortfolioConfig,
     DuplicateError,
@@ -14,11 +13,10 @@ import {
     ConflictError,
     TPortfolioDeposit,
     UserRepository,
-    AssetHolderService,
 } from '..'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger('portfolioService')
+const logger = log4js.getLogger('portfolioFactory')
 
 export class PortfolioFactory {
     private portfolioRepository: PortfolioRepository
@@ -111,20 +109,6 @@ export class PortfolioFactory {
             logger.error(msg)
             throw new ConflictError(msg)
         }
-
-        await this.scrubPortfolio(portfolioId)
-    }
-
-    async scrubPortfolio(portfolioId: string) {
-        const portfolioActivityRepository = new PortfolioActivityRepository()
-        const assetRepository = new AssetRepository()
-        const assetHolderService = new AssetHolderService(assetRepository)
-
-        await assetHolderService.scrubPortfolioHoldings(portfolioId)
-
-        await portfolioActivityRepository.scrubCollectionAsync(portfolioId)
-
-        await this.portfolioDepositRepository.scrubAsync(portfolioId)
 
         await this.portfolioRepository.deleteAsync(portfolioId)
     }

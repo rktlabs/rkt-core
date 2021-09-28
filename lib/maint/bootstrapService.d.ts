@@ -5,6 +5,7 @@ export declare class BootstrapService {
     private portfolioService;
     private leagueService;
     private marketMakerService;
+    private scrubber;
     static boot(): Promise<void>;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, userRepository: UserRepository, marketMakerRepository: MarketMakerRepository, leagueRepository: LeagueRepository);
     bootRkt(): Promise<void>;

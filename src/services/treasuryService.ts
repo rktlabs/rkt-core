@@ -14,13 +14,12 @@ import {
     TPortfolioDeposit,
 } from '..'
 
-const logger = log4js.getLogger()
+const logger = log4js.getLogger('TreasuryService')
 
 const BANK_PORTFOLIO = 'bank::treasury'
 const COIN = 'coin::rkt'
 
 export class TreasuryService {
-    // private eventPublisher: INotificationPublisher
     private userRepository: UserRepository
     private assetRepository: AssetRepository
     private assetHolderService: AssetHolderService
@@ -35,22 +34,15 @@ export class TreasuryService {
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
         userRepository: UserRepository,
-        //eventPublisher?: INotificationPublisher,
     ) {
         //this.me = me
-        // this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.userRepository = userRepository
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
         this.portfolioService = new PortfolioFactory(portfolioRepository)
         this.assetHolderService = new AssetHolderService(assetRepository)
-        this.transactionService = new TransactionService(
-            assetRepository,
-            portfolioRepository,
-            transactionRepository,
-            // this.eventPublisher,
-        )
+        this.transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
         this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
     }
 

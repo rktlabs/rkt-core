@@ -14,6 +14,7 @@ import {
     UserRepository,
     MarketMakerRepository,
     LeagueRepository,
+    Scrubber,
 } from '..'
 const logger = log4js.getLogger('bootstrapper')
 
@@ -23,6 +24,7 @@ export class BootstrapService {
     private portfolioService: PortfolioFactory
     private leagueService: LeagueFactory
     private marketMakerService: MarketMakerFactory
+    private scrubber: Scrubber = new Scrubber()
 
     static async boot() {
         const assetRepository = new AssetRepository()
@@ -57,31 +59,23 @@ export class BootstrapService {
         leagueRepository: LeagueRepository,
     ) {
         this.userService = new UserFactory(portfolioRepository, userRepository)
+
         this.marketMakerService = new MarketMakerFactory(
             assetRepository,
             portfolioRepository,
             transactionRepository,
             marketMakerRepository,
         )
-        this.assetService = new AssetFactory(
-            assetRepository,
-            portfolioRepository,
-            marketMakerRepository,
-            transactionRepository,
-        )
+        this.assetService = new AssetFactory(assetRepository, portfolioRepository)
+
         this.portfolioService = new PortfolioFactory(portfolioRepository)
-        this.leagueService = new LeagueFactory(
-            leagueRepository,
-            assetRepository,
-            portfolioRepository,
-            marketMakerRepository,
-            transactionRepository,
-        )
+
+        this.leagueService = new LeagueFactory(leagueRepository, assetRepository, portfolioRepository)
     }
 
     async bootRkt() {
         const assetId = 'coin::rkt'
-        await this.assetService.scrubAsset(assetId)
+        await this.scrubber.scrubAsset(assetId)
 
         const assetDef = {
             ownerId: 'test',
@@ -95,7 +89,7 @@ export class BootstrapService {
     async bootBank() {
         const treasuryId = 'bank::treasury'
         const mintId = 'bank::mint'
-        await this.portfolioService.scrubPortfolio(treasuryId)
+        await this.scrubber.scrubPortfolio(treasuryId)
 
         await this.portfolioService.createOrKeepPortfolio({
             type: 'bank',
@@ -103,7 +97,7 @@ export class BootstrapService {
             portfolioId: treasuryId,
         })
 
-        await this.portfolioService.scrubPortfolio(mintId)
+        await this.scrubber.scrubPortfolio(mintId)
         await this.portfolioService.createOrKeepPortfolio({
             type: 'bank',
             ownerId: 'test',
@@ -112,7 +106,7 @@ export class BootstrapService {
     }
 
     async bootLeague() {
-        await this.leagueService.scrubLeague('test')
+        await this.scrubber.scrubLeague('test')
 
         await this.leagueService.createLeague({
             ownerId: 'test',
@@ -126,7 +120,7 @@ export class BootstrapService {
     async bootUser() {
         const userId = 'testbot'
 
-        await this.userService.scrubUser(userId)
+        await this.scrubber.scrubUser(userId)
 
         await this.userService.createUser({
             userId: userId,
@@ -144,7 +138,7 @@ export class BootstrapService {
     async bootAsset(assetId: string) {
         const leagueId = 'test'
 
-        await this.assetService.scrubAsset(assetId)
+        await this.scrubber.scrubAsset(assetId)
 
         await this.assetService.createAsset({
             ownerId: 'test',

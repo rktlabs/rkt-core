@@ -1,6 +1,5 @@
 'use strict'
 
-import { AssetHolderService, MarketMakerFactory } from '../services'
 import {
     PortfolioRepository,
     AssetRepository,
@@ -8,39 +7,21 @@ import {
     DuplicateError,
     ConflictError,
     Asset,
-    TransactionRepository,
-    MarketMakerRepository,
     PortfolioFactory,
 } from '..'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger('assetService')
+const logger = log4js.getLogger('assetFactory')
 
 export class AssetFactory {
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
-
     private portfolioService: PortfolioFactory
-    private marketMakerService: MarketMakerFactory
-    private assetHolderService: AssetHolderService
 
-    constructor(
-        assetRepository: AssetRepository,
-        portfolioRepository: PortfolioRepository,
-        marketMakerRepository: MarketMakerRepository,
-        transactionRepository: TransactionRepository,
-    ) {
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository) {
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
-
-        this.assetHolderService = new AssetHolderService(this.assetRepository)
         this.portfolioService = new PortfolioFactory(portfolioRepository)
-        this.marketMakerService = new MarketMakerFactory(
-            assetRepository,
-            portfolioRepository,
-            transactionRepository,
-            marketMakerRepository,
-        )
     }
 
     async createAsset(payload: TNewAssetConfig, shouldCreatePortfolio: boolean = true) {
@@ -73,27 +54,6 @@ export class AssetFactory {
         logger.trace(`created asset: ${asset.assetId}`)
 
         return asset
-    }
-
-    async deleteAsset(assetId: string) {
-        logger.trace(`delete asset: ${assetId}`)
-        await this.scrubAsset(assetId)
-    }
-
-    async scrubAsset(assetId: string) {
-        //logger.trace(`***scrubbing assetHolders ${assetId}`)
-        await this.assetHolderService.scrubAssetHolders(assetId)
-
-        //logger.trace(`***scrubbing asset portfolio asset::${assetId}`)
-        await this.portfolioService.scrubPortfolio(`asset::${assetId}`)
-
-        //logger.trace(`***scrubbing marketMaker ${assetId}`)
-        await this.marketMakerService.scrubMarketMaker(assetId)
-
-        //logger.trace(`***scrubbing asset ${assetId}`)
-        await this.assetRepository.deleteAsync(assetId)
-
-        //logger.trace(`***done scrubbing asset`)
     }
 
     ////////////////////////////////////////////////////////

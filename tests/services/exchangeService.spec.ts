@@ -18,41 +18,32 @@ import {
     TransactionRepository,
     UserRepository,
     PortfolioOrderRepository,
+    Scrubber,
 } from '../../src'
 
 describe('ExchangerService', function () {
     describe('persist marketMaker', function () {
         this.timeout(20000)
 
-        let portfolioRepository: PortfolioRepository
-        let assetRepository: AssetRepository
-        let userRepository: UserRepository
-        let transactionRepository: TransactionRepository
+        let portfolioRepository = new PortfolioRepository()
+        let assetRepository = new AssetRepository()
+        let userRepository = new UserRepository()
+        let transactionRepository = new TransactionRepository()
         let portfolioOrderRepository: PortfolioOrderRepository
+        let marketMakerRepository = new MarketMakerRepository()
+
         let assetService: AssetFactory
         let marketMakerService: MarketMakerFactory
         let exchangeService: ExchangeService
-        let marketMakerRepository: MarketMakerRepository
         let treasuryService: TreasuryService
         let mintService: MintService
+        const scrubber = new Scrubber({ assetRepository, portfolioRepository, userRepository })
 
         const assetId = 'card::testehed'
         let marketMaker: IMarketMaker
 
         before(async () => {
-            assetRepository = new AssetRepository()
-            userRepository = new UserRepository()
-            marketMakerRepository = new MarketMakerRepository()
-            portfolioOrderRepository = new PortfolioOrderRepository()
-            portfolioRepository = new PortfolioRepository()
-            transactionRepository = new TransactionRepository()
-
-            assetService = new AssetFactory(
-                assetRepository,
-                portfolioRepository,
-                marketMakerRepository,
-                transactionRepository,
-            )
+            assetService = new AssetFactory(assetRepository, portfolioRepository)
             marketMakerService = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
@@ -79,7 +70,7 @@ describe('ExchangerService', function () {
 
         describe('buy', function () {
             beforeEach(async () => {
-                await marketMakerService.scrubMarketMaker(assetId)
+                await scrubber.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
                     type: 'linearBondingCurveAMM',
                     ownerId: 'test',
@@ -132,7 +123,7 @@ describe('ExchangerService', function () {
 
         describe('buy', function () {
             beforeEach(async () => {
-                await marketMakerService.scrubMarketMaker(assetId)
+                await scrubber.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
                     type: 'linearBondingCurveAMM',
                     ownerId: 'test',

@@ -66,12 +66,6 @@ export class MarketMakerRepository extends RepositoryBase {
         await entityRef.set(entityData)
     }
 
-    // async updateAsync(assetId: string, entityData: TMarketMakerPatch) {
-    //     logger.trace(`update ${assetId}`)
-    //     const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
-    //     await entityRef.update(entityData)
-    // }
-
     async updateMakerStateAsync(assetId: string, stateUpdate: any) {
         logger.trace(`updateMakerState ${assetId}`)
         const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)

@@ -8,5 +8,4 @@ export declare class TransactionRepository extends RepositoryBase {
     getDetailAsync(transactionId: string): Promise<TTransaction | null>;
     storeAsync(entity: TTransaction): Promise<void>;
     updateAsync(transactionId: string, entityData: TTransactionPatch): Promise<void>;
-    scrubCollectionAsync(): Promise<void>;
 }

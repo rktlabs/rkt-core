@@ -1,7 +1,6 @@
 'use strict'
 
 import { TExchangeOrder, TExchangeOrderPatch } from '../..'
-import { deleteCollection } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
@@ -54,10 +53,5 @@ export class ExchangeOrderRepository extends RepositoryBase {
         const entityJson = JSON.parse(JSON.stringify(entity))
         const entityRef = this.db.collection(COLLECTION_NAME).doc(entityId)
         await entityRef.update(entityJson)
-    }
-
-    async scrubCollectionAsync() {
-        const entityRef = this.db.collection(COLLECTION_NAME)
-        await deleteCollection(entityRef)
     }
 }

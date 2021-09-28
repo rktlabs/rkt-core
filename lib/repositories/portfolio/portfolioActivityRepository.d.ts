@@ -5,6 +5,5 @@ export declare class PortfolioActivityRepository extends RepositoryBase {
     constructor();
     filterMap: any;
     getListAsync(portfolioId: string, qs?: any): Promise<TTransaction[]>;
-    scrubCollectionAsync(portfolioId: string): Promise<void>;
     atomicUpdateTransactionAsync(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction): Promise<void>;
 }

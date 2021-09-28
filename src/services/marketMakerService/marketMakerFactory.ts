@@ -15,7 +15,7 @@ import {
     TNewPortfolioConfig,
 } from '../..'
 
-const logger = log4js.getLogger()
+const logger = log4js.getLogger('MarketMakerFactory')
 
 export class MarketMakerFactory {
     private marketMakerRepository: MarketMakerRepository
@@ -107,12 +107,6 @@ export class MarketMakerFactory {
     }
 
     async deleteMaker(assetId: string) {
-        await this.scrubMarketMaker(assetId)
-    }
-
-    async scrubMarketMaker(assetId: string) {
-        const portfolioId = `maker::${assetId}`
-        await this.portfolioService.scrubPortfolio(portfolioId)
         await this.marketMakerRepository.deleteAsync(assetId)
     }
 

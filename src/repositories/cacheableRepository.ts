@@ -22,4 +22,8 @@ export class CacheableRepository extends RepositoryBase {
     cacheClear(entityId: string) {
         delete this.entityCache[entityId]
     }
+
+    // dumpCache() {
+    //     console.log(this.entityCache)
+    // }
 }

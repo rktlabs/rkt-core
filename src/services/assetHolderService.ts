@@ -64,28 +64,6 @@ export class AssetHolderService {
         return this.portfolioActivityRepository.atomicUpdateTransactionAsync(updateSet, transaction)
     }
 
-    async scrubPortfolioHoldings(portfolioId: string) {
-        const portfolioHoldings = await this.portfolioHoldingRepository.getListAsync(portfolioId)
-        const promises: Promise<void>[] = []
-        portfolioHoldings.forEach((portfolioHoldings) => {
-            const assetId = portfolioHoldings.assetId
-            promises.push(this.portfolioHoldingRepository.deleteAsync(portfolioId, assetId))
-            promises.push(this.assetHolderRepository.deleteAsync(assetId, portfolioId))
-        })
-        return Promise.all(promises)
-    }
-
-    async scrubAssetHolders(assetId: string) {
-        const assetHolders = await this.assetHolderRepository.getListAsync(assetId)
-        const promises: Promise<void>[] = []
-        assetHolders.forEach((holder) => {
-            const portfolioId = holder.portfolioId
-            promises.push(this.assetHolderRepository.deleteAsync(assetId, portfolioId))
-            promises.push(this.portfolioHoldingRepository.deleteAsync(portfolioId, assetId))
-        })
-        return Promise.all(promises)
-    }
-
     async deleteAssetHolder(assetId: string, portfolioId: string) {
         const promises = [
             this.assetHolderRepository.deleteAsync(assetId, portfolioId),

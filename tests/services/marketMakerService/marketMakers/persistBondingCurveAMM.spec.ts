@@ -11,6 +11,7 @@ import {
     TNewMarketMakerConfig,
     TransactionRepository,
     LinearBondingCurveAMM,
+    Scrubber,
 } from '../../../../src'
 
 describe('LinearBondingCurveAMM', function () {
@@ -18,6 +19,7 @@ describe('LinearBondingCurveAMM', function () {
     const portfolioRepository = new PortfolioRepository()
     const transactionRepository = new TransactionRepository()
     const marketMakerRepository = new MarketMakerRepository()
+    const scrubber = new Scrubber({ assetRepository, portfolioRepository })
 
     describe('persist marketMaker', function () {
         this.timeout(10000)
@@ -40,7 +42,7 @@ describe('LinearBondingCurveAMM', function () {
 
         describe('persist marketMaker', function () {
             beforeEach(async () => {
-                await marketMakerService.scrubMarketMaker(assetId)
+                await scrubber.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
                     type: 'linearBondingCurveAMM',
                     ownerId: 'test',
@@ -102,7 +104,7 @@ describe('LinearBondingCurveAMM', function () {
 
         describe('persist marketMaker with units', function () {
             beforeEach(async () => {
-                await marketMakerService.scrubMarketMaker(assetId)
+                await scrubber.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
                     type: 'linearBondingCurveAMM',
                     ownerId: 'test',

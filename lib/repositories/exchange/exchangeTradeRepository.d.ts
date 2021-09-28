@@ -7,5 +7,4 @@ export declare class ExchangeTradeRepository extends RepositoryBase {
     getListAsync(qs?: any): Promise<TExchangeTrade[]>;
     getDetailAsync(tradeId: string): Promise<TExchangeTrade | null>;
     storeAsync(entity: TExchangeTrade): Promise<string>;
-    scrubCollectionAsync(): Promise<void>;
 }

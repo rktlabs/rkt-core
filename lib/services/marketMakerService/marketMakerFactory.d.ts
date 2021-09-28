@@ -11,7 +11,6 @@ export declare class MarketMakerFactory {
     getMarketMakerAsync(assetId: string): Promise<IMarketMaker | null>;
     createMarketMaker(payload: TNewMarketMakerConfig, shouldCreatePortfolio?: boolean): Promise<MarketMakerBase>;
     deleteMaker(assetId: string): Promise<void>;
-    scrubMarketMaker(assetId: string): Promise<void>;
     static generateOrder(opts: TNewExchangeOrderConfig): TNewExchangeOrderConfig;
     private _createMarketMakerImpl;
     private _createMarketMakerPortfolioImpl;

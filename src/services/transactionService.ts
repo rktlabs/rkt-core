@@ -23,8 +23,6 @@ import {
 const logger = log4js.getLogger('transactionService')
 
 export class TransactionService {
-    // private eventPublisher: INotificationPublisher
-
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
     private assetHolderRepository: AssetHolderRepository
@@ -35,9 +33,7 @@ export class TransactionService {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
-        // eventPublisher?: INotificationPublisher,
     ) {
-        // this.eventPublisher = eventPublisher || new NullNotificationPublisher()
         this.portfolioRepository = portfolioRepository
         this.assetRepository = assetRepository
         this.assetHolderRepository = new AssetHolderRepository()

@@ -34,12 +34,7 @@ describe('Transaction Service', function () {
         marketMakerRepository = new MarketMakerRepository()
         portfolioService = new PortfolioFactory(portfolioRepository)
         assetHolderService = new AssetHolderService(assetRepository)
-        assetService = new AssetFactory(
-            assetRepository,
-            portfolioRepository,
-            marketMakerRepository,
-            transactionRepository,
-        )
+        assetService = new AssetFactory(assetRepository, portfolioRepository)
         transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
 
         await BootstrapService.boot()

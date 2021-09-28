@@ -11,7 +11,7 @@ import {
 } from '..'
 
 import * as log4js from 'log4js'
-const logger = log4js.getLogger()
+const logger = log4js.getLogger('userFactory')
 
 const TREASURY_PORTFOLIO = 'bank::treasury'
 
@@ -77,12 +77,6 @@ export class UserFactory {
 
     async deleteUser(userId: string) {
         logger.trace(`deleteUser: ${userId}`)
-        this.scrubUser(userId)
-    }
-
-    async scrubUser(userId: string) {
-        await this.portfolioService.scrubPortfolio(`user::${userId}`)
-
         await this.userRepository.deleteAsync(userId)
     }
 

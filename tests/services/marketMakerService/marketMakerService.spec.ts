@@ -12,34 +12,26 @@ import {
     PortfolioRepository,
     TNewMarketMakerConfig,
     TransactionRepository,
+    Scrubber,
 } from '../../../src'
 
 describe('MarketMakerFactory', () => {
     describe('persist marketMaker', function () {
         this.timeout(10000)
 
-        let assetRepository: AssetRepository
-        let transactionRepository: TransactionRepository
-        let portfolioRepository: PortfolioRepository
+        let assetRepository = new AssetRepository()
+        let transactionRepository = new TransactionRepository()
+        let portfolioRepository = new PortfolioRepository()
+        let marketMakerRepository = new MarketMakerRepository()
         let assetService: AssetFactory
         let marketMakerService: MarketMakerFactory
-        let marketMakerRepository: MarketMakerRepository
+        const scrubber = new Scrubber({ assetRepository, portfolioRepository })
 
         const assetId = 'card::testehed'
         let marketMaker: IMarketMaker
 
         before(async () => {
-            assetRepository = new AssetRepository()
-            portfolioRepository = new PortfolioRepository()
-            marketMakerRepository = new MarketMakerRepository()
-            transactionRepository = new TransactionRepository()
-
-            assetService = new AssetFactory(
-                assetRepository,
-                portfolioRepository,
-                marketMakerRepository,
-                transactionRepository,
-            )
+            assetService = new AssetFactory(assetRepository, portfolioRepository)
             marketMakerService = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
@@ -51,7 +43,7 @@ describe('MarketMakerFactory', () => {
 
         describe('buy', () => {
             beforeEach(async () => {
-                await marketMakerService.scrubMarketMaker(assetId)
+                await scrubber.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
                     type: 'linearBondingCurveAMM',
                     ownerId: 'test',
@@ -103,7 +95,7 @@ describe('MarketMakerFactory', () => {
 
         describe('buy', () => {
             beforeEach(async () => {
-                await marketMakerService.scrubMarketMaker(assetId)
+                await scrubber.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
                     type: 'linearBondingCurveAMM',
                     ownerId: 'test',

@@ -12,39 +12,29 @@ import {
     TransactionRepository,
     UserRepository,
     BootstrapService,
+    Scrubber,
 } from '../../src'
 
 describe('League Service', function () {
     this.timeout(5000)
 
-    let leagueRepository: LeagueRepository
-    let assetRepository: AssetRepository
-    let marketMakerRepository: MarketMakerRepository
-    let portfolioRepository: PortfolioRepository
+    let leagueRepository = new LeagueRepository()
+    let assetRepository = new AssetRepository()
+    let marketMakerRepository = new MarketMakerRepository()
+    let portfolioRepository = new PortfolioRepository()
+    let transactionRepository = new TransactionRepository()
+    let userRepository = new UserRepository()
+
     let assetHolderService: AssetHolderService
     let leagueService: LeagueFactory
     let boostrapService: BootstrapService
-    let transactionRepository: TransactionRepository
-    let userRepository: UserRepository
+    const scrubber = new Scrubber({ assetRepository, portfolioRepository, userRepository })
 
     let leagueId: string = 'testleague1'
 
     before(async () => {
-        leagueRepository = new LeagueRepository()
-        portfolioRepository = new PortfolioRepository()
-        assetRepository = new AssetRepository()
-        transactionRepository = new TransactionRepository()
-        userRepository = new UserRepository()
-        marketMakerRepository = new MarketMakerRepository()
-
         assetHolderService = new AssetHolderService(assetRepository)
-        leagueService = new LeagueFactory(
-            leagueRepository,
-            assetRepository,
-            portfolioRepository,
-            marketMakerRepository,
-            transactionRepository,
-        )
+        leagueService = new LeagueFactory(leagueRepository, assetRepository, portfolioRepository)
         boostrapService = new BootstrapService(
             assetRepository,
             portfolioRepository,
@@ -57,7 +47,7 @@ describe('League Service', function () {
 
     describe('Create Basic League', () => {
         beforeEach(async () => {
-            await leagueService.scrubLeague(leagueId)
+            await scrubber.scrubLeague(leagueId)
         })
 
         it('should create', async () => {
@@ -84,7 +74,7 @@ describe('League Service', function () {
 
     describe('Delete Empty League', () => {
         beforeEach(async () => {
-            await leagueService.scrubLeague(leagueId)
+            await scrubber.scrubLeague(leagueId)
         })
 
         it('should create', async () => {

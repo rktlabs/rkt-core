@@ -1,7 +1,6 @@
 'use strict'
 
 import { TExchangeTrade } from '../../models/exchangeTrade'
-import { deleteCollection } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 const COLLECTION_NAME = 'exchangeTrades'
@@ -47,10 +46,5 @@ export class ExchangeTradeRepository extends RepositoryBase {
         const id = entity.tradeId
         await this.db.collection(COLLECTION_NAME).doc(id).set(entityJson)
         return id
-    }
-
-    async scrubCollectionAsync() {
-        const entityRef = this.db.collection(COLLECTION_NAME)
-        await deleteCollection(entityRef)
     }
 }

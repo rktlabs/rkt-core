@@ -19,7 +19,7 @@ import {
     TPortfolioOrder,
 } from '..'
 
-const logger = log4js.getLogger()
+const logger = log4js.getLogger('PortfolioOrderService')
 
 export class PortfolioOrderService {
     private portfolioOrderRepository: PortfolioOrderRepository
@@ -91,6 +91,44 @@ export class PortfolioOrderService {
         return newPortfolioOrder
     }
 
+    private async _onOrderExecution(event: TExchangeOrderFill) {
+        this.portfolioOrderEventService.processFillEvent(event)
+
+        if (event.sizeRemaining == 0) {
+            const completeEvent: TExchangeOrderComplete = {
+                eventType: 'orderComplete',
+                publishedAt: DateTime.utc().toString(),
+                orderId: event.orderId,
+                portfolioId: event.portfolioId,
+            }
+            await this.portfolioOrderEventService.processCompleteEvent(completeEvent)
+        }
+    }
+
+    private async _onOrderFail(event: TExchangeOrderFailed) {
+        logger.error('OrederFailed', event)
+
+        this.portfolioOrderEventService.processFailEvent(event)
+    }
+
+    private _generateExchangeOrder = (portfolioId: string, order: TPortfolioOrder) => {
+        const exchangeOrder: TNewExchangeOrderConfig = {
+            operation: 'order',
+            orderType: order.orderType,
+            orderId: order.orderId,
+            portfolioId: portfolioId,
+            assetId: order.assetId,
+            orderSide: order.orderSide,
+            orderSize: order.orderSize,
+        }
+
+        if (order.orderType === 'limit') {
+            exchangeOrder.orderPrice = order.orderPrice
+        }
+
+        return exchangeOrder
+    }
+
     // async unwindOrder(portfolioId: string, orderId: string) {
     //     const order = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
     //     if (!order) {
@@ -131,44 +169,6 @@ export class PortfolioOrderService {
     ////////////////////////////////////////////////////////
     // PRIVATE
     ////////////////////////////////////////////////////////
-
-    private async _onOrderExecution(event: TExchangeOrderFill) {
-        this.portfolioOrderEventService.processFillEvent(event)
-
-        if (event.sizeRemaining == 0) {
-            const completeEvent: TExchangeOrderComplete = {
-                eventType: 'orderComplete',
-                publishedAt: DateTime.utc().toString(),
-                orderId: event.orderId,
-                portfolioId: event.portfolioId,
-            }
-            await this.portfolioOrderEventService.processCompleteEvent(completeEvent)
-        }
-    }
-
-    private async _onOrderFail(event: TExchangeOrderFailed) {
-        logger.error('OrederFailed', event)
-
-        this.portfolioOrderEventService.processFailEvent(event)
-    }
-
-    private _generateExchangeOrder = (portfolioId: string, order: TPortfolioOrder) => {
-        const exchangeOrder: TNewExchangeOrderConfig = {
-            operation: 'order',
-            orderType: order.orderType,
-            orderId: order.orderId,
-            portfolioId: portfolioId,
-            assetId: order.assetId,
-            orderSide: order.orderSide,
-            orderSize: order.orderSize,
-        }
-
-        if (order.orderType === 'limit') {
-            exchangeOrder.orderPrice = order.orderPrice
-        }
-
-        return exchangeOrder
-    }
 
     // private _generateCancelExchangeOrder(portfolioId: string, order: TPortfolioOrder) {
     //     const exchangeOrder: TExchangeCancelOrder = {

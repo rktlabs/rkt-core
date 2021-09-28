@@ -12,7 +12,7 @@ import {
     TExchangeOrderComplete,
 } from '..'
 
-const logger = log4js.getLogger()
+const logger = log4js.getLogger('portfolioOrderEventService')
 
 export class PortfolioOrderEventService {
     private portfolioOrderRepository: PortfolioOrderRepository

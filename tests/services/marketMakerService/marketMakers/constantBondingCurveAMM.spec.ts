@@ -178,7 +178,7 @@ describe('ConstantBondingCurveAMM', function () {
             const result2 = marketMaker.processOrderSize(10)
 
             // verify that ask quote matches price paid for that purchase
-            expect(result2.stateUpdate.quote.last?.unitValue).eq(result.stateUpdate.quote.bid10)
+            expect(result2.stateUpdate.quote.last?.unitValue).eq(result.stateUpdate.quote.ask10)
         })
     })
 })

@@ -1,5 +1,8 @@
 'use strict'
 
+import * as log4js from 'log4js'
+const logger = log4js.getLogger('leagueFactory')
+
 export class RepositoryBase {
     generatePagingProperties(
         qs: any,
@@ -40,7 +43,7 @@ export class RepositoryBase {
                     entityRefCollection = entityRefCollection.where(filterParm, '==', filterValue)
                 }
             } else {
-                console.log(`********* INVALID FILTER: ${filterParm}`)
+                logger.error(`********* INVALID FILTER: ${filterParm}`)
             }
         }
 

@@ -6,7 +6,6 @@ export declare class UserFactory {
     constructor(portfolioRepository: PortfolioRepository, userRepository: UserRepository);
     createUser(payload: TNewUserConfig): Promise<User>;
     deleteUser(userId: string): Promise<void>;
-    scrubUser(userId: string): Promise<void>;
     private _createUserImpl;
     private _createUserPortfolioImpl;
 }

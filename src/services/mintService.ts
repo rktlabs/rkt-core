@@ -10,12 +10,11 @@ import {
     TransactionService,
     //Principal
 } from '..'
-const logger = log4js.getLogger()
+const logger = log4js.getLogger('mintService')
 
 const MINT_PORTFOLIO = 'bank::mint'
 
 export class MintService {
-    // private eventPublisher: INotificationPublisher
     private assetRepository: AssetRepository
     private portfolioRepository: PortfolioRepository
     private transactionService: TransactionService
@@ -25,19 +24,12 @@ export class MintService {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
-        // eventPublisher?: INotificationPublisher,
     ) {
         //this.me = me
-        // this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
-        this.transactionService = new TransactionService(
-            assetRepository,
-            portfolioRepository,
-            transactionRepository,
-            // this.eventPublisher,
-        )
+        this.transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
     }
 
     async mintUnits(assetId: string, units: number) {
