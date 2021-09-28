@@ -18,8 +18,8 @@ import { Schema, Validator } from 'jsonschema'
 //         "orderSize":         { "type": "number" },
 //         "orderPrice":        { "type": "number" },
 //         "tags":         { "type": "object" },
-//         // "state":        { "type": "string" },
-//         // "status":       { "type": "string" },
+//         // "orderState":        { "type": "string" },
+//         // "orderStatus":       { "type": "string" },
 //         // "partial":      { "type": { "enum": [ true, false ] } },
 //         // "error":        { "type": "string" }
 //     },

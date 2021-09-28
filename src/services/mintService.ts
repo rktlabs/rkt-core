@@ -1,13 +1,13 @@
 'use strict'
 
 import * as log4js from 'log4js'
-import { INotificationPublisher, NullNotificationPublisher, TransactionService } from '.'
 import {
     AssetRepository,
     PortfolioRepository,
     NotFoundError,
     TTransfer,
     TransactionRepository,
+    TransactionService,
     //Principal
 } from '..'
 const logger = log4js.getLogger()
@@ -15,7 +15,7 @@ const logger = log4js.getLogger()
 const MINT_PORTFOLIO = 'bank::mint'
 
 export class MintService {
-    private eventPublisher: INotificationPublisher
+    // private eventPublisher: INotificationPublisher
     private assetRepository: AssetRepository
     private portfolioRepository: PortfolioRepository
     private transactionService: TransactionService
@@ -25,10 +25,10 @@ export class MintService {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
-        eventPublisher?: INotificationPublisher,
+        // eventPublisher?: INotificationPublisher,
     ) {
         //this.me = me
-        this.eventPublisher = eventPublisher || new NullNotificationPublisher()
+        // this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.assetRepository = assetRepository
         this.portfolioRepository = portfolioRepository
@@ -36,7 +36,7 @@ export class MintService {
             assetRepository,
             portfolioRepository,
             transactionRepository,
-            this.eventPublisher,
+            // this.eventPublisher,
         )
     }
 

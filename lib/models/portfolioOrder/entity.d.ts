@@ -6,8 +6,8 @@ export declare class PortfolioOrder {
     assetId: string;
     orderSide: OrderSide;
     orderSize: number;
-    status: string;
-    state: string;
+    orderStatus: string;
+    orderState: string;
     orderType: OrderType;
     reason?: string;
     orderPrice?: number;
@@ -15,6 +15,7 @@ export declare class PortfolioOrder {
     tags?: any;
     xids?: any;
     closedAt?: string;
+    executedAt?: string;
     filledPrice?: number;
     filledSize?: number;
     filledValue?: number;

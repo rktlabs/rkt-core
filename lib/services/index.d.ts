@@ -6,5 +6,4 @@ export * from './marketMakerService';
 export * from './transactionService';
 export * from './treasuryService';
 export * from './mintService';
-export * from './simpleExchangeService';
 export * from './exchangeService';

@@ -12,7 +12,7 @@ import {
     BootstrapService,
 } from '../../src'
 
-describe.only('Asset Service', function () {
+describe('Asset Service', function () {
     this.timeout(30000)
 
     let assetRepository: AssetRepository

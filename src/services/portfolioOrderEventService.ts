@@ -5,11 +5,11 @@ import { DateTime } from 'luxon'
 import {
     PortfolioOrderRepository,
     TPortfolioOrder,
-    TPortfolioOrderFill,
-    TPortfolioOrderComplete,
-    TPortfolioOrderFailed,
+    TExchangeOrderFill,
+    TExchangeOrderFailed,
     TPortfolioOrderPatch,
     round4,
+    TExchangeOrderComplete,
 } from '..'
 
 const logger = log4js.getLogger()
@@ -21,7 +21,7 @@ export class PortfolioOrderEventService {
         this.portfolioOrderRepository = portfolioOrderRepository
     }
 
-    processFillEvent = async (payload: TPortfolioOrderFill) => {
+    processFillEvent = async (payload: TExchangeOrderFill) => {
         const orderId = payload.orderId
         const portfolioId = payload.portfolioId
         let portfolioOrder = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
@@ -43,6 +43,7 @@ export class PortfolioOrderEventService {
             filledValue: portfolioOrder.filledValue,
             filledPrice: portfolioOrder.filledPrice,
             sizeRemaining: portfolioOrder.sizeRemaining,
+            executedAt: DateTime.utc().toString(),
         }
 
         await this.portfolioOrderRepository.updateAsync(portfolioId, orderId, orderUpdate)
@@ -50,7 +51,7 @@ export class PortfolioOrderEventService {
         return portfolioOrder
     }
 
-    processCompleteEvent = async (payload: TPortfolioOrderComplete) => {
+    processCompleteEvent = async (payload: TExchangeOrderComplete) => {
         const orderId = payload.orderId
         const portfolioId = payload.portfolioId
         let portfolioOrder = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
@@ -58,7 +59,7 @@ export class PortfolioOrderEventService {
             return
         }
 
-        switch (portfolioOrder.status) {
+        switch (portfolioOrder.orderStatus) {
             case 'received':
                 portfolioOrder = this._updateStatus(portfolioOrder, 'filled')
                 portfolioOrder = this._close(portfolioOrder)
@@ -72,8 +73,8 @@ export class PortfolioOrderEventService {
         }
 
         const orderUpdate: TPortfolioOrderPatch = {
-            state: portfolioOrder.state,
-            status: portfolioOrder.status,
+            orderState: portfolioOrder.orderState,
+            orderStatus: portfolioOrder.orderStatus,
             closedAt: DateTime.utc().toString(),
         }
 
@@ -82,7 +83,7 @@ export class PortfolioOrderEventService {
         return portfolioOrder
     }
 
-    processFailEvent = async (payload: TPortfolioOrderFailed) => {
+    processFailEvent = async (payload: TExchangeOrderFailed) => {
         const orderId = payload.orderId
         const portfolioId = payload.portfolioId
         let portfolioOrder = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
@@ -90,7 +91,7 @@ export class PortfolioOrderEventService {
             return
         }
 
-        switch (portfolioOrder.status) {
+        switch (portfolioOrder.orderStatus) {
             case 'received':
                 portfolioOrder = this._updateStatus(portfolioOrder, 'failed', payload.reason)
                 portfolioOrder = this._close(portfolioOrder)
@@ -100,7 +101,7 @@ export class PortfolioOrderEventService {
             case 'failed':
             default:
                 logger.warn(
-                    `handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) status: ${portfolioOrder.status} - ${payload} - IGNORED`,
+                    `handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) orderStatus: ${portfolioOrder.orderStatus} - ${payload} - IGNORED`,
                 )
                 break
         }
@@ -108,8 +109,8 @@ export class PortfolioOrderEventService {
         this.portfolioOrderRepository.appendOrderEvent(portfolioId, orderId, payload)
 
         const orderUpdate: TPortfolioOrderPatch = {
-            state: portfolioOrder.state,
-            status: portfolioOrder.status,
+            orderState: portfolioOrder.orderState,
+            orderStatus: portfolioOrder.orderStatus,
             closedAt: DateTime.utc().toString(),
         }
         if (portfolioOrder.reason) orderUpdate.reason = portfolioOrder.reason
@@ -123,15 +124,15 @@ export class PortfolioOrderEventService {
     ////////////////////////////////////////////////////////
     private _close = (portfolioOrder: TPortfolioOrder) => {
         logger.trace(`update state for order: ${portfolioOrder.orderId} to closed`)
-        portfolioOrder.state = 'closed'
+        portfolioOrder.orderState = 'closed'
         portfolioOrder.closedAt = DateTime.utc().toString()
         return portfolioOrder
     }
 
     private _updateStatus = (portfolioOrder: TPortfolioOrder, newStatus: string, reason?: string) => {
         const reasonString = reason ? `reason: ${reason}` : ''
-        logger.trace(`update status for order: ${portfolioOrder.orderId} to ${newStatus} ${reasonString}`)
-        portfolioOrder.status = newStatus
+        logger.trace(`update orderStatus for order: ${portfolioOrder.orderId} to ${newStatus} ${reasonString}`)
+        portfolioOrder.orderStatus = newStatus
         if (reason) {
             portfolioOrder.reason = reason
         }

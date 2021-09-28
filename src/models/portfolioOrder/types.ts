@@ -13,25 +13,29 @@ export type TNewPortfolioOrderProps = {
 }
 
 export type TPortfolioOrder = {
-    createdAt: string
     orderId: string
+
     assetId: string
+    orderType: OrderType
     orderSide: OrderSide
     orderSize: number
-    status: string
-    state: string
-    orderType: OrderType
+    orderPrice?: number
+    sizeRemaining?: number
+    tags?: any
+    events: any[]
+
+    orderStatus: string
+    orderState: string
+
+    createdAt: string
+    closedAt?: string
     reason?: string
 
-    orderPrice?: number
-    events: any[]
-    tags?: any
-    xids?: any
-    closedAt?: string
     filledPrice?: number
     filledSize?: number
     filledValue?: number
-    sizeRemaining?: number
+
+    executedAt?: string
 }
 
 export type TPortfolioOrderPatch = {
@@ -40,28 +44,8 @@ export type TPortfolioOrderPatch = {
     filledSize?: number
     filledValue?: number
     sizeRemaining?: number
-    status?: string
-    state?: string
+    orderStatus?: string
+    orderState?: string
     reason?: string
-}
-
-export type TPortfolioOrderEvent = {
-    orderId: string
-    portfolioId: string
-    eventType: string
-    publishedAt: string
-}
-
-export type TPortfolioOrderFill = TPortfolioOrderEvent & {
-    filledSize: number
-    filledValue: number
-    filledPrice: number
-    sizeRemaining: number
-    tradeId: string
-}
-
-export type TPortfolioOrderComplete = TPortfolioOrderEvent
-
-export type TPortfolioOrderFailed = TPortfolioOrderEvent & {
-    reason: string
+    executedAt?: string // TODO: Populate this?
 }

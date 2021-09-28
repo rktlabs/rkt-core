@@ -48,7 +48,7 @@ export abstract class NotificationPublisherBase implements INotificationPublishe
             transactionId: transaction.transactionId,
             xids: transaction.xids,
             tags: transaction.tags,
-            status: transaction.status,
+            transactionStatus: transaction.transactionStatus,
         })
 
         return this.publishNotification(notificationPayload)
@@ -63,7 +63,7 @@ export abstract class NotificationPublisherBase implements INotificationPublishe
         const notificationPayload = new Notifications.TransactionError(source, 'transactionEvent', {
             transactionId: transaction.transactionId,
             xids: transaction.xids,
-            status: transaction.status,
+            transactionStatus: transaction.transactionStatus,
             reason,
         })
         if (!stack) {

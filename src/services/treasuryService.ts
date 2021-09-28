@@ -2,26 +2,25 @@
 
 import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
-import { INotificationPublisher, MintService, NullNotificationPublisher, TransactionService } from '.'
+import { AssetHolderService, TransactionService, MintService } from '.'
 import {
     UserRepository,
-    PortfolioRepository,
-    NotFoundError,
-    TPortfolioDeposit,
-    TTransfer,
-    AssetHolderService,
     AssetRepository,
-    TransactionRepository,
+    PortfolioRepository,
     PortfolioFactory,
-    //Principal,
+    TransactionRepository,
+    NotFoundError,
+    TTransfer,
+    TPortfolioDeposit,
 } from '..'
+
 const logger = log4js.getLogger()
 
 const BANK_PORTFOLIO = 'bank::treasury'
 const COIN = 'coin::rkt'
 
 export class TreasuryService {
-    private eventPublisher: INotificationPublisher
+    // private eventPublisher: INotificationPublisher
     private userRepository: UserRepository
     private assetRepository: AssetRepository
     private assetHolderService: AssetHolderService
@@ -36,10 +35,10 @@ export class TreasuryService {
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
         userRepository: UserRepository,
-        eventPublisher?: INotificationPublisher,
+        //eventPublisher?: INotificationPublisher,
     ) {
         //this.me = me
-        this.eventPublisher = eventPublisher || new NullNotificationPublisher()
+        // this.eventPublisher = eventPublisher || new NullNotificationPublisher()
 
         this.userRepository = userRepository
         this.assetRepository = assetRepository
@@ -50,7 +49,7 @@ export class TreasuryService {
             assetRepository,
             portfolioRepository,
             transactionRepository,
-            this.eventPublisher,
+            // this.eventPublisher,
         )
         this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
     }

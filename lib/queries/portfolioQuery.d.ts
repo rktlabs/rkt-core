@@ -4,7 +4,7 @@ export declare class PortfolioQuery {
     portfolioActivityRepository: PortfolioActivityRepository;
     portfolioHoldingRepository: PortfolioHoldingRepository;
     portfolioOrderRepository: PortfolioOrderRepository;
-    constructor(portfolioRepository: PortfolioRepository);
+    constructor(portfolioRepository: PortfolioRepository, portfolioOrderRepository: PortfolioOrderRepository);
     getListAsync(qs?: any): Promise<{
         data: import("..").TPortfolio[];
     }>;

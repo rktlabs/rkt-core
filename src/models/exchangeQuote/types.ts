@@ -1,7 +1,18 @@
 'use strict'
 
-import { TMarketMakerQuote } from '../..'
+export type TExchangeQuoteLast = {
+    side: string
+    units: number
+    value: number
+    unitValue: number
+}
 
 export type TExchangeQuote = {
     assetId: string
-} & TMarketMakerQuote
+    last?: TExchangeQuoteLast
+    spot: number
+    bid: number
+    ask: number
+    bid10: number
+    ask10: number
+}

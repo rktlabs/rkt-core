@@ -24,7 +24,7 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
     })
 
     serializer.register('transaction', {
-        whitelist: ['createdAt', 'transactionId', 'status', 'inputs', 'outputs', 'xids', 'tags'],
+        whitelist: ['createdAt', 'transactionId', 'transactionStatus', 'inputs', 'outputs', 'xids', 'tags'],
         links: (record: any) => {
             return {
                 self: {

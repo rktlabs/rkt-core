@@ -1,23 +1,21 @@
 'use strict'
 
+import * as log4js from 'log4js'
+import { PortfolioFactory, AssetFactory } from '.'
 import {
     AssetRepository,
     LeagueRepository,
     PortfolioRepository,
+    MarketMakerRepository,
+    TransactionRepository,
     TNewLeagueConfig,
     DuplicateError,
     ConflictError,
     League,
     TLeagueAssetDef,
-    TNewAssetConfig,
     TAssetCore,
-    TransactionRepository,
-    MarketMakerRepository,
-    AssetFactory,
-    PortfolioFactory,
+    TNewAssetConfig,
 } from '..'
-
-import * as log4js from 'log4js'
 const logger = log4js.getLogger('leagueService')
 
 export class LeagueFactory {

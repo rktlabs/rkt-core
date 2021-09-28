@@ -25,7 +25,7 @@ import {
 const logger = log4js.getLogger('bootstrapper')
 
 describe('PortfolioOrderService', function () {
-    describe('persist marketMaker', function () {
+    describe.only('persist marketMaker', function () {
         this.timeout(20000)
 
         let portfolioRepository: PortfolioRepository
@@ -71,7 +71,6 @@ describe('PortfolioOrderService', function () {
                 portfolioRepository,
                 transactionRepository,
                 marketMakerRepository,
-                portfolioOrderRepository,
             )
             treasuryService = new TreasuryService(
                 assetRepository,
@@ -84,6 +83,7 @@ describe('PortfolioOrderService', function () {
                 portfolioRepository,
                 transactionRepository,
                 marketMakerRepository,
+                portfolioOrderRepository,
             )
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
 
@@ -181,7 +181,8 @@ describe('PortfolioOrderService', function () {
                         tags: { test: true },
                     }
 
-                    await exchangeService.processNewExchangeOrderEvent(orderPayload)
+                    // await exchangeService.processOrder(orderPayload)
+                    await portfolioOrderService.submitNewPortfolioOrderAsync(`user::testbot`, orderPayload)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

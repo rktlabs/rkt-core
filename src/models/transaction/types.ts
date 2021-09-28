@@ -39,7 +39,7 @@ export type TransactionLeg = {
 export type TTransaction = {
     transactionId: string
     createdAt: string
-    status: string
+    transactionStatus: string
     error?: string
 
     inputs: TransactionLeg[]
@@ -50,6 +50,6 @@ export type TTransaction = {
 }
 
 export type TTransactionPatch = {
-    status: string
+    transactionStatus: string
     error?: string
 }

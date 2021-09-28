@@ -12,7 +12,7 @@ import { TransactionLeg, TTransaction, TTransactionNew } from './types'
 export class Transaction {
     transactionId: string
     createdAt: string
-    status: string
+    transactionStatus: string
     error?: string
 
     inputs: TransactionLeg[]
@@ -24,7 +24,7 @@ export class Transaction {
     constructor(props: TTransaction) {
         this.transactionId = props.transactionId
         this.createdAt = props.createdAt
-        this.status = props.status
+        this.transactionStatus = props.transactionStatus
         this.inputs = props.inputs
         this.outputs = props.outputs
         this.tags = props.tags
@@ -39,7 +39,7 @@ export class Transaction {
         const newTransactionProps: TTransaction = {
             transactionId,
             createdAt,
-            status: 'new',
+            transactionStatus: 'new',
             inputs: props.inputs,
             outputs: props.outputs,
         }

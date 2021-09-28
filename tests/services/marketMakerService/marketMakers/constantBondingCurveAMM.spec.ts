@@ -46,7 +46,7 @@ describe('ConstantBondingCurveAMM', function () {
                 marketMakerRepository,
                 makerConfig,
             )
-            const currentPrice = marketMaker.spot_price()
+            const currentPrice = marketMaker.spotPrice()
             expect(currentPrice).to.eq(5)
         })
 
@@ -66,7 +66,7 @@ describe('ConstantBondingCurveAMM', function () {
                 marketMakerRepository,
                 makerConfig,
             )
-            const currentPrice = marketMaker.spot_price()
+            const currentPrice = marketMaker.spotPrice()
             expect(currentPrice).to.eq(5)
         })
 
@@ -86,7 +86,7 @@ describe('ConstantBondingCurveAMM', function () {
                 marketMakerRepository,
                 makerConfig,
             )
-            const cost = marketMaker.compute_price(4)
+            const cost = marketMaker.computePrice(4)
             expect(cost).to.eq(20)
         })
 
@@ -106,7 +106,7 @@ describe('ConstantBondingCurveAMM', function () {
                 marketMakerRepository,
                 makerConfig,
             )
-            const cost = marketMaker.compute_price(4)
+            const cost = marketMaker.computePrice(4)
             expect(cost).to.eq(20)
         })
 
@@ -126,10 +126,10 @@ describe('ConstantBondingCurveAMM', function () {
                 marketMakerRepository,
                 makerConfig,
             )
-            const cost = marketMaker.compute_value(4)
+            const cost = marketMaker.computeValue(4)
             expect(cost).to.eq(20)
 
-            const cost2 = marketMaker.compute_price(-4)
+            const cost2 = marketMaker.computePrice(-4)
             expect(cost2).to.eq(-20)
         })
     })
@@ -164,21 +164,21 @@ describe('ConstantBondingCurveAMM', function () {
                 marketMakerRepository,
                 makerConfig,
             )
-            const result = marketMaker.processAMMOrderImpl(4)
+            const result = marketMaker.processOrderSize(4)
             expect(result.makerDeltaUnits).eq(-4)
             expect(result.makerDeltaValue).eq(20)
-            expect(result.quote?.last?.side).eq('bid')
-            expect(result.quote?.last?.units).eq(4)
-            expect(result.quote?.last?.value).eq(20)
-            expect(result.quote?.last?.unitValue).eq(5)
+            expect(result.stateUpdate.quote?.last?.side).eq('bid')
+            expect(result.stateUpdate.quote?.last?.units).eq(4)
+            expect(result.stateUpdate.quote?.last?.value).eq(20)
+            expect(result.stateUpdate.quote?.last?.unitValue).eq(5)
 
             expect(marketMaker.params.madeUnits).eq(4)
             expect(marketMaker.params.cumulativeValue).eq(20)
 
-            const result2 = marketMaker.processAMMOrderImpl(10)
+            const result2 = marketMaker.processOrderSize(10)
 
             // verify that ask quote matches price paid for that purchase
-            expect(result2.quote.last?.unitValue).eq(result.quote.bid10)
+            expect(result2.stateUpdate.quote.last?.unitValue).eq(result.stateUpdate.quote.bid10)
         })
     })
 })

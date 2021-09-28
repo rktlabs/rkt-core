@@ -1,15 +1,9 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { BondingCurveAMM, BondingCurveAMMParams } from './bondingCurveAMM'
-import { TNewMarketMakerConfig, TMarketMaker, TMarketMakerQuote } from '../..'
+import { TNewMarketMakerConfig, TMarketMaker } from '../..'
 import { AssetRepository, PortfolioRepository, TransactionRepository, MarketMakerRepository } from '../../../..'
-
-export type LinearBondingCurveAMMSettings = {
-    initialUnits?: number
-    initialValue?: number
-    initialPrice?: number
-}
+import { BondingCurveAMM, BondingCurveAMMSettings, BondingCurveAMMParams } from './bondingCurveAMM'
 
 export class LinearBondingCurveAMM extends BondingCurveAMM {
     static newMaker(
@@ -27,6 +21,9 @@ export class LinearBondingCurveAMM extends BondingCurveAMM {
             tags: config.tags,
         }
 
+        /////////////////////////////////////////////////////////
+        // create specific object type
+        /////////////////////////////////////////////////////////
         const newEntity = new LinearBondingCurveAMM(
             assetRepository,
             portfolioRepository,
@@ -34,31 +31,18 @@ export class LinearBondingCurveAMM extends BondingCurveAMM {
             marketMakerRepository,
             makerProps,
         )
+
+        /////////////////////////////////////////////////////////
+        // set initial state (params) after contstructed
+        /////////////////////////////////////////////////////////
         newEntity.params = newEntity.computeInitialState(config.settings)
 
         /////////////////////////////////////////////////////////
         // compute the quote(s)
         /////////////////////////////////////////////////////////
-        // const quote: TMarketMakerQuote = {
-        //     current: newEntity.spot_price(),
-        //     bid1: newEntity.compute_price(),
-        //     ask1: newEntity.compute_value(),
-        //     bid10: newEntity.compute_price(10) / 10,
-        //     ask10: newEntity.params.madeUnits >= 10 ? newEntity.compute_value(10) / 10 : NaN,
-        // }
+        newEntity.quote = newEntity.getQuote()
 
         return newEntity
-    }
-
-    private computeInitialState(settings: LinearBondingCurveAMMSettings): BondingCurveAMMParams {
-        const makerState: BondingCurveAMMParams = {
-            madeUnits: settings?.initialUnits || 0,
-            cumulativeValue: settings?.initialValue || 0,
-            y0: settings?.initialPrice || 1,
-            e: 1,
-            m: 1,
-        }
-        return makerState
     }
 
     constructor(
@@ -69,5 +53,16 @@ export class LinearBondingCurveAMM extends BondingCurveAMM {
         props: TMarketMaker,
     ) {
         super(assetRepository, portfolioRepository, transactionRepository, marketMakerRepository, props)
+    }
+
+    private computeInitialState(settings: BondingCurveAMMSettings): BondingCurveAMMParams {
+        const makerState: BondingCurveAMMParams = {
+            madeUnits: settings?.initialUnits || 0,
+            cumulativeValue: settings?.initialValue || 0,
+            y0: settings?.initialPrice || 1,
+            e: 1,
+            m: 1,
+        }
+        return makerState
     }
 }

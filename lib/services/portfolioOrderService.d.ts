@@ -1,13 +1,13 @@
-import { AssetRepository, PortfolioRepository, TransactionRepository, MarketMakerRepository, TNewPortfolioOrderProps, PortfolioOrder, TPortfolioOrder } from '..';
+import { PortfolioOrderRepository, AssetRepository, PortfolioRepository, TransactionRepository, MarketMakerRepository, TNewPortfolioOrderProps, PortfolioOrder } from '..';
 export declare class PortfolioOrderService {
     private portfolioOrderRepository;
     private assetRepository;
     private portfolioRepository;
+    private portfolioOrderEventService;
     private exchangeService;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository);
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository, portfolioOrderRepository: PortfolioOrderRepository);
     submitNewPortfolioOrderAsync(portfolioId: string, orderPayload: TNewPortfolioOrderProps): Promise<PortfolioOrder>;
-    unwindOrder(portfolioId: string, orderId: string): Promise<PortfolioOrder>;
-    cancelOrder(portfolioId: string, orderId: string): Promise<TPortfolioOrder | null>;
+    private _onOrderExecution;
+    private _onOrderFail;
     private _generateExchangeOrder;
-    private _generateCancelExchangeOrder;
 }

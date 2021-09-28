@@ -1,13 +1,11 @@
-import { INotificationPublisher } from '.';
-import { AssetRepository, PortfolioRepository, TPurchase, TransactionRepository, TTransactionNew, TTransfer } from '..';
+import { PortfolioRepository, AssetRepository, TransactionRepository, TPurchase, TTransactionNew, TTransfer } from '..';
 export declare class TransactionService {
-    private eventPublisher;
     private portfolioRepository;
     private assetRepository;
     private assetHolderRepository;
     private transactionRepository;
     private assetHolderService;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, eventPublisher?: INotificationPublisher);
+    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository);
     executePurchaseAsync(exchangeData: TPurchase): Promise<any[]>;
     executeTransferAsync(transferData: TTransfer): Promise<any[]>;
     executeTransactionAsync(transactionData: TTransactionNew): Promise<any[]>;

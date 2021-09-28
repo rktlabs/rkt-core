@@ -1,34 +1,34 @@
 'use strict'
 
+import { EventEmitter } from 'events'
 import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
+import { TransactionService, MarketMakerFactory } from '.'
 import {
+    ExchangeOrderRepository,
+    ExchangeTradeRepository,
+    ExchangeQuoteRepository,
+    PortfolioRepository,
     AssetHolderRepository,
     AssetRepository,
-    ConflictError,
-    ExchangeOrder,
-    ExchangeOrderRepository,
-    ExchangeQuoteRepository,
-    ExchangeTradeRepository,
-    IMarketMaker,
-    INotificationPublisher,
-    InsufficientBalance,
-    MarketMakerRepository,
-    MarketMakerFactory,
-    NullNotificationPublisher,
-    OrderSide,
-    PortfolioOrderEventService,
-    PortfolioOrderRepository,
-    PortfolioRepository,
-    round4,
-    TExchangeOrderPatch,
-    TExchangeQuote,
-    TNewExchangeOrderConfig,
-    Trade,
     TransactionRepository,
-    TransactionService,
+    MarketMakerRepository,
+    TExchangeOrderFill,
+    TExchangeOrderFailed,
+    TNewExchangeOrderConfig,
+    ExchangeOrder,
+    TExchangeQuote,
+    ExchangeTrade,
+    TExchangeOrderPatch,
+    TMaker,
+    TTaker,
+    round4,
     TTransactionNew,
+    OrderSide,
+    ConflictError,
+    InsufficientBalance,
 } from '..'
+
 const logger = log4js.getLogger()
 
 ///////////////////////////////////////////////////
@@ -40,27 +40,24 @@ const logger = log4js.getLogger()
 // - applies transaction returned from marketMaker?
 
 export class ExchangeService {
-    private orderNotificationPublisher: INotificationPublisher
+    private emitter: EventEmitter
 
-    private portfolioRepository: PortfolioRepository
-    private assetHolderRepository: AssetHolderRepository
     private exchangeOrderRepository: ExchangeOrderRepository
     private exchangeTradeRepository: ExchangeTradeRepository
     private exchangeQuoteRepository: ExchangeQuoteRepository
+
+    private portfolioRepository: PortfolioRepository
+    private assetHolderRepository: AssetHolderRepository
     private transactionService: TransactionService
     private marketMakerService: MarketMakerFactory
-    private portfolioOrderEventService: PortfolioOrderEventService
 
     constructor(
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
         marketMakerRepository: MarketMakerRepository,
-        portfolioOrderRepository: PortfolioOrderRepository,
-        eventPublisher?: INotificationPublisher,
+        emitter?: EventEmitter,
     ) {
-        this.orderNotificationPublisher = eventPublisher || new NullNotificationPublisher()
-
         this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioRepository = portfolioRepository
 
@@ -76,15 +73,31 @@ export class ExchangeService {
             marketMakerRepository,
         )
 
-        this.portfolioOrderEventService = new PortfolioOrderEventService(portfolioOrderRepository)
+        if (emitter) {
+            this.emitter = emitter
+        } else {
+            this.emitter = new EventEmitter()
+        }
+    }
+
+    on(event: string, listener: (...args: any[]) => void) {
+        this.emitter.on(event, listener)
+    }
+
+    emitOrderExecution(event: TExchangeOrderFill) {
+        this.emitter.emit('orderExecution', event)
+    }
+
+    emitOrderFail(event: TExchangeOrderFailed) {
+        this.emitter.emit('orderExecution', event)
     }
 
     ////////////////////////////////////////////////////
     //  handleNewExchangeOrderAsync
     //  - new order handler - accepts raw json as input
     ////////////////////////////////////////////////////
-    async processNewExchangeOrderEvent(orderPayload: TNewExchangeOrderConfig) {
-        //logger.trace(`processNewExchangeOrderAsync: ${JSON.stringify(orderPayload)}`)
+    async processOrder(orderPayload: TNewExchangeOrderConfig) {
+        logger.trace(`processOrder`, orderPayload)
 
         let exchangeOrder: ExchangeOrder | undefined
         try {
@@ -102,13 +115,23 @@ export class ExchangeService {
 
             const marketMaker = await this.marketMakerService.getMarketMakerAsync(assetId)
             if (marketMaker) {
+                ////////////////////////////////////////////////////////
+                // Set up the handlers for emitted trades and quote updates
+                ////////////////////////////////////////////////////////
+                marketMaker.on('quote', (quote: TExchangeQuote) => {
+                    this._onUpdateQuote(quote)
+                })
+                marketMaker.on('trade', (trade: ExchangeTrade) => {
+                    this._onTrade(trade)
+                })
+
                 if (orderSide === 'bid') {
                     await this._verifyAssetsAsync(portfolioId, assetId, orderSide, orderSize)
                 } else if (orderSide === 'ask') {
                     ////////////////////////////
                     // get bid price and verify funds
                     ////////////////////////////
-                    const currentPrice = marketMaker?.quote?.bid1 || 1
+                    const currentPrice = marketMaker?.quote?.ask || 1
                     await this._verifyFundsAsync(portfolioId, orderSide, orderSize, currentPrice)
                 }
 
@@ -117,12 +140,13 @@ export class ExchangeService {
                 // and STORE it
                 ////////////////////////////////////
                 exchangeOrder = ExchangeOrder.newExchangeOrder(orderPayload)
-                exchangeOrder.status = 'received'
                 await this.exchangeOrderRepository.storeAsync(exchangeOrder)
 
                 const orderId = exchangeOrder.orderId
 
                 const order = MarketMakerFactory.generateOrder({
+                    operation: 'order',
+                    orderType: 'market',
                     assetId: assetId,
                     orderId: orderId,
                     portfolioId: portfolioId,
@@ -130,46 +154,22 @@ export class ExchangeService {
                     orderSize: orderSize,
                 })
 
-                const trade = await marketMaker.processOrder(order)
-
-                if (trade) {
-                    if (trade.taker.filledSize) {
-                        await this._onFill(trade)
-                        await this._onTrade(trade)
-                        await this._onUpdateQuote(marketMaker)
-
-                        const takerPortfolioId = trade.taker.portfolioId
-                        const takerDeltaUnits = trade.taker.filledSize
-                        const takerDeltaValue = trade.taker.filledValue
-
-                        const makerPortfolioId = trade.makers[0].portfolioId
-
-                        await this._processTransaction(
-                            orderId,
-                            exchangeOrder.assetId,
-                            trade.tradeId,
-                            takerPortfolioId,
-                            takerDeltaUnits,
-                            takerDeltaValue,
-                            makerPortfolioId,
-                        )
-                    }
-                }
+                await marketMaker.processOrder(order)
             }
         } catch (error: any) {
-            if (exchangeOrder && exchangeOrder.status === 'received') {
+            if (exchangeOrder && exchangeOrder.orderStatus === 'received') {
                 // received and stored
                 const reason = error.message
 
                 const updateData: TExchangeOrderPatch = {
-                    status: 'error',
-                    state: 'closed',
+                    orderStatus: 'error',
+                    orderState: 'closed',
                     closedAt: DateTime.utc().toString(),
                 }
                 if (reason) updateData.reason = reason
                 await this.exchangeOrderRepository.updateAsync(exchangeOrder.orderId, updateData)
 
-                this.portfolioOrderEventService.processFailEvent({
+                this.emitOrderFail({
                     eventType: 'orderFail',
                     publishedAt: DateTime.utc().toString(),
                     orderId: exchangeOrder.orderId,
@@ -188,7 +188,87 @@ export class ExchangeService {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private _updateExchangeOrder = async (portfolioId: string, orderId: string, payload: TExchangeOrderPatch) => {
+    ////////////////////////////////////////////////////
+    //  onTrade
+    //  - store trade
+    //  - publish trade to clearing house
+    ////////////////////////////////////////////////////
+    private async _onTrade(trade: ExchangeTrade) {
+        logger.info('onTrade', trade)
+        if (trade) {
+            if (trade.taker.filledSize) {
+                await this.exchangeTradeRepository.storeAsync(trade) // async - don't wait to finish
+
+                await this._processTransaction(
+                    trade.taker.orderId,
+                    trade.assetId,
+                    trade.tradeId,
+                    trade.taker.portfolioId,
+                    trade.taker.filledSize,
+                    trade.taker.filledValue,
+                    trade.makers[0].portfolioId,
+                )
+
+                await this._deliverOrderUpdateStatus(trade)
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////
+    //  onFill
+    //  - handle order fill resulting from trade
+    ////////////////////////////////////////////////////
+    private async _deliverOrderUpdateStatus(trade: ExchangeTrade) {
+        /////////////////////////
+        // first do taker
+        /////////////////////////
+        // NOTE: This is an async operation with no wait.
+        this._deliverTakerOrderUpdate(trade.tradeId, trade.taker)
+
+        /////////////////////////
+        // Then do makers
+        /////////////////////////
+        // NOTE: This is an async operation with no wait.
+        trade.makers.forEach(async (maker: TMaker) => {
+            this._deliverMakerOrderUpdate(trade.tradeId, maker)
+        })
+    }
+
+    private async _deliverMakerOrderUpdate(tradeId: string, maker: TMaker) {
+        // nothing to do here right now.
+        // for Automated market makers, there is no source order so nothing to notify
+        if (maker.orderId) {
+            logger.warn('Maker Update should not be here. should be no order Id for maker with AMM')
+        }
+    }
+
+    private async _deliverTakerOrderUpdate(tradeId: string, taker: TTaker) {
+        this._updateExchangeOrder(taker.orderId, {
+            orderStatus: taker.isClosed ? 'filled' : 'partial',
+            orderState: !taker.isClosed && taker.sizeRemaining > 0 ? 'open' : 'closed',
+            executedAt: DateTime.utc().toString(),
+            filledSize: taker.filledSize,
+            filledValue: taker.filledValue,
+            filledPrice: taker.filledPrice,
+            sizeRemaining: taker.sizeRemaining,
+        }) // async - don't wait to finish
+
+        const event: TExchangeOrderFill = {
+            eventType: 'orderExecution',
+            publishedAt: DateTime.utc().toString(),
+            orderId: taker.orderId,
+            portfolioId: taker.portfolioId,
+            filledSize: taker.filledSize,
+            filledValue: taker.filledValue,
+            filledPrice: taker.filledPrice,
+            sizeRemaining: taker.sizeRemaining,
+            tradeId: tradeId,
+        }
+
+        this.emitOrderExecution(event)
+    }
+
+    private _updateExchangeOrder = async (orderId: string, payload: TExchangeOrderPatch) => {
         let exchangeOrder = await this.exchangeOrderRepository.getDetailAsync(orderId)
         if (!exchangeOrder) {
             return
@@ -201,8 +281,8 @@ export class ExchangeService {
         exchangeOrder.sizeRemaining = payload.sizeRemaining
 
         const orderUpdate: TExchangeOrderPatch = {
-            status: payload.status,
-            state: payload.state,
+            orderStatus: payload.orderStatus,
+            orderState: payload.orderState,
             executedAt: payload.executedAt,
             filledSize: exchangeOrder.filledSize,
             filledValue: exchangeOrder.filledValue,
@@ -219,73 +299,11 @@ export class ExchangeService {
     }
 
     ////////////////////////////////////////////////////
-    //  onFill
-    //  - handle order fill resulting from trade
-    ////////////////////////////////////////////////////
-
-    private async _onFill(trade: Trade) {
-        const taker = trade.taker
-        const orderId = taker.orderId
-        const portfolioId = taker.portfolioId
-        const filledSize = taker.filledSize
-        const filledValue = taker.filledValue
-        const filledPrice = taker.filledPrice
-        const makerRemaining = taker.sizeRemaining
-        const newMakerStatus = taker.isClosed ? 'filled' : 'partial'
-        const newMakerState = !taker.isClosed && taker.sizeRemaining > 0 ? 'open' : 'closed'
-
-        await this._updateExchangeOrder(portfolioId, orderId, {
-            status: newMakerStatus,
-            state: newMakerState,
-            executedAt: DateTime.utc().toString(),
-            filledSize,
-            filledValue,
-            filledPrice,
-            sizeRemaining: makerRemaining,
-        }) // async - don't wait to finish
-
-        this.portfolioOrderEventService.processFillEvent({
-            eventType: 'orderFill',
-            publishedAt: DateTime.utc().toString(),
-            orderId: orderId,
-            portfolioId: portfolioId,
-            filledSize: filledSize,
-            filledValue: filledValue,
-            filledPrice: filledPrice,
-            sizeRemaining: makerRemaining,
-            tradeId: trade.tradeId,
-        })
-    }
-
-    ////////////////////////////////////////////////////
-    //  onTrade
-    //  - store trade
-    //  - publish trade to clearing house
-    ////////////////////////////////////////////////////
-    private _onTrade = async (trade: Trade) => {
-        await this.exchangeTradeRepository.storeAsync(trade) // async - don't wait to finish
-
-        await this.portfolioOrderEventService.processCompleteEvent({
-            eventType: 'orderComplete',
-            publishedAt: DateTime.utc().toString(),
-            orderId: trade.taker.orderId,
-            portfolioId: trade.taker.portfolioId,
-        })
-    }
-
-    ////////////////////////////////////////////////////
     //  onUpdateQuote
     //  - store new quoted for the asset indicated
     ////////////////////////////////////////////////////
-    private _onUpdateQuote = async (marketMaker: IMarketMaker) => {
-        const assetId = marketMaker.assetId
-        const marketMakerQuote = marketMaker.quote
-        const exchangeQuote: any = {
-            assetId: marketMaker.assetId,
-            ...marketMakerQuote,
-        } as TExchangeQuote
-
-        await this.exchangeQuoteRepository.storeAsync(assetId, exchangeQuote)
+    private _onUpdateQuote = async (quote: TExchangeQuote) => {
+        await this.exchangeQuoteRepository.storeAsync(quote.assetId, quote)
     }
 
     ////////////////////////////////////////////////////
@@ -293,7 +311,7 @@ export class ExchangeService {
     //  - submit new order (order or cancel) to order book
     ////////////////////////////////////////////////////
     private async _processTransaction(
-        orderId: string,
+        takerOrderId: string,
         assetId: string,
         tradeId: string,
         takerPortfolioId: string,
@@ -366,7 +384,7 @@ export class ExchangeService {
 
         // set the orderId
         newTransactionData.xids = {
-            orderId: orderId,
+            orderId: takerOrderId,
             orderPortfolioId: takerPortfolioId,
             tradeId: tradeId,
         }

@@ -75,6 +75,8 @@ describe('MarketMakerFactory', () => {
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
                     const order = MarketMakerFactory.generateOrder({
+                        operation: 'order',
+                        orderType: 'market',
                         assetId: assetId,
                         orderId: 'order1',
                         portfolioId: `asset::${assetId}`,
@@ -125,6 +127,8 @@ describe('MarketMakerFactory', () => {
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
                     const order = MarketMakerFactory.generateOrder({
+                        operation: 'order',
+                        orderType: 'market',
                         assetId: assetId,
                         orderId: 'order1',
                         portfolioId: `asset::${assetId}`,

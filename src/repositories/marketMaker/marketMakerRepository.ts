@@ -1,7 +1,7 @@
 'use strict'
 import * as log4js from 'log4js'
 import { MarketMakerBase } from '../../services/marketMakerService/marketMakerBase/entity'
-import { TMarketMaker, TMarketMakerPatch } from '../../services/marketMakerService/marketMakerBase/types'
+import { TMarketMaker } from '../../services/marketMakerService/marketMakerBase/types'
 import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
@@ -55,7 +55,7 @@ export class MarketMakerRepository extends RepositoryBase {
         logger.trace(`store ${entity.assetId}`)
         let theEntity: TMarketMaker
         if (entity instanceof MarketMakerBase) {
-            theEntity = (entity as MarketMakerBase).flattenMaker()
+            theEntity = this.flattenMaker(entity)
         } else {
             theEntity = entity
         }
@@ -66,11 +66,11 @@ export class MarketMakerRepository extends RepositoryBase {
         await entityRef.set(entityData)
     }
 
-    async updateAsync(assetId: string, entityData: TMarketMakerPatch) {
-        logger.trace(`update ${assetId}`)
-        const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
-        await entityRef.update(entityData)
-    }
+    // async updateAsync(assetId: string, entityData: TMarketMakerPatch) {
+    //     logger.trace(`update ${assetId}`)
+    //     const entityRef = this.db.collection(COLLECTION_NAME).doc(assetId)
+    //     await entityRef.update(entityData)
+    // }
 
     async updateMakerStateAsync(assetId: string, stateUpdate: any) {
         logger.trace(`updateMakerState ${assetId}`)
@@ -99,5 +99,25 @@ export class MarketMakerRepository extends RepositoryBase {
         } else {
             return null
         }
+    }
+
+    ////////////////////////////////////////////////////////
+    // PRIVATE
+    ////////////////////////////////////////////////////////
+
+    private flattenMaker(entity: MarketMakerBase | TMarketMaker) {
+        const makerData: TMarketMaker = {
+            createdAt: entity.createdAt,
+            type: entity.type,
+            assetId: entity.assetId,
+            ownerId: entity.ownerId,
+            tags: entity.tags,
+            params: entity.params,
+            quote: entity.quote,
+        }
+        if (entity.portfolioId) {
+            makerData.portfolioId = entity.portfolioId
+        }
+        return makerData
     }
 }

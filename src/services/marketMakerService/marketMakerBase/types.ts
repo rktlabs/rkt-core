@@ -1,5 +1,7 @@
 'use strict'
 
+import { TExchangeQuote } from '../../..'
+
 export type TNewMarketMakerConfig = {
     type: string
     ownerId: string
@@ -17,25 +19,7 @@ export type TMarketMaker = {
     assetId: string
     tags?: any
     params?: any
-    quote?: TMarketMakerQuote
-}
-
-export type TMarketMakerPatch = {
-    params?: any
-}
-
-export type TMarketMakerQuote = {
-    last?: {
-        side: string
-        units: number
-        value: number
-        unitValue: number
-    }
-    current: number
-    bid1: number
-    ask1: number
-    bid10: number
-    ask10: number
+    quote?: TExchangeQuote
 }
 
 export type TMakerResult = {
@@ -43,5 +27,4 @@ export type TMakerResult = {
     makerDeltaUnits: number
     makerDeltaValue: number
     stateUpdate: any
-    quote: TMarketMakerQuote
 }

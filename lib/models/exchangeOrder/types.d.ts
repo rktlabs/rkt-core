@@ -1,13 +1,14 @@
 import { OrderType, OrderSide, OperationType } from '../..';
 export declare type TNewExchangeOrderConfig = {
     operation: OperationType;
+    portfolioId: string;
+    orderId: string;
+    assetId: string;
     orderType: OrderType;
     orderSide: OrderSide;
-    assetId: string;
-    portfolioId: string;
-    orderPrice?: number;
     orderSize: number;
-    orderId: string;
+    orderPrice?: number;
+    sizeRemaining?: number;
     tags?: any;
 };
 export declare type TExchangeCancelOrder = {
@@ -17,18 +18,19 @@ export declare type TExchangeCancelOrder = {
 };
 export declare type TExchangeOrder = {
     operation: OperationType;
+    portfolioId: string;
+    orderId: string;
+    assetId: string;
     orderType: OrderType;
     orderSide: OrderSide;
-    assetId: string;
-    portfolioId: string;
-    orderPrice?: number;
     orderSize: number;
-    orderId: string;
-    tags?: any;
-    createdAt: string;
-    status: string;
-    state: string;
+    orderPrice?: number;
     sizeRemaining?: number;
+    tags?: any;
+    events: any[];
+    orderStatus: string;
+    orderState: string;
+    createdAt: string;
     closedAt?: string;
     reason?: string;
     filledPrice?: number;
@@ -37,13 +39,37 @@ export declare type TExchangeOrder = {
     executedAt?: string;
 };
 export declare type TExchangeOrderPatch = {
-    status?: string;
-    state?: string;
     closedAt?: string;
-    executedAt?: string;
-    reason?: string;
-    sizeRemaining?: number;
     filledPrice?: number;
     filledSize?: number;
     filledValue?: number;
+    sizeRemaining?: number;
+    orderStatus?: string;
+    orderState?: string;
+    reason?: string;
+    executedAt?: string;
+};
+export declare type TExchangeOrderFill = {
+    orderId: string;
+    portfolioId: string;
+    eventType: string;
+    publishedAt: string;
+    filledSize: number;
+    filledValue: number;
+    filledPrice: number;
+    sizeRemaining: number;
+    tradeId: string;
+};
+export declare type TExchangeOrderComplete = {
+    orderId: string;
+    portfolioId: string;
+    eventType: string;
+    publishedAt: string;
+};
+export declare type TExchangeOrderFailed = {
+    orderId: string;
+    portfolioId: string;
+    eventType: string;
+    publishedAt: string;
+    reason: string;
 };

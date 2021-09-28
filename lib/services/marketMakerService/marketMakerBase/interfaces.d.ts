@@ -1,6 +1,6 @@
-import { Trade, TOrder, TMakerResult, TMarketMaker, OrderSide } from '../..';
+import { TMarketMaker } from '.';
+import { TNewExchangeOrderConfig } from '../../..';
 export interface IMarketMaker extends TMarketMaker {
-    processOrder(order: TOrder): Promise<Trade | null>;
-    processOrderImpl(orderSide: OrderSide, orderSize: number): Promise<TMakerResult | null>;
-    flattenMaker(): void;
+    processOrder(order: TNewExchangeOrderConfig): Promise<boolean>;
+    on(event: string, listener: (...args: any[]) => void): void;
 }

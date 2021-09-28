@@ -1,12 +1,10 @@
-import { OrderSide, TOrder, Trade } from '../..';
-import { Asset, AssetRepository, MarketMakerRepository, PortfolioRepository, TransactionRepository } from '../../..';
+/// <reference types="node" />
+import { EventEmitter } from 'events';
 import { IMarketMaker } from './interfaces';
-import { TMakerResult, TMarketMaker } from './types';
+import { TMarketMaker } from './types';
+import { ExchangeTrade, TExchangeQuote, TNewExchangeOrderConfig } from '../../..';
 export declare abstract class MarketMakerBase implements IMarketMaker {
-    assetRepository: AssetRepository;
-    portfolioRepository: PortfolioRepository;
-    transactionRepository: TransactionRepository;
-    marketMakerRepository: MarketMakerRepository;
+    private emitter;
     createdAt: string;
     type: string;
     ownerId: string;
@@ -15,11 +13,11 @@ export declare abstract class MarketMakerBase implements IMarketMaker {
     tags?: any;
     params?: any;
     quote?: any;
-    constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository, props: TMarketMaker);
-    flattenMaker(): TMarketMaker;
-    resolveAssetSpec(assetSpec: string | Asset): Promise<any>;
+    constructor(props: TMarketMaker, emitter?: EventEmitter);
+    on(event: string, listener: (...args: any[]) => void): void;
+    emitQuote(quote: TExchangeQuote): void;
+    emitTrade(trade: ExchangeTrade): void;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
-    processOrder(order: TOrder): Promise<Trade | null>;
-    abstract processOrderImpl(orderSide: OrderSide, orderSize: number): Promise<TMakerResult | null>;
+    abstract processOrder(order: TNewExchangeOrderConfig): Promise<boolean>;
 }

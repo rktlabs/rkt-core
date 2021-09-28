@@ -17,12 +17,14 @@ export class ExchangeOrder {
     orderSize: number
     orderId: string
     tags?: any
+    events: any[]
 
     createdAt: string
-    status: string
-    state: string
+    orderStatus: string
+    orderState: string
     sizeRemaining?: number
     closedAt?: string
+    executedAt?: string
     reason?: string
     filledPrice?: number
     filledSize?: number
@@ -37,10 +39,11 @@ export class ExchangeOrder {
         this.orderPrice = props.orderPrice
         this.orderSize = props.orderSize
         this.tags = props.tags
+        this.events = props.events
 
         this.createdAt = props.createdAt
-        this.status = props.status
-        this.state = props.state
+        this.orderStatus = props.orderStatus
+        this.orderState = props.orderState
         this.orderId = props.orderId
         this.sizeRemaining = props.sizeRemaining
 
@@ -51,6 +54,7 @@ export class ExchangeOrder {
         this.filledValue = props.filledValue
 
         this.closedAt = props.closedAt
+        this.executedAt = props.executedAt
     }
 
     // Member Properties for new model
@@ -61,8 +65,8 @@ export class ExchangeOrder {
         const exchangeOrderProps: TExchangeOrder = {
             orderId: orderId,
             createdAt: createdAt,
-            status: 'new',
-            state: 'open',
+            orderStatus: 'received',
+            orderState: 'open',
             sizeRemaining: props.orderSize,
 
             operation: props.operation || 'order',
@@ -73,6 +77,7 @@ export class ExchangeOrder {
             orderPrice: props.orderPrice,
             orderSize: props.orderSize,
             tags: props.tags,
+            events: [],
         }
 
         const newEntity = new ExchangeOrder(exchangeOrderProps)

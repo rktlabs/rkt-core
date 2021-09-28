@@ -14,8 +14,8 @@ export const serialize = (selfUrl: string, baseUrl: string, data: any) => {
             'type',
             'orderSide',
             'orderSize',
-            'state',
-            'status',
+            'orderState',
+            'orderStatus',
             'executedAt',
             'filledSize',
             'filledValue',
@@ -100,8 +100,8 @@ export const serializeCollection = (selfUrl: string, baseUrl: string, qs: any, d
             'orderId',
             'createdAt',
             'executedAt',
-            'state',
-            'status',
+            'orderState',
+            'orderStatus',
         ],
         links: (record: any) => {
             return {

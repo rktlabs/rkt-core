@@ -32,7 +32,7 @@ export declare type TransactionLeg = {
 export declare type TTransaction = {
     transactionId: string;
     createdAt: string;
-    status: string;
+    transactionStatus: string;
     error?: string;
     inputs: TransactionLeg[];
     outputs?: TransactionLeg[];
@@ -40,6 +40,6 @@ export declare type TTransaction = {
     xids?: any;
 };
 export declare type TTransactionPatch = {
-    status: string;
+    transactionStatus: string;
     error?: string;
 };

@@ -13,11 +13,11 @@ export class PortfolioQuery {
     portfolioHoldingRepository: PortfolioHoldingRepository
     portfolioOrderRepository: PortfolioOrderRepository
 
-    constructor(portfolioRepository: PortfolioRepository) {
+    constructor(portfolioRepository: PortfolioRepository, portfolioOrderRepository: PortfolioOrderRepository) {
         this.portfolioRepository = portfolioRepository
         this.portfolioActivityRepository = new PortfolioActivityRepository()
         this.portfolioHoldingRepository = new PortfolioHoldingRepository()
-        this.portfolioOrderRepository = new PortfolioOrderRepository()
+        this.portfolioOrderRepository = portfolioOrderRepository
     }
 
     async getListAsync(qs?: any) {

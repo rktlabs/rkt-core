@@ -64,7 +64,6 @@ describe('ExchangerService', function () {
                 portfolioRepository,
                 transactionRepository,
                 marketMakerRepository,
-                portfolioOrderRepository,
             )
             treasuryService = new TreasuryService(
                 assetRepository,
@@ -114,7 +113,7 @@ describe('ExchangerService', function () {
                         tags: { test: true },
                     }
 
-                    await exchangeService.processNewExchangeOrderEvent(orderPayload)
+                    await exchangeService.processOrder(orderPayload)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {
@@ -167,7 +166,7 @@ describe('ExchangerService', function () {
                         tags: { test: true },
                     }
 
-                    await exchangeService.processNewExchangeOrderEvent(orderPayload)
+                    await exchangeService.processOrder(orderPayload)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

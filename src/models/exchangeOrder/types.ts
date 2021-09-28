@@ -4,13 +4,15 @@ import { OrderType, OrderSide, OperationType } from '../..'
 
 export type TNewExchangeOrderConfig = {
     operation: OperationType // one of order, cancel
+    portfolioId: string
+    orderId: string
+
+    assetId: string
     orderType: OrderType // market or limit
     orderSide: OrderSide
-    assetId: string
-    portfolioId: string
-    orderPrice?: number
     orderSize: number
-    orderId: string
+    orderPrice?: number
+    sizeRemaining?: number
     tags?: any
 }
 
@@ -20,21 +22,25 @@ export type TExchangeCancelOrder = {
     orderId: string
 }
 
+// superset of TNewExchangeOrderConfig
 export type TExchangeOrder = {
     operation: OperationType // one of order, cancel
+    portfolioId: string
+    orderId: string
+
+    assetId: string
     orderType: OrderType
     orderSide: OrderSide
-    assetId: string
-    portfolioId: string
-    orderPrice?: number
     orderSize: number
-    orderId: string
+    orderPrice?: number
+    sizeRemaining?: number
     tags?: any
+    events: any[]
+
+    orderStatus: string
+    orderState: string
 
     createdAt: string
-    status: string
-    state: string
-    sizeRemaining?: number
     closedAt?: string
     reason?: string
 
@@ -46,13 +52,43 @@ export type TExchangeOrder = {
 }
 
 export type TExchangeOrderPatch = {
-    status?: string
-    state?: string
     closedAt?: string
-    executedAt?: string
-    reason?: string
-    sizeRemaining?: number
     filledPrice?: number
     filledSize?: number
     filledValue?: number
+    sizeRemaining?: number
+    orderStatus?: string
+    orderState?: string
+    reason?: string
+    executedAt?: string
+}
+
+//////////////////////////////////////////////////
+// Order Events - captured as trades completed and logged in events[] collection
+
+export type TExchangeOrderFill = {
+    orderId: string
+    portfolioId: string
+    eventType: string
+    publishedAt: string
+    filledSize: number
+    filledValue: number
+    filledPrice: number
+    sizeRemaining: number
+    tradeId: string
+}
+
+export type TExchangeOrderComplete = {
+    orderId: string
+    portfolioId: string
+    eventType: string
+    publishedAt: string
+}
+
+export type TExchangeOrderFailed = {
+    orderId: string
+    portfolioId: string
+    eventType: string
+    publishedAt: string
+    reason: string
 }

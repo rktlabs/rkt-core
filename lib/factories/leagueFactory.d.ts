@@ -1,4 +1,4 @@
-import { AssetRepository, LeagueRepository, PortfolioRepository, TNewLeagueConfig, League, TLeagueAssetDef, TAssetCore, TransactionRepository, MarketMakerRepository } from '..';
+import { AssetRepository, LeagueRepository, PortfolioRepository, MarketMakerRepository, TransactionRepository, TNewLeagueConfig, League, TLeagueAssetDef, TAssetCore } from '..';
 export declare class LeagueFactory {
     private assetRepository;
     private leagueRepository;

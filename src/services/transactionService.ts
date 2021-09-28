@@ -2,27 +2,28 @@
 
 import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
-import { AssetHolderService, INotificationPublisher, NullNotificationPublisher } from '.'
+import { AssetHolderService } from '.'
 import {
-    AssetHolderRepository,
-    AssetRepository,
-    ConflictError,
-    generateId,
-    InsufficientBalance,
-    InvalidTransaction,
     PortfolioRepository,
-    TPurchase,
-    Transaction,
-    TransactionLeg,
+    AssetRepository,
+    AssetHolderRepository,
     TransactionRepository,
+    TPurchase,
     TTransactionNew,
     TTransfer,
+    Transaction,
     ValidationError,
+    InsufficientBalance,
+    InvalidTransaction,
+    ConflictError,
+    TransactionLeg,
+    generateId,
 } from '..'
+
 const logger = log4js.getLogger('transactionService')
 
 export class TransactionService {
-    private eventPublisher: INotificationPublisher
+    // private eventPublisher: INotificationPublisher
 
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
@@ -34,9 +35,9 @@ export class TransactionService {
         assetRepository: AssetRepository,
         portfolioRepository: PortfolioRepository,
         transactionRepository: TransactionRepository,
-        eventPublisher?: INotificationPublisher,
+        // eventPublisher?: INotificationPublisher,
     ) {
-        this.eventPublisher = eventPublisher || new NullNotificationPublisher()
+        // this.eventPublisher = eventPublisher || new NullNotificationPublisher()
         this.portfolioRepository = portfolioRepository
         this.assetRepository = assetRepository
         this.assetHolderRepository = new AssetHolderRepository()
@@ -183,86 +184,88 @@ export class TransactionService {
                 await this.assetHolderService.proessTransaction(updates, transaction)
             }
 
-            transaction.status = 'success'
-            await this.transactionRepository.updateAsync(transactionId, { status: transaction.status })
+            transaction.transactionStatus = 'success'
+            await this.transactionRepository.updateAsync(transactionId, {
+                transactionStatus: transaction.transactionStatus,
+            })
 
-            if (this.eventPublisher) {
-                await this.eventPublisher.publishTransactionEventCompleteAsync(transaction, 'transactionHandler')
-            }
+            // if (this.eventPublisher) {
+            //     await this.eventPublisher.publishTransactionEventCompleteAsync(transaction, 'transactionHandler')
+            // }
 
             return commitStates
         } catch (error: any) {
             if (error instanceof ValidationError) {
                 // nothing will have been done yet so nothing to roll back
-                transaction.status = 'failed'
+                transaction.transactionStatus = 'failed'
                 transaction.error = error.message
                 await this.transactionRepository.updateAsync(transactionId, {
-                    status: transaction.status,
+                    transactionStatus: transaction.transactionStatus,
                     error: transaction.error,
                 })
 
-                if (this.eventPublisher) {
-                    await this.eventPublisher.publishTransactionEventErrorAsync(
-                        transaction,
-                        error.message,
-                        'transactionHandler',
-                    )
-                }
+                // if (this.eventPublisher) {
+                //     await this.eventPublisher.publishTransactionEventErrorAsync(
+                //         transaction,
+                //         error.message,
+                //         'transactionHandler',
+                //     )
+                // }
 
                 throw error
             } else if (error instanceof InsufficientBalance) {
                 // nothing will have been done yet so nothing to roll back
-                transaction.status = 'failed'
+                transaction.transactionStatus = 'failed'
                 transaction.error = error.message
                 await this.transactionRepository.updateAsync(transactionId, {
-                    status: transaction.status,
+                    transactionStatus: transaction.transactionStatus,
                     error: transaction.error,
                 })
 
-                if (this.eventPublisher) {
-                    await this.eventPublisher.publishTransactionEventErrorAsync(
-                        transaction,
-                        error.message,
-                        'transactionHandler',
-                    )
-                }
+                // if (this.eventPublisher) {
+                //     await this.eventPublisher.publishTransactionEventErrorAsync(
+                //         transaction,
+                //         error.message,
+                //         'transactionHandler',
+                //     )
+                // }
 
                 throw error
             } else if (error instanceof InvalidTransaction) {
                 // (*)
                 // nothing will have been done yet so nothing to roll back
-                transaction.status = 'failed'
+                transaction.transactionStatus = 'failed'
                 transaction.error = error.message
                 await this.transactionRepository.updateAsync(transactionId, {
-                    status: transaction.status,
+                    transactionStatus: transaction.transactionStatus,
                     error: transaction.error,
                 })
 
-                if (this.eventPublisher) {
-                    await this.eventPublisher.publishTransactionEventErrorAsync(
-                        transaction,
-                        error.message,
-                        'transactionHandler',
-                    )
-                }
+                // if (this.eventPublisher) {
+                //     await this.eventPublisher.publishTransactionEventErrorAsync(
+                //         transaction,
+                //         error.message,
+                //         'transactionHandler',
+                //     )
+                // }
 
                 throw error
             } else {
-                transaction.status = 'error'
+                transaction.transactionStatus = 'error'
                 transaction.error = error.message
                 await this.transactionRepository.updateAsync(transactionId, {
-                    status: transaction.status,
+                    transactionStatus: transaction.transactionStatus,
                     error: transaction.error,
                 })
 
-                if (this.eventPublisher) {
-                    await this.eventPublisher.publishTransactionEventErrorAsync(
-                        transaction,
-                        error.message,
-                        'transactionHandler',
-                        error.stack,
-                    )
-                }
+                // if (this.eventPublisher) {
+                //     await this.eventPublisher.publishTransactionEventErrorAsync(
+                //         transaction,
+                //         error.message,
+                //         'transactionHandler',
+                //         error.stack,
+                //     )
+                // }
 
                 throw error // unknown error, rethrow it (**)
             }

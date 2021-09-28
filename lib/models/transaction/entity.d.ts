@@ -2,7 +2,7 @@ import { TransactionLeg, TTransaction, TTransactionNew } from './types';
 export declare class Transaction {
     transactionId: string;
     createdAt: string;
-    status: string;
+    transactionStatus: string;
     error?: string;
     inputs: TransactionLeg[];
     outputs?: TransactionLeg[];

@@ -1,25 +1,20 @@
 'use strict'
 
 import * as log4js from 'log4js'
+import { IMarketMaker, ConstantBondingCurveAMM, LinearBondingCurveAMM, TNewMarketMakerConfig, MarketMakerBase } from '.'
 import {
-    LinearBondingCurveAMM,
-    IMarketMaker,
-    MarketMakerBase,
-    TNewMarketMakerConfig,
-    TOrder,
-    TOrderConfig,
-    ConstantBondingCurveAMM,
-} from '.'
-import {
-    AssetRepository,
-    ConflictError,
-    DuplicateError,
     MarketMakerRepository,
     PortfolioRepository,
-    PortfolioFactory,
-    TNewPortfolioConfig,
     TransactionRepository,
+    PortfolioFactory,
+    AssetRepository,
+    ExchangeQuoteRepository,
+    DuplicateError,
+    ConflictError,
+    TNewExchangeOrderConfig,
+    TNewPortfolioConfig,
 } from '../..'
+
 const logger = log4js.getLogger()
 
 export class MarketMakerFactory {
@@ -28,6 +23,7 @@ export class MarketMakerFactory {
     private transactionRepository: TransactionRepository
     private portfolioService: PortfolioFactory
     private assetRepository: AssetRepository
+    private exchangeQuoteRepository: ExchangeQuoteRepository
 
     constructor(
         assetRepository: AssetRepository,
@@ -40,6 +36,7 @@ export class MarketMakerFactory {
         this.transactionRepository = transactionRepository
         this.portfolioService = new PortfolioFactory(portfolioRepository)
         this.assetRepository = assetRepository
+        this.exchangeQuoteRepository = new ExchangeQuoteRepository()
     }
 
     async getMarketMakerAsync(assetId: string): Promise<IMarketMaker | null> {
@@ -119,9 +116,10 @@ export class MarketMakerFactory {
         await this.marketMakerRepository.deleteAsync(assetId)
     }
 
-    static generateOrder(opts: TOrderConfig) {
+    static generateOrder(opts: TNewExchangeOrderConfig) {
         // eslint-disable-line
-        const order: TOrder = {
+        const order: TNewExchangeOrderConfig = {
+            operation: 'order',
             assetId: opts.assetId,
             orderId: opts.orderId,
             portfolioId: opts.portfolioId,
@@ -129,8 +127,6 @@ export class MarketMakerFactory {
             orderSize: Math.max(opts.orderSize, 0),
             orderType: opts.orderType ? opts.orderType : 'market',
             sizeRemaining: opts.sizeRemaining === undefined ? opts.orderSize : opts.sizeRemaining,
-            orderStatus: 'new',
-            orderState: 'open',
         }
         return order
     }
@@ -174,6 +170,9 @@ export class MarketMakerFactory {
         }
 
         await this.marketMakerRepository.storeAsync(marketMaker)
+
+        await this.exchangeQuoteRepository.storeAsync(marketMaker.quote.assetId, marketMaker.quote)
+
         return marketMaker
     }
 

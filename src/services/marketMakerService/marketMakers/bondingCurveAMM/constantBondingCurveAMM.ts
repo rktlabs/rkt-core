@@ -1,18 +1,10 @@
 'use strict'
 
-import * as log4js from 'log4js'
+// import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
-
-import { BondingCurveAMM, BondingCurveAMMParams } from './bondingCurveAMM'
-import { TNewMarketMakerConfig, TMarketMaker, TMarketMakerQuote } from '../..'
+import { TNewMarketMakerConfig, TMarketMaker } from '../..'
 import { AssetRepository, PortfolioRepository, TransactionRepository, MarketMakerRepository } from '../../../..'
-const logger = log4js.getLogger('portfolioRepository')
-
-export type ConstantBondingCurveAMMSettings = {
-    initialUnits?: number
-    initialValue?: number
-    initialPrice?: number
-}
+import { BondingCurveAMM, BondingCurveAMMSettings, BondingCurveAMMParams } from './bondingCurveAMM'
 
 export class ConstantBondingCurveAMM extends BondingCurveAMM {
     static newMaker(
@@ -30,6 +22,9 @@ export class ConstantBondingCurveAMM extends BondingCurveAMM {
             tags: config.tags,
         }
 
+        /////////////////////////////////////////////////////////
+        // create specific object type
+        /////////////////////////////////////////////////////////
         const newEntity = new ConstantBondingCurveAMM(
             assetRepository,
             portfolioRepository,
@@ -37,31 +32,21 @@ export class ConstantBondingCurveAMM extends BondingCurveAMM {
             marketMakerRepository,
             makerProps,
         )
+
+        /////////////////////////////////////////////////////////
+        // set initial state (params) after contstructed
+        /////////////////////////////////////////////////////////
         newEntity.params = newEntity.computeInitialState(config.settings)
 
         /////////////////////////////////////////////////////////
         // compute the quote(s)
         /////////////////////////////////////////////////////////
-        // const quote: TMarketMakerQuote = {
-        //     current: newEntity.spot_price(),
-        //     bid1: newEntity.compute_price(),
-        //     ask1: newEntity.compute_value(),
-        //     bid10: newEntity.compute_price(10) / 10,
-        //     ask10: newEntity.params.madeUnits >= 10 ? newEntity.compute_value(10) / 10 : NaN,
-        // }
+        newEntity.quote = newEntity.getQuote()
+
+        // NOTE: Can't emit quote here. the handlers won't have been attached yet. have to do it
+        // after this function returns and handlers are set
 
         return newEntity
-    }
-
-    private computeInitialState(settings: ConstantBondingCurveAMMSettings): BondingCurveAMMParams {
-        const makerState: BondingCurveAMMParams = {
-            madeUnits: settings?.initialUnits || 0,
-            cumulativeValue: settings?.initialValue || 0,
-            y0: settings?.initialPrice || 1,
-            e: 0,
-            m: 1,
-        }
-        return makerState
     }
 
     constructor(
@@ -72,5 +57,16 @@ export class ConstantBondingCurveAMM extends BondingCurveAMM {
         props: TMarketMaker,
     ) {
         super(assetRepository, portfolioRepository, transactionRepository, marketMakerRepository, props)
+    }
+
+    private computeInitialState(settings: BondingCurveAMMSettings): BondingCurveAMMParams {
+        const makerState: BondingCurveAMMParams = {
+            madeUnits: settings?.initialUnits || 0,
+            cumulativeValue: settings?.initialValue || 0,
+            y0: settings?.initialPrice || 1,
+            e: 0,
+            m: 1,
+        }
+        return makerState
     }
 }

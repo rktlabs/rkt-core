@@ -14,8 +14,8 @@ export class PortfolioOrder {
     assetId: string
     orderSide: OrderSide
     orderSize: number
-    status: string
-    state: string
+    orderStatus: string
+    orderState: string
     orderType: OrderType
     reason?: string
 
@@ -25,6 +25,7 @@ export class PortfolioOrder {
     xids?: any
 
     closedAt?: string
+    executedAt?: string
     filledPrice?: number
     filledSize?: number
     filledValue?: number
@@ -35,19 +36,19 @@ export class PortfolioOrder {
         this.orderId = props.orderId
         this.assetId = props.assetId
         this.closedAt = props.closedAt
+        this.executedAt = props.executedAt
         this.filledPrice = props.filledPrice
         this.filledSize = props.filledSize
         this.filledValue = props.filledValue
         this.sizeRemaining = props.sizeRemaining
         this.orderSide = props.orderSide
         this.orderSize = props.orderSize
-        this.status = props.status
-        this.state = props.state
+        this.orderStatus = props.orderStatus
+        this.orderState = props.orderState
         this.orderType = props.orderType
         this.orderPrice = props.orderPrice
         this.events = props.events
         this.tags = props.tags
-        this.xids = props.xids
         this.reason = props.reason
     }
 
@@ -62,18 +63,14 @@ export class PortfolioOrder {
             assetId: props.assetId, // required
             orderSide: props.orderSide, // required
             orderSize: props.orderSize, // required
-            status: 'received', // received | filled | failed
-            state: 'open', // open | closed
+            orderStatus: 'received', // received | filled | failed
+            orderState: 'open', // open | closed
             events: [],
         }
 
         // limit order requires orderPrice
         if (props.orderPrice) {
             newOrderProps.orderPrice = props.orderPrice
-        }
-
-        if (props.xids) {
-            newOrderProps.xids = props.xids
         }
 
         if (props.tags) {

@@ -14,8 +14,8 @@ export const serialize = (selfUrl: string, portfolioId: string, baseUrl: string,
             'orderType',
             'orderSide',
             'orderSize',
-            'state',
-            'status',
+            'orderState',
+            'orderStatus',
             // 'filledValue',
             // 'filledPrice',
             // 'filledSize',
@@ -95,7 +95,16 @@ export const serializeCollection = (
     const serializer = new HALSerializer()
 
     serializer.register('orders', {
-        whitelist: ['orderId', 'createdAt', 'assetId', 'orderType', 'orderSide', 'orderSize', 'state', 'status'],
+        whitelist: [
+            'orderId',
+            'createdAt',
+            'assetId',
+            'orderType',
+            'orderSide',
+            'orderSize',
+            'orderState',
+            'sorderStatus',
+        ],
         links: (record: any) => {
             return {
                 self: {

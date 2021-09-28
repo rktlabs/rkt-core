@@ -1,5 +1,9 @@
-import { OrderSide, OrderType } from '../..';
-export declare type TTakerFill = {
+export declare type OperationType = 'order' | 'cancel';
+export declare type OrderSide = 'bid' | 'ask';
+export declare type OrderType = 'market' | 'limit';
+export declare type OrderStatus = 'new' | 'partial' | 'filled' | 'liquidityStarved';
+export declare type OrderState = 'open' | 'closed';
+export declare type TTaker = {
     assetId: string;
     filledPrice: number;
     filledSize: number;
@@ -15,7 +19,8 @@ export declare type TTakerFill = {
     orderType?: OrderType;
     tags?: any;
 };
-export declare type TMakerFill = {
+export declare type TMaker = {
+    orderId?: string;
     assetId: string;
     filledPrice: number;
     filledSize: number;
@@ -31,7 +36,7 @@ export declare type TExchangeTrade = {
     tradeId: string;
     assetId: string;
     executedAt: string;
-    taker: TTakerFill;
-    makers: TMakerFill[];
+    taker: TTaker;
+    makers: TMaker[];
     createdAt?: string;
 };

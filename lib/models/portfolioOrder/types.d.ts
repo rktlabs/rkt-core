@@ -9,24 +9,24 @@ export declare type TNewPortfolioOrderProps = {
     xids?: any;
 };
 export declare type TPortfolioOrder = {
-    createdAt: string;
     orderId: string;
     assetId: string;
+    orderType: OrderType;
     orderSide: OrderSide;
     orderSize: number;
-    status: string;
-    state: string;
-    orderType: OrderType;
-    reason?: string;
     orderPrice?: number;
-    events: any[];
+    sizeRemaining?: number;
     tags?: any;
-    xids?: any;
+    events: any[];
+    orderStatus: string;
+    orderState: string;
+    createdAt: string;
     closedAt?: string;
+    reason?: string;
     filledPrice?: number;
     filledSize?: number;
     filledValue?: number;
-    sizeRemaining?: number;
+    executedAt?: string;
 };
 export declare type TPortfolioOrderPatch = {
     closedAt?: string;
@@ -34,24 +34,8 @@ export declare type TPortfolioOrderPatch = {
     filledSize?: number;
     filledValue?: number;
     sizeRemaining?: number;
-    status?: string;
-    state?: string;
+    orderStatus?: string;
+    orderState?: string;
     reason?: string;
-};
-export declare type TPortfolioOrderEvent = {
-    orderId: string;
-    portfolioId: string;
-    eventType: string;
-    publishedAt: string;
-};
-export declare type TPortfolioOrderFill = TPortfolioOrderEvent & {
-    filledSize: number;
-    filledValue: number;
-    filledPrice: number;
-    sizeRemaining: number;
-    tradeId: string;
-};
-export declare type TPortfolioOrderComplete = TPortfolioOrderEvent;
-export declare type TPortfolioOrderFailed = TPortfolioOrderEvent & {
-    reason: string;
+    executedAt?: string;
 };

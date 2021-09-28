@@ -10,11 +10,13 @@ export declare class ExchangeOrder {
     orderSize: number;
     orderId: string;
     tags?: any;
+    events: any[];
     createdAt: string;
-    status: string;
-    state: string;
+    orderStatus: string;
+    orderState: string;
     sizeRemaining?: number;
     closedAt?: string;
+    executedAt?: string;
     reason?: string;
     filledPrice?: number;
     filledSize?: number;

@@ -4,14 +4,13 @@
 import { expect } from 'chai'
 import {
     AssetRepository,
-    AssetFactory,
     BootstrapService,
-    IMarketMaker,
     MarketMakerRepository,
     MarketMakerFactory,
     PortfolioRepository,
     TNewMarketMakerConfig,
     TransactionRepository,
+    LinearBondingCurveAMM,
 } from '../../../../src'
 
 describe('LinearBondingCurveAMM', function () {
@@ -23,19 +22,13 @@ describe('LinearBondingCurveAMM', function () {
     describe('persist marketMaker', function () {
         this.timeout(10000)
 
-        let assetService: AssetFactory
         let marketMakerService: MarketMakerFactory
 
         const assetId = 'card::testehed'
-        let marketMaker: IMarketMaker
+        const assetPortfolioId = 'asset::card::testehed'
+        let marketMaker: LinearBondingCurveAMM
 
         before(async () => {
-            assetService = new AssetFactory(
-                assetRepository,
-                portfolioRepository,
-                marketMakerRepository,
-                transactionRepository,
-            )
             marketMakerService = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
@@ -64,13 +57,13 @@ describe('LinearBondingCurveAMM', function () {
                     },
                 }
 
-                marketMaker = await marketMakerService.createMarketMaker(makerConfig, false)
+                marketMaker = (await marketMakerService.createMarketMaker(makerConfig, false)) as LinearBondingCurveAMM
                 expect(marketMaker).to.exist
             })
 
             describe('Create Basic MarketMaker', () => {
                 it('should create', async () => {
-                    await marketMaker.processOrderImpl('bid', 4)
+                    await marketMaker.processOrderImpl(assetPortfolioId, 'bid', 4)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {
@@ -89,7 +82,7 @@ describe('LinearBondingCurveAMM', function () {
 
             describe('Create Basic MarketMaker', () => {
                 it('should create', async () => {
-                    await marketMaker.processOrderImpl('bid', 2)
+                    await marketMaker.processOrderImpl(assetPortfolioId, 'bid', 2)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {
@@ -126,13 +119,13 @@ describe('LinearBondingCurveAMM', function () {
                     },
                 }
 
-                marketMaker = await marketMakerService.createMarketMaker(makerConfig, false)
+                marketMaker = (await marketMakerService.createMarketMaker(makerConfig, false)) as LinearBondingCurveAMM
                 expect(marketMaker).to.exist
             })
 
             describe('Create Basic MarketMaker', () => {
                 it('should create', async () => {
-                    await marketMaker.processOrderImpl('ask', 2)
+                    await marketMaker.processOrderImpl(assetPortfolioId, 'ask', 2)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

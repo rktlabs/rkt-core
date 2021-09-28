@@ -9,7 +9,6 @@ import {
     AssetFactory,
     TransactionService,
     AssetHolderService,
-    NullNotificationPublisher,
     AssetRepository,
     PortfolioRepository,
     MarketMakerRepository,
@@ -28,11 +27,7 @@ describe('Transaction Service', function () {
     let assetService: AssetFactory
     let transactionService: TransactionService
 
-    let eventPublisher: sinon.SinonStubbedInstance<NullNotificationPublisher>
-
     before(async () => {
-        eventPublisher = sinon.createStubInstance(NullNotificationPublisher)
-
         transactionRepository = new TransactionRepository()
         portfolioRepository = new PortfolioRepository()
         assetRepository = new AssetRepository()
@@ -45,12 +40,7 @@ describe('Transaction Service', function () {
             marketMakerRepository,
             transactionRepository,
         )
-        transactionService = new TransactionService(
-            assetRepository,
-            portfolioRepository,
-            transactionRepository,
-            eventPublisher as any as NullNotificationPublisher,
-        )
+        transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
 
         await BootstrapService.boot()
     })

@@ -1,8 +1,16 @@
 'use strict'
 
-import { OrderSide, OrderType } from '../..'
+export type OperationType = 'order' | 'cancel'
 
-export type TTakerFill = {
+export type OrderSide = 'bid' | 'ask'
+
+export type OrderType = 'market' | 'limit'
+
+export type OrderStatus = 'new' | 'partial' | 'filled' | 'liquidityStarved'
+
+export type OrderState = 'open' | 'closed'
+
+export type TTaker = {
     assetId: string
     filledPrice: number
     filledSize: number
@@ -20,7 +28,8 @@ export type TTakerFill = {
     tags?: any
 }
 
-export type TMakerFill = {
+export type TMaker = {
+    orderId?: string
     assetId: string
     filledPrice: number
     filledSize: number
@@ -37,8 +46,8 @@ export type TExchangeTrade = {
     tradeId: string
     assetId: string
     executedAt: string
-    taker: TTakerFill
-    makers: TMakerFill[]
+    taker: TTaker
+    makers: TMaker[]
 
     createdAt?: string
 }
