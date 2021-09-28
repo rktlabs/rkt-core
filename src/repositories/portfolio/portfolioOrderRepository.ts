@@ -16,7 +16,9 @@ export class PortfolioOrderRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    filterMap: any = {}
+    filterMap: any = {
+        status: 'status',
+    }
 
     async getListAsync(portfolioId: string, qs?: any) {
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
