@@ -84,11 +84,3 @@ export type TExchangeOrderComplete = {
     eventType: string
     publishedAt: string
 }
-
-export type TExchangeOrderFailed = {
-    orderId: string
-    portfolioId: string
-    eventType: string
-    publishedAt: string
-    reason: string
-}

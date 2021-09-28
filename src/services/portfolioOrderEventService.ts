@@ -6,10 +6,10 @@ import {
     PortfolioOrderRepository,
     TPortfolioOrder,
     TExchangeOrderFill,
-    TExchangeOrderFailed,
     TPortfolioOrderPatch,
     round4,
     TExchangeOrderComplete,
+    TExchangeOrder,
 } from '..'
 
 const logger = log4js.getLogger('PortfolioOrderEventService')
@@ -83,9 +83,9 @@ export class PortfolioOrderEventService {
         return portfolioOrder
     }
 
-    processFailEvent = async (payload: TExchangeOrderFailed) => {
-        const orderId = payload.orderId
-        const portfolioId = payload.portfolioId
+    processFailEvent = async (order: TExchangeOrder) => {
+        const orderId = order.orderId
+        const portfolioId = order.portfolioId
         let portfolioOrder = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
         if (!portfolioOrder) {
             return
@@ -93,7 +93,7 @@ export class PortfolioOrderEventService {
 
         switch (portfolioOrder.orderStatus) {
             case 'received':
-                portfolioOrder = this._updateStatus(portfolioOrder, 'failed', payload.reason)
+                portfolioOrder = this._updateStatus(portfolioOrder, 'failed', order.reason)
                 portfolioOrder = this._close(portfolioOrder)
                 break
 
@@ -101,12 +101,12 @@ export class PortfolioOrderEventService {
             case 'failed':
             default:
                 logger.warn(
-                    `handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) orderStatus: ${portfolioOrder.orderStatus} - ${payload} - IGNORED`,
+                    `handleOrderEvent: handleFailedEvent(${portfolioOrder.orderId}) orderStatus: ${portfolioOrder.orderStatus} - ${order} - IGNORED`,
                 )
                 break
         }
 
-        this.portfolioOrderRepository.appendOrderEvent(portfolioId, orderId, payload)
+        this.portfolioOrderRepository.appendOrderEvent(portfolioId, orderId, order)
 
         const orderUpdate: TPortfolioOrderPatch = {
             orderState: portfolioOrder.orderState,

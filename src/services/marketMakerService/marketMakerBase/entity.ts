@@ -4,7 +4,7 @@ import { EventEmitter } from 'events'
 import { IMarketMaker } from './interfaces'
 import { serialize, serializeCollection } from './serializer'
 import { TMarketMaker } from './types'
-import { ExchangeTrade, TExchangeQuote, TNewExchangeOrderConfig } from '../../..'
+import { ExchangeTrade, TExchangeOrder, TExchangeQuote, TNewExchangeOrderConfig } from '../../..'
 
 // MarketMaker holds value and shares to be sold.
 export abstract class MarketMakerBase implements IMarketMaker {
@@ -46,6 +46,14 @@ export abstract class MarketMakerBase implements IMarketMaker {
 
     emitTrade(trade: ExchangeTrade) {
         this.emitter.emit('trade', trade)
+    }
+
+    emitCancelOrder(order: TExchangeOrder) {
+        this.emitter.emit('cancelOrder', order)
+    }
+
+    emitExpirelOrder(order: TExchangeOrder) {
+        this.emitter.emit('exporeOrder', order)
     }
 
     //////////////////////////////////////////////////////

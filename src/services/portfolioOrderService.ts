@@ -10,13 +10,13 @@ import {
     TransactionRepository,
     MarketMakerRepository,
     TExchangeOrderFill,
-    TExchangeOrderFailed,
     TNewPortfolioOrderProps,
     ConflictError,
     PortfolioOrder,
     TNewExchangeOrderConfig,
     TExchangeOrderComplete,
     TPortfolioOrder,
+    TExchangeOrder,
 } from '..'
 
 const logger = log4js.getLogger('PortfolioOrderService')
@@ -52,8 +52,8 @@ export class PortfolioOrderService {
             this._onOrderExecution(event)
         })
 
-        this.exchangeService.on('orderFail', (event: TExchangeOrderFailed) => {
-            this._onOrderFail(event)
+        this.exchangeService.on('orderFail', (order: TExchangeOrder) => {
+            this._onOrderFail(order)
         })
     }
 
@@ -105,10 +105,10 @@ export class PortfolioOrderService {
         }
     }
 
-    private async _onOrderFail(event: TExchangeOrderFailed) {
-        logger.error('OrederFailed', event)
+    private async _onOrderFail(order: TExchangeOrder) {
+        logger.error('OrederFailed', order)
 
-        this.portfolioOrderEventService.processFailEvent(event)
+        this.portfolioOrderEventService.processFailEvent(order)
     }
 
     private _generateExchangeOrder = (portfolioId: string, order: TPortfolioOrder) => {

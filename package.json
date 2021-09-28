@@ -3,7 +3,7 @@
   "author": "Eric J Hedman",
   "description": "Fant X server core",
   "license": "private",
-  "version": "0.1.141",
+  "version": "0.1.142",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
@@ -13,7 +13,7 @@
     "lint": "eslint  ./src/**/*/*.ts",
     "prebuild": "yarn run lint",
     "build": "rm -rf ./lib && tsc",
-    "test": "mocha --config .mocharc.unit.json",
+    "test": "mocha --config .mocharc.json",
     "pregitpush": "yarn run build",
     "gitpush": "git add . && git commit -m 'deploy for push' && git push origin master & exit 0",
     "version": "",

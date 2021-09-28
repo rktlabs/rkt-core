@@ -14,7 +14,6 @@ import {
     TransactionRepository,
     MarketMakerRepository,
     TExchangeOrderFill,
-    TExchangeOrderFailed,
     TNewExchangeOrderConfig,
     ExchangeOrder,
     TExchangeQuote,
@@ -27,6 +26,7 @@ import {
     OrderSide,
     ConflictError,
     InsufficientBalance,
+    TExchangeOrder,
 } from '..'
 
 const logger = log4js.getLogger('ExchangeService')
@@ -88,8 +88,16 @@ export class ExchangeService {
         this.emitter.emit('orderExecution', event)
     }
 
-    emitOrderFail(event: TExchangeOrderFailed) {
-        this.emitter.emit('orderExecution', event)
+    emitOrderFail(order: TExchangeOrder) {
+        this.emitter.emit('orderExecution', order)
+    }
+
+    emitCancelOrder(order: TExchangeOrder) {
+        this.emitter.emit('cancelOrder', order)
+    }
+
+    emitExpirelOrder(order: TExchangeOrder) {
+        this.emitter.emit('exporeOrder', order)
     }
 
     ////////////////////////////////////////////////////
@@ -169,13 +177,14 @@ export class ExchangeService {
                 if (reason) updateData.reason = reason
                 await this.exchangeOrderRepository.updateAsync(exchangeOrder.orderId, updateData)
 
-                this.emitOrderFail({
-                    eventType: 'orderFail',
-                    publishedAt: DateTime.utc().toString(),
-                    orderId: exchangeOrder.orderId,
-                    portfolioId: exchangeOrder.portfolioId,
-                    reason: reason,
-                })
+                this.emitOrderFail(exchangeOrder)
+                // this.emitOrderFail({
+                //     eventType: 'orderFail',
+                //     publishedAt: DateTime.utc().toString(),
+                //     orderId: exchangeOrder.orderId,
+                //     portfolioId: exchangeOrder.portfolioId,
+                //     reason: reason,
+                // })
             }
 
             logger.error(error)

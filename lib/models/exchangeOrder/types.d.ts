@@ -66,10 +66,3 @@ export declare type TExchangeOrderComplete = {
     eventType: string;
     publishedAt: string;
 };
-export declare type TExchangeOrderFailed = {
-    orderId: string;
-    portfolioId: string;
-    eventType: string;
-    publishedAt: string;
-    reason: string;
-};
