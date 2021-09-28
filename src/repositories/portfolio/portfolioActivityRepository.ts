@@ -25,6 +25,9 @@ export class PortfolioActivityRepository extends RepositoryBase {
     filterMap: any = {
         assetId: 'assetId',
         source: 'source',
+        transactionId: 'transactionId',
+        orderId: 'orderId',
+        tradeId: 'tradeId',
     }
 
     async getListAsync(portfolioId: string, qs?: any) {
