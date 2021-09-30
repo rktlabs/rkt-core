@@ -10,7 +10,6 @@ import {
     TransactionRepository,
     MarketMakerRepository,
     AssetHolderRepository,
-    TNewExchangeOrderConfig,
     NotFoundError,
     ExchangeTrade,
     OrderSide,
@@ -19,6 +18,7 @@ import {
     TExchangeQuoteLast,
     TExchangeQuote,
     TMarketMaker,
+    TExchangeOrder,
 } from '../../../..'
 import { MarketMakerServiceBase, TMakerResult } from '../../marketMakerServiceBase'
 
@@ -66,13 +66,13 @@ export class BondingCurveAMM extends MarketMakerServiceBase {
         this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
     }
 
-    async processOrder(order: TNewExchangeOrderConfig) {
+    async processOrder(order: TExchangeOrder) {
         logger.trace(
-            `marketMaker processOrder: ${order.orderId} for portfolio: ${order.portfolioId} asset: ${order.assetId}`,
+            `marketMaker processOrder: ${order.orderSource.sourceOrderId} for portfolio: ${order.portfolioId} asset: ${order.orderSource.assetId}`,
         )
-        const assetId = order.assetId
-        const orderSide = order.orderSide
-        const orderSize = order.orderSize
+        const assetId = order.orderSource.assetId
+        const orderSide = order.orderSource.orderSide
+        const orderSize = order.orderSource.orderSize
 
         //////////////////////////////////////////////////
         // verify that asset exists - need it to exist and have protfolioId
@@ -110,15 +110,14 @@ export class BondingCurveAMM extends MarketMakerServiceBase {
                 makerDeltaValue: makerDeltaValue,
             })
             logger.trace(
-                `marketMaker trade: order: ${order.orderId} units: ${makerDeltaUnits} value: ${makerDeltaValue}`,
+                `marketMaker trade: order: ${order.orderSource.sourceOrderId} units: ${makerDeltaUnits} value: ${makerDeltaValue}`,
             )
 
             this.emitTrade(trade)
 
-            //return trade
             return true
         } else {
-            logger.trace(`marketMaker processOrder: NO TRADE for order: ${order.orderId}`)
+            logger.trace(`marketMaker processOrder: NO TRADE for order: ${order.orderSource.sourceOrderId}`)
             return false
         }
     }
@@ -132,7 +131,6 @@ export class BondingCurveAMM extends MarketMakerServiceBase {
         ////////////////////////////
         // verify that asset exists
         ////////////////////////////
-        // const asset = await this.resolveAssetSpec(this.assetId)
 
         // this marketMaker pulls asset units from asset portfolio directly
         if (!assetPortfolioId) {

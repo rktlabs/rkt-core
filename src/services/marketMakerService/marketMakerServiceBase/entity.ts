@@ -2,7 +2,7 @@
 
 import { EventEmitter } from 'events'
 import { IMarketMakerService } from './interfaces'
-import { ExchangeTrade, TExchangeOrder, TExchangeQuote, TMarketMaker, TNewExchangeOrderConfig } from '../../..'
+import { ExchangeTrade, TExchangeOrder, TExchangeQuote, TMarketMaker } from '../../..'
 
 // MarketMaker holds value and shares to be sold.
 export abstract class MarketMakerServiceBase implements IMarketMakerService {
@@ -46,5 +46,5 @@ export abstract class MarketMakerServiceBase implements IMarketMakerService {
     //////////////////////////////////////////////////////
     // ABSTRACT
     //////////////////////////////////////////////////////
-    abstract processOrder(order: TNewExchangeOrderConfig): Promise<boolean>
+    abstract processOrder(order: TExchangeOrder): Promise<boolean>
 }

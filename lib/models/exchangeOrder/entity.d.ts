@@ -1,16 +1,8 @@
-import { TExchangeOrder, TNewExchangeOrderConfig } from '.';
-import { OperationType, OrderSide, OrderType } from '../..';
+import { TExchangeOrder, TOrderSource } from '.';
 export declare class ExchangeOrder {
-    operation: OperationType;
-    orderType: OrderType;
-    orderSide: OrderSide;
-    assetId: string;
     portfolioId: string;
-    orderPrice?: number;
-    orderSize: number;
     orderId: string;
-    tags?: any;
-    events: any[];
+    orderSource: TOrderSource;
     createdAt: string;
     orderStatus: string;
     orderState: string;
@@ -21,8 +13,9 @@ export declare class ExchangeOrder {
     filledPrice?: number;
     filledSize?: number;
     filledValue?: number;
+    events: any[];
     constructor(props: TExchangeOrder);
-    static newExchangeOrder(props: TNewExchangeOrderConfig): ExchangeOrder;
+    static newExchangeOrder(orderSource: TOrderSource): ExchangeOrder;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
     static serialize(selfUrl: string, baseUrl: string, data: any): any;
     static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;

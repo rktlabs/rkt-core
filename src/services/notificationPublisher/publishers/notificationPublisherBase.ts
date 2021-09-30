@@ -13,15 +13,15 @@ export abstract class NotificationPublisherBase implements INotificationPublishe
     // ExchangeOrder Notifications
     ////////////////////////////////////////////////////////
 
-    async publishExchangeOrderCreateAsync(exchangeOrder: Models.TNewExchangeOrderConfig, source: string) {
+    async publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderSource, source: string) {
         const notificationPayload = new Notifications.ExchangeOrderNew(source, 'exchangeOrderCreate', exchangeOrder)
         return this.publishNotification(notificationPayload)
     }
 
-    async publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source: string) {
-        const notificationPayload = new Notifications.ExchangeOrderCancel(source, 'exchangeOrderCreate', cancelOrder)
-        return this.publishNotification(notificationPayload)
-    }
+    // async publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source: string) {
+    //     const notificationPayload = new Notifications.ExchangeOrderCancel(source, 'exchangeOrderCreate', cancelOrder)
+    //     return this.publishNotification(notificationPayload)
+    // }
 
     ////////////////////////////////////////////////////////
     // Error/Warning Notifications

@@ -11,7 +11,7 @@ import {
     MarketMakerFactory,
     ExchangeService,
     TNewMarketMakerConfig,
-    TNewExchangeOrderConfig,
+    TOrderSource,
     TreasuryService,
     MintService,
     AssetRepository,
@@ -20,7 +20,6 @@ import {
     UserRepository,
     PortfolioOrderRepository,
     PortfolioOrderService,
-    TNewPortfolioOrderProps,
     Scrubber,
 } from '../../../src'
 
@@ -107,11 +106,11 @@ describe('PortfolioOrderService', function () {
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const orderPayload: TNewPortfolioOrderProps = {
+                    const orderPayload: TOrderSource = {
                         orderType: 'market',
                         orderSide: 'bid',
                         assetId: assetId,
-                        //portfolioId: `user::testbot`,
+                        portfolioId: `user::testbot`,
                         orderSize: 4,
                         //orderId: 'order1',
                         tags: { test: true },
@@ -159,14 +158,14 @@ describe('PortfolioOrderService', function () {
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const orderPayload: TNewExchangeOrderConfig = {
-                        operation: 'order',
+                    const orderPayload: TOrderSource = {
+                        // operation: 'order',
                         orderType: 'market',
                         orderSide: 'ask',
                         assetId: assetId,
                         portfolioId: `user::testbot`,
                         orderSize: 2,
-                        orderId: 'orde2',
+                        sourceOrderId: 'orde2',
                         tags: { test: true },
                     }
 

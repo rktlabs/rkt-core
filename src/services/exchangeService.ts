@@ -14,7 +14,7 @@ import {
     TransactionRepository,
     MarketMakerRepository,
     TExchangeOrderFill,
-    TNewExchangeOrderConfig,
+    TOrderSource,
     ExchangeOrder,
     TExchangeQuote,
     ExchangeTrade,
@@ -105,18 +105,18 @@ export class ExchangeService {
     //  handleNewExchangeOrderAsync
     //  - new order handler - accepts raw json as input
     ////////////////////////////////////////////////////
-    async processOrder(orderPayload: TNewExchangeOrderConfig) {
-        logger.trace(`processOrder`, orderPayload)
+    async processOrder(orderSource: TOrderSource) {
+        logger.trace(`processOrder`, orderSource)
 
         let exchangeOrder: ExchangeOrder | undefined
         try {
             ////////////////////////////////////
             // Verify source portfolio has adequate funds/units to complete transaction
             ////////////////////////////////////
-            const portfolioId = orderPayload.portfolioId
-            const assetId = orderPayload.assetId
-            const orderSide = orderPayload.orderSide
-            const orderSize = orderPayload.orderSize
+            const portfolioId = orderSource.portfolioId
+            const assetId = orderSource.assetId
+            const orderSide = orderSource.orderSide
+            const orderSize = orderSource.orderSize
 
             ////////////////////////////////////////////////////////
             // Process the order
@@ -148,22 +148,10 @@ export class ExchangeService {
                 // order is reasonably complete so mark it as received
                 // and STORE it
                 ////////////////////////////////////
-                exchangeOrder = ExchangeOrder.newExchangeOrder(orderPayload)
+                exchangeOrder = ExchangeOrder.newExchangeOrder(orderSource)
                 await this.exchangeOrderRepository.storeAsync(exchangeOrder)
 
-                const orderId = exchangeOrder.orderId
-
-                const order = MarketMakerFactory.generateOrder({
-                    operation: 'order',
-                    orderType: 'market',
-                    assetId: assetId,
-                    orderId: orderId,
-                    portfolioId: portfolioId,
-                    orderSide: orderSide,
-                    orderSize: orderSize,
-                })
-
-                await marketMaker.processOrder(order)
+                await marketMaker.processOrder(exchangeOrder)
             }
         } catch (error: any) {
             if (exchangeOrder && exchangeOrder.orderStatus === 'received') {
@@ -179,13 +167,6 @@ export class ExchangeService {
                 await this.exchangeOrderRepository.updateAsync(exchangeOrder.orderId, updateData)
 
                 this.emitOrderFail(exchangeOrder)
-                // this.emitOrderFail({
-                //     eventType: 'orderFail',
-                //     publishedAt: DateTime.utc().toString(),
-                //     orderId: exchangeOrder.orderId,
-                //     portfolioId: exchangeOrder.portfolioId,
-                //     reason: reason,
-                // })
             }
 
             logger.error(error)

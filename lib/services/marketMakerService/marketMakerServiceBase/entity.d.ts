@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
 import { IMarketMakerService } from './interfaces';
-import { ExchangeTrade, TExchangeOrder, TExchangeQuote, TMarketMaker, TNewExchangeOrderConfig } from '../../..';
+import { ExchangeTrade, TExchangeOrder, TExchangeQuote, TMarketMaker } from '../../..';
 export declare abstract class MarketMakerServiceBase implements IMarketMakerService {
     private emitter;
     marketMaker: TMarketMaker;
@@ -11,5 +11,5 @@ export declare abstract class MarketMakerServiceBase implements IMarketMakerServ
     emitTrade(trade: ExchangeTrade): void;
     emitCancelOrder(order: TExchangeOrder): void;
     emitExpirelOrder(order: TExchangeOrder): void;
-    abstract processOrder(order: TNewExchangeOrderConfig): Promise<boolean>;
+    abstract processOrder(order: TExchangeOrder): Promise<boolean>;
 }

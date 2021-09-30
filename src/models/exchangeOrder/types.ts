@@ -1,40 +1,43 @@
 'use strict'
 
-import { OrderType, OrderSide, OperationType } from '../..'
+import { OrderType, OrderSide } from '../..'
 
-export type TNewExchangeOrderConfig = {
-    operation: OperationType // one of order, cancel
+export type TOrderSource = {
+    // operation: OperationType // one of order, cancel
+    sourceOrderId?: string
+
+    // TODO: when receive order, look for nonce in existing set of orders. If exists, just
+    // return that order. else process order
+    // NOTE: portfolioId maps used to validate signature so order only valid for that portfolio
     portfolioId: string
-    orderId: string
+    nonce?: string
+    signature?: string // jws detached signature of this order - canonicalized and sig stripped
 
     assetId: string
+    orderSide: OrderSide
+    orderSize: number
     orderType: OrderType // market or limit
-    orderSide: OrderSide
-    orderSize: number
     orderPrice?: number
-    sizeRemaining?: number
     tags?: any
+    xids?: any
 }
 
-export type TExchangeCancelOrder = {
-    operation: OperationType
-    portfolioId: string
-    orderId: string
-}
+// export type TExchangeCancelOrder = {
+//     // operation: OperationType
+//     portfolioId: string
+//     orderId: string
+// }
 
-// superset of TNewExchangeOrderConfig
+// superset of TOrderSource
 export type TExchangeOrder = {
-    operation: OperationType // one of order, cancel
-    portfolioId: string
+    // operation: OperationType // one of order, cancel
     orderId: string
 
-    assetId: string
-    orderType: OrderType
-    orderSide: OrderSide
-    orderSize: number
-    orderPrice?: number
+    portfolioId: string
+
+    orderSource: TOrderSource
+
     sizeRemaining?: number
-    tags?: any
     events: any[]
 
     orderStatus: string

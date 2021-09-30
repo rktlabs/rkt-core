@@ -1,32 +1,22 @@
-import { OrderType, OrderSide, OperationType } from '../..';
-export declare type TNewExchangeOrderConfig = {
-    operation: OperationType;
+import { OrderType, OrderSide } from '../..';
+export declare type TOrderSource = {
+    sourceOrderId?: string;
     portfolioId: string;
-    orderId: string;
+    nonce?: string;
+    signature?: string;
     assetId: string;
-    orderType: OrderType;
     orderSide: OrderSide;
     orderSize: number;
+    orderType: OrderType;
     orderPrice?: number;
-    sizeRemaining?: number;
     tags?: any;
-};
-export declare type TExchangeCancelOrder = {
-    operation: OperationType;
-    portfolioId: string;
-    orderId: string;
+    xids?: any;
 };
 export declare type TExchangeOrder = {
-    operation: OperationType;
-    portfolioId: string;
     orderId: string;
-    assetId: string;
-    orderType: OrderType;
-    orderSide: OrderSide;
-    orderSize: number;
-    orderPrice?: number;
+    portfolioId: string;
+    orderSource: TOrderSource;
     sizeRemaining?: number;
-    tags?: any;
     events: any[];
     orderStatus: string;
     orderState: string;

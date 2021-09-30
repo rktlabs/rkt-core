@@ -1,4 +1,4 @@
-import { TNewExchangeOrderConfig } from '..';
+import { TExchangeOrder } from '..';
 import { TTaker, TMaker, OrderSide } from '.';
 export declare class ExchangeTrade {
     tradeId: string;
@@ -7,7 +7,7 @@ export declare class ExchangeTrade {
     taker: TTaker;
     makers: TMaker[];
     createdAt?: string;
-    constructor(order: TNewExchangeOrderConfig);
+    constructor(order: TExchangeOrder);
     supplyMakerSide(opts: {
         orderId?: string;
         assetId: string;

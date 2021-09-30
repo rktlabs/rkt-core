@@ -1,8 +1,8 @@
 'use strict'
 
 import { DateTime } from 'luxon'
-import { TNewExchangeOrderConfig } from '..'
-import { TTaker, TMaker, OrderSide, OrderType } from '.'
+import { TExchangeOrder } from '..'
+import { TTaker, TMaker, OrderSide } from '.'
 import { serialize, serializeCollection } from './serializer'
 import { generateId, round4 } from '../../util'
 
@@ -14,24 +14,15 @@ export class ExchangeTrade {
     makers: TMaker[]
     createdAt?: string
 
-    constructor(order: TNewExchangeOrderConfig) {
+    constructor(order: TExchangeOrder) {
         this.tradeId = `TRADE::${generateId()}`
         this.executedAt = DateTime.utc().toString()
         this.createdAt = DateTime.utc().toString()
-        this.assetId = order.assetId
+        this.assetId = order.orderSource.assetId
         this.makers = []
 
         // construct Taker from Order
-        const taker = this._generateTaker({
-            assetId: order.assetId,
-            orderId: order.orderId,
-            portfolioId: order.portfolioId,
-            orderType: order.orderType,
-            orderSide: order.orderSide,
-            orderSize: order.orderSize,
-            tags: order.tags,
-            sizeRemaining: order.sizeRemaining,
-        })
+        const taker = this._generateTaker(order)
 
         this.taker = taker
     }
@@ -117,25 +108,16 @@ export class ExchangeTrade {
         maker.isPartial = Math.abs(maker.filledSize) < maker.orderSize
     }
 
-    private _generateTaker(opts: {
-        assetId: string
-        orderSide: OrderSide
-        orderSize: number
-        orderId: string
-        orderType?: OrderType
-        portfolioId: string
-        sizeRemaining?: number
-        tags?: any // eslint-disable-line
-    }) {
+    private _generateTaker(order: TExchangeOrder) {
         const taker: TTaker = {
-            assetId: opts.assetId,
-            orderSide: opts.orderSide,
-            orderSize: Math.max(opts.orderSize, 0),
-            tags: opts.tags,
-            orderType: opts.orderType,
-            orderId: opts.orderId,
-            portfolioId: opts.portfolioId,
-            sizeRemaining: !opts.sizeRemaining ? opts.orderSize : opts.sizeRemaining,
+            assetId: order.orderSource.assetId,
+            orderSide: order.orderSource.orderSide,
+            orderSize: Math.max(order.orderSource.orderSize, 0),
+            tags: order.orderSource.tags,
+            orderType: order.orderSource.orderType,
+            orderId: order.orderId,
+            portfolioId: order.orderSource.portfolioId,
+            sizeRemaining: order.orderSource.orderSize,
             filledSize: 0,
             filledValue: 0,
             filledPrice: 0,

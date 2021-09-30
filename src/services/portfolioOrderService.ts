@@ -10,12 +10,10 @@ import {
     TransactionRepository,
     MarketMakerRepository,
     TExchangeOrderFill,
-    TNewPortfolioOrderProps,
     ConflictError,
     PortfolioOrder,
-    TNewExchangeOrderConfig,
+    TOrderSource,
     TExchangeOrderComplete,
-    TPortfolioOrder,
     TExchangeOrder,
 } from '..'
 
@@ -57,7 +55,7 @@ export class PortfolioOrderService {
         })
     }
 
-    async submitNewPortfolioOrderAsync(portfolioId: string, orderPayload: TNewPortfolioOrderProps) {
+    async submitNewPortfolioOrderAsync(portfolioId: string, orderPayload: TOrderSource) {
         // verify that asset exists.
         const orderAssetId = orderPayload.assetId
         const orderAsset = await this.assetRepository.getDetailAsync(orderAssetId)
@@ -81,12 +79,12 @@ export class PortfolioOrderService {
         const newPortfolioOrder = PortfolioOrder.newOrder(orderPayload)
         await this.portfolioOrderRepository.storeAsync(portfolioId, newPortfolioOrder)
 
-        const exchangeOrder: TNewExchangeOrderConfig = this._generateExchangeOrder(portfolioId, newPortfolioOrder)
+        const orderSource: TOrderSource = newPortfolioOrder.orderSource
         // if (this.eventPublisher) {
         //     await this.eventPublisher.publishExchangeOrderCreateAsync(exchangeOrder, 'orderHandler')
         // }
 
-        await this.exchangeService.processOrder(exchangeOrder)
+        await this.exchangeService.processOrder(orderSource)
 
         return newPortfolioOrder
     }
@@ -111,24 +109,6 @@ export class PortfolioOrderService {
         this.portfolioOrderEventService.processFailEvent(order)
     }
 
-    private _generateExchangeOrder = (portfolioId: string, order: TPortfolioOrder) => {
-        const exchangeOrder: TNewExchangeOrderConfig = {
-            operation: 'order',
-            orderType: order.orderType,
-            orderId: order.orderId,
-            portfolioId: portfolioId,
-            assetId: order.assetId,
-            orderSide: order.orderSide,
-            orderSize: order.orderSize,
-        }
-
-        if (order.orderType === 'limit') {
-            exchangeOrder.orderPrice = order.orderPrice
-        }
-
-        return exchangeOrder
-    }
-
     // async unwindOrder(portfolioId: string, orderId: string) {
     //     const order = await this.portfolioOrderRepository.getDetailAsync(portfolioId, orderId)
     //     if (!order) {
@@ -139,7 +119,7 @@ export class PortfolioOrderService {
 
     //     /////////////////////////////////////////////////////////
     //     /////////////////////////////////////////////////////////
-    //     const orderPayload: TNewPortfolioOrderProps = {
+    //     const orderPayload: TNewPortfolioOrderConfig = {
     //         assetId: order.assetId,
     //         orderSide: order.orderSide === 'bid' ? 'ask' : 'bid',
     //         orderSize: order.orderSize,
@@ -152,7 +132,7 @@ export class PortfolioOrderService {
     //     const newOrder = PortfolioOrder.newOrder(orderPayload)
     //     await this.portfolioOrderRepository.storeAsync(portfolioId, newOrder)
 
-    //     const exchangeOrder: TNewExchangeOrderConfig = this._generateExchangeOrder(portfolioId, newOrder)
+    //     const exchangeOrder: TOrderSource = this._generateExchangeOrder(portfolioId, newOrder)
     //     // if (this.eventPublisher) {
     //     //     await this.eventPublisher.publishExchangeOrderCreateAsync(exchangeOrder, 'orderHandler')
     //     // }

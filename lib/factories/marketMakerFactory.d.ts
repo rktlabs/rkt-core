@@ -1,4 +1,4 @@
-import { MarketMakerRepository, PortfolioRepository, TransactionRepository, AssetRepository, TNewExchangeOrderConfig, TNewMarketMakerConfig } from '..';
+import { MarketMakerRepository, PortfolioRepository, TransactionRepository, AssetRepository, TNewMarketMakerConfig } from '..';
 import { IMarketMakerService, MarketMakerServiceBase } from '../services/marketMakerService/marketMakerServiceBase';
 export declare class MarketMakerFactory {
     private marketMakerRepository;
@@ -11,7 +11,6 @@ export declare class MarketMakerFactory {
     getMarketMakerAsync(assetId: string): Promise<IMarketMakerService | null>;
     createMarketMaker(payload: TNewMarketMakerConfig, shouldCreatePortfolio?: boolean): Promise<MarketMakerServiceBase>;
     deleteMaker(assetId: string): Promise<void>;
-    static generateOrder(opts: TNewExchangeOrderConfig): TNewExchangeOrderConfig;
     private _createMarketMakerImpl;
     private _createMarketMakerPortfolioImpl;
 }

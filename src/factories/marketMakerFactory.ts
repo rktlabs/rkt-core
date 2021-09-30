@@ -11,7 +11,7 @@ import {
     ExchangeQuoteRepository,
     DuplicateError,
     ConflictError,
-    TNewExchangeOrderConfig,
+    TOrderSource,
     TNewPortfolioConfig,
     TNewMarketMakerConfig,
 } from '..'
@@ -110,21 +110,6 @@ export class MarketMakerFactory {
 
     async deleteMaker(assetId: string) {
         await this.marketMakerRepository.deleteAsync(assetId)
-    }
-
-    static generateOrder(opts: TNewExchangeOrderConfig) {
-        // eslint-disable-line
-        const order: TNewExchangeOrderConfig = {
-            operation: 'order',
-            assetId: opts.assetId,
-            orderId: opts.orderId,
-            portfolioId: opts.portfolioId,
-            orderSide: opts.orderSide,
-            orderSize: Math.max(opts.orderSize, 0),
-            orderType: opts.orderType ? opts.orderType : 'market',
-            sizeRemaining: opts.sizeRemaining === undefined ? opts.orderSize : opts.sizeRemaining,
-        }
-        return order
     }
 
     ////////////////////////////////////////////////////////
