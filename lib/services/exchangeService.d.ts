@@ -9,7 +9,7 @@ export declare class ExchangeService {
     private portfolioRepository;
     private assetHolderRepository;
     private transactionService;
-    private marketMakerService;
+    private marketMakerFactory;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository, emitter?: EventEmitter);
     on(event: string, listener: (...args: any[]) => void): void;
     emitOrderExecution(event: TExchangeOrderFill): void;

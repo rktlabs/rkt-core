@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import {
     AssetFactory,
     BootstrapService,
-    IMarketMaker,
+    IMarketMakerService,
     MarketMakerRepository,
     MarketMakerFactory,
     ExchangeService,
@@ -33,18 +33,18 @@ describe('ExchangerService', function () {
         let marketMakerRepository = new MarketMakerRepository()
 
         let assetFactory: AssetFactory
-        let marketMakerService: MarketMakerFactory
+        let marketMakerFactory: MarketMakerFactory
         let exchangeService: ExchangeService
         let treasuryService: TreasuryService
         let mintService: MintService
         const scrubber = new Scrubber({ assetRepository, portfolioRepository, userRepository })
 
         const assetId = 'card::testehed'
-        let marketMaker: IMarketMaker
+        let marketMakerService: IMarketMakerService
 
         before(async () => {
             assetFactory = new AssetFactory(assetRepository, portfolioRepository)
-            marketMakerService = new MarketMakerFactory(
+            marketMakerFactory = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
@@ -87,8 +87,8 @@ describe('ExchangerService', function () {
                     },
                 }
 
-                marketMaker = await marketMakerService.createMarketMaker(makerConfig, false)
-                expect(marketMaker).to.exist
+                marketMakerService = await marketMakerFactory.createMarketMaker(makerConfig, false)
+                expect(marketMakerService).to.exist
             })
 
             describe('Create Basic MarketMaker', async () => {
@@ -140,8 +140,8 @@ describe('ExchangerService', function () {
                     },
                 }
 
-                marketMaker = await marketMakerService.createMarketMaker(makerConfig, false)
-                expect(marketMaker).to.exist
+                marketMakerService = await marketMakerFactory.createMarketMaker(makerConfig, false)
+                expect(marketMakerService).to.exist
             })
 
             describe('Create Basic MarketMaker', async () => {

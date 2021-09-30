@@ -1,7 +1,6 @@
 'use strict'
 import * as log4js from 'log4js'
-import { MarketMakerBase } from '../../services/marketMakerService/marketMakerBase/entity'
-import { TMarketMaker } from '../../services/marketMakerService/marketMakerBase/types'
+import { TMarketMaker, MarketMaker } from '../..'
 import { deleteDocument } from '../../util/deleters'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
@@ -51,10 +50,10 @@ export class MarketMakerRepository extends RepositoryBase {
         }
     }
 
-    async storeAsync(entity: MarketMakerBase | TMarketMaker) {
+    async storeAsync(entity: MarketMaker | TMarketMaker) {
         logger.trace(`store ${entity.assetId}`)
         let theEntity: TMarketMaker
-        if (entity instanceof MarketMakerBase) {
+        if (entity instanceof MarketMaker) {
             theEntity = this.flattenMaker(entity)
         } else {
             theEntity = entity
@@ -99,7 +98,7 @@ export class MarketMakerRepository extends RepositoryBase {
     // PRIVATE
     ////////////////////////////////////////////////////////
 
-    private flattenMaker(entity: MarketMakerBase | TMarketMaker) {
+    private flattenMaker(entity: MarketMaker | TMarketMaker) {
         const makerData: TMarketMaker = {
             createdAt: entity.createdAt,
             type: entity.type,

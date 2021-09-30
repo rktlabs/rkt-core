@@ -6,13 +6,13 @@ import {
     AssetRepository,
     AssetFactory,
     BootstrapService,
-    IMarketMaker,
     MarketMakerRepository,
     MarketMakerFactory,
     PortfolioRepository,
     TNewMarketMakerConfig,
     TransactionRepository,
     Scrubber,
+    IMarketMakerService,
 } from '../../../src'
 
 describe('MarketMakerFactory', () => {
@@ -24,15 +24,15 @@ describe('MarketMakerFactory', () => {
         let portfolioRepository = new PortfolioRepository()
         let marketMakerRepository = new MarketMakerRepository()
         let assetFactory: AssetFactory
-        let marketMakerService: MarketMakerFactory
+        let marketMakerFactory: MarketMakerFactory
         const scrubber = new Scrubber({ assetRepository, portfolioRepository })
 
         const assetId = 'card::testehed'
-        let marketMaker: IMarketMaker
+        let marketMakerService: IMarketMakerService
 
         before(async () => {
             assetFactory = new AssetFactory(assetRepository, portfolioRepository)
-            marketMakerService = new MarketMakerFactory(
+            marketMakerFactory = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
@@ -60,8 +60,8 @@ describe('MarketMakerFactory', () => {
                     },
                 }
 
-                marketMaker = await marketMakerService.createMarketMaker(makerConfig, false)
-                expect(marketMaker).to.exist
+                marketMakerService = await marketMakerFactory.createMarketMaker(makerConfig, false)
+                expect(marketMakerService).to.exist
             })
 
             describe('Create Basic MarketMaker', async () => {
@@ -76,7 +76,7 @@ describe('MarketMakerFactory', () => {
                         orderSize: 4,
                     })
 
-                    await marketMaker.processOrder(order)
+                    await marketMakerService.processOrder(order)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {
@@ -112,8 +112,8 @@ describe('MarketMakerFactory', () => {
                     },
                 }
 
-                marketMaker = await marketMakerService.createMarketMaker(makerConfig, false)
-                expect(marketMaker).to.exist
+                marketMakerService = await marketMakerFactory.createMarketMaker(makerConfig, false)
+                expect(marketMakerService).to.exist
             })
 
             describe('Create Basic MarketMaker', async () => {
@@ -128,7 +128,7 @@ describe('MarketMakerFactory', () => {
                         orderSize: 2,
                     })
 
-                    await marketMaker.processOrder(order)
+                    await marketMakerService.processOrder(order)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

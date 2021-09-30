@@ -172,8 +172,8 @@ describe('ConstantBondingCurveAMM', function () {
             expect(result.stateUpdate.quote?.last?.value).eq(20)
             expect(result.stateUpdate.quote?.last?.unitValue).eq(5)
 
-            expect(marketMaker.params.madeUnits).eq(4)
-            expect(marketMaker.params.cumulativeValue).eq(20)
+            expect(marketMaker.marketMaker.params.madeUnits).eq(4)
+            expect(marketMaker.marketMaker.params.cumulativeValue).eq(20)
 
             const result2 = marketMaker.processOrderSize(10)
 

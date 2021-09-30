@@ -23,7 +23,7 @@ export class BootstrapService {
     private assetFactory: AssetFactory
     private portfolioFactory: PortfolioFactory
     private leagueFactory: LeagueFactory
-    private marketMakerService: MarketMakerFactory
+    private marketMakerFactory: MarketMakerFactory
     private scrubber: Scrubber = new Scrubber()
 
     static async boot() {
@@ -60,7 +60,7 @@ export class BootstrapService {
     ) {
         this.userFactory = new UserFactory(portfolioRepository, userRepository)
 
-        this.marketMakerService = new MarketMakerFactory(
+        this.marketMakerFactory = new MarketMakerFactory(
             assetRepository,
             portfolioRepository,
             transactionRepository,
@@ -166,7 +166,7 @@ export class BootstrapService {
             },
         }
 
-        await this.marketMakerService.createMarketMaker(makerConfig, false)
+        await this.marketMakerFactory.createMarketMaker(makerConfig, false)
     }
 
     async bootAssets() {

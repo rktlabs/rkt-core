@@ -3,7 +3,7 @@
 import { EventEmitter } from 'events'
 import * as log4js from 'log4js'
 import { DateTime } from 'luxon'
-import { TransactionService, MarketMakerFactory } from '.'
+import { TransactionService } from '.'
 import {
     ExchangeOrderRepository,
     ExchangeTradeRepository,
@@ -27,6 +27,7 @@ import {
     ConflictError,
     InsufficientBalance,
     TExchangeOrder,
+    MarketMakerFactory,
 } from '..'
 
 const logger = log4js.getLogger('ExchangeService')
@@ -49,7 +50,7 @@ export class ExchangeService {
     private portfolioRepository: PortfolioRepository
     private assetHolderRepository: AssetHolderRepository
     private transactionService: TransactionService
-    private marketMakerService: MarketMakerFactory
+    private marketMakerFactory: MarketMakerFactory
 
     constructor(
         assetRepository: AssetRepository,
@@ -66,7 +67,7 @@ export class ExchangeService {
         this.exchangeQuoteRepository = new ExchangeQuoteRepository()
 
         this.transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
-        this.marketMakerService = new MarketMakerFactory(
+        this.marketMakerFactory = new MarketMakerFactory(
             assetRepository,
             portfolioRepository,
             transactionRepository,
@@ -121,7 +122,7 @@ export class ExchangeService {
             // Process the order
             ////////////////////////////////////////////////////////
 
-            const marketMaker = await this.marketMakerService.getMarketMakerAsync(assetId)
+            const marketMaker = await this.marketMakerFactory.getMarketMakerAsync(assetId)
             if (marketMaker) {
                 ////////////////////////////////////////////////////////
                 // Set up the handlers for emitted trades and quote updates
@@ -139,7 +140,7 @@ export class ExchangeService {
                     ////////////////////////////
                     // get bid price and verify funds
                     ////////////////////////////
-                    const currentPrice = marketMaker?.quote?.ask || 1
+                    const currentPrice = marketMaker?.marketMaker.quote?.ask || 1
                     await this._verifyFundsAsync(portfolioId, orderSide, orderSize, currentPrice)
                 }
 

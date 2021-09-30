@@ -24,14 +24,14 @@ describe('LinearBondingCurveAMM', function () {
     describe('persist marketMaker', function () {
         this.timeout(30000)
 
-        let marketMakerService: MarketMakerFactory
+        let marketMakerFactory: MarketMakerFactory
 
         const assetId = 'card::testehed'
         const assetPortfolioId = 'asset::card::testehed'
         let marketMaker: LinearBondingCurveAMM
 
         before(async () => {
-            marketMakerService = new MarketMakerFactory(
+            marketMakerFactory = new MarketMakerFactory(
                 assetRepository,
                 portfolioRepository,
                 transactionRepository,
@@ -59,7 +59,7 @@ describe('LinearBondingCurveAMM', function () {
                     },
                 }
 
-                marketMaker = (await marketMakerService.createMarketMaker(makerConfig, false)) as LinearBondingCurveAMM
+                marketMaker = (await marketMakerFactory.createMarketMaker(makerConfig, false)) as LinearBondingCurveAMM
                 expect(marketMaker).to.exist
             })
 
@@ -121,7 +121,7 @@ describe('LinearBondingCurveAMM', function () {
                     },
                 }
 
-                marketMaker = (await marketMakerService.createMarketMaker(makerConfig, false)) as LinearBondingCurveAMM
+                marketMaker = (await marketMakerFactory.createMarketMaker(makerConfig, false)) as LinearBondingCurveAMM
                 expect(marketMaker).to.exist
             })
 
