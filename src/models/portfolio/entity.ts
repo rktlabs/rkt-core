@@ -3,7 +3,6 @@
 import { DateTime } from 'luxon'
 import { generateId } from '../../util/idGenerator'
 import { ValidationError, TypeError, NameError } from '../../errors'
-import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
 import { TPortfolio, TNewPortfolioConfig } from '.'
 
@@ -81,13 +80,5 @@ export class Portfolio {
         } catch (error) {
             throw new ValidationError(error)
         }
-    }
-
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
-    }
-
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
-        return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 }

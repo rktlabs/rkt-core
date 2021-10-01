@@ -3,7 +3,6 @@
 import { validate } from './validator'
 import { DateTime } from 'luxon'
 import { TUser, TNewUserConfig } from '.'
-import { serialize, serializeCollection } from './serializer'
 
 import { NameError, ValidationError } from '../../errors'
 import { generateId } from '../../util/idGenerator'
@@ -94,13 +93,5 @@ export class User {
             // ValdationError
             throw new ValidationError(error)
         }
-    }
-
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
-    }
-
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
-        return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 }

@@ -2,7 +2,6 @@
 
 import { DateTime } from 'luxon'
 import { ValidationError } from '../../errors'
-import { serialize, serializeCollection } from './serializer'
 import { exchangeOrderValidator as validate } from './validator'
 import { TExchangeOrder, TOrderSource } from '.'
 import { generateId } from '../..'
@@ -79,13 +78,5 @@ export class ExchangeOrder {
             // ValdationError
             throw new ValidationError(error)
         }
-    }
-
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
-    }
-
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
-        return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 }

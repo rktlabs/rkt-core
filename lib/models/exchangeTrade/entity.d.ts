@@ -18,8 +18,6 @@ export declare class ExchangeTrade {
         makerDeltaUnits: number;
         makerDeltaValue: number;
     }): TMaker;
-    static serialize(selfUrl: string, baseUrl: string, data: any): any;
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
     private _fillMaker;
     private _updateTakerFill;
     private _updateMakerFill;

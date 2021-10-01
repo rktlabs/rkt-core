@@ -3,7 +3,6 @@
 import { DateTime } from 'luxon'
 import { TAsset, TNewAssetConfig } from '.'
 import { ValidationError, TypeError, NameError } from '../../errors'
-import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
 
 // Asset holds value (coin) and shares to be sold.
@@ -108,13 +107,5 @@ export class Asset {
         } catch (error) {
             throw new ValidationError(error)
         }
-    }
-
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
-    }
-
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
-        return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 }

@@ -3,7 +3,6 @@
 import { DateTime } from 'luxon'
 import { generateId } from '../../util/idGenerator'
 import { ValidationError } from '../../errors'
-import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
 
 import { validateTransfer } from './transferValidator'
@@ -54,14 +53,6 @@ export class Transaction {
 
         const newEntity = new Transaction(newTransactionProps)
         return newEntity
-    }
-
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
-    }
-
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
-        return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 
     static validate(jsonPayload: any) {

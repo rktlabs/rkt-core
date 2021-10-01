@@ -3,7 +3,6 @@
 import { NameError, ValidationError } from '../../errors'
 import { DateTime } from 'luxon'
 import { generateId } from '../../util/idGenerator'
-import { serialize, serializeCollection } from './serializer'
 import { validate } from './validator'
 import { TLeague, TNewLeagueConfig } from '.'
 import { TAssetCore } from '..'
@@ -71,13 +70,5 @@ export class League {
         } catch (error) {
             throw new ValidationError(error)
         }
-    }
-
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
-    }
-
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
-        return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 }

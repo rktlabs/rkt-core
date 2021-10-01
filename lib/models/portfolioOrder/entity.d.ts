@@ -17,6 +17,4 @@ export declare class PortfolioOrder {
     constructor(props: TPortfolioOrder);
     static newOrder(orderSource: TOrderSource): PortfolioOrder;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
-    static serialize(selfUrl: string, portfolioId: string, baseUrl: string, data: any): any;
-    static serializeCollection(selfUrl: string, portfolioId: string, baseUrl: string, qs: any, data: any): any;
 }

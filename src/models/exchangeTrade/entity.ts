@@ -3,7 +3,6 @@
 import { DateTime } from 'luxon'
 import { TExchangeOrder } from '..'
 import { TTaker, TMaker, OrderSide } from '.'
-import { serialize, serializeCollection } from './serializer'
 import { generateId, round4 } from '../../util'
 
 export class ExchangeTrade {
@@ -55,15 +54,6 @@ export class ExchangeTrade {
 
         return maker
     }
-
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
-    }
-
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
-        return serializeCollection(selfUrl, baseUrl, qs, data)
-    }
-
     //////////////////////////////////////////////
     // PRIVATE
     //////////////////////////////////////////////

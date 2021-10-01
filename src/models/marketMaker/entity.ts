@@ -1,6 +1,5 @@
 'use strict'
 
-import { serialize, serializeCollection } from './serializer'
 import { TMarketMaker } from './types'
 
 // MarketMaker holds value and shares to be sold.
@@ -23,16 +22,5 @@ export abstract class MarketMaker {
         this.tags = props.tags
         this.params = props.params
         this.quote = props.quote
-    }
-
-    //////////////////////////////////////////////////////
-    // STATIC
-    //////////////////////////////////////////////////////
-    static serialize(selfUrl: string, baseUrl: string, data: any) {
-        return serialize(selfUrl, baseUrl, data)
-    }
-
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any) {
-        return serializeCollection(selfUrl, baseUrl, qs, data)
     }
 }

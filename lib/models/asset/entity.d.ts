@@ -19,6 +19,4 @@ export declare class Asset {
     toString(): string;
     static newAsset(props: TNewAssetConfig): Asset;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
-    static serialize(selfUrl: string, baseUrl: string, data: any): any;
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
 }

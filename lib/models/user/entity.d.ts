@@ -16,6 +16,4 @@ export declare class User {
     toString(): string;
     static newUser(props: TNewUserConfig): User;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
-    static serialize(selfUrl: string, baseUrl: string, data: any): any;
-    static serializeCollection(selfUrl: string, baseUrl: string, qs: any, data: any): any;
 }
