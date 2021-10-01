@@ -32,7 +32,7 @@ export class AssetQuery {
         }
     }
 
-    async getAssetctivityAsync(assetId: string, qs?: any) {
+    async getAssetActivityAsync(assetId: string, qs?: any) {
         return {
             data: await this.activityRepository.getAssetListAsync(assetId, qs),
         }
