@@ -2,10 +2,10 @@ import { AssetRepository, TAssetHolderUpdateItem, TTransaction } from '..';
 export declare class AssetHolderService {
     private assetRepository;
     private portfolioHoldingRepository;
-    private portfolioActivityRepository;
+    private activityRepository;
     private assetHolderRepository;
     constructor(assetRepository: AssetRepository);
-    addAssetHolder(assetId: string, portfolioId: string): Promise<{
+    createAssetHolder(assetId: string, portfolioId: string): Promise<{
         portfolioId: string;
         assetId: string;
         units: number;
@@ -13,7 +13,6 @@ export declare class AssetHolderService {
     } | null>;
     proessTransaction(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction): Promise<void>;
     deleteAssetHolder(assetId: string, portfolioId: string): Promise<void[]>;
-    deletePortfolioHolding(portfolioId: string, assetId: string): Promise<void[]>;
     getAssetHoldingTotal(assetId: string): Promise<number>;
     getAssetHolderBalance(assetId: string, portfolioId: string): Promise<number>;
     getPortfolioHoldingBalance(portfolioId: string, assetId: string): Promise<number>;

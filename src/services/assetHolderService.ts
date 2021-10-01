@@ -4,7 +4,7 @@ import * as log4js from 'log4js'
 import {
     AssetHolderRepository,
     AssetRepository,
-    PortfolioActivityRepository,
+    ActivityRepository,
     PortfolioHoldingRepository,
     TAssetHolder,
     TAssetHolderUpdateItem,
@@ -19,17 +19,17 @@ const logger = log4js.getLogger('AssetHolderService')
 export class AssetHolderService {
     private assetRepository: AssetRepository
     private portfolioHoldingRepository: PortfolioHoldingRepository
-    private portfolioActivityRepository: PortfolioActivityRepository
+    private activityRepository: ActivityRepository
     private assetHolderRepository: AssetHolderRepository
 
     constructor(assetRepository: AssetRepository) {
         this.assetRepository = assetRepository
         this.assetHolderRepository = new AssetHolderRepository()
         this.portfolioHoldingRepository = new PortfolioHoldingRepository()
-        this.portfolioActivityRepository = new PortfolioActivityRepository()
+        this.activityRepository = new ActivityRepository()
     }
 
-    async addAssetHolder(assetId: string, portfolioId: string) {
+    async createAssetHolder(assetId: string, portfolioId: string) {
         logger.trace(`addAssetHolder(${assetId}, ${portfolioId})`)
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (asset) {
@@ -61,19 +61,10 @@ export class AssetHolderService {
     }
 
     async proessTransaction(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
-        return this.portfolioActivityRepository.atomicUpdateTransactionAsync(updateSet, transaction)
+        return this.activityRepository.atomicUpdateTransactionAsync(updateSet, transaction)
     }
 
     async deleteAssetHolder(assetId: string, portfolioId: string) {
-        const promises = [
-            this.assetHolderRepository.deleteAsync(assetId, portfolioId),
-            this.portfolioHoldingRepository.deleteAsync(portfolioId, assetId),
-        ]
-
-        return Promise.all(promises)
-    }
-
-    async deletePortfolioHolding(portfolioId: string, assetId: string) {
         const promises = [
             this.assetHolderRepository.deleteAsync(assetId, portfolioId),
             this.portfolioHoldingRepository.deleteAsync(portfolioId, assetId),

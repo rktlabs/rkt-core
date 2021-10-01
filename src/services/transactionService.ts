@@ -298,7 +298,7 @@ export class TransactionService {
                     // short and no holding, then will fail for insufficient balance)
                     if (!holding) {
                         // eslint-disable-next-line no-await-in-loop
-                        holding = await this.assetHolderService.addAssetHolder(assetId, portfolioId)
+                        holding = await this.assetHolderService.createAssetHolder(assetId, portfolioId)
                     }
                 }
 
@@ -335,7 +335,7 @@ export class TransactionService {
                 let holding = await this.assetHolderRepository.getDetailAsync(assetId, portfolioId)
                 if (!holding) {
                     // eslint-disable-next-line no-await-in-loop
-                    holding = await this.assetHolderService.addAssetHolder(assetId, portfolioId)
+                    holding = await this.assetHolderService.createAssetHolder(assetId, portfolioId)
                 }
             }
         }

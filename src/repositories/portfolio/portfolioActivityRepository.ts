@@ -1,128 +1,40 @@
-import * as admin from 'firebase-admin'
-import * as log4js from 'log4js'
-import { TAssetHolderUpdateItem, TPortfolioActivity, TTransaction } from '../../models'
-import { getConnectionProps } from '../getConnectionProps'
-import { RepositoryBase } from '../repositoryBase'
+// import { TTransaction } from '../../models'
+// import { getConnectionProps } from '../getConnectionProps'
+// import { RepositoryBase } from '../repositoryBase'
 
-const logger = log4js.getLogger('PortfolioActivityRepository')
+// const PORTFOLIO_COLLECTION_NAME = 'portfolios'
+// const HOLDING_ACTIVITY_COLLECTION_NAME = 'activity'
 
-const FieldValue = admin.firestore.FieldValue
+// export class PortfolioActivityRepository extends RepositoryBase {
+//     db: FirebaseFirestore.Firestore
+//     constructor() {
+//         super()
+//         this.db = getConnectionProps()
+//     }
 
-const PORTFOLIO_COLLECTION_NAME = 'portfolios'
-const HOLDINGS_COLLECTION_NAME = 'holdings'
-const ACTIVITY_COLLECTION_NAME = 'activity'
+//     filterMap: any = {
+//         assetId: 'assetId',
+//         source: 'source',
+//         transactionId: 'transactionId',
+//         orderId: 'orderId',
+//         tradeId: 'tradeId',
+//     }
 
-const ASSET_COLLECTION_NAME = 'assets'
-const HOLDERS_COLLECTION_NAME = 'holders'
+//     async getListAsync(portfolioId: string, qs?: any) {
+//         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
+//             .collection(PORTFOLIO_COLLECTION_NAME)
+//             .doc(portfolioId)
+//             .collection(HOLDING_ACTIVITY_COLLECTION_NAME)
 
-export class PortfolioActivityRepository extends RepositoryBase {
-    db: FirebaseFirestore.Firestore
-    constructor() {
-        super()
-        this.db = getConnectionProps()
-    }
+//         entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
+//         entityRefCollection = this.generatePagingProperties(qs, entityRefCollection, 'createdAt')
+//         const entityCollectionRefs = await entityRefCollection.get()
 
-    filterMap: any = {
-        assetId: 'assetId',
-        source: 'source',
-        transactionId: 'transactionId',
-        orderId: 'orderId',
-        tradeId: 'tradeId',
-    }
+//         const entityList = entityCollectionRefs.docs.map((entityDoc) => {
+//             const entity = entityDoc.data() as TTransaction
+//             return entity
+//         })
 
-    async getListAsync(portfolioId: string, qs?: any) {
-        let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
-            .collection(PORTFOLIO_COLLECTION_NAME)
-            .doc(portfolioId)
-            .collection(ACTIVITY_COLLECTION_NAME)
-
-        entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
-        entityRefCollection = this.generatePagingProperties(qs, entityRefCollection, 'createdAt')
-        const entityCollectionRefs = await entityRefCollection.get()
-
-        const entityList = entityCollectionRefs.docs.map((entityDoc) => {
-            const entity = entityDoc.data() as TTransaction
-            return entity
-        })
-
-        return entityList
-    }
-
-    async atomicUpdateTransactionAsync(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
-        logger.trace(`update holdings`, updateSet)
-        // compile the refs and increments (outside of batch)
-
-        const updates = updateSet.map((updateItem: TAssetHolderUpdateItem) => {
-            const deltaUnits = FieldValue.increment(updateItem.deltaUnits)
-            const assetId = updateItem.assetId
-            const portfolioId = updateItem.portfolioId
-            const units = updateItem.deltaUnits
-
-            const transactionId = transaction.transactionId
-            const createdAt = transaction.createdAt
-            const orderId = transaction.xids?.orderId
-            const orderPortfolioId = transaction.xids?.orderPortfolioId
-            const source = transaction.tags?.source
-            const tradeId = transaction.xids?.tradeId
-
-            const portfolioHoldingRef = this.db
-                .collection(PORTFOLIO_COLLECTION_NAME)
-                .doc(portfolioId)
-                .collection(HOLDINGS_COLLECTION_NAME)
-                .doc(assetId)
-
-            const assetHolderRef = this.db
-                .collection(ASSET_COLLECTION_NAME)
-                .doc(assetId)
-                .collection(HOLDERS_COLLECTION_NAME)
-                .doc(portfolioId)
-
-            const portfolioActivityRef = this.db
-                .collection(PORTFOLIO_COLLECTION_NAME)
-                .doc(portfolioId)
-                .collection(ACTIVITY_COLLECTION_NAME)
-                .doc(transactionId)
-
-            return {
-                portfolioHoldingRef: portfolioHoldingRef,
-                assetHolderRef: assetHolderRef,
-                portfolioActivityRef: portfolioActivityRef,
-                assetId,
-                deltaUnits,
-                units,
-                transactionId,
-                createdAt,
-                orderId,
-                orderPortfolioId,
-                source,
-                tradeId,
-            }
-        })
-
-        // execute the batch of writes as an atomic set.
-        const batch = this.db.batch()
-        updates.forEach((item) => {
-            // update portfolios.holdings
-            batch.update(item.portfolioHoldingRef, { units: item.deltaUnits })
-
-            // update assets.holders
-            batch.update(item.assetHolderRef, { units: item.deltaUnits })
-
-            const activityItem: TPortfolioActivity = {
-                createdAt: item.createdAt,
-                assetId: item.assetId,
-                units: item.units,
-                transactionId: item.transactionId,
-            }
-            if (item.orderId) activityItem.orderId = item.orderId
-            if (item.orderPortfolioId) activityItem.orderPortfolioId = item.orderPortfolioId
-            if (item.source) activityItem.source = item.source
-            if (item.tradeId) activityItem.tradeId = item.tradeId
-
-            // update assets.holders
-            batch.set(item.portfolioActivityRef, activityItem)
-        })
-
-        await batch.commit()
-    }
-}
+//         return entityList
+//     }
+// }

@@ -11,7 +11,7 @@ import {
     deleteCollection,
     AssetHolderRepository,
     PortfolioHoldingRepository,
-    PortfolioActivityRepository,
+    // ActivityRepository,
 } from '..'
 import { getConnectionProps } from '../repositories/getConnectionProps'
 const logger = log4js.getLogger('Scrubber')
@@ -28,7 +28,7 @@ export class Scrubber {
     leagueRepository = new LeagueRepository()
     assetHolderRepository = new AssetHolderRepository()
     portfolioHoldingRepository = new PortfolioHoldingRepository()
-    portfolioActivityRepository = new PortfolioActivityRepository()
+    // activityRepository = new ActivityRepository()
 
     static async scrub() {
         const scrubber = new Scrubber()
@@ -54,10 +54,12 @@ export class Scrubber {
         await deleteCollection(entityRef)
     }
 
-    async scrubPortfolioActivityCollectionAsync(portfolioId: string) {
-        const entityRef = this.db.collection('portfolios').doc(portfolioId).collection('activity')
-        await deleteCollection(entityRef)
-    }
+    // TODO: scrub portfolio activity
+    // TODO; scrub asset activity
+    // async scrubPortfolioActivityCollectionAsync(portfolioId: string) {
+    //     const entityRef = this.db.collection('portfolios').doc(portfolioId).collection('activity')
+    //     await deleteCollection(entityRef)
+    // }
 
     async scrubPortfolioDepositsAsync(portfolioId: string) {
         const entityRef = this.db.collection('portfolios').doc(portfolioId).collection('funding')
@@ -120,7 +122,7 @@ export class Scrubber {
 
     async scrubPortfolio(portfolioId: string) {
         await this.scrubPortfolioHoldings(portfolioId)
-        await this.scrubPortfolioActivityCollectionAsync(portfolioId)
+        //await this.scrubPortfolioActivityCollectionAsync(portfolioId)
         await this.scrubPortfolioDepositsAsync(portfolioId)
         await this.portfolioRepository.deleteAsync(portfolioId)
     }

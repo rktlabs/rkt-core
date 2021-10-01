@@ -1,7 +1,7 @@
-import { PortfolioRepository, PortfolioActivityRepository, PortfolioHoldingRepository, PortfolioOrderRepository } from '..';
+import { PortfolioRepository, ActivityRepository, PortfolioHoldingRepository, PortfolioOrderRepository } from '..';
 export declare class PortfolioQuery {
     portfolioRepository: PortfolioRepository;
-    portfolioActivityRepository: PortfolioActivityRepository;
+    activityRepository: ActivityRepository;
     portfolioHoldingRepository: PortfolioHoldingRepository;
     portfolioOrderRepository: PortfolioOrderRepository;
     constructor(portfolioRepository: PortfolioRepository, portfolioOrderRepository: PortfolioOrderRepository);

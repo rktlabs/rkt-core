@@ -1,4 +1,4 @@
-import { AssetRepository, PortfolioRepository, TransactionRepository, UserRepository, MarketMakerRepository, LeagueRepository, AssetHolderRepository, PortfolioHoldingRepository, PortfolioActivityRepository } from '..';
+import { AssetRepository, PortfolioRepository, TransactionRepository, UserRepository, MarketMakerRepository, LeagueRepository, AssetHolderRepository, PortfolioHoldingRepository } from '..';
 export declare class Scrubber {
     db: FirebaseFirestore.Firestore;
     assetRepository: AssetRepository;
@@ -9,11 +9,9 @@ export declare class Scrubber {
     leagueRepository: LeagueRepository;
     assetHolderRepository: AssetHolderRepository;
     portfolioHoldingRepository: PortfolioHoldingRepository;
-    portfolioActivityRepository: PortfolioActivityRepository;
     static scrub(): Promise<void>;
     constructor(repos?: any);
     scrubTransactionCollectionAsync(): Promise<void>;
-    scrubPortfolioActivityCollectionAsync(portfolioId: string): Promise<void>;
     scrubPortfolioDepositsAsync(portfolioId: string): Promise<void>;
     scrubExchangeOrderCollectionAsync(): Promise<void>;
     scrubExchangeTradeCollectionAsync(): Promise<void>;

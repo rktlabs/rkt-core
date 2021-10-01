@@ -1,21 +1,16 @@
 'use strict'
 
-import {
-    PortfolioRepository,
-    PortfolioActivityRepository,
-    PortfolioHoldingRepository,
-    PortfolioOrderRepository,
-} from '..'
+import { PortfolioRepository, ActivityRepository, PortfolioHoldingRepository, PortfolioOrderRepository } from '..'
 
 export class PortfolioQuery {
     portfolioRepository: PortfolioRepository
-    portfolioActivityRepository: PortfolioActivityRepository
+    activityRepository: ActivityRepository
     portfolioHoldingRepository: PortfolioHoldingRepository
     portfolioOrderRepository: PortfolioOrderRepository
 
     constructor(portfolioRepository: PortfolioRepository, portfolioOrderRepository: PortfolioOrderRepository) {
         this.portfolioRepository = portfolioRepository
-        this.portfolioActivityRepository = new PortfolioActivityRepository()
+        this.activityRepository = new ActivityRepository()
         this.portfolioHoldingRepository = new PortfolioHoldingRepository()
         this.portfolioOrderRepository = portfolioOrderRepository
     }
@@ -45,7 +40,7 @@ export class PortfolioQuery {
 
     async getPortfolioActivityAsync(portfolioId: string, qs?: any) {
         return {
-            data: await this.portfolioActivityRepository.getListAsync(portfolioId, qs),
+            data: await this.activityRepository.getPortfolioListAsync(portfolioId, qs),
         }
     }
 
