@@ -50,7 +50,7 @@ export class ActivityRepository extends RepositoryBase {
 
     async getListAsync(qs?: any) {
         let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
-            this.db.collection(ASSET_COLLECTION_NAME)
+            this.db.collection(ACTIVITY_COLLECTION_NAME)
 
         entityRefCollection = this.generateFilterPredicate(qs, this.filterMap, entityRefCollection)
         entityRefCollection = this.generatePagingProperties(qs, entityRefCollection, 'createdAt')
