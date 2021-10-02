@@ -10,7 +10,7 @@ export declare class AssetQuery {
         data: import("..").TAsset[];
     }>;
     getDetailAsync(id: string): Promise<any>;
-    getAssetHoldersAsync(qs?: any): Promise<{
+    getAssetHoldersAsync(assetId: string, qs?: any): Promise<{
         data: import("..").TAssetHolder[];
     }>;
     getAssetActivityAsync(assetId: string, qs?: any): Promise<{

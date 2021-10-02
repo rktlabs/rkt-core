@@ -18,11 +18,16 @@ export class AssetHolderRepository extends RepositoryBase {
         this.db = getConnectionProps()
     }
 
-    async getListAsync(assetId: string) {
+    async getListAsync(assetId: string, qs?: any) {
         //logger.trace(`getList ${assetId}`)
-        const entityRefCollection = this.db.collection(COLLECTION_NAME).doc(assetId).collection(SUB_COLLECTION_NAME)
+        let entityRefCollection: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = this.db
+            .collection(COLLECTION_NAME)
+            .doc(assetId)
+            .collection(SUB_COLLECTION_NAME)
 
+        entityRefCollection = this.generatePagingProperties(qs, entityRefCollection)
         const entityCollectionRefs = await entityRefCollection.get()
+
         if (!entityCollectionRefs.empty) {
             const itemList = entityCollectionRefs.docs.map((entityDoc) => {
                 const entity = entityDoc.data() as TAssetHolder
