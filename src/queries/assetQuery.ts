@@ -32,6 +32,12 @@ export class AssetQuery {
         }
     }
 
+    async getAssetHolderDetailAsync(assetId: string, portfolioId: string) {
+        return {
+            data: await this.assetHolderRepository.getDetailAsync(assetId, portfolioId),
+        }
+    }
+
     async getAssetActivityAsync(assetId: string, qs?: any) {
         return {
             data: await this.activityRepository.getAssetListAsync(assetId, qs),

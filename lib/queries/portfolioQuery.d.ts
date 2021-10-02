@@ -12,7 +12,7 @@ export declare class PortfolioQuery {
     getPortfolioHoldingsAsync(portfolioId: string, qs?: any): Promise<{
         data: import("..").TPortfolioHolding[];
     }>;
-    getPortfolioHoldingDetailAsync(portfolioId: string, orderId: string): Promise<{
+    getPortfolioHoldingDetailAsync(portfolioId: string, assetId: string): Promise<{
         data: import("..").TPortfolioHolding | null;
     }>;
     getPortfolioActivityAsync(portfolioId: string, qs?: any): Promise<{

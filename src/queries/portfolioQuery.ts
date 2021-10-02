@@ -32,9 +32,9 @@ export class PortfolioQuery {
         }
     }
 
-    async getPortfolioHoldingDetailAsync(portfolioId: string, orderId: string) {
+    async getPortfolioHoldingDetailAsync(portfolioId: string, assetId: string) {
         return {
-            data: await this.portfolioHoldingRepository.getDetailAsync(portfolioId, orderId),
+            data: await this.portfolioHoldingRepository.getDetailAsync(portfolioId, assetId),
         }
     }
 

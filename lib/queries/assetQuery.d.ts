@@ -13,6 +13,9 @@ export declare class AssetQuery {
     getAssetHoldersAsync(assetId: string, qs?: any): Promise<{
         data: import("..").TAssetHolder[];
     }>;
+    getAssetHolderDetailAsync(assetId: string, portfolioId: string): Promise<{
+        data: import("..").TAssetHolder | null;
+    }>;
     getAssetActivityAsync(assetId: string, qs?: any): Promise<{
         data: import("..").TTransaction[];
     }>;
