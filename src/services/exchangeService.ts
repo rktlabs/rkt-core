@@ -322,11 +322,13 @@ export class ExchangeService {
                         portfolioId: makerPortfolioId,
                         assetId,
                         units: takerDeltaUnits * -1,
+                        value: takerDeltaValue,
                     },
                     {
                         portfolioId: takerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue,
+                        value: takerDeltaValue,
                     },
                 ],
                 outputs: [
@@ -334,11 +336,13 @@ export class ExchangeService {
                         portfolioId: takerPortfolioId,
                         assetId,
                         units: takerDeltaUnits,
+                        value: takerDeltaValue * -1,
                     },
                     {
                         portfolioId: makerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
+                        value: takerDeltaValue * -1,
                     },
                 ],
             }
@@ -349,11 +353,13 @@ export class ExchangeService {
                         portfolioId: takerPortfolioId,
                         assetId,
                         units: takerDeltaUnits,
+                        value: takerDeltaValue * -1,
                     },
                     {
                         portfolioId: makerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
+                        value: takerDeltaValue * -1,
                     },
                 ],
                 outputs: [
@@ -361,11 +367,13 @@ export class ExchangeService {
                         portfolioId: makerPortfolioId,
                         assetId,
                         units: takerDeltaUnits * -1,
+                        value: takerDeltaValue,
                     },
                     {
                         portfolioId: takerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue,
+                        value: takerDeltaValue,
                     },
                 ],
             }

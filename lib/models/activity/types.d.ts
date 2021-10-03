@@ -3,6 +3,7 @@ export declare type TActivity = {
     assetId: string;
     portfolioId: string;
     units: number;
+    value?: number;
     transactionId: string;
     orderId?: string;
     orderPortfolioId?: string;

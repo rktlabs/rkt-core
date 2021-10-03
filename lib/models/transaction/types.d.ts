@@ -17,6 +17,7 @@ export declare type TNewTransactionLeg = {
     assetId: string;
     portfolioId: string;
     units: number;
+    value?: number;
 };
 export declare type TTransactionNew = {
     inputs: TNewTransactionLeg[];
@@ -28,6 +29,7 @@ export declare type TransactionLeg = {
     assetId: string;
     portfolioId: string;
     units: number;
+    value?: number;
 };
 export declare type TTransaction = {
     transactionId: string;

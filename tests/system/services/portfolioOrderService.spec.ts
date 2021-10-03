@@ -24,7 +24,7 @@ import {
 } from '../../../src'
 
 describe('PortfolioOrderService', function () {
-    describe('persist marketMaker', function () {
+    describe.only('persist marketMaker', function () {
         this.timeout(30000)
 
         let portfolioRepository = new PortfolioRepository()

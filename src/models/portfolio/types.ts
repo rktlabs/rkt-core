@@ -40,6 +40,7 @@ export type TAssetHolderUpdateItem = {
     assetId: string
     portfolioId: string
     deltaUnits: number
+    deltaValue: number
 }
 
 export type TPortfolioDeposit = {

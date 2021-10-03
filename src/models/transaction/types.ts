@@ -21,6 +21,7 @@ export type TNewTransactionLeg = {
     assetId: string
     portfolioId: string
     units: number
+    value?: number
 }
 
 export type TTransactionNew = {
@@ -34,6 +35,7 @@ export type TransactionLeg = {
     assetId: string
     portfolioId: string
     units: number
+    value?: number
 }
 
 export type TTransaction = {

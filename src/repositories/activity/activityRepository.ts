@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
 import * as log4js from 'log4js'
 import { generateId } from '../..'
-import { TAssetHolderUpdateItem, TPortfolioActivity, TTransaction } from '../../models'
+import { TAssetHolderUpdateItem, TActivity, TTransaction } from '../../models'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
@@ -73,6 +73,8 @@ export class ActivityRepository extends RepositoryBase {
             const assetId = updateItem.assetId
             const portfolioId = updateItem.portfolioId
             const units = updateItem.deltaUnits
+            const value = updateItem.deltaValue
+
             const transactionId = transaction.transactionId
             const createdAt = transaction.createdAt
             const orderId = transaction.xids?.orderId
@@ -97,7 +99,7 @@ export class ActivityRepository extends RepositoryBase {
                 .collection(HOLDERS_COLLECTION_NAME)
                 .doc(portfolioId)
 
-            const activityItem: TPortfolioActivity = {
+            const activityItem: TActivity = {
                 createdAt: createdAt,
                 assetId: assetId,
                 portfolioId: portfolioId,
@@ -105,6 +107,7 @@ export class ActivityRepository extends RepositoryBase {
                 transactionId: transactionId,
             }
 
+            if (value) activityItem.value = value
             if (orderId) activityItem.orderId = orderId
             if (orderPortfolioId) activityItem.orderPortfolioId = orderPortfolioId
             if (source) activityItem.source = source

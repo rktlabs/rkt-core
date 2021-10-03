@@ -60,7 +60,7 @@ export class AssetHolderService {
         }
     }
 
-    async proessTransaction(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
+    async processTransaction(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
         return this.activityRepository.atomicUpdateTransactionAsync(updateSet, transaction)
     }
 

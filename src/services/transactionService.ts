@@ -65,12 +65,14 @@ export class TransactionService {
                     portfolioId: exchangeData.sellerPortfolioId,
                     assetId: exchangeData.assetId,
                     units: exchangeData.units * -1,
+                    value: exchangeData.coins,
                 },
                 {
                     // coins in from asset portfolio
                     portfolioId: exchangeData.buyerPorfolioId,
                     assetId: coinAssetId,
                     units: exchangeData.coins * -1,
+                    value: exchangeData.coins * -1,
                 },
             ],
             outputs: [
@@ -79,12 +81,14 @@ export class TransactionService {
                     portfolioId: exchangeData.buyerPorfolioId,
                     assetId: exchangeData.assetId,
                     units: exchangeData.units,
+                    value: exchangeData.coins,
                 },
                 {
                     // coins out to user portfolio
                     portfolioId: exchangeData.sellerPortfolioId,
                     assetId: coinAssetId,
                     units: exchangeData.coins,
+                    value: exchangeData.coins,
                 },
             ],
         }
@@ -111,6 +115,7 @@ export class TransactionService {
                     portfolioId: inputPortfolioId,
                     assetId: assetId,
                     units: -1 * units,
+                    //value: 0, // TODO - make optional
                 },
             ],
             outputs: [
@@ -118,6 +123,7 @@ export class TransactionService {
                     portfolioId: outputPortfolioId,
                     assetId: assetId,
                     units: units,
+                    //value: 0, // TODO - make optional
                 },
             ],
         }
@@ -174,10 +180,11 @@ export class TransactionService {
                         portfolioId: commitState.portfolioId,
                         assetId: commitState.assetId,
                         deltaUnits: commitState.units,
+                        deltaValue: commitState.value,
                     }
                 })
 
-                await this.assetHolderService.proessTransaction(updates, transaction)
+                await this.assetHolderService.processTransaction(updates, transaction)
             }
 
             transaction.transactionStatus = 'success'
@@ -466,10 +473,9 @@ export class TransactionService {
             units: leg.units,
             timestamp: timeAtNow,
         }
+        if (leg.value) commitState.value = leg.value
 
-        if (transactionXids) {
-            commitState.xids = transactionXids
-        }
+        if (transactionXids) commitState.xids = transactionXids
 
         return commitState
     }

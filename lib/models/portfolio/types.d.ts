@@ -32,6 +32,7 @@ export declare type TAssetHolderUpdateItem = {
     assetId: string;
     portfolioId: string;
     deltaUnits: number;
+    deltaValue: number;
 };
 export declare type TPortfolioDeposit = {
     createdAt: string;
