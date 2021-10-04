@@ -28,21 +28,6 @@ export type TNewPortfolioConfig = {
     xids?: any
 }
 
-export type TPortfolioHolding = {
-    portfolioId: string
-    assetId: string
-    units: number
-
-    displayName: string
-}
-
-export type TAssetHolderUpdateItem = {
-    assetId: string
-    portfolioId: string
-    deltaUnits: number
-    deltaValue: number
-}
-
 export type TPortfolioDeposit = {
     createdAt: string
     portfolioId: string

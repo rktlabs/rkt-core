@@ -12,7 +12,7 @@ import {
     TExchangeOrderFill,
     ConflictError,
     PortfolioOrder,
-    TOrderSource,
+    TOrderInput,
     TExchangeOrderComplete,
     TExchangeOrder,
 } from '..'
@@ -55,14 +55,14 @@ export class PortfolioOrderService {
         })
     }
 
-    async submitNewPortfolioOrderAsync(portfolioId: string, orderPayload: TOrderSource) {
+    async submitNewPortfolioOrderAsync(portfolioId: string, orderInput: TOrderInput) {
         // verify that asset exists.
-        const orderAssetId = orderPayload.assetId
+        const orderAssetId = orderInput.assetId
         const orderAsset = await this.assetRepository.getDetailAsync(orderAssetId)
         if (!orderAsset) {
             const msg = `Order Failed - input assetId not registered (${orderAssetId})`
             logger.error(msg)
-            throw new ConflictError(msg, { payload: orderPayload })
+            throw new ConflictError(msg, { payload: orderInput })
         }
 
         // verify that portfolio exists.
@@ -70,21 +70,20 @@ export class PortfolioOrderService {
         if (!orderPortfolio) {
             const msg = `Order Failed - input portfolioId not registered (${portfolioId})`
             logger.error(msg)
-            throw new ConflictError(msg, { payload: orderPayload })
+            throw new ConflictError(msg, { payload: orderInput })
         }
 
         /////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////
 
-        const newPortfolioOrder = PortfolioOrder.newOrder(orderPayload)
+        const newPortfolioOrder = PortfolioOrder.newOrder(orderInput)
         await this.portfolioOrderRepository.storeAsync(portfolioId, newPortfolioOrder)
 
-        const orderSource: TOrderSource = newPortfolioOrder.orderSource
         // if (this.eventPublisher) {
         //     await this.eventPublisher.publishExchangeOrderCreateAsync(exchangeOrder, 'orderHandler')
         // }
 
-        await this.exchangeService.processOrder(orderSource)
+        await this.exchangeService.processOrder(orderInput)
 
         return newPortfolioOrder
     }

@@ -1,5 +1,6 @@
 'use strict'
 
+import { ValidatorResult } from 'jsonschema'
 import * as log4js from 'log4js'
 import {
     AssetRepository,
@@ -32,7 +33,7 @@ export class MintService {
         this.transactionService = new TransactionService(assetRepository, portfolioRepository, transactionRepository)
     }
 
-    async mintUnits(assetId: string, units: number) {
+    async mintUnits(assetId: string, units: number, value: number) {
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             const msg = `Cannot deposit to asset: ${assetId} does not exist`
@@ -61,6 +62,7 @@ export class MintService {
             outputPortfolioId: portfolioId,
             assetId: assetId,
             units: units,
+            value: value,
             tags: {
                 source: 'MintUnits',
             },
@@ -71,7 +73,7 @@ export class MintService {
         this.assetRepository.addMinted(assetId, units)
     }
 
-    async burnUnits(assetId: string, units: number) {
+    async burnUnits(assetId: string, units: number, value: number) {
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
             const msg = `Cannot deposit to asset: ${assetId} does not exist`
@@ -100,6 +102,7 @@ export class MintService {
             outputPortfolioId: sourcePortfolioId,
             assetId: assetId,
             units: units,
+            value: value,
             tags: {
                 source: 'Burn',
             },

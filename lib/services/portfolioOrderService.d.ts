@@ -1,4 +1,4 @@
-import { PortfolioOrderRepository, AssetRepository, PortfolioRepository, TransactionRepository, MarketMakerRepository, PortfolioOrder, TOrderSource } from '..';
+import { PortfolioOrderRepository, AssetRepository, PortfolioRepository, TransactionRepository, MarketMakerRepository, PortfolioOrder, TOrderInput } from '..';
 export declare class PortfolioOrderService {
     private portfolioOrderRepository;
     private assetRepository;
@@ -6,7 +6,7 @@ export declare class PortfolioOrderService {
     private portfolioOrderEventService;
     private exchangeService;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, marketMakerRepository: MarketMakerRepository, portfolioOrderRepository: PortfolioOrderRepository);
-    submitNewPortfolioOrderAsync(portfolioId: string, orderPayload: TOrderSource): Promise<PortfolioOrder>;
+    submitNewPortfolioOrderAsync(portfolioId: string, orderInput: TOrderInput): Promise<PortfolioOrder>;
     private _onOrderExecution;
     private _onOrderFail;
 }

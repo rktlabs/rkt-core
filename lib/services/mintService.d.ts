@@ -4,6 +4,6 @@ export declare class MintService {
     private portfolioRepository;
     private transactionService;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository);
-    mintUnits(assetId: string, units: number): Promise<void>;
-    burnUnits(assetId: string, units: number): Promise<void>;
+    mintUnits(assetId: string, units: number, value: number): Promise<void>;
+    burnUnits(assetId: string, units: number, value: number): Promise<void>;
 }

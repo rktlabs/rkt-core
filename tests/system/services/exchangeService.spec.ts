@@ -18,8 +18,9 @@ import {
     UserRepository,
     PortfolioOrderRepository,
     Scrubber,
-    TOrderSource,
+    TOrderInput,
 } from '../../../src'
+import { BondingCurveAMM } from '../../../src/services/marketMakerService/marketMakersServiceImpls/bondingCurveAMM/bondingCurveAMM'
 
 describe('ExchangerService', function () {
     describe('persist marketMaker', function () {
@@ -65,11 +66,9 @@ describe('ExchangerService', function () {
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
             await BootstrapService.boot()
             await treasuryService.depositCoins('testbot', 100)
-            await mintService.mintUnits(assetId, 100)
-        })
 
-        describe('buy', function () {
-            beforeEach(async () => {
+            //await mintService.mintUnits(assetId, 100, 100)
+            {
                 await scrubber.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
                     type: 'linearBondingCurveAMM',
@@ -87,13 +86,43 @@ describe('ExchangerService', function () {
                     },
                 }
 
-                marketMakerService = await marketMakerFactory.createMarketMaker(makerConfig, false)
+                marketMakerService = (await marketMakerFactory.createMarketMaker(makerConfig, false)) as BondingCurveAMM
+                const units = 100
+                const value = (marketMakerService as BondingCurveAMM).computePrice(units)
+                await mintService.mintUnits(assetId, units, value)
                 expect(marketMakerService).to.exist
-            })
+            }
+        })
+
+        describe('buy', function () {
+            // beforeEach(async () => {
+            //     await scrubber.scrubMarketMaker(assetId)
+            //     const makerConfig: TNewMarketMakerConfig = {
+            //         type: 'linearBondingCurveAMM',
+            //         ownerId: 'test',
+            //         assetId: assetId,
+            //         tags: {
+            //             test: true,
+            //         },
+            //         settings: {
+            //             initialUnits: 0,
+            //             initialValue: 0,
+            //             initialPrice: 1,
+            //             e: 1,
+            //             m: 1,
+            //         },
+            //     }
+
+            //     marketMakerService = (await marketMakerFactory.createMarketMaker(makerConfig, false)) as BondingCurveAMM
+            //     const units = 100
+            //     const value = (marketMakerService as BondingCurveAMM).computePrice(units)
+            //     await mintService.mintUnits(assetId, units, value)
+            //     expect(marketMakerService).to.exist
+            // })
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const orderPayload: TOrderSource = {
+                    const orderInput: TOrderInput = {
                         // operation: 'order',
                         orderType: 'market',
                         orderSide: 'bid',
@@ -104,7 +133,7 @@ describe('ExchangerService', function () {
                         tags: { test: true },
                     }
 
-                    await exchangeService.processOrder(orderPayload)
+                    await exchangeService.processOrder(orderInput)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {
@@ -146,7 +175,7 @@ describe('ExchangerService', function () {
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const orderPayload: TOrderSource = {
+                    const orderInput: TOrderInput = {
                         // operation: 'order',
                         orderType: 'market',
                         orderSide: 'ask',
@@ -157,7 +186,7 @@ describe('ExchangerService', function () {
                         tags: { test: true },
                     }
 
-                    await exchangeService.processOrder(orderPayload)
+                    await exchangeService.processOrder(orderInput)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
 import * as log4js from 'log4js'
 import { generateId } from '../..'
-import { TAssetHolderUpdateItem, TActivity, TTransaction } from '../../models'
+import { TActivityUpdateItem, TActivity, TTransaction } from '../../models'
 import { getConnectionProps } from '../getConnectionProps'
 import { RepositoryBase } from '../repositoryBase'
 
@@ -64,23 +64,22 @@ export class ActivityRepository extends RepositoryBase {
         return entityList
     }
 
-    async atomicUpdateTransactionAsync(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
+    async atomicUpdateTransactionAsync(updateSet: TActivityUpdateItem[], transaction: TTransaction) {
         logger.trace(`update holdings`, updateSet)
         // compile the refs and increments (outside of batch)
 
-        const updates = updateSet.map((updateItem: TAssetHolderUpdateItem) => {
+        const updates = updateSet.map((updateItem: TActivityUpdateItem) => {
             const deltaUnits = updateItem.deltaUnits
+            const deltaValue = updateItem.deltaValue
             const assetId = updateItem.assetId
             const portfolioId = updateItem.portfolioId
-            const units = updateItem.deltaUnits
-            const value = updateItem.deltaValue
 
-            const transactionId = transaction.transactionId
             const createdAt = transaction.createdAt
-            const orderId = transaction.xids?.orderId
-            const orderPortfolioId = transaction.xids?.orderPortfolioId
+            const transactionId = transaction.transactionId
             const source = transaction.tags?.source
-            const tradeId = transaction.xids?.tradeId
+            const refTradeId = transaction.xids?.tradeId
+            const refOrderId = transaction.xids?.orderId
+            const refOrderPortfolioId = transaction.xids?.orderPortfolioId
 
             // TODO: Let firestore generate Id
             const activityId = generateId()
@@ -103,21 +102,22 @@ export class ActivityRepository extends RepositoryBase {
                 createdAt: createdAt,
                 assetId: assetId,
                 portfolioId: portfolioId,
-                units: units,
+                deltaUnits: deltaUnits,
+                deltaValue: deltaValue,
                 transactionId: transactionId,
             }
 
-            if (value) activityItem.value = value
-            if (orderId) activityItem.orderId = orderId
-            if (orderPortfolioId) activityItem.orderPortfolioId = orderPortfolioId
             if (source) activityItem.source = source
-            if (tradeId) activityItem.tradeId = tradeId
+            if (refOrderId) activityItem.refOrderId = refOrderId
+            if (refOrderPortfolioId) activityItem.refOrderPortfolioId = refOrderPortfolioId
+            if (refTradeId) activityItem.refTradeId = refTradeId
 
             return {
                 portfolioHoldingRef: portfolioHoldingRef,
                 assetHolderRef: assetHolderRef,
                 activityRef: activityRef,
                 deltaUnits,
+                deltaValue,
                 activityItem,
             }
         })
@@ -126,10 +126,16 @@ export class ActivityRepository extends RepositoryBase {
         const batch = this.db.batch()
         updates.forEach((item) => {
             // update assets.holders
-            batch.update(item.portfolioHoldingRef, { units: FieldValue.increment(item.deltaUnits) })
+            batch.update(item.portfolioHoldingRef, {
+                units: FieldValue.increment(item.deltaUnits),
+                netValue: FieldValue.increment(item.deltaValue || 0),
+            })
 
             // update assets.holders
-            batch.update(item.assetHolderRef, { units: FieldValue.increment(item.deltaUnits) })
+            batch.update(item.assetHolderRef, {
+                units: FieldValue.increment(item.deltaUnits),
+                netValue: FieldValue.increment(item.deltaValue || 0),
+            })
 
             // update assets.activity
             batch.set(item.activityRef, item.activityItem)

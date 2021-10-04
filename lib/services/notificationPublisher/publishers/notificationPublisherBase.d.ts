@@ -3,7 +3,7 @@ import { INotificationPublisher } from './INotificationPublisher';
 export declare abstract class NotificationPublisherBase implements INotificationPublisher {
     constructor();
     abstract publishNotification(payload: any): Promise<void>;
-    publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderSource, source: string): Promise<void>;
+    publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderInput, source: string): Promise<void>;
     publishErrorEventAsync(error: any, source: any): Promise<void>;
     publishWarningEventAsync(warning: any, source: any): Promise<void>;
     publishTransactionEventCompleteAsync(transaction: Models.Transaction, source: string): Promise<void>;

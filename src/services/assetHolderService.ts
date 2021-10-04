@@ -7,8 +7,9 @@ import {
     ActivityRepository,
     PortfolioHoldingRepository,
     TAssetHolder,
-    TAssetHolderUpdateItem,
+    TActivityUpdateItem,
     TTransaction,
+    TPortfolioHolding,
 } from '..'
 const logger = log4js.getLogger('AssetHolderService')
 
@@ -35,18 +36,20 @@ export class AssetHolderService {
         if (asset) {
             const assetDisplayName = asset.displayName || assetId
 
-            const portfolioHolding = {
+            const portfolioHolding: TPortfolioHolding = {
                 portfolioId: portfolioId,
                 assetId: assetId,
                 units: 0,
+                netValue: 0,
 
                 displayName: assetDisplayName,
             }
 
-            const assetHolder = {
+            const assetHolder: TAssetHolder = {
                 portfolioId: portfolioId,
                 assetId: assetId,
                 units: 0,
+                netValue: 0,
             }
 
             await Promise.all([
@@ -60,7 +63,7 @@ export class AssetHolderService {
         }
     }
 
-    async processTransaction(updateSet: TAssetHolderUpdateItem[], transaction: TTransaction) {
+    async processTransaction(updateSet: TActivityUpdateItem[], transaction: TTransaction) {
         return this.activityRepository.atomicUpdateTransactionAsync(updateSet, transaction)
     }
 

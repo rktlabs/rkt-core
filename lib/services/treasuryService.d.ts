@@ -8,7 +8,7 @@ export declare class TreasuryService {
     private transactionService;
     private mintService;
     constructor(assetRepository: AssetRepository, portfolioRepository: PortfolioRepository, transactionRepository: TransactionRepository, userRepository: UserRepository);
-    mintUnits(units: number): Promise<void>;
+    mintCoins(units: number): Promise<void>;
     depositCoins(userId: string, units: number): Promise<void>;
     withdrawCoins(userId: string, units: number, coinId?: string): Promise<void>;
 }

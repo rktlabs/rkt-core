@@ -14,28 +14,22 @@ export type TTransfer = {
     outputPortfolioId: string
     assetId: string
     units: number
+    value: number
     tags?: any
-}
-
-export type TNewTransactionLeg = {
-    assetId: string
-    portfolioId: string
-    units: number
-    value?: number
-}
-
-export type TTransactionNew = {
-    inputs: TNewTransactionLeg[]
-    outputs?: TNewTransactionLeg[]
-    tags?: any
-    xids?: any
 }
 
 export type TransactionLeg = {
     assetId: string
     portfolioId: string
     units: number
-    value?: number
+    refValue: number
+}
+
+export type TTransactionNew = {
+    inputs: TransactionLeg[]
+    outputs?: TransactionLeg[]
+    tags?: any
+    xids?: any
 }
 
 export type TTransaction = {
@@ -46,7 +40,6 @@ export type TTransaction = {
 
     inputs: TransactionLeg[]
     outputs?: TransactionLeg[]
-
     tags?: any
     xids?: any
 }

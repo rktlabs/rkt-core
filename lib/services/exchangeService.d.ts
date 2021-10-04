@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
-import { PortfolioRepository, AssetRepository, TransactionRepository, MarketMakerRepository, TExchangeOrderFill, TOrderSource, ExchangeOrder, TExchangeOrder } from '..';
+import { PortfolioRepository, AssetRepository, TransactionRepository, MarketMakerRepository, TExchangeOrderFill, TOrderInput, ExchangeOrder, TExchangeOrder } from '..';
 export declare class ExchangeService {
     private emitter;
     private exchangeOrderRepository;
@@ -16,7 +16,7 @@ export declare class ExchangeService {
     emitOrderFail(order: TExchangeOrder): void;
     emitCancelOrder(order: TExchangeOrder): void;
     emitExpirelOrder(order: TExchangeOrder): void;
-    processOrder(orderSource: TOrderSource): Promise<ExchangeOrder | undefined>;
+    processOrder(orderInput: TOrderInput): Promise<ExchangeOrder | undefined>;
     private _onTrade;
     private _deliverOrderUpdateStatus;
     private _deliverMakerOrderUpdate;

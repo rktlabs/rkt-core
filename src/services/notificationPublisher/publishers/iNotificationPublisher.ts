@@ -10,7 +10,7 @@ export interface INotificationPublisher {
     // // ExchangeOrder Messages
     // ////////////////////////////////////////////////////////
 
-    publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderSource, source?: string): Promise<void>
+    publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderInput, source?: string): Promise<void>
 
     // publishExchangeOrderCancelAsync(cancelOrder: Models.TExchangeCancelOrder, source?: string): Promise<void>
 

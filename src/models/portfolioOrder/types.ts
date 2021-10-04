@@ -1,10 +1,10 @@
 'use strict'
 
-import { TOrderSource } from '../..'
+import { TOrderInput } from '../..'
 
 export type TPortfolioOrder = {
     orderId: string
-    orderSource: TOrderSource
+    orderInput: TOrderInput
 
     filledPrice?: number
     filledSize?: number

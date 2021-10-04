@@ -1,8 +1,10 @@
 'use strict'
 
-export type TAssetHolder = {
-    assetId: string
+export type TPortfolioHolding = {
     portfolioId: string
+    assetId: string
     units: number
     netValue: number
+
+    displayName: string
 }

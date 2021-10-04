@@ -68,11 +68,11 @@ export class BondingCurveAMM extends MarketMakerServiceBase {
 
     async processOrder(order: TExchangeOrder) {
         logger.trace(
-            `marketMaker processOrder: ${order.orderSource.sourceOrderId} for portfolio: ${order.portfolioId} asset: ${order.orderSource.assetId}`,
+            `marketMaker processOrder: ${order.orderInput.sourceOrderId} for portfolio: ${order.portfolioId} asset: ${order.orderInput.assetId}`,
         )
-        const assetId = order.orderSource.assetId
-        const orderSide = order.orderSource.orderSide
-        const orderSize = order.orderSource.orderSize
+        const assetId = order.orderInput.assetId
+        const orderSide = order.orderInput.orderSide
+        const orderSize = order.orderInput.orderSize
 
         //////////////////////////////////////////////////
         // verify that asset exists - need it to exist and have protfolioId
@@ -110,14 +110,14 @@ export class BondingCurveAMM extends MarketMakerServiceBase {
                 makerDeltaValue: makerDeltaValue,
             })
             logger.trace(
-                `marketMaker trade: order: ${order.orderSource.sourceOrderId} units: ${makerDeltaUnits} value: ${makerDeltaValue}`,
+                `marketMaker trade: order: ${order.orderInput.sourceOrderId} units: ${makerDeltaUnits} value: ${makerDeltaValue}`,
             )
 
             this.emitTrade(trade)
 
             return true
         } else {
-            logger.trace(`marketMaker processOrder: NO TRADE for order: ${order.orderSource.sourceOrderId}`)
+            logger.trace(`marketMaker processOrder: NO TRADE for order: ${order.orderInput.sourceOrderId}`)
             return false
         }
     }
@@ -151,8 +151,9 @@ export class BondingCurveAMM extends MarketMakerServiceBase {
             const portfolioHoldingUnits = round4(assetPortfolioHoldings?.units || 0)
             if (portfolioHoldingUnits < orderSize) {
                 const delta = orderSize - portfolioHoldingUnits
+                const value = this.computePrice(delta)
                 // not enough. mint me sonme
-                await this.mintService.mintUnits(this.marketMaker.assetId, delta)
+                await this.mintService.mintUnits(this.marketMaker.assetId, delta, value)
             }
         }
 

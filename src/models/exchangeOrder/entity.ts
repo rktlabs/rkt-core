@@ -3,7 +3,7 @@
 import { DateTime } from 'luxon'
 import { ValidationError } from '../../errors'
 import { exchangeOrderValidator as validate } from './validator'
-import { TExchangeOrder, TOrderSource } from '.'
+import { TExchangeOrder, TOrderInput } from '.'
 import { generateId } from '../..'
 
 export class ExchangeOrder {
@@ -11,7 +11,7 @@ export class ExchangeOrder {
     portfolioId: string
     orderId: string
 
-    orderSource: TOrderSource
+    orderInput: TOrderInput
 
     createdAt: string
     orderStatus: string
@@ -28,9 +28,9 @@ export class ExchangeOrder {
     constructor(props: TExchangeOrder) {
         // this.operation = props.operation
         this.orderId = props.orderId
-        this.portfolioId = props.orderSource.portfolioId
+        this.portfolioId = props.orderInput.portfolioId
 
-        this.orderSource = props.orderSource
+        this.orderInput = props.orderInput
 
         this.createdAt = props.createdAt
         this.orderStatus = props.orderStatus
@@ -49,8 +49,8 @@ export class ExchangeOrder {
     }
 
     // Member Properties for new model
-    static newExchangeOrder(orderSource: TOrderSource) {
-        const orderId = orderSource.sourceOrderId
+    static newExchangeOrder(orderInput: TOrderInput) {
+        const orderId = orderInput.sourceOrderId
         const createdAt = DateTime.utc().toString()
 
         const exchangeOrderProps: TExchangeOrder = {
@@ -58,12 +58,12 @@ export class ExchangeOrder {
             createdAt: createdAt,
             orderStatus: 'received',
             orderState: 'open',
-            sizeRemaining: orderSource.orderSize,
+            sizeRemaining: orderInput.orderSize,
 
-            orderSource: orderSource,
+            orderInput: orderInput,
 
             // operation: props.operation || 'order',
-            portfolioId: orderSource.portfolioId,
+            portfolioId: orderInput.portfolioId,
             events: [],
         }
 

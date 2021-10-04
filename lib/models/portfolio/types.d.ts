@@ -22,18 +22,6 @@ export declare type TNewPortfolioConfig = {
     tags?: any;
     xids?: any;
 };
-export declare type TPortfolioHolding = {
-    portfolioId: string;
-    assetId: string;
-    units: number;
-    displayName: string;
-};
-export declare type TAssetHolderUpdateItem = {
-    assetId: string;
-    portfolioId: string;
-    deltaUnits: number;
-    deltaValue: number;
-};
 export declare type TPortfolioDeposit = {
     createdAt: string;
     portfolioId: string;

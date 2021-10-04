@@ -11,7 +11,7 @@ import {
     MarketMakerFactory,
     ExchangeService,
     TNewMarketMakerConfig,
-    TOrderSource,
+    TOrderInput,
     TreasuryService,
     MintService,
     AssetRepository,
@@ -22,9 +22,10 @@ import {
     PortfolioOrderService,
     Scrubber,
 } from '../../../src'
+import { BondingCurveAMM } from '../../../src/services/marketMakerService/marketMakersServiceImpls/bondingCurveAMM/bondingCurveAMM'
 
 describe('PortfolioOrderService', function () {
-    describe.only('persist marketMaker', function () {
+    describe('persist marketMaker', function () {
         this.timeout(30000)
 
         let portfolioRepository = new PortfolioRepository()
@@ -76,13 +77,11 @@ describe('PortfolioOrderService', function () {
             mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
 
             await BootstrapService.boot()
-            await treasuryService.mintUnits(900)
-            await mintService.mintUnits(assetId, 90)
+            await treasuryService.mintCoins(900)
             await treasuryService.depositCoins('testbot', 80)
-        })
 
-        describe('buy', function () {
-            beforeEach(async () => {
+            //await mintService.mintUnits(assetId, 90, 90)
+            {
                 await scrubber.scrubMarketMaker(assetId)
                 const makerConfig: TNewMarketMakerConfig = {
                     type: 'linearBondingCurveAMM',
@@ -95,18 +94,48 @@ describe('PortfolioOrderService', function () {
                         initialUnits: 0,
                         initialValue: 0,
                         initialPrice: 1,
-                        e: 1,
-                        m: 1,
+                        // e: 1,
+                        // m: 1,
                     },
                 }
 
                 marketMakerService = await marketMakerFactory.createMarketMaker(makerConfig, false)
+                const units = 90
+                const value = (marketMakerService as BondingCurveAMM).computePrice(units)
+                await mintService.mintUnits(assetId, units, value)
                 expect(marketMakerService).to.exist
-            })
+            }
+        })
+
+        describe('buy', function () {
+            // beforeEach(async () => {
+            //     await scrubber.scrubMarketMaker(assetId)
+            //     const makerConfig: TNewMarketMakerConfig = {
+            //         type: 'linearBondingCurveAMM',
+            //         ownerId: 'test',
+            //         assetId: assetId,
+            //         tags: {
+            //             test: true,
+            //         },
+            //         settings: {
+            //             initialUnits: 0,
+            //             initialValue: 0,
+            //             initialPrice: 1,
+            //             // e: 1,
+            //             // m: 1,
+            //         },
+            //     }
+
+            //     marketMakerService = await marketMakerFactory.createMarketMaker(makerConfig, false)
+            //     const units = 90
+            //     const value = (marketMakerService as BondingCurveAMM).computePrice(units)
+            //     await mintService.mintUnits(assetId, units, value)
+            //     expect(marketMakerService).to.exist
+            // })
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const orderPayload: TOrderSource = {
+                    const orderInput: TOrderInput = {
                         orderType: 'market',
                         orderSide: 'bid',
                         assetId: assetId,
@@ -116,7 +145,7 @@ describe('PortfolioOrderService', function () {
                         tags: { test: true },
                     }
 
-                    await portfolioOrderService.submitNewPortfolioOrderAsync(`user::testbot`, orderPayload)
+                    await portfolioOrderService.submitNewPortfolioOrderAsync(`user::testbot`, orderInput)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {
@@ -147,18 +176,21 @@ describe('PortfolioOrderService', function () {
                         initialUnits: 4,
                         initialValue: 12,
                         initialPrice: 1,
-                        e: 1,
-                        m: 1,
+                        // e: 1,
+                        // m: 1,
                     },
                 }
 
                 marketMakerService = await marketMakerFactory.createMarketMaker(makerConfig, false)
+                // const units = 90
+                // const value = (marketMakerService as BondingCurveAMM).computePrice(units)
+                // await mintService.mintUnits(assetId, units, value)
                 expect(marketMakerService).to.exist
             })
 
             describe('Create Basic MarketMaker', async () => {
                 it('should create', async () => {
-                    const orderPayload: TOrderSource = {
+                    const orderInput: TOrderInput = {
                         // operation: 'order',
                         orderType: 'market',
                         orderSide: 'ask',
@@ -170,7 +202,7 @@ describe('PortfolioOrderService', function () {
                     }
 
                     // await exchangeService.processOrder(orderPayload)
-                    await portfolioOrderService.submitNewPortfolioOrderAsync(`user::testbot`, orderPayload)
+                    await portfolioOrderService.submitNewPortfolioOrderAsync(`user::testbot`, orderInput)
 
                     const readBack = await marketMakerRepository.getDetailAsync(assetId)
                     if (readBack) {

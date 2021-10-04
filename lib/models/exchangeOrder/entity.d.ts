@@ -1,8 +1,8 @@
-import { TExchangeOrder, TOrderSource } from '.';
+import { TExchangeOrder, TOrderInput } from '.';
 export declare class ExchangeOrder {
     portfolioId: string;
     orderId: string;
-    orderSource: TOrderSource;
+    orderInput: TOrderInput;
     createdAt: string;
     orderStatus: string;
     orderState: string;
@@ -15,6 +15,6 @@ export declare class ExchangeOrder {
     filledValue?: number;
     events: any[];
     constructor(props: TExchangeOrder);
-    static newExchangeOrder(orderSource: TOrderSource): ExchangeOrder;
+    static newExchangeOrder(orderInput: TOrderInput): ExchangeOrder;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
 }

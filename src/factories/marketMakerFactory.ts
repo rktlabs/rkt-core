@@ -11,11 +11,12 @@ import {
     ExchangeQuoteRepository,
     DuplicateError,
     ConflictError,
-    TOrderSource,
+    TOrderInput,
     TNewPortfolioConfig,
     TNewMarketMakerConfig,
 } from '..'
 import { IMarketMakerService, MarketMakerServiceBase } from '../services/marketMakerService/marketMakerServiceBase'
+import { KMaker } from '../services/marketMakerService/marketMakersServiceImpls/kMaker'
 
 const logger = log4js.getLogger('MarketMakerFactory')
 
@@ -51,9 +52,16 @@ export class MarketMakerFactory {
 
         let marketMakerService: IMarketMakerService | null = null
         switch (makerType) {
-            // case 'constantk':
-            //     marketMaker = new KMaker(makerDef)
-            //     break
+            case 'constantk':
+                marketMakerService = new KMaker(
+                    this.assetRepository,
+                    this.portfolioRepository,
+                    this.transactionRepository,
+                    this.marketMakerRepository,
+                    makerDef,
+                )
+                break
+
             case 'constantBondingCurveAMM':
                 marketMakerService = new ConstantBondingCurveAMM(
                     this.assetRepository,
@@ -119,10 +127,16 @@ export class MarketMakerFactory {
     private async _createMarketMakerImpl(config: TNewMarketMakerConfig, shouldCreatePortfolio: boolean) {
         let marketMaker: MarketMakerServiceBase
         switch (config.type) {
-            // case 'constantk':
-            // default:
-            //     marketMaker = KMaker.newMaker(config)
-            //     break
+            case 'constantk':
+                marketMaker = KMaker.newMaker(
+                    this.assetRepository,
+                    this.portfolioRepository,
+                    this.transactionRepository,
+                    this.marketMakerRepository,
+                    config,
+                )
+                break
+
             case 'constantBondingCurveAMM':
                 marketMaker = ConstantBondingCurveAMM.newMaker(
                     this.assetRepository,

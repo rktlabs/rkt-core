@@ -5,13 +5,13 @@ import { generateId } from '../../util/idGenerator'
 import { ValidationError } from '../../errors'
 import { validate } from './validator'
 import { TPortfolioOrder } from '.'
-import { TOrderSource } from '..'
+import { TOrderInput } from '..'
 
 export class PortfolioOrder {
     createdAt: string
     orderId: string
 
-    orderSource: TOrderSource
+    orderInput: TOrderInput
 
     orderStatus: string
     orderState: string
@@ -28,7 +28,7 @@ export class PortfolioOrder {
 
     constructor(props: TPortfolioOrder) {
         this.orderId = props.orderId
-        this.orderSource = props.orderSource
+        this.orderInput = props.orderInput
 
         this.createdAt = props.createdAt
         this.closedAt = props.closedAt
@@ -43,14 +43,14 @@ export class PortfolioOrder {
         this.reason = props.reason
     }
 
-    static newOrder(orderSource: TOrderSource) {
+    static newOrder(orderInput: TOrderInput) {
         const createdAt = DateTime.utc().toString()
 
         const orderId = `ORDER::${generateId()}`
-        orderSource.sourceOrderId = orderId
+        orderInput.sourceOrderId = orderId
 
         const newOrderProps: TPortfolioOrder = {
-            orderSource: orderSource,
+            orderInput: orderInput,
             orderId: orderId,
             createdAt: createdAt,
             orderStatus: 'received', // received | filled | failed

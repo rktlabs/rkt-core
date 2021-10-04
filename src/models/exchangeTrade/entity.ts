@@ -17,7 +17,7 @@ export class ExchangeTrade {
         this.tradeId = `TRADE::${generateId()}`
         this.executedAt = DateTime.utc().toString()
         this.createdAt = DateTime.utc().toString()
-        this.assetId = order.orderSource.assetId
+        this.assetId = order.orderInput.assetId
         this.makers = []
 
         // construct Taker from Order
@@ -100,14 +100,14 @@ export class ExchangeTrade {
 
     private _generateTaker(order: TExchangeOrder) {
         const taker: TTaker = {
-            assetId: order.orderSource.assetId,
-            orderSide: order.orderSource.orderSide,
-            orderSize: Math.max(order.orderSource.orderSize, 0),
-            tags: order.orderSource.tags,
-            orderType: order.orderSource.orderType,
+            assetId: order.orderInput.assetId,
+            orderSide: order.orderInput.orderSide,
+            orderSize: Math.max(order.orderInput.orderSize, 0),
+            tags: order.orderInput.tags,
+            orderType: order.orderInput.orderType,
             orderId: order.orderId,
-            portfolioId: order.orderSource.portfolioId,
-            sizeRemaining: order.orderSource.orderSize,
+            portfolioId: order.orderInput.portfolioId,
+            sizeRemaining: order.orderInput.orderSize,
             filledSize: 0,
             filledValue: 0,
             filledPrice: 0,

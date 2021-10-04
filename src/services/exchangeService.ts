@@ -14,7 +14,7 @@ import {
     TransactionRepository,
     MarketMakerRepository,
     TExchangeOrderFill,
-    TOrderSource,
+    TOrderInput,
     ExchangeOrder,
     TExchangeQuote,
     ExchangeTrade,
@@ -105,18 +105,18 @@ export class ExchangeService {
     //  handleNewExchangeOrderAsync
     //  - new order handler - accepts raw json as input
     ////////////////////////////////////////////////////
-    async processOrder(orderSource: TOrderSource) {
-        logger.trace(`processOrder`, orderSource)
+    async processOrder(orderInput: TOrderInput) {
+        logger.trace(`processOrder`, orderInput)
 
         let exchangeOrder: ExchangeOrder | undefined
         try {
             ////////////////////////////////////
             // Verify source portfolio has adequate funds/units to complete transaction
             ////////////////////////////////////
-            const portfolioId = orderSource.portfolioId
-            const assetId = orderSource.assetId
-            const orderSide = orderSource.orderSide
-            const orderSize = orderSource.orderSize
+            const portfolioId = orderInput.portfolioId
+            const assetId = orderInput.assetId
+            const orderSide = orderInput.orderSide
+            const orderSize = orderInput.orderSize
 
             ////////////////////////////////////////////////////////
             // Process the order
@@ -148,7 +148,7 @@ export class ExchangeService {
                 // order is reasonably complete so mark it as received
                 // and STORE it
                 ////////////////////////////////////
-                exchangeOrder = ExchangeOrder.newExchangeOrder(orderSource)
+                exchangeOrder = ExchangeOrder.newExchangeOrder(orderInput)
                 await this.exchangeOrderRepository.storeAsync(exchangeOrder)
 
                 await marketMaker.processOrder(exchangeOrder)
@@ -322,13 +322,13 @@ export class ExchangeService {
                         portfolioId: makerPortfolioId,
                         assetId,
                         units: takerDeltaUnits * -1,
-                        value: takerDeltaValue,
+                        refValue: takerDeltaValue,
                     },
                     {
                         portfolioId: takerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue,
-                        value: takerDeltaValue,
+                        refValue: takerDeltaValue,
                     },
                 ],
                 outputs: [
@@ -336,13 +336,13 @@ export class ExchangeService {
                         portfolioId: takerPortfolioId,
                         assetId,
                         units: takerDeltaUnits,
-                        value: takerDeltaValue * -1,
+                        refValue: takerDeltaValue * -1,
                     },
                     {
                         portfolioId: makerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
-                        value: takerDeltaValue * -1,
+                        refValue: takerDeltaValue * -1,
                     },
                 ],
             }
@@ -353,13 +353,13 @@ export class ExchangeService {
                         portfolioId: takerPortfolioId,
                         assetId,
                         units: takerDeltaUnits,
-                        value: takerDeltaValue * -1,
+                        refValue: takerDeltaValue * -1,
                     },
                     {
                         portfolioId: makerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue * -1,
-                        value: takerDeltaValue * -1,
+                        refValue: takerDeltaValue * -1,
                     },
                 ],
                 outputs: [
@@ -367,13 +367,13 @@ export class ExchangeService {
                         portfolioId: makerPortfolioId,
                         assetId,
                         units: takerDeltaUnits * -1,
-                        value: takerDeltaValue,
+                        refValue: takerDeltaValue,
                     },
                     {
                         portfolioId: takerPortfolioId,
                         assetId: 'coin::rkt',
                         units: takerDeltaValue,
-                        value: takerDeltaValue,
+                        refValue: takerDeltaValue,
                     },
                 ],
             }

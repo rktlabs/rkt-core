@@ -46,7 +46,7 @@ export class TreasuryService {
         this.mintService = new MintService(assetRepository, portfolioRepository, transactionRepository)
     }
 
-    async mintUnits(units: number) {
+    async mintCoins(units: number) {
         const assetId = COIN
         const asset = await this.assetRepository.getDetailAsync(assetId)
         if (!asset) {
@@ -66,7 +66,7 @@ export class TreasuryService {
         const balance = await this.assetHolderService.getAssetHolderBalance(assetId, assetPortfolioId)
         if (balance < units) {
             const delta = units - balance
-            await this.mintService.mintUnits(COIN, delta)
+            await this.mintService.mintUnits(COIN, delta, delta)
         }
 
         const portfolioId = BANK_PORTFOLIO
@@ -82,6 +82,7 @@ export class TreasuryService {
             outputPortfolioId: portfolioId,
             assetId: assetId,
             units: units,
+            value: units, // moving coins - units = value
             tags: {
                 source: 'TreasuryDeposit',
             },
@@ -118,7 +119,7 @@ export class TreasuryService {
         const balance = await this.assetHolderService.getAssetHolderBalance(assetId, sourcePortfolioId)
         if (balance < units) {
             const delta = units - balance
-            await this.mintUnits(delta)
+            await this.mintCoins(delta)
         }
 
         const data: TTransfer = {
@@ -126,6 +127,7 @@ export class TreasuryService {
             outputPortfolioId: portfolioId,
             assetId: assetId,
             units: units,
+            value: units,
             tags: {
                 source: 'UserDeposit',
             },
@@ -177,6 +179,7 @@ export class TreasuryService {
             outputPortfolioId: destPortfolioId,
             assetId: coinId,
             units: units,
+            value: units,
             tags: {
                 source: 'UserWithdraw',
             },

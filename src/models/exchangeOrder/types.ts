@@ -2,7 +2,7 @@
 
 import { OrderType, OrderSide } from '../..'
 
-export type TOrderSource = {
+export type TOrderInput = {
     // operation: OperationType // one of order, cancel
     sourceOrderId?: string
 
@@ -35,7 +35,7 @@ export type TExchangeOrder = {
 
     portfolioId: string
 
-    orderSource: TOrderSource
+    orderInput: TOrderInput
 
     sizeRemaining?: number
     events: any[]

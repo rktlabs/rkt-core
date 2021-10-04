@@ -11,25 +11,20 @@ export declare type TTransfer = {
     outputPortfolioId: string;
     assetId: string;
     units: number;
+    value: number;
     tags?: any;
-};
-export declare type TNewTransactionLeg = {
-    assetId: string;
-    portfolioId: string;
-    units: number;
-    value?: number;
-};
-export declare type TTransactionNew = {
-    inputs: TNewTransactionLeg[];
-    outputs?: TNewTransactionLeg[];
-    tags?: any;
-    xids?: any;
 };
 export declare type TransactionLeg = {
     assetId: string;
     portfolioId: string;
     units: number;
-    value?: number;
+    refValue: number;
+};
+export declare type TTransactionNew = {
+    inputs: TransactionLeg[];
+    outputs?: TransactionLeg[];
+    tags?: any;
+    xids?: any;
 };
 export declare type TTransaction = {
     transactionId: string;

@@ -1,9 +1,9 @@
 import { TPortfolioOrder } from '.';
-import { TOrderSource } from '..';
+import { TOrderInput } from '..';
 export declare class PortfolioOrder {
     createdAt: string;
     orderId: string;
-    orderSource: TOrderSource;
+    orderInput: TOrderInput;
     orderStatus: string;
     orderState: string;
     reason?: string;
@@ -15,6 +15,6 @@ export declare class PortfolioOrder {
     filledValue?: number;
     sizeRemaining?: number;
     constructor(props: TPortfolioOrder);
-    static newOrder(orderSource: TOrderSource): PortfolioOrder;
+    static newOrder(orderInput: TOrderInput): PortfolioOrder;
     static validate(jsonPayload: any): import("jsonschema").ValidatorResult;
 }

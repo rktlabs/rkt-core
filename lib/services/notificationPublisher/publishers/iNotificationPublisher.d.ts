@@ -1,7 +1,7 @@
 import * as Models from '../../../models';
 export interface INotificationPublisher {
     publishNotification(payload: any): Promise<void>;
-    publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderSource, source?: string): Promise<void>;
+    publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderInput, source?: string): Promise<void>;
     publishErrorEventAsync(error: any, sourceData?: any): Promise<void>;
     publishWarningEventAsync(error: any, sourceData?: any): Promise<void>;
     publishTransactionEventCompleteAsync(transaction: Models.Transaction, source?: string): Promise<void>;

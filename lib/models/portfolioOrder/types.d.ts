@@ -1,7 +1,7 @@
-import { TOrderSource } from '../..';
+import { TOrderInput } from '../..';
 export declare type TPortfolioOrder = {
     orderId: string;
-    orderSource: TOrderSource;
+    orderInput: TOrderInput;
     filledPrice?: number;
     filledSize?: number;
     filledValue?: number;

@@ -1,5 +1,5 @@
 import { OrderType, OrderSide } from '../..';
-export declare type TOrderSource = {
+export declare type TOrderInput = {
     sourceOrderId?: string;
     portfolioId: string;
     nonce?: string;
@@ -15,7 +15,7 @@ export declare type TOrderSource = {
 export declare type TExchangeOrder = {
     orderId: string;
     portfolioId: string;
-    orderSource: TOrderSource;
+    orderInput: TOrderInput;
     sizeRemaining?: number;
     events: any[];
     orderStatus: string;

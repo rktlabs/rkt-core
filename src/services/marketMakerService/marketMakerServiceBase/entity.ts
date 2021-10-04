@@ -10,7 +10,6 @@ export abstract class MarketMakerServiceBase implements IMarketMakerService {
 
     marketMaker: TMarketMaker
 
-    //constructor(props: TMarketMaker, emitter?: EventEmitter) {
     constructor(props: TMarketMaker, emitter?: EventEmitter) {
         this.marketMaker = props
 

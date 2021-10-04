@@ -13,7 +13,7 @@ export abstract class NotificationPublisherBase implements INotificationPublishe
     // ExchangeOrder Notifications
     ////////////////////////////////////////////////////////
 
-    async publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderSource, source: string) {
+    async publishExchangeOrderCreateAsync(exchangeOrder: Models.TOrderInput, source: string) {
         const notificationPayload = new Notifications.ExchangeOrderNew(source, 'exchangeOrderCreate', exchangeOrder)
         return this.publishNotification(notificationPayload)
     }

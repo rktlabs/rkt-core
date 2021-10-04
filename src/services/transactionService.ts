@@ -22,6 +22,17 @@ import {
 
 const logger = log4js.getLogger('TransactionService')
 
+type CommitState = {
+    id: string
+    transactionId: string
+    portfolioId: string
+    assetId: string
+    units: number
+    value: number
+    timestamp: string
+    xids?: any
+}
+
 export class TransactionService {
     private portfolioRepository: PortfolioRepository
     private assetRepository: AssetRepository
@@ -65,14 +76,14 @@ export class TransactionService {
                     portfolioId: exchangeData.sellerPortfolioId,
                     assetId: exchangeData.assetId,
                     units: exchangeData.units * -1,
-                    value: exchangeData.coins,
+                    refValue: exchangeData.coins,
                 },
                 {
                     // coins in from asset portfolio
                     portfolioId: exchangeData.buyerPorfolioId,
                     assetId: coinAssetId,
                     units: exchangeData.coins * -1,
-                    value: exchangeData.coins * -1,
+                    refValue: exchangeData.coins * -1,
                 },
             ],
             outputs: [
@@ -81,14 +92,14 @@ export class TransactionService {
                     portfolioId: exchangeData.buyerPorfolioId,
                     assetId: exchangeData.assetId,
                     units: exchangeData.units,
-                    value: exchangeData.coins,
+                    refValue: exchangeData.coins,
                 },
                 {
                     // coins out to user portfolio
                     portfolioId: exchangeData.sellerPortfolioId,
                     assetId: coinAssetId,
                     units: exchangeData.coins,
-                    value: exchangeData.coins,
+                    refValue: exchangeData.coins,
                 },
             ],
         }
@@ -108,6 +119,7 @@ export class TransactionService {
         const outputPortfolioId = transferData.outputPortfolioId
         const assetId = transferData.assetId
         const units = transferData.units
+        const value = transferData.value
 
         const transaction: TTransactionNew = {
             inputs: [
@@ -115,7 +127,7 @@ export class TransactionService {
                     portfolioId: inputPortfolioId,
                     assetId: assetId,
                     units: -1 * units,
-                    //value: 0, // TODO - make optional
+                    refValue: -1 * value,
                 },
             ],
             outputs: [
@@ -123,7 +135,7 @@ export class TransactionService {
                     portfolioId: outputPortfolioId,
                     assetId: assetId,
                     units: units,
-                    //value: 0, // TODO - make optional
+                    refValue: value,
                 },
             ],
         }
@@ -148,7 +160,7 @@ export class TransactionService {
 
             await this._verifyAssetsAsync(transaction)
 
-            let commitStates = []
+            let commitStates: CommitState[] = []
 
             //////////////////////////
             // process input legs first (if they fail, less to clean up)
@@ -465,15 +477,15 @@ export class TransactionService {
 
     private _processLeg(transactionId: string, leg: TransactionLeg, transactionXids: any) {
         const timeAtNow = DateTime.utc().toString()
-        const commitState: any = {
+        const commitState: CommitState = {
             id: generateId(),
             transactionId: transactionId,
             portfolioId: leg.portfolioId,
             assetId: leg.assetId,
             units: leg.units,
+            value: leg.refValue || 0,
             timestamp: timeAtNow,
         }
-        if (leg.value) commitState.value = leg.value
 
         if (transactionXids) commitState.xids = transactionXids
 
